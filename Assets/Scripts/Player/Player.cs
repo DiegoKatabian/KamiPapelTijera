@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Spine.Unity;
+
 
 public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 {
@@ -39,6 +41,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     public ParticleSystem tijeraParticles, tijeraTrail;
     public InventorySlot rewardSticker;
     public Material waterBootsMaterial;
+    public SkeletonAnimation SkeletonAnimation;
 
 
     [Header("Planeo")]
@@ -70,6 +73,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     PlayerController _controller;
 
     public GameObject nuevoTooltipPapelSalto;
+
 
 
     //Properties
@@ -151,6 +155,12 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         augmentedJumpsLeft = augmentedJumpsMax;
         originalJumpForce = jumpForce;
         originalMaxSpeed = _maxSpeed;
+
+        if (SkeletonAnimation == null)
+        {
+            SkeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
+        }
+
         EventManager.Subscribe(Evento.OnOrigamiStart, StartOrigamiCast);
         EventManager.Subscribe(Evento.OnOrigamiEnd, EndOrigamiCast);
         EventManager.Subscribe(Evento.OnPlayerGetTijera, GetTijera);

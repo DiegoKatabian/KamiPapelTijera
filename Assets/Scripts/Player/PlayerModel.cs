@@ -15,6 +15,7 @@ public class PlayerModel
     float auxOriginalImpulse;
 
     bool isFalling = false;
+    bool _wasGroundedLastFrame = false;
 
     float fallingTimer = 0f;
 
@@ -80,29 +81,36 @@ public class PlayerModel
     {
         //Debug.Log("on grounded");
         _groundedTimer = 0.2f; //mientras este en el suelo
-        _player._view.StopJump();
+        //_player._view.StopJump();
 
-        if (isFalling)
+        // Only trigger landing animations when transitioning from not-grounded to grounded
+        if (!_wasGroundedLastFrame)
         {
-            //Debug.Log("jump land sfx - falling");
-            AudioManager.instance.PlayByName("JumpLand", 1f, 0.02f);
-
-            if (fallingTimer > 0.2f)
+            if (isFalling)
             {
-                _player.BrieflySlowDown();
+                //Debug.Log("jump land sfx - falling");
+                AudioManager.instance.PlayByName("JumpLand", 1f, 0.02f);
+
+                if (fallingTimer > 0.2f)
+                {
+                    _player.BrieflySlowDown();
+                }
+
+                fallingTimer = 0f;
             }
+            isFalling = false;
 
-            fallingTimer = 0f;
+            _player._view.StopFalling();
+            _player._view.StartLanding();
         }
-        isFalling = false;
 
-        _player._view.StopFalling();
-        _player._view.StartLanding();
+        _wasGroundedLastFrame = true;
     }
     private void OnStartFalling()
     {
         //Debug.Log("on start falling");
         isFalling = true;
+        _wasGroundedLastFrame = false;
         _player._view.StopJump();
         _player._view.StartFalling();
         //Debug.Log("falling timer" + fallingTimer);
