@@ -1,15 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+//snapshot de los inputs de un frame. el controller lo llena, el model decide que hacer con el
+public struct PlayerInputs
+{
+    public float hor;
+    public float ver;
+    public bool jumpDown;
+    public bool jumpUp;
+}
 
 public class PlayerController
 {
-    //solo recibo ordenes
-    //getaxis es wasd o flechitas. eso es solo para moverse, asi que los mando directo al player
-    //los demas, como seguro hacen distintas cosas en distintos objetos (no solo en player), los hago disparar eventos globales
+    //solo leo inputs, no decido nada.
+    //las decisiones de que se puede hacer las toma el model mirando el estado actual.
+    //los botones que hacen cosas en otros objetos (no en player) disparan eventos globales, como siempre.
 
-    public float hor;
-    public float ver;
+    public PlayerInputs Inputs;
 
     Player _player;
 
@@ -20,6 +26,8 @@ public class PlayerController
 
     public void CheckControls() //a este lo disparo en el update
     {
+        Inputs = default;
+
         if (Input.GetButtonDown("Run"))
         {
             _player.IsSprinting = true;
@@ -35,57 +43,49 @@ public class PlayerController
             EventManager.Trigger(Evento.OnPlayerPressedM);
         }
 
-        if (LevelManager.Instance.agency) 
+        if (!LevelManager.Instance.agency)
         {
-            if (Input.GetButtonDown("Interact"))
-            {
-                EventManager.Trigger(Evento.OnPlayerPressedE);
-            }
+            return;
+        }
 
-            if (Input.GetButtonDown("Fire1"))
-            {
-                _player.OnPrimaryClick();
-            }
+        if (Input.GetButtonDown("Interact"))
+        {
+            EventManager.Trigger(Evento.OnPlayerPressedE);
+        }
 
-            if (Input.GetButtonDown("Options"))
-            {
-                //Application.Quit();
-                EventManager.Trigger(Evento.OnPlayerPressedEsc);
-            }
+        if (Input.GetButtonDown("Fire1"))
+        {
+            _player.OnPrimaryClick();
+        }
 
-            if (Input.GetButtonDown("Inventory"))
-            {
-                //Application.Quit();
-                EventManager.Trigger(Evento.OnPlayerPressedI);
-            }
+        if (Input.GetButtonDown("Options"))
+        {
+            EventManager.Trigger(Evento.OnPlayerPressedEsc);
+        }
 
-            if (Input.GetButtonDown("Quests"))
-            {
-                //Application.Quit();
-                EventManager.Trigger(Evento.OnPlayerPressedU);
-            }
+        if (Input.GetButtonDown("Inventory"))
+        {
+            EventManager.Trigger(Evento.OnPlayerPressedI);
+        }
 
-            if (!LevelManager.Instance.inDialogue && !_player.anim.GetBool("isCasting")) //este if mepa que va en model
-            {
-                if (Input.GetButtonDown("Jump"))
-                {
-                    _player.isJumpButtonDown = true;
-                    EventManager.Trigger(Evento.OnPlayerPressedSpace); 
-                }
+        if (Input.GetButtonDown("Quests"))
+        {
+            EventManager.Trigger(Evento.OnPlayerPressedU);
+        }
 
-                if (Input.GetButtonUp("Jump"))
-                {
-                    _player.isJumpButtonDown = false;
-                }
+        if (LevelManager.Instance.inDialogue) //en dialogo no se captura movimiento ni salto
+        {
+            return;
+        }
 
-                hor = Input.GetAxis("Horizontal");
-                ver = Input.GetAxis("Vertical");
-            }
-            else
-            {
-                hor = 0;
-                ver = 0;
-            }
+        Inputs.hor = Input.GetAxis("Horizontal");
+        Inputs.ver = Input.GetAxis("Vertical");
+        Inputs.jumpDown = Input.GetButtonDown("Jump");
+        Inputs.jumpUp = Input.GetButtonUp("Jump");
+
+        if (Inputs.jumpDown)
+        {
+            EventManager.Trigger(Evento.OnPlayerPressedSpace);
         }
     }
 }

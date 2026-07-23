@@ -9,10 +9,11 @@ using Spine.Unity;
 public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 {
 
-    //player esta partido en 4. aca solo pongo lo que quiero que pase. 
+    //player esta partido en 4. aca solo pongo lo que quiero que pase.
     //model se encarga de pensar, controller de recibir los controles, y view de animaciones, sonidos, particulas etc
     //aca contruyo a los 3, y les paso mi refe. ellos hablan conmigo, no entre ellos.
     //ademas, yo tengo start y update, ellos no.
+    //CurrentState vive aca y es la unica fuente de verdad sobre que esta haciendo kami.
 
     [Header("Stats")]
     public bool hasTijera = false;
@@ -28,6 +29,11 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     public float landingLagModifier = 0.75f;
     public float landingLagTime = 0.25f;
     public float rewardAnimationWaitTime = 2;
+
+    [Header("Movimiento y Salto")]
+    [Range(0f, 1f)] public float walkThreshold = 0.5f; //con joystick: debajo de esta magnitud camina (walk), arriba trota (skip)
+    [Range(0f, 1f)] public float jumpCutMultiplier = 0.4f; //al soltar BARRA subiendo se corta la velocidad: tap = saltito, hold = salto completo
+    public float landingDuration = 0.15f; //cuanto dura el estado Landing (bloquea inputs)
 
 
     [Header("Componentes")]
@@ -60,12 +66,14 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     //auxiliars
     bool _readyToAttack = true;
     [HideInInspector] public bool isGettingWet = false;
-    [HideInInspector] public bool isJumpButtonDown;
     [HideInInspector] public bool isAttacking = false;
     [HideInInspector] public bool isPaperPlaneHat = false; //pph es paper plane hat
     [HideInInspector] public bool isSprinting; //cuando tocas shift
     [HideInInspector] public int augmentedJumpsLeft;
     [HideInInspector] public Vector3 lastDirection;
+
+    //State Machine
+    public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
 
     //MVC
     PlayerModel _model;
@@ -167,19 +175,46 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         EventManager.Subscribe(Evento.OnOrigamiGivePaperPlaneHat, GetPaperPlaneHat);
         EventManager.Subscribe(Evento.OnQuestRewardedStart, StartReceiveReward);
         EventManager.Subscribe(Evento.OnQuestRewardedEnd, EndReceiveReward);
+        EventManager.Subscribe(Evento.OnPlayerPlaced, OnPlayerPlaced);
     }
     private void Update()
     {
         //todo el tiempo chequeo los controles. eso seguro.
         _controller.CheckControls();
 
-        if (_controller.hor != 0 || _controller.ver != 0) //si estoy tocando cualquier WASD, triggerea evento
+        if (_controller.Inputs.hor != 0 || _controller.Inputs.ver != 0) //si estoy tocando cualquier WASD, triggerea evento
         {
-            EventManager.Trigger(Evento.OnPlayerMove, _controller.hor, _controller.ver);
+            EventManager.Trigger(Evento.OnPlayerMove, _controller.Inputs.hor, _controller.Inputs.ver);
         }
 
-        _model.NewMove(_controller.hor, _controller.ver); //de todos modos el model hace lo suyo. aunque no me mueva, pues caidas y bla
-        _view.CheckMagnitude(_controller.hor, _controller.ver); //el view tambien necesita enterarse para donde me muevo
+        _model.Tick(_controller.Inputs); //el model decide que hacer con los inputs segun el estado actual
+    }
+
+    //State Machine
+    public void SetState(PlayerState newState)
+    {
+        if (newState == CurrentState)
+        {
+            return;
+        }
+
+        PlayerState previous = CurrentState;
+        CurrentState = newState;
+        _view.OnStateChanged(previous, newState);
+    }
+
+    bool CanAttack()
+    {
+        switch (CurrentState)
+        {
+            case PlayerState.Landing:
+            case PlayerState.Casting:
+            case PlayerState.ReceivingReward:
+            case PlayerState.Dead:
+                return false;
+            default:
+                return true; //idle, walk, skip, run, jump, fall: se puede atacar
+        }
     }
 
     public void OnPrimaryClick()
@@ -189,7 +224,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
             return;
         }
 
-        if (_readyToAttack && hasTijera && !anim.GetBool("isCasting")) //readytoattack esta false cuando estoy en cooldown
+        if (_readyToAttack && hasTijera && CanAttack()) //readytoattack esta false cuando estoy en cooldown
         {
             _readyToAttack = false;
             isAttacking = true;
@@ -197,12 +232,11 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         }
     }
 
-    //triggered by animator - unity "2021"
-    public void StartPasoSFX(int step) //del animator me dicen en qué paso de la animation estoy.
+    public void StartPasoSFX(int step) //del spine event me dicen en que paso de la animation estoy.
     {
         _view.StartPasoSFX(step); //le paso el valor y el view se encarga
     }
-    public void StartTijeraCoroutine() //este metodo es solo xq el estupido animator no sabe disparar corrutinas. unity "2021"
+    public void StartTijeraCoroutine() //disparado por el spine event de la animacion de ataque
     {
         StartCoroutine(TijeraCoroutine());
     }
@@ -219,12 +253,10 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     }
     public void StartTijeraParticles()
     {
-        //_view.EnableTijeraParticles();
         tijeraManager.EnableTijeraParticles();
     }
     public void StopTijeraParticles()
     {
-        //_view.DisableTijeraParticles();
         tijeraManager.DisableTijeraParticles();
     }
 
@@ -238,6 +270,10 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
             Die();
             isGettingWet = false;
         }
+        else
+        {
+            _view.PlayTakeHitAnimation(); //se superpone en el track 2, no bloquea nada
+        }
         StartCoroutine(EnrojecerSprite());
     }
     public IEnumerator EnrojecerSprite()
@@ -250,16 +286,25 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     public override void Die()
     {
         //print("player: me mori");
+        SetState(PlayerState.Dead); //no puede hacer nada hasta que respawnee
         Vida = _maxHp;
         AudioManager.instance.PlayByName("GameOverOrchestral");
         EventManager.Trigger(Evento.OnPlayerDie);
         PlayerPageSpawnManager.Instance.RespawnPlayer(); //spawnea al player en el inicio de la pagina actual
     }
+    private void OnPlayerPlaced(object[] parameters)
+    {
+        //el spawn manager avisa cuando reposiciono al player: si estaba muerto, revive
+        if (CurrentState == PlayerState.Dead)
+        {
+            SetState(PlayerState.Idle);
+        }
+    }
 
     //Interfaces
     public void GetWet(float wetDamage)
     {
-        //mojarse se moja siempre. solo que con las botas no te hace daño
+        //mojarse se moja siempre. solo que con las botas no te hace daï¿½o
         isGettingWet = true;
 
         if (!hasWaterBoots)
@@ -307,11 +352,14 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     }
     public void StartOrigamiCast(params object[] parameters)
     {
-        _view.StartCast();
+        SetState(PlayerState.Casting); //no puede hacer nada mientras castea
     }
     public void EndOrigamiCast(params object[] parameters)
     {
-        _view.EndCast();
+        if (CurrentState == PlayerState.Casting) //guard: si murio en el medio, no lo revivas
+        {
+            SetState(PlayerState.Idle);
+        }
     }
     public void GetPaperPlaneHat(params object[] parameters)
     {
@@ -333,7 +381,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     }
     private void StartReceiveReward(object[] parameters)
     {
-        _view.StartReceiveReward();
+        SetState(PlayerState.ReceivingReward);
         StartCoroutine(WaitForReceiveRewardAnimation(rewardAnimationWaitTime));
     }
     public IEnumerator WaitForReceiveRewardAnimation(float waitTime)
@@ -343,7 +391,10 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     }
     private void EndReceiveReward(object[] parameters)
     {
-        _view.EndReceiveReward();
+        if (CurrentState == PlayerState.ReceivingReward)
+        {
+            SetState(PlayerState.Idle);
+        }
     }
 
     //Utilities
@@ -366,7 +417,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         Debug.Log("player end affected");
         _view.EndAffectedByWind();
     }
-    
+
     public void BrieflySlowDown()
     {
         StartCoroutine(SlowDownCoroutine(landingLagModifier, landingLagTime));
@@ -389,6 +440,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
             EventManager.Unsubscribe(Evento.OnOrigamiGivePaperPlaneHat, GetPaperPlaneHat);
             EventManager.Unsubscribe(Evento.OnQuestRewardedStart, StartReceiveReward);
             EventManager.Unsubscribe(Evento.OnQuestRewardedEnd, EndReceiveReward);
+            EventManager.Unsubscribe(Evento.OnPlayerPlaced, OnPlayerPlaced);
         }
     }
 }

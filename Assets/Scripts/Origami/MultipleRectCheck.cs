@@ -21,14 +21,17 @@ public class MultipleRectCheck : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E)) //toggle: E arranca el minijuego, E de nuevo lo cancela. ya no hay que holdear
         {
-            StartOrigami(desiredOrigami);
-        }
-        if (Input.GetKeyUp(KeyCode.E))
-        {
-            EndOrigami(desiredOrigami);
-            //print("invocacion cancelada x soltar tab");
+            if (!invocando)
+            {
+                StartOrigami(desiredOrigami);
+            }
+            else
+            {
+                //print("invocacion cancelada x apretar E de nuevo");
+                EndOrigami(desiredOrigami);
+            }
         }
 
         if (invocando && Input.GetMouseButtonDown(0))
@@ -43,7 +46,7 @@ public class MultipleRectCheck : MonoBehaviour
             }
             else
             {
-                Debug.Log("invocación cancelada x empezar en un lugar incorrecto");
+                Debug.Log("invocaciï¿½n cancelada x empezar en un lugar incorrecto");
                 EndOrigami(desiredOrigami);
             }
         }
@@ -56,7 +59,7 @@ public class MultipleRectCheck : MonoBehaviour
             //chequeo si el jugador solto sobre la meta
             if (RectTransformUtility.RectangleContainsScreenPoint(desiredOrigami.origamiRoutes[desiredOrigami.currentRouteIndex].finalRectangle, Input.mousePosition))
             {
-                //Debug.Log("invocación exitosa");
+                //Debug.Log("invocaciï¿½n exitosa");
                 AudioManager.instance.PlayRandom("PaperFold01", "PaperFold02");
                 AudioManager.instance.StopByName("PaperFoldLoop");
                 //desiredOrigami.CompleteRoute();
@@ -68,7 +71,7 @@ public class MultipleRectCheck : MonoBehaviour
             }
             else
             {
-                //Debug.Log("invocación cancelada x soltar mal");
+                //Debug.Log("invocaciï¿½n cancelada x soltar mal");
                 AudioManager.instance.PlayByName("Origami_Fail_Crumble", 1, 0.05f);
                 EndOrigami(desiredOrigami);
             }
@@ -86,17 +89,17 @@ public class MultipleRectCheck : MonoBehaviour
                 {
                     desiredOrigami.origamiRoutes[desiredOrigami.currentRouteIndex].SetImagePosition(Input.mousePosition);
                 }
-                encimaDeAlgunRectangulo = true; //si sí, todo bien
+                encimaDeAlgunRectangulo = true; //si sï¿½, todo bien
                 break;
             }
         }
 
         //if (arrastrando && !encimaDeAlgunRectangulo) //si no, end origami
         //{
-        //    //me salí de la ruta
+        //    //me salï¿½ de la ruta
         //    arrastrando = false;
         //    AudioManager.instance.PlayByName("Origami_Fail_Crumble", 1, 0.05f);
-        //    Debug.Log("invocación cancelada x salir de la ruta");
+        //    Debug.Log("invocaciï¿½n cancelada x salir de la ruta");
         //    EndOrigami(desiredOrigami);
         //}
 
