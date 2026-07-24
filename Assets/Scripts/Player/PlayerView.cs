@@ -28,7 +28,9 @@ public class PlayerView
     const string ANIMATION_FALLING = "falling";
     const string ANIMATION_LANDING = "landing";
     const string ANIMATION_CASTING = "Casting";
-    const string ANIMATION_RECEIVE_REWARD = "ReceiveReward";
+    const string ANIMATION_RECEIVE_REWARD = "Reward";
+    const string ANIMATION_RECEIVE_REWARD_LOOP = "RewardLoop";
+
     const string ANIMATION_ATTACK = "Attack";
     const string ANIMATION_IDLE_TO_CASTING = "IdleToCasting";
     const string ANIMATION_SKIP = "Skip";
@@ -51,7 +53,7 @@ public class PlayerView
 
     private void OnSpineAnimationEvent(Spine.TrackEntry trackEntry, Spine.Event e)
     {
-        if (e.Data.Name == "StartTijeraCoroutine")
+        if (e.Data.Name == "HandleAttack")
         {
             _player.StartTijeraCoroutine();
         }
@@ -128,7 +130,9 @@ public class PlayerView
                 AudioManager.instance.PlayByName("Receive_Reward");
                 CameraManager.Instance.SetCamera(CameraMode.ReceiveReward);
                 _player.particleShooter.Enable(2, true);
-                SetBodyAnimation(ANIMATION_RECEIVE_REWARD, true);
+                SetBodyAnimation(ANIMATION_RECEIVE_REWARD, false);
+                _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, ANIMATION_RECEIVE_REWARD_LOOP, true, 0);
+
                 break;
 
             case PlayerState.Dead:

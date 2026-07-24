@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
@@ -10,6 +11,8 @@ public class TijeraHitbox : MonoBehaviour
 
     public float tijeraDamage;
     bool missed;
+
+    public ParticleSystem HitboxStartParticles;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -27,6 +30,14 @@ public class TijeraHitbox : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        if (HitboxStartParticles != null)
+        {
+            HitboxStartParticles.Play();
+        }
+    }
+
     private void OnDisable()
     {
         if (missed)
@@ -35,4 +46,5 @@ public class TijeraHitbox : MonoBehaviour
             missed = false;
         }
     }
+
 }
