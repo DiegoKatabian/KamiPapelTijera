@@ -22,6 +22,7 @@ public enum ResourceType
 
 public class LevelManager : Singleton<LevelManager>
 {
+    public string Level1SceneName = "Nivel1_LaRural";
     public bool agency;
     public bool inDialogue;
 
@@ -31,6 +32,8 @@ public class LevelManager : Singleton<LevelManager>
     public Player player;
 
     public bool enablePCheat = false;
+
+
 
     protected override void Awake()
     {
@@ -51,7 +54,7 @@ public class LevelManager : Singleton<LevelManager>
 
     private void Start()
     {
-        if (gameObject.scene.name == "SampleScene")
+        if (gameObject.scene.name == Level1SceneName)
         {
             AudioManager.instance.StopByName("IntroStoryboardLoop");
             AudioManager.instance.PlayByName("MemoFloraMainLoop01");

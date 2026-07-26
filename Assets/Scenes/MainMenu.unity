@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 69834710}
-  m_IndirectSpecularColor: {r: 0.129664, g: 0.13386537, b: 0.3194329, a: 1}
+  m_IndirectSpecularColor: {r: 0.12966412, g: 0.13386539, b: 0.31943288, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5285,7 +5285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _autoDialogo: {fileID: 920302444}
-  sceneToLoadOnDialogueEnd: SampleScene
+  sceneToLoadOnDialogueEnd: Nivel1_LaRural
   LoadingAnimationCanvas: {fileID: 1677121774}
 --- !u!1001 &936256367
 PrefabInstance:
