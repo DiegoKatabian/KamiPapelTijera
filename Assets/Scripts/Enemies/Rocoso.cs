@@ -155,21 +155,21 @@ public class Rocoso : Enemy
         _fsm.ChangeState(State.RocosoSleep);
     }
 
-    //protected void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireSphere(transform.position, enterAttackRange);
-    //    Gizmos.color = Color.yellow;
-    //    Gizmos.DrawWireSphere(transform.position, exitAttackRange);
-    //    Gizmos.color = Color.green;
-    //    Gizmos.DrawWireSphere(transform.position, viewRange);
+    protected void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, enterAttackRange);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, exitAttackRange);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, viewRange);
 
-    //    if (_player != null)
-    //    {
-    //        Gizmos.color = Color.blue;
-    //        Gizmos.DrawLine(transform.position, _player.transform.position);
-    //    }
-    //}
+        if (_player != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(transform.position, _player.transform.position);
+        }
+    }
 
     public float DistanceToPlayer()
     {
