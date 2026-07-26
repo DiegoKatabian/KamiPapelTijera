@@ -210,13 +210,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 660091592884224
-    m_Localized: "Pegue a TESOURA, ela est\xE1 perto da churrasqueira. Ah! E cuidado
-      com os monstros de pedra: TESOURA N\xC3O CORTA PEDRAS."
+    m_Localized: "Pegue a TESOURA, ela est\xE1 perto da galp\xE3o."
     m_Metadata:
       m_Items: []
   - m_Id: 660424608038912
-    m_Localized: "V\xE1 procurar a vov\xF3, vamos comer! Lembre-se de ter muito cuidado
-      com os monstros de pedra: TESOURAS N\xC3O CORTAM PEDRAS."
+    m_Localized: "V\xE1 procurar a vov\xF3, vamos comer!"
     m_Metadata:
       m_Items: []
   - m_Id: 660494095073280

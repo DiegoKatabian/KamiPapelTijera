@@ -207,13 +207,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 660091592884224
-    m_Localized: "Agarrate la TIJERA, est\xE1 al lado del quincho. Ah! Y ojo con
-      los monstruos rocosos: LAS TIJERAS NO CORTAN PIEDRAS."
+    m_Localized: "Agarrate la TIJERA, est\xE1 al lado del quincho."
     m_Metadata:
       m_Items: []
   - m_Id: 660424608038912
-    m_Localized: "Busc\xE1tela a la abuela que ya estamos por comer! Acordate de
-      tener mucho cuidado con los monstruos rocosos: LAS TIJERAS NO CORTAN PIEDRAS."
+    m_Localized: "Busc\xE1tela a la abuela que ya estamos por comer! "
     m_Metadata:
       m_Items: []
   - m_Id: 660494095073280
