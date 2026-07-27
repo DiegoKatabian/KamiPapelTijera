@@ -147,7 +147,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 660504731828224
-    m_Localized: '[Hold down E to unfold Grandma.]'
+    m_Localized: '[Press E to unfold Grandma.]'
     m_Metadata:
       m_Items: []
   - m_Id: 660498415206400
