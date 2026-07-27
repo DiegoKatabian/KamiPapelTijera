@@ -63,19 +63,19 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f25ebdfd717c12240ae15dc1c52419fb, type: 2}
-  - {fileID: 2100000, guid: 9ddc9096310ee52428ae972b89de5edf, type: 2}
-  - {fileID: 2100000, guid: f25ebdfd717c12240ae15dc1c52419fb, type: 2}
-  - {fileID: 2100000, guid: 9ddc9096310ee52428ae972b89de5edf, type: 2}
-  - {fileID: 2100000, guid: f25ebdfd717c12240ae15dc1c52419fb, type: 2}
-  - {fileID: 2100000, guid: 9ddc9096310ee52428ae972b89de5edf, type: 2}
-  - {fileID: 2100000, guid: f25ebdfd717c12240ae15dc1c52419fb, type: 2}
-  - {fileID: 2100000, guid: 9ddc9096310ee52428ae972b89de5edf, type: 2}
-  - {fileID: 2100000, guid: f25ebdfd717c12240ae15dc1c52419fb, type: 2}
-  - {fileID: 2100000, guid: 9ddc9096310ee52428ae972b89de5edf, type: 2}
-  - {fileID: 2100000, guid: f25ebdfd717c12240ae15dc1c52419fb, type: 2}
-  - {fileID: 2100000, guid: 9ddc9096310ee52428ae972b89de5edf, type: 2}
-  - {fileID: 2100000, guid: f25ebdfd717c12240ae15dc1c52419fb, type: 2}
+  - {fileID: 2100000, guid: 9fc9dbf4faea397468f496af23ef43f3, type: 2}
+  - {fileID: 2100000, guid: 538af5db1fd60194ebffc4df7977e66d, type: 2}
+  - {fileID: 2100000, guid: 9fc9dbf4faea397468f496af23ef43f3, type: 2}
+  - {fileID: 2100000, guid: 538af5db1fd60194ebffc4df7977e66d, type: 2}
+  - {fileID: 2100000, guid: 9fc9dbf4faea397468f496af23ef43f3, type: 2}
+  - {fileID: 2100000, guid: 538af5db1fd60194ebffc4df7977e66d, type: 2}
+  - {fileID: 2100000, guid: 9fc9dbf4faea397468f496af23ef43f3, type: 2}
+  - {fileID: 2100000, guid: 538af5db1fd60194ebffc4df7977e66d, type: 2}
+  - {fileID: 2100000, guid: 9fc9dbf4faea397468f496af23ef43f3, type: 2}
+  - {fileID: 2100000, guid: 538af5db1fd60194ebffc4df7977e66d, type: 2}
+  - {fileID: 2100000, guid: 9fc9dbf4faea397468f496af23ef43f3, type: 2}
+  - {fileID: 2100000, guid: 538af5db1fd60194ebffc4df7977e66d, type: 2}
+  - {fileID: 2100000, guid: 9fc9dbf4faea397468f496af23ef43f3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: 8b234a1d39267a94d9c3b50399773c39, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: f80909c0a11e3ba4fa55327973c40828, type: 2}
   initialSkinName: 
   initialFlipX: 0
   initialFlipY: 0
@@ -5231,7 +5231,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7567128661442268300
 Transform:
   m_ObjectHideFlags: 0
@@ -10510,7 +10510,7 @@ PrefabInstance:
     - target: {fileID: 804599474656869164, guid: 92514916a7bd7c04c83a7a88d15a74e6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.8313036
       objectReference: {fileID: 0}
     - target: {fileID: 804599474656869164, guid: 92514916a7bd7c04c83a7a88d15a74e6,
         type: 3}
