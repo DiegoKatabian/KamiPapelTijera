@@ -46,7 +46,7 @@ public class MultipleRectCheck : MonoBehaviour
             }
             else
             {
-                Debug.Log("invocaci�n cancelada x empezar en un lugar incorrecto");
+                Debug.Log("invocaci?n cancelada x empezar en un lugar incorrecto");
                 EndOrigami(desiredOrigami);
             }
         }
@@ -59,7 +59,7 @@ public class MultipleRectCheck : MonoBehaviour
             //chequeo si el jugador solto sobre la meta
             if (RectTransformUtility.RectangleContainsScreenPoint(desiredOrigami.origamiRoutes[desiredOrigami.currentRouteIndex].finalRectangle, Input.mousePosition))
             {
-                //Debug.Log("invocaci�n exitosa");
+                //Debug.Log("invocaci?n exitosa");
                 AudioManager.instance.PlayRandom("PaperFold01", "PaperFold02");
                 AudioManager.instance.StopByName("PaperFoldLoop");
                 //desiredOrigami.CompleteRoute();
@@ -71,7 +71,7 @@ public class MultipleRectCheck : MonoBehaviour
             }
             else
             {
-                //Debug.Log("invocaci�n cancelada x soltar mal");
+                //Debug.Log("invocaci?n cancelada x soltar mal");
                 AudioManager.instance.PlayByName("Origami_Fail_Crumble", 1, 0.05f);
                 EndOrigami(desiredOrigami);
             }
@@ -89,17 +89,17 @@ public class MultipleRectCheck : MonoBehaviour
                 {
                     desiredOrigami.origamiRoutes[desiredOrigami.currentRouteIndex].SetImagePosition(Input.mousePosition);
                 }
-                encimaDeAlgunRectangulo = true; //si s�, todo bien
+                encimaDeAlgunRectangulo = true; //si s?, todo bien
                 break;
             }
         }
 
         //if (arrastrando && !encimaDeAlgunRectangulo) //si no, end origami
         //{
-        //    //me sal� de la ruta
+        //    //me sal? de la ruta
         //    arrastrando = false;
         //    AudioManager.instance.PlayByName("Origami_Fail_Crumble", 1, 0.05f);
-        //    Debug.Log("invocaci�n cancelada x salir de la ruta");
+        //    Debug.Log("invocaci?n cancelada x salir de la ruta");
         //    EndOrigami(desiredOrigami);
         //}
 
@@ -114,6 +114,7 @@ public class MultipleRectCheck : MonoBehaviour
             invocando = true;
             TooltipManager.Instance.ShowTooltip(origami.tooltipMessage, origami.postItColor);
             AudioManager.instance.PlayRandom("MagicChannelingLoop01", "MagicChannelingLoop02");
+            CameraManager.Instance.SetCamera(CameraMode.CloseUp);
             EventManager.Trigger(Evento.OnOrigamiStart);
             //print("rect check: mando a actualizar");
             origami.TriggerPliegueTextUpdater();
@@ -136,6 +137,8 @@ public class MultipleRectCheck : MonoBehaviour
         CursorManager.Instance.SetCursor(CursorType.OpenHand);
         EventManager.Trigger(Evento.OnOrigamiEnd);
         CursorManager.Instance.ShowCursor(false);
+        CameraManager.Instance.SetCamera(CameraMode.Normal);
+
 
     }
 }

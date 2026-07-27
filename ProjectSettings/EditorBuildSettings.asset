@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Nivel1_EndCutscene.unity
     guid: a91efb5a4eb769c40a002802af9658df
+  - enabled: 1
+    path: Assets/Scenes/Nivel1_LaRural.unity
+    guid: cf6a2c49d47ad244994ffdfe199a3d8f
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 034a83661b805c742bed26f59cbe4731,
       type: 2}

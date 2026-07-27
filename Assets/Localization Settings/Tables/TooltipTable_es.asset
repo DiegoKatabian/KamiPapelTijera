@@ -43,7 +43,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2776837505024
-    m_Localized: "Manten\xE9 E para comenzar un origami"
+    m_Localized: Toca E para comenzar un origami
     m_Metadata:
       m_Items: []
   - m_Id: 2880432619520
@@ -60,8 +60,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3175216693248
-    m_Localized: "Cuidado con el agua! Sos de papel y te podes arruinar :c Salt\xE1
-      usando ESPACIO."
+    m_Localized: "Cuidado con el agua! Salt\xE1 usando ESPACIO."
     m_Metadata:
       m_Items: []
   - m_Id: 3266073706496

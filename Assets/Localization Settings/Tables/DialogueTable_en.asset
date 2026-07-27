@@ -147,7 +147,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 660504731828224
-    m_Localized: '[Hold down E to unfold Grandma.]'
+    m_Localized: '[Press E to unfold Grandma.]'
     m_Metadata:
       m_Items: []
   - m_Id: 660498415206400
@@ -164,13 +164,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 660424608038912
-    m_Localized: 'Go fetch Grandma, we''re about to eat! And beware of the rock monsters:
-      YOU CAN''T CUT THEM WITH SCISSORS.'
+    m_Localized: 'Go fetch Grandma, we''re about to eat! '
     m_Metadata:
       m_Items: []
   - m_Id: 660091592884224
-    m_Localized: 'Take the SCISSORS with you, they''re by the shed. And beware of
-      the rock monsters: YOU CAN''T CUT THEM WITH SCISSORS.'
+    m_Localized: Take the SCISSORS with you, they're by the shed.
     m_Metadata:
       m_Items: []
   - m_Id: 660089567035392

@@ -43,7 +43,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2776837505024
-    m_Localized: Mantenha pressionada a tecla E para iniciar o origami.
+    m_Localized: Toca a tecla E para iniciar o origami.
     m_Metadata:
       m_Items: []
   - m_Id: 2880432619520
@@ -60,8 +60,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3175216693248
-    m_Localized: "Cuidado com a \xE1gua! Voc\xEA \xE9 feito de papel e pode se estragar
-      :c Pule usando a BARRA DE ESPA\xC7O."
+    m_Localized: "Cuidado com a \xE1gua! Pule usando a BARRA DE ESPA\xC7O."
     m_Metadata:
       m_Items: []
   - m_Id: 3266073706496

@@ -228,7 +228,7 @@ PrefabInstance:
     - target: {fileID: 5723557005826726060, guid: ec2adfa632176c64b8f793dffab5f997,
         type: 3}
       propertyPath: postItColor
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5723557005826726060, guid: ec2adfa632176c64b8f793dffab5f997,
         type: 3}
@@ -313,7 +313,7 @@ PrefabInstance:
     - target: {fileID: 5723557005826726062, guid: ec2adfa632176c64b8f793dffab5f997,
         type: 3}
       propertyPath: m_Name
-      value: 'TriggerText '
+      value: TriggerText Letrero
       objectReference: {fileID: 0}
     - target: {fileID: 5723557005826726099, guid: ec2adfa632176c64b8f793dffab5f997,
         type: 3}

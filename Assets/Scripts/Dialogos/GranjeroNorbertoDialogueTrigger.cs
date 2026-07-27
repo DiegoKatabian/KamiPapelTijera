@@ -17,6 +17,16 @@ public class GranjeroNorbertoDialogueTrigger : QuestDialogueTrigger
 
     }
 
+    public override void OnEnterBehaviour(Collider other)
+    {
+        base.OnEnterBehaviour(other);
+
+        if (firstTime && !LevelManager.Instance.inDialogue)
+        {
+            ShowFirstTimeDialogue();
+        }
+    }
+
     public override void Interact(params object[] parameter)
     {
         if (isLocked)
