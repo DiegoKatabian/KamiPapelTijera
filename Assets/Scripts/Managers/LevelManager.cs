@@ -97,7 +97,8 @@ public class LevelManager : Singleton<LevelManager>
     {
         //Debug.Log("el player se gano las botas water x haber completado la quest");
         player.hasWaterBoots = true;
-        player.kamiRenderer.material = player.waterBootsMaterial;
+        //TODO: el swap de material era del modelo 3d viejo (ya borrado). cuando la animadora arme
+        //un skin/feedback de botas de agua en el skeleton de spine, aplicarlo aca.
         AddResource(ResourceType.botasAgua, 1);
     }
     public void GiveTijeraMejorada()

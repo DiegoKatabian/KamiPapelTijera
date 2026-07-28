@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Spine.Unity;
 using UnityEngine;
 
 public enum TijeraType
@@ -18,7 +19,31 @@ public class TijeraManager : MonoBehaviour
 
     public ParticleSystem tijeraParticles, tijeraTrail, tijeraMejoradaParticles, tijeraMejoradaTrail;
 
+    [SerializeField] string tipBoneName = "tijera_front3"; //el hueso de la punta de la tijera en el skeleton de spine
+
     TijeraType currentTijera;
+
+    public void InitTipFollowers(SkeletonAnimation kamiSkeleton) //lo llama player en su start
+    {
+        //los trails quedan pegados a la punta de la tijera de spine, sin importar de quien sean hijos
+        AttachTipFollower(tijeraTrail, kamiSkeleton);
+        AttachTipFollower(tijeraMejoradaTrail, kamiSkeleton);
+    }
+
+    void AttachTipFollower(ParticleSystem trail, SkeletonAnimation kamiSkeleton)
+    {
+        if (trail == null || kamiSkeleton == null)
+        {
+            return;
+        }
+
+        SpineBoneTipFollower follower = trail.GetComponent<SpineBoneTipFollower>();
+        if (follower == null)
+        {
+            follower = trail.gameObject.AddComponent<SpineBoneTipFollower>();
+        }
+        follower.Init(kamiSkeleton, tipBoneName);
+    }
 
     public void SetTijera(params object[] parameters)
     {

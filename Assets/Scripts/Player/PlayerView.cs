@@ -8,19 +8,23 @@ public class PlayerView
     //no decide nada: reacciona a los cambios de estado que le avisa el player (OnStateChanged)
     //y a los eventos que vienen adentro de las animaciones de spine (OnSpineAnimationEvent).
 
-    Animator _anim; //el animator del modelo 3d viejo. ya no maneja animaciones: solo lo usamos como anchor de transform para particulas
     Player _player;
     Vector3 _lastDirection = Vector3.zero;
 
     SkeletonAnimation _skeletonAnimation;
 
-    //tracks de spine: el cuerpo va abajo, y ataque/golpe se superponen encima
+    //tracks de spine: el cuerpo va abajo y el resto se superpone encima, en este orden:
+    //body < noscissors < attack < paperplane < hit
+    //los overrides (noscissors, paperplane) quedan loopeando mientras dure su condicion; attack y hit son one-shots.
     const int TRACK_BODY = 0;
-    const int TRACK_ATTACK = 1;
-    const int TRACK_HIT = 2;
-    const float TRACK_MIX_OUT = 0.2f; //cuanto tarda en desvanecerse un track superpuesto al terminar
+    const int TRACK_NOSCISSORS = 1; //override mientras kami no tiene la tijera
+    const int TRACK_ATTACK = 2;
+    const int TRACK_PAPERPLANE = 3; //override mientras kami tiene el paper plane hat (va encima del ataque tambien)
+    const int TRACK_HIT = 4;
+    //los tiempos de mezcla de estos tracks viven en player.animMix (tweakeables en el inspector)
 
-    //THEY ARE Attack, Casting, Idle, IdleToCasting, ReceiveReward, Run, Skip, falling, jump, jumpComplete, landing, walk
+    //en el skeleton (Atlas 4) existen: Attack, AttackMOVE, Casting, falling, Hit, Idle, IdleNoScissors (no se usa),
+    //IdleToCasting, jump, jumpComplete, landing, NoScissortsOverride, PaperPlaneOverride, Reward, RewardLoop, Run, Skip, walk, walk2
 
     const string ANIMATION_IDLE = "Idle";
     const string ANIMATION_WALK = "walk";
@@ -32,15 +36,21 @@ public class PlayerView
     const string ANIMATION_RECEIVE_REWARD_LOOP = "RewardLoop";
 
     const string ANIMATION_ATTACK = "Attack";
+    const string ANIMATION_ATTACK_MOVE = "AttackMOVE"; //ataque para usar en movimiento o en el aire (no keyea las piernas)
     const string ANIMATION_IDLE_TO_CASTING = "IdleToCasting";
     const string ANIMATION_SKIP = "Skip";
     //const string ANIMATION_JUMP_COMPLETE = "jumpComplete";
     const string ANIMATION_RUN = "Run";
-    const string ANIMATION_TAKE_HIT = "TakeHit"; //TODO: todavia no existe en el skeleton. cuando la anim girl la agregue, funciona solo
+    const string ANIMATION_TAKE_HIT = "Hit";
+    const string ANIMATION_NOSCISSORS_OVERRIDE = "NoScissortsOverride"; //ojo: "Scissorts" es typo del skeleton, no corregir aca
+    const string ANIMATION_PAPERPLANE_OVERRIDE = "PaperPlaneOverride";
+
+    //estado aplicado de cada override, para no re-setear el track (y reiniciar el loop) en cada cambio de estado
+    bool _noscissorsApplied;
+    bool _paperplaneApplied;
 
     public PlayerView(Player player)
     {
-        _anim = player.anim;
         _player = player;
         _skeletonAnimation = player.SkeletonAnimation;
 
@@ -49,6 +59,7 @@ public class PlayerView
 
         //arranca en idle (el SetState inicial no dispara OnStateChanged porque ya nace en Idle)
         SetBodyAnimation(ANIMATION_IDLE, true);
+        RefreshOverrides(); //si arranca sin tijera, el override noscissors va desde el frame 0
     }
 
     private void OnSpineAnimationEvent(Spine.TrackEntry trackEntry, Spine.Event e)
@@ -70,6 +81,7 @@ public class PlayerView
     {
         ExitState(previous);
         EnterState(previous, next);
+        RefreshOverrides(); //los overrides solo van sobre idle/movimiento/aire: entrar a casting/reward/dead los apaga
     }
 
     void EnterState(PlayerState previous, PlayerState next)
@@ -98,7 +110,7 @@ public class PlayerView
                     AudioManager.instance.PlayByName("Jump_Paperplane", 1f, 0.02f);
                 }
                 AudioManager.instance.PlayByName("JumpStart", 1f, 0.02f);
-                _player.particleShooter.Create(1, _anim.transform);
+                _player.particleShooter.Create(1, _player.particleAnchor);
                 SetBodyAnimation(ANIMATION_JUMP, false);
                 break;
 
@@ -157,6 +169,52 @@ public class PlayerView
         _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, animationName, loop);
     }
 
+    //---------- Overrides (noscissors y paperplane: loopean encima del cuerpo mientras dure su condicion) ----------
+
+    public void RefreshOverrides()
+    {
+        //el player me llama cuando cambian hasTijera / isPaperPlaneHat, y yo tambien en cada cambio de estado
+        bool allowed = OverridesAllowed(_player.CurrentState);
+        SetOverride(TRACK_NOSCISSORS, ANIMATION_NOSCISSORS_OVERRIDE, allowed && !_player.hasTijera, ref _noscissorsApplied);
+        SetOverride(TRACK_PAPERPLANE, ANIMATION_PAPERPLANE_OVERRIDE, allowed && _player.isPaperPlaneHat, ref _paperplaneApplied);
+    }
+
+    bool OverridesAllowed(PlayerState state)
+    {
+        switch (state)
+        {
+            case PlayerState.Idle:
+            case PlayerState.Walking:
+            case PlayerState.Skipping:
+            case PlayerState.Running:
+            case PlayerState.Jumping:
+            case PlayerState.Falling:
+            case PlayerState.Landing:
+                return true;
+            default:
+                return false; //casting, reward, dead: el cuerpo hace otra cosa, no van los overrides
+        }
+    }
+
+    void SetOverride(int track, string animationName, bool wanted, ref bool applied)
+    {
+        if (wanted == applied)
+        {
+            return; //ya esta como tiene que estar, no reinicio el loop
+        }
+        applied = wanted;
+
+        if (wanted)
+        {
+            _skeletonAnimation.AnimationState.SetAnimation(track, animationName, true).MixDuration = _player.animMix.overrideMixIn;
+        }
+        else
+        {
+            _skeletonAnimation.AnimationState.SetEmptyAnimation(track, _player.animMix.overrideMixOut); //mix out suave hacia las anims de abajo
+        }
+        Debug.Log($"[PlayerView] override {animationName}: {(wanted ? "ON" : "OFF")} (track {track})");
+    }
+
     //---------- Flip ----------
 
     public void SetFacing(float hor)
@@ -172,13 +230,30 @@ public class PlayerView
         }
     }
 
-    //---------- Ataque (track 1, se superpone al cuerpo) ----------
+    //---------- Ataque (track propio, se superpone al cuerpo) ----------
 
     public void StartAttack()
     {
         AudioManager.instance.PlayByName("ActionWind", 1f, 0.01f);
-        _skeletonAnimation.AnimationState.SetAnimation(TRACK_ATTACK, ANIMATION_ATTACK, false);
-        _skeletonAnimation.AnimationState.AddEmptyAnimation(TRACK_ATTACK, TRACK_MIX_OUT, 0f); //limpia el track al terminar
+
+        //parado usamos el ataque completo; moviendose o en el aire, AttackMOVE (que no keyea las piernas)
+        bool moving = _player.CurrentState != PlayerState.Idle;
+        string attackAnim = moving ? ANIMATION_ATTACK_MOVE : ANIMATION_ATTACK;
+
+        //el delay explicito (duracion de la anim) hace que el fade-out arranque recien cuando el ataque TERMINO.
+        //con delay 0, spine restaba el mix y se comia el final de la animacion (el bug que reporto animacion).
+        Spine.TrackEntry attackEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_ATTACK, attackAnim, false);
+        attackEntry.MixDuration = _player.animMix.attackMixIn;
+        _skeletonAnimation.AnimationState.AddEmptyAnimation(TRACK_ATTACK, _player.animMix.attackMixOut, attackEntry.Animation.Duration);
+
+        if (moving)
+        {
+            //AttackMOVE (todavia) no tiene el evento HandleAttack en el skeleton,
+            //asi que la hitbox se dispara por timer imitando el timing del evento de Attack
+            _player.StartTijeraCoroutineDelayed();
+        }
+
+        Debug.Log($"[PlayerView] ataque con '{attackAnim}' (estado: {_player.CurrentState})");
         _player.StartTijeraParticles();
     }
 
@@ -187,17 +262,64 @@ public class PlayerView
         _player.StopTijeraParticles();
     }
 
-    //---------- Take hit (track 2, se superpone a todo) ----------
+    //---------- Take hit ----------
 
     public void PlayTakeHitAnimation()
     {
-        if (_skeletonAnimation.Skeleton.Data.FindAnimation(ANIMATION_TAKE_HIT) == null)
+        //dos modos para probar (hitFeedback.hitReplacesBodyAnimation):
+        //replace: Hit pisa la anim del cuerpo y despues vuelve a la que estaba
+        //override: Hit se superpone en su propio track encima de todo
+        //en ambos modos, el delay explicito (duracion de Hit) garantiza que la anim se vea completa antes del fade
+        if (_player.hitFeedback.hitReplacesBodyAnimation && TryGetBodyAnimation(_player.CurrentState, out string bodyAnim, out bool bodyLoop))
         {
-            return; //TODO: sacar este guard cuando la animacion exista en el skeleton
+            Spine.TrackEntry hitEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, ANIMATION_TAKE_HIT, false);
+            hitEntry.MixDuration = _player.animMix.hitMixIn;
+            Spine.TrackEntry backEntry = _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, bodyAnim, bodyLoop, hitEntry.Animation.Duration); //al terminar vuelve a lo que estaba
+            backEntry.MixDuration = _player.animMix.hitMixOut;
+            Debug.Log($"[PlayerView] hit REEMPLAZA al cuerpo, despues vuelve a '{bodyAnim}'");
         }
+        else
+        {
+            Spine.TrackEntry hitEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_HIT, ANIMATION_TAKE_HIT, false);
+            hitEntry.MixDuration = _player.animMix.hitMixIn;
+            _skeletonAnimation.AnimationState.AddEmptyAnimation(TRACK_HIT, _player.animMix.hitMixOut, hitEntry.Animation.Duration);
+            Debug.Log("[PlayerView] hit como OVERRIDE encima del cuerpo");
+        }
+    }
 
-        _skeletonAnimation.AnimationState.SetAnimation(TRACK_HIT, ANIMATION_TAKE_HIT, false);
-        _skeletonAnimation.AnimationState.AddEmptyAnimation(TRACK_HIT, TRACK_MIX_OUT, 0f);
+    bool TryGetBodyAnimation(PlayerState state, out string animationName, out bool loop)
+    {
+        //que animacion base corresponde a cada estado, para poder volver a ella despues del hit en modo replace
+        loop = true;
+        switch (state)
+        {
+            case PlayerState.Idle:
+                animationName = ANIMATION_IDLE;
+                return true;
+            case PlayerState.Walking:
+                animationName = ANIMATION_WALK;
+                return true;
+            case PlayerState.Skipping:
+                animationName = ANIMATION_SKIP;
+                return true;
+            case PlayerState.Running:
+                animationName = ANIMATION_RUN;
+                return true;
+            case PlayerState.Falling:
+                animationName = ANIMATION_FALLING;
+                return true;
+            case PlayerState.Jumping:
+                animationName = ANIMATION_JUMP;
+                loop = false;
+                return true;
+            case PlayerState.Landing:
+                animationName = ANIMATION_LANDING;
+                loop = false;
+                return true;
+            default:
+                animationName = null; //casting, reward, dead: no pisamos esas anims, el hit va como override
+                return false;
+        }
     }
 
     //---------- Sonidos y particulas ----------

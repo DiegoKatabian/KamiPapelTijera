@@ -38,6 +38,20 @@ public class PlayerModel
         {
             input = default; //estados bloqueantes: se ignora todo input, pero la fisica sigue corriendo
         }
+        else if (_player.IsInHitStun)
+        {
+            //hit stun configurable: se filtra solo lo que este bloqueado en hitFeedback (el ataque se bloquea en OnPrimaryClick)
+            if (_player.hitFeedback.blockMovement)
+            {
+                input.hor = 0f;
+                input.ver = 0f;
+            }
+            if (_player.hitFeedback.blockJump)
+            {
+                input.jumpDown = false;
+                input.jumpUp = false;
+            }
+        }
 
         UpdateVerticalState(grounded);
         UpdateLocomotionState(input, grounded);
@@ -49,7 +63,7 @@ public class PlayerModel
     {
         switch (_player.CurrentState)
         {
-            case PlayerState.Landing:
+            //landing ya no bloquea: el aterrizaje es fluido, la anim se corta sola si hay input
             case PlayerState.Casting:
             case PlayerState.ReceivingReward:
             case PlayerState.Dead:
@@ -146,6 +160,7 @@ public class PlayerModel
             case PlayerState.Walking:
             case PlayerState.Skipping:
             case PlayerState.Running:
+            case PlayerState.Landing: //landing no frena: si hay input, el movimiento lo pisa al toque
                 break;
             default:
                 return;
@@ -155,7 +170,10 @@ public class PlayerModel
 
         if (magnitude < 0.01f)
         {
-            _player.SetState(PlayerState.Idle);
+            if (_player.CurrentState != PlayerState.Landing) //sin input, la anim de landing termina sola con su timer
+            {
+                _player.SetState(PlayerState.Idle);
+            }
         }
         else if (_player.isSprinting && _player.hasSprintBoots)
         {
@@ -193,6 +211,7 @@ public class PlayerModel
             case PlayerState.Walking:
             case PlayerState.Skipping:
             case PlayerState.Running:
+            case PlayerState.Landing: //se puede encadenar salto apenas aterriza, sin esperar el timer
                 return true;
             default:
                 return false;

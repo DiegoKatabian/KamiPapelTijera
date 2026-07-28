@@ -23,12 +23,24 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     public float weaponCooldown;
     [SerializeField] float tijeraHitBoxDuration = 0.1f;
+    [Tooltip("AttackMOVE no tiene el evento HandleAttack: la hitbox sale por este timer (mismo timing que el evento de Attack). Poner -1 cuando la anim ya traiga el evento")]
+    [SerializeField] float attackMoveHitboxDelay = 0.4667f;
+    [Tooltip("a que distancia de kami se pone la hitbox al atacar. -1 = auto: usa la distancia a la que quedo puesta en el prefab")]
+    [SerializeField] float hitboxDistance = -1f;
+    [Tooltip("a que altura (desde los pies de kami) se pone la hitbox al atacar. -1 = auto: usa la altura del prefab")]
+    [SerializeField] float hitboxHeight = -1f;
     public float jumpForce = 50f;
     public float gravityValue; //gravedad extra para que quede linda la caida del salto
     public float sprintingSpeedModifier = 1.5f;
     public float landingLagModifier = 0.75f;
     public float landingLagTime = 0.25f;
     public float rewardAnimationWaitTime = 2;
+
+    [Header("Hit Feedback")]
+    public HitFeedbackConfig hitFeedback = new HitFeedbackConfig();
+
+    [Header("Mezcla de animaciones")]
+    public AnimationMixConfig animMix = new AnimationMixConfig();
 
     [Header("Movimiento y Salto")]
     [Range(0f, 1f)] public float walkThreshold = 0.5f; //con joystick: debajo de esta magnitud camina (walk), arriba trota (skip)
@@ -38,15 +50,14 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     [Header("Componentes")]
     public CharacterController cc;
-    public Animator anim;
+    public Transform particleAnchor; //ancla para particulas de salto/aterrizaje (sigue el hueso Smoke del skeleton via BoneFollower)
     public TijeraHitbox miTijeraHitbox;
     public ParticleShooter particleShooter;
-    public Renderer kamiRenderer;
     [SerializeField] GameObject myPaperPlaneHat;
     [SerializeField] TijeraManager tijeraManager;
     public ParticleSystem tijeraParticles, tijeraTrail;
     public InventorySlot rewardSticker;
-    public Material waterBootsMaterial;
+    public Material waterBootsMaterial; //TODO: sin uso hasta que las botas de agua tengan feedback visual sobre el spine (skin?)
     public SkeletonAnimation SkeletonAnimation;
 
 
@@ -58,13 +69,20 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     public float planeoDelayTime = 1;
 
     //originals
-    Color originalColor;
     float originalJumpForce;
     float _maxHp;
     float originalMaxSpeed;
 
     //auxiliars
     bool _readyToAttack = true;
+    float _hitStunEndTime; //hasta cuando duran los bloqueos configurados en hitFeedback
+    Coroutine _flashCoroutine;
+
+    //flash de daño sobre el skeleton de spine
+    MeshRenderer _skeletonMeshRenderer; //el mesh renderer del SkeletonAnimation, lo agarro solo en Start
+    MaterialPropertyBlock _fillPropertyBlock; //para el modo SpineFill, sin instanciar materiales
+    static readonly int FillColorId = Shader.PropertyToID("_FillColor");
+    static readonly int FillPhaseId = Shader.PropertyToID("_FillPhase");
     [HideInInspector] public bool isGettingWet = false;
     [HideInInspector] public bool isAttacking = false;
     [HideInInspector] public bool isPaperPlaneHat = false; //pph es paper plane hat
@@ -74,6 +92,14 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     //State Machine
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
+
+    public bool IsInHitStun
+    {
+        get
+        {
+            return Time.time < _hitStunEndTime;
+        }
+    }
 
     //MVC
     PlayerModel _model;
@@ -157,8 +183,6 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     {
         _maxHp = _hp;
         Vida = _maxHp;
-        //originalColor = _renderer.material.color;
-        originalColor = kamiRenderer.material.GetColor("_DiffuseColor");
 
         augmentedJumpsLeft = augmentedJumpsMax;
         originalJumpForce = jumpForce;
@@ -168,6 +192,13 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         {
             SkeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
         }
+
+        _skeletonMeshRenderer = SkeletonAnimation.GetComponent<MeshRenderer>();
+        _fillPropertyBlock = new MaterialPropertyBlock();
+
+        CalibrateHitboxPlacement(); //los -1 de hitboxDistance/hitboxHeight se completan con la pose del prefab
+
+        tijeraManager.InitTipFollowers(SkeletonAnimation); //los trails de tijera siguen la punta de la tijera de spine
 
         EventManager.Subscribe(Evento.OnOrigamiStart, StartOrigamiCast);
         EventManager.Subscribe(Evento.OnOrigamiEnd, EndOrigamiCast);
@@ -207,13 +238,12 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     {
         switch (CurrentState)
         {
-            case PlayerState.Landing:
             case PlayerState.Casting:
             case PlayerState.ReceivingReward:
             case PlayerState.Dead:
                 return false;
             default:
-                return true; //idle, walk, skip, run, jump, fall: se puede atacar
+                return true; //idle, walk, skip, run, jump, fall, landing: se puede atacar
         }
     }
 
@@ -224,12 +254,61 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
             return;
         }
 
+        if (IsInHitStun && hitFeedback.blockAttack)
+        {
+            Debug.Log("[Player] ataque bloqueado por hit stun");
+            return;
+        }
+
         if (_readyToAttack && hasTijera && CanAttack()) //readytoattack esta false cuando estoy en cooldown
         {
             _readyToAttack = false;
             isAttacking = true;
-            _view.StartAttack();
+            _view.StartAttack(); //la hitbox se orienta recien cuando se prende (en TijeraCoroutine), por si kami giro durante el swing
         }
+    }
+
+    void CalibrateHitboxPlacement()
+    {
+        //toma la pose del prefab (hitbox a la derecha de kami) como referencia para los valores en auto
+        if (miTijeraHitbox == null)
+        {
+            return;
+        }
+
+        Vector3 local = transform.InverseTransformPoint(miTijeraHitbox.transform.position);
+        if (hitboxDistance < 0f)
+        {
+            hitboxDistance = new Vector2(local.x, local.z).magnitude;
+        }
+        if (hitboxHeight < 0f)
+        {
+            hitboxHeight = local.y;
+        }
+        Debug.Log($"[Player] hitbox calibrada: distancia {hitboxDistance:F3}, altura {hitboxHeight:F3}");
+    }
+
+    void OrientTijeraHitbox()
+    {
+        //la hitbox se acomoda alrededor de kami segun hacia donde se este moviendo (cualquier direccion del plano, no solo izq/der).
+        //si esta quieta y nunca se movio, cae al lado que mira el skeleton (ScaleX).
+        if (miTijeraHitbox == null)
+        {
+            return;
+        }
+
+        Vector3 dir = lastDirection;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.0001f)
+        {
+            float facing = SkeletonAnimation.Skeleton.ScaleX >= 0f ? 1f : -1f;
+            dir = transform.right * facing;
+        }
+        dir.Normalize();
+
+        miTijeraHitbox.transform.position = transform.position + dir * hitboxDistance + Vector3.up * hitboxHeight;
+        miTijeraHitbox.transform.rotation = Quaternion.LookRotation(dir);
+        Debug.Log($"[Player] hitbox orientada hacia {dir} (distancia {hitboxDistance:F3}, altura {hitboxHeight:F3})");
     }
 
     public void StartPasoSFX(int step) //del spine event me dicen en que paso de la animation estoy.
@@ -240,8 +319,24 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     {
         StartCoroutine(TijeraCoroutine());
     }
+    public void StartTijeraCoroutineDelayed() //para AttackMOVE, que no tiene el spine event HandleAttack
+    {
+        StartCoroutine(TijeraDelayedCoroutine());
+    }
+    IEnumerator TijeraDelayedCoroutine()
+    {
+        if (attackMoveHitboxDelay < 0f)
+        {
+            yield break; //delay negativo = AttackMOVE ya tiene su propio evento HandleAttack, no duplicar la hitbox
+        }
+
+        yield return new WaitForSeconds(attackMoveHitboxDelay);
+        Debug.Log("[Player] hitbox disparada por timer (AttackMOVE)");
+        yield return TijeraCoroutine();
+    }
     public IEnumerator TijeraCoroutine() //prendo y apago rapidamente la hitbox en el momento justo para simular un ataque
     {
+        OrientTijeraHitbox(); //justo antes de prenderla, con la direccion de movimiento actual
         _model.EnableTijeraHitbox();
         yield return new WaitForSeconds(tijeraHitBoxDuration);
         _model.DisableTijeraHitbox();
@@ -272,16 +367,53 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         }
         else
         {
-            _view.PlayTakeHitAnimation(); //se superpone en el track 2, no bloquea nada
+            _hitStunEndTime = Time.time + hitFeedback.stunDuration;
+            _view.PlayTakeHitAnimation();
+            Debug.Log($"[Player] take hit: stun {hitFeedback.stunDuration}s (blockMov: {hitFeedback.blockMovement} / blockAtk: {hitFeedback.blockAttack} / blockJump: {hitFeedback.blockJump})");
         }
-        StartCoroutine(EnrojecerSprite());
+
+        if (_flashCoroutine != null)
+        {
+            StopCoroutine(_flashCoroutine); //si me pegan de nuevo en el medio del fade, el flash arranca de cero
+        }
+        _flashCoroutine = StartCoroutine(EnrojecerSprite());
     }
     public IEnumerator EnrojecerSprite()
     {
-        //print("enrojeci el sprite");
-        kamiRenderer.material.SetColor("_DiffuseColor", Color.red);
-        yield return new WaitForSeconds(0.25f);
-        kamiRenderer.material.SetColor("_DiffuseColor", originalColor);
+        //flash al color del hit, se mantiene un toque y hace fade de vuelta a la normalidad. todo configurable en hitFeedback
+        SetFlash(1f);
+        yield return new WaitForSeconds(hitFeedback.flashHoldDuration);
+
+        float elapsed = 0f;
+        while (elapsed < hitFeedback.flashFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            SetFlash(1f - (elapsed / hitFeedback.flashFadeDuration));
+            yield return null;
+        }
+        SetFlash(0f);
+        _flashCoroutine = null;
+    }
+    void SetFlash(float intensity) //0 = normal, 1 = flash pleno. el modo se elige en hitFeedback.flashMode
+    {
+        switch (hitFeedback.flashMode)
+        {
+            case HitFlashMode.SpineFill:
+                //necesita que los materiales del skeleton usen el shader Spine/Skeleton Fill
+                _fillPropertyBlock.SetColor(FillColorId, hitFeedback.flashColor);
+                _fillPropertyBlock.SetFloat(FillPhaseId, hitFeedback.fillPhase * intensity);
+                _skeletonMeshRenderer.SetPropertyBlock(_fillPropertyBlock);
+                break;
+
+            case HitFlashMode.VertexTint:
+                //multiplica el color de todo el skeleton (no necesita shader especial)
+                Color tint = Color.Lerp(Color.white, hitFeedback.flashColor, intensity);
+                Spine.Skeleton skeleton = SkeletonAnimation.Skeleton;
+                skeleton.R = tint.r;
+                skeleton.G = tint.g;
+                skeleton.B = tint.b;
+                break;
+        }
     }
     public override void Die()
     {
@@ -342,6 +474,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         hasTijera = true;
         LevelManager.Instance.AddResource(ResourceType.tijera, 1);
         tijeraManager.SetTijera();
+        _view.RefreshOverrides(); //chau override noscissors, de aca en adelante van las anims con tijera
     }
     public void GetTijeraMejorada()
     {
@@ -369,6 +502,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         myPaperPlaneHat.SetActive(true);
         AudioManager.instance.PlayByName("ShipSpawn", 2f);
         nuevoTooltipPapelSalto.SetActive(true);
+        _view.RefreshOverrides(); //mientras tenga el avioncito puesto, el override paperplane va encima de todo
     }
     public void DestroyPaperPlaneHat(params object[] parameters)
     {
@@ -378,6 +512,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         myPaperPlaneHat.SetActive(false);
         TooltipManager.Instance.HideTooltip();
         nuevoTooltipPapelSalto.SetActive(false);
+        _view.RefreshOverrides(); //se uso el avioncito: vuelven las anims normales
     }
     private void StartReceiveReward(object[] parameters)
     {
@@ -421,7 +556,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     public void BrieflySlowDown()
     {
         StartCoroutine(SlowDownCoroutine(landingLagModifier, landingLagTime));
-        particleShooter.Create(1, anim.transform);
+        particleShooter.Create(1, particleAnchor);
     }
     public IEnumerator SlowDownCoroutine(float speedModifier, float time)
     {
