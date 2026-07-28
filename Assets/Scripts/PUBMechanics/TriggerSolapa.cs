@@ -16,6 +16,7 @@ public class TriggerSolapa : TriggerScript
     {
         if (triggerBool)
         {
+            LevelManager.Instance.player.PlayPullSolapa();
             solapaAfectada.CambiarEstado();
             StartCoroutine(ToggleObject(objetoParaMostrar));
         }

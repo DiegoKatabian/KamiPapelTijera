@@ -29,6 +29,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     [SerializeField] float hitboxDistance = -1f;
     [Tooltip("a que altura (desde los pies de kami) se pone la hitbox al atacar. -1 = auto: usa la altura del prefab")]
     [SerializeField] float hitboxHeight = -1f;
+    [Tooltip("offset de rotación para la hitbox (grados). Prueba con -90 si la hitbox está rotada 90° incorrectamente")]
+    [SerializeField] float hitboxRotationOffset = 0f;
     public float jumpForce = 50f;
     public float gravityValue; //gravedad extra para que quede linda la caida del salto
     public float sprintingSpeedModifier = 1.5f;
@@ -267,6 +269,22 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         }
     }
 
+    public void PlayPullSolapa()
+    {
+        _view.PlayPullSolapa();
+    }
+
+    public void ShowDefeatOverlayDelayed(float delay)
+    {
+        StartCoroutine(ShowDefeatOverlayDelayedCoroutine(delay));
+    }
+
+    IEnumerator ShowDefeatOverlayDelayedCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        OverlayManager.Instance.ShowDefeatOverlay();
+    }
+
     void CalibrateHitboxPlacement()
     {
         //toma la pose del prefab (hitboxParent a la derecha de kami) como referencia para los valores en auto
@@ -306,8 +324,11 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         dir.Normalize();
 
         tijeraManager.hitboxParent.position = transform.position + dir * hitboxDistance + Vector3.up * hitboxHeight;
-        tijeraManager.hitboxParent.rotation = Quaternion.LookRotation(dir);
-        Debug.Log($"[Player] hitboxParent orientado hacia {dir} (distancia {hitboxDistance:F3}, altura {hitboxHeight:F3})");
+
+        Vector3 rotatedDir = Quaternion.Euler(0, hitboxRotationOffset, 0) * dir;
+        tijeraManager.hitboxParent.rotation = Quaternion.LookRotation(rotatedDir, Vector3.up);
+
+        Debug.Log($"[Player] hitboxParent orientado hacia {dir} (rotationOffset: {hitboxRotationOffset}°, distancia {hitboxDistance:F3}, altura {hitboxHeight:F3})");
     }
 
     public void StartPasoSFX(int step) //del spine event me dicen en que paso de la animation estoy.

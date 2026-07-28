@@ -7,6 +7,7 @@ using UnityEngine;
 public enum CameraMode
 {
     CloseUp,
+    OrigamiCasting,
     Normal,
     General,
     BookCenter,
@@ -54,20 +55,6 @@ public class CameraManager : Singleton<CameraManager>
         }
     }
 
-    public void PrepareCamera(params object[] parameters)
-    {
-        for (int i = 0; i < dialoguesEspeciales.Count(); i++)
-        {
-            if ((DialogueSO)parameters[1] == dialoguesEspeciales[i]) //el dialogue
-            {
-                //Debug.Log("prepare camera. era caso especial: no hago nada");
-                //SetCamera(camarasEspeciales[i]);
-                return;
-            }
-        }
-        //Debug.Log("prepare camera: no era caso especial. set camera");
-        SetCamera((CameraMode)parameters[0]);
-    }
     public void ToggleNextCamera()
     {
         //prendo la nueva. uso un index para saber cual tengo que encender.
@@ -98,6 +85,7 @@ public class CameraManager : Singleton<CameraManager>
             cam.gameObject.SetActive(false);
         }
     }
+
     public void SetCamera(int index)
     {
         TurnOffAllVirtualCameras();
@@ -109,21 +97,32 @@ public class CameraManager : Singleton<CameraManager>
     {
         TurnOffAllVirtualCameras();
         currentCamera = (int)cam;
-        _virtualCameras[currentCamera].gameObject.SetActive(true);
+        if (currentCamera >= 0 && currentCamera < _virtualCameras.Length)
+        {
+            _virtualCameras[currentCamera].gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError($"[CameraManager] SetCamera: CameraMode index {currentCamera} is out of range (array length: {_virtualCameras.Length})");
+        }
     }
+
     public void SetCamera(params object[] parameters)
     {
-        TurnOffAllVirtualCameras();
-
-        if (parameters[0] is int || parameters[0] is CameraMode)
+        if (parameters != null && parameters.Length > 0)
         {
-            //Debug.Log("cambio la camara a " + (int)parameter[0]);
-            SetCamera((int)parameters[0]);
-        }
-        else if (parameters[0] is CameraMode)
-        {
-            //Debug.Log("cambio la camara a " + (CameraMode)parameter[0]);
-            SetCamera((CameraMode)parameters[0]);
+            if (parameters[0] is CameraMode)
+            {
+                SetCamera((CameraMode)parameters[0]);
+            }
+            else if (parameters[0] is int)
+            {
+                SetCamera((int)parameters[0]);
+            }
+            else
+            {
+                Debug.LogWarning($"[CameraManager] SetCamera(params): unknown parameter type {parameters[0]?.GetType()}");
+            }
         }
     }
 

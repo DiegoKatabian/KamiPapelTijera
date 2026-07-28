@@ -322,6 +322,7 @@ MonoBehaviour:
   attackMoveHitboxDelay: 0.4667
   hitboxDistance: -1
   hitboxHeight: -1
+  hitboxRotationOffset: -90
   jumpForce: 5
   gravityValue: 70
   sprintingSpeedModifier: 3

@@ -172,6 +172,7 @@ public class PlayerModel
         {
             if (_player.CurrentState != PlayerState.Landing) //sin input, la anim de landing termina sola con su timer
             {
+                _player.IsSprinting = false; //desactiva sprint si se suelta control sin soltar shift
                 _player.SetState(PlayerState.Idle);
             }
         }

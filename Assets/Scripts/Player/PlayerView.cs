@@ -14,13 +14,14 @@ public class PlayerView
     SkeletonAnimation _skeletonAnimation;
 
     //tracks de spine: el cuerpo va abajo y el resto se superpone encima, en este orden:
-    //body < noscissors < attack < paperplane < hit
-    //los overrides (noscissors, paperplane) quedan loopeando mientras dure su condicion; attack y hit son one-shots.
+    //body < noscissors < wind < attack < paperplane < hit
+    //los overrides (noscissors, wind, paperplane) quedan loopeando mientras dure su condicion; attack y hit son one-shots.
     const int TRACK_BODY = 0;
     const int TRACK_NOSCISSORS = 1; //override mientras kami no tiene la tijera
-    const int TRACK_ATTACK = 2;
-    const int TRACK_PAPERPLANE = 3; //override mientras kami tiene el paper plane hat (va encima del ataque tambien)
-    const int TRACK_HIT = 4;
+    const int TRACK_WIND = 2; //override mientras kami está siendo afectada por viento
+    const int TRACK_ATTACK = 3;
+    const int TRACK_PAPERPLANE = 4; //override mientras kami tiene el paper plane hat (va encima del ataque tambien)
+    const int TRACK_HIT = 5;
     //los tiempos de mezcla de estos tracks viven en player.animMix (tweakeables en el inspector)
 
     //en el skeleton (Atlas 4) existen: Attack, AttackMOVE, Casting, falling, Hit, Idle, IdleNoScissors (no se usa),
@@ -39,15 +40,20 @@ public class PlayerView
     const string ANIMATION_ATTACK_MOVE = "AttackMOVE"; //ataque para usar en movimiento o en el aire (no keyea las piernas)
     const string ANIMATION_IDLE_TO_CASTING = "IdleToCasting";
     const string ANIMATION_SKIP = "Skip";
-    //const string ANIMATION_JUMP_COMPLETE = "jumpComplete";
     const string ANIMATION_RUN = "Run";
     const string ANIMATION_TAKE_HIT = "Hit";
     const string ANIMATION_NOSCISSORS_OVERRIDE = "NoScissortsOverride"; //ojo: "Scissorts" es typo del skeleton, no corregir aca
+    const string ANIMATION_WIND = "Wind";
     const string ANIMATION_PAPERPLANE_OVERRIDE = "PaperPlaneOverride";
+    const string ANIMATION_PULLSOLAPA = "PullSolapas";
+    const string ANIMATION_RUNSTOP = "RunStop";
+    const string ANIMATION_DEATH = "Death";
 
     //estado aplicado de cada override, para no re-setear el track (y reiniciar el loop) en cada cambio de estado
     bool _noscissorsApplied;
+    bool _windApplied;
     bool _paperplaneApplied;
+    bool _affectedByWind = false;
 
     public PlayerView(Player player)
     {
@@ -79,7 +85,7 @@ public class PlayerView
 
     public void OnStateChanged(PlayerState previous, PlayerState next)
     {
-        ExitState(previous);
+        ExitState(previous, next);
         EnterState(previous, next);
         RefreshOverrides(); //los overrides solo van sobre idle/movimiento/aire: entrar a casting/reward/dead los apaga
     }
@@ -136,6 +142,7 @@ public class PlayerView
                 {
                     SetBodyAnimation(ANIMATION_CASTING, true);
                 }
+                CameraManager.Instance.SetCamera(CameraMode.OrigamiCasting);
                 break;
 
             case PlayerState.ReceivingReward:
@@ -148,18 +155,52 @@ public class PlayerView
                 break;
 
             case PlayerState.Dead:
-                //TODO: animacion de muerte cuando exista en el skeleton
+                Spine.TrackEntry deathEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, ANIMATION_DEATH, false);
+
+                float deathDuration = 2f;
+                if (deathEntry?.Animation != null)
+                {
+                    deathDuration = deathEntry.Animation.Duration;
+                    if (deathDuration <= 0)
+                    {
+                        Debug.LogWarning($"[PlayerView] Death animation duration is {deathDuration}, using fallback 2.0s");
+                        deathDuration = 2f;
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"[PlayerView] Death animation '{ANIMATION_DEATH}' not found or failed to set!");
+                    deathDuration = 2f;
+                }
+
+                Debug.Log($"[PlayerView] Entering Dead state, overlay will show after {deathDuration}s");
+                _player.ShowDefeatOverlayDelayed(deathDuration);
                 break;
         }
     }
 
-    void ExitState(PlayerState previous)
+    void ExitState(PlayerState previous, PlayerState next)
     {
         switch (previous)
         {
+            case PlayerState.Casting:
+                CameraManager.Instance.SetCamera(CameraMode.Normal);
+                break;
             case PlayerState.ReceivingReward:
                 CameraManager.Instance.SetCamera(CameraMode.Normal);
                 _player.particleShooter.Enable(2, false);
+                break;
+            case PlayerState.Running:
+            case PlayerState.Skipping:
+                //si sale de correr/saltar hacia idle, dispara animación de frenada
+                if (next == PlayerState.Idle)
+                {
+                    Spine.TrackEntry runstopEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, ANIMATION_RUNSTOP, false);
+                    runstopEntry.MixDuration = 0;
+                    float runstopDuration = runstopEntry.Animation.Duration;
+                    _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, ANIMATION_IDLE, true, runstopDuration);
+                    Debug.Log($"[PlayerView] runstop played, duration: {runstopDuration}");
+                }
                 break;
         }
     }
@@ -176,6 +217,7 @@ public class PlayerView
         //el player me llama cuando cambian hasTijera / isPaperPlaneHat, y yo tambien en cada cambio de estado
         bool allowed = OverridesAllowed(_player.CurrentState);
         SetOverride(TRACK_NOSCISSORS, ANIMATION_NOSCISSORS_OVERRIDE, allowed && !_player.hasTijera, ref _noscissorsApplied);
+        SetOverride(TRACK_WIND, ANIMATION_WIND, allowed && _affectedByWind, ref _windApplied);
         SetOverride(TRACK_PAPERPLANE, ANIMATION_PAPERPLANE_OVERRIDE, allowed && _player.isPaperPlaneHat, ref _paperplaneApplied);
     }
 
@@ -232,6 +274,14 @@ public class PlayerView
 
     //---------- Ataque (track propio, se superpone al cuerpo) ----------
 
+    public void PlayPullSolapa()
+    {
+        Spine.TrackEntry solapaEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_ATTACK, ANIMATION_PULLSOLAPA, false);
+        solapaEntry.MixDuration = _player.animMix.attackMixIn;
+        _skeletonAnimation.AnimationState.AddEmptyAnimation(TRACK_ATTACK, _player.animMix.attackMixOut, solapaEntry.Animation.Duration);
+        Debug.Log($"[PlayerView] pullsolapa triggered");
+    }
+
     public void StartAttack()
     {
         AudioManager.instance.PlayByName("ActionWind", 1f, 0.01f);
@@ -266,15 +316,11 @@ public class PlayerView
 
     public void PlayTakeHitAnimation()
     {
-        //dos modos para probar (hitFeedback.hitReplacesBodyAnimation):
-        //replace: Hit pisa la anim del cuerpo y despues vuelve a la que estaba
-        //override: Hit se superpone en su propio track encima de todo
-        //en ambos modos, el delay explicito (duracion de Hit) garantiza que la anim se vea completa antes del fade
         if (_player.hitFeedback.hitReplacesBodyAnimation && TryGetBodyAnimation(_player.CurrentState, out string bodyAnim, out bool bodyLoop))
         {
             Spine.TrackEntry hitEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, ANIMATION_TAKE_HIT, false);
             hitEntry.MixDuration = _player.animMix.hitMixIn;
-            Spine.TrackEntry backEntry = _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, bodyAnim, bodyLoop, hitEntry.Animation.Duration); //al terminar vuelve a lo que estaba
+            Spine.TrackEntry backEntry = _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, bodyAnim, bodyLoop, hitEntry.Animation.Duration);
             backEntry.MixDuration = _player.animMix.hitMixOut;
             Debug.Log($"[PlayerView] hit REEMPLAZA al cuerpo, despues vuelve a '{bodyAnim}'");
         }
@@ -385,12 +431,14 @@ public class PlayerView
 
     internal void StartAffectedByWind(float windForce, Vector3 windDirection)
     {
+        _affectedByWind = true;
+        RefreshOverrides();
+
         Debug.Log("view start affected by wind // windDirection: " + windDirection);
         _player.particleShooter.Enable(4, true);
 
-        //rotate _player.particleShooter.particleSystemGameObject[4] so that it faces the wind direction
+        //rotate particle system so that it faces the wind direction
         _player.particleShooter.particleSystemGameObject[4].transform.forward = windDirection;
-
 
         float minWindForce = 0f;
         float maxWindForce = 0.5f;
@@ -398,17 +446,16 @@ public class PlayerView
         float maxParticleSize = 10f;
 
         float windForceNormalized = (windForce - minWindForce) / (maxWindForce - minWindForce);
-
-        //now scale windforcenormalized to the range of minparticlesize to maxparticlesize
         windForceNormalized = minParticleSize + (windForceNormalized * (maxParticleSize - minParticleSize));
 
         _player.particleShooter.particleSystemGameObject[4].GetComponent<ParticleSizeUpdater>()?.UpdateSize(windForceNormalized);
         Debug.Log("windforcenormalized = " + windForceNormalized);
-
     }
+
     internal void EndAffectedByWind()
     {
-        //Debug.Log("view end affected by wind");
+        _affectedByWind = false;
+        RefreshOverrides();
         _player.particleShooter.Enable(4, false);
     }
 }
