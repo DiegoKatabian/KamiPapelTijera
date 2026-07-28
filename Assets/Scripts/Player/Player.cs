@@ -308,20 +308,31 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     void OrientTijeraHitbox()
     {
         //se orienta el hitboxParent entero (hitbox + particulas alineadas abajo) segun hacia donde se mueva kami:
-        //cualquier direccion del plano, no solo izq/der. si esta quieta y nunca se movio, cae al lado que mira el skeleton.
+        //cualquier direccion del plano, no solo izq/der. si esta quieta en idle, la hitbox apunta a la derecha.
         if (tijeraManager == null || tijeraManager.hitboxParent == null)
         {
             return;
         }
 
-        Vector3 dir = lastDirection;
-        dir.y = 0f;
-        if (dir.sqrMagnitude < 0.0001f)
+        Vector3 dir;
+
+        if (CurrentState == PlayerState.Idle)
         {
+            //en idle, siempre apunta a la derecha (a menos que este flipeada)
             float facing = SkeletonAnimation.Skeleton.ScaleX >= 0f ? 1f : -1f;
-            dir = transform.right * facing;
+            dir = Vector3.right * facing;
         }
-        dir.Normalize();
+        else
+        {
+            dir = lastDirection;
+            dir.y = 0f;
+            if (dir.sqrMagnitude < 0.0001f)
+            {
+                float facing = SkeletonAnimation.Skeleton.ScaleX >= 0f ? 1f : -1f;
+                dir = Vector3.right * facing;
+            }
+            dir.Normalize();
+        }
 
         tijeraManager.hitboxParent.position = transform.position + dir * hitboxDistance + Vector3.up * hitboxHeight;
 
