@@ -182,7 +182,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4301450193247091409}
   m_LocalRotation: {x: -0, y: 0.011072762, z: -0, w: 0.9999388}
-  m_LocalPosition: {x: 2.88, y: -0.72000027, z: 1.23}
+  m_LocalPosition: {x: -0.0953463, y: 0.11327654, z: 0.02271317}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -264,7 +264,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8360785037552148189}
   - component: {fileID: 7754234653209314673}
-  - component: {fileID: 558939132759515075}
   m_Layer: 0
   m_Name: PiedraBase
   m_TagString: Untagged
@@ -339,16 +338,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!65 &558939132759515075
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5994530245889750322}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 13.560006, y: 3.649188, z: 0.20000026}
-  m_Center: {x: -0.0000020218513, y: -3.600404, z: -0.0000019059999}

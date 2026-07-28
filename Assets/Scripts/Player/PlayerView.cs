@@ -383,16 +383,6 @@ public class PlayerView
         }
     }
 
-    public void EnableTijeraParticles()
-    {
-        _player.tijeraParticles.gameObject.SetActive(true);
-    }
-
-    public void DisableTijeraParticles()
-    {
-        _player.tijeraParticles.gameObject.SetActive(false);
-    }
-
     internal void StartAffectedByWind(float windForce, Vector3 windDirection)
     {
         Debug.Log("view start affected by wind // windDirection: " + windDirection);

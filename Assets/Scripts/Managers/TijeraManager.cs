@@ -19,6 +19,9 @@ public class TijeraManager : MonoBehaviour
 
     public ParticleSystem tijeraParticles, tijeraTrail, tijeraMejoradaParticles, tijeraMejoradaTrail;
 
+    [Tooltip("las hitbox y las particulas de ataque viven aca abajo. el player orienta este transform al atacar y todo se alinea junto")]
+    public Transform hitboxParent;
+
     [SerializeField] string tipBoneName = "tijera_front3"; //el hueso de la punta de la tijera en el skeleton de spine
 
     TijeraType currentTijera;
@@ -48,42 +51,33 @@ public class TijeraManager : MonoBehaviour
     public void SetTijera(params object[] parameters)
     {
         //Debug.Log("prendo la tijera");
-        tijeraHitbox.transform.parent.gameObject.SetActive(true);
         currentTijera = TijeraType.Normal;
+        tijeraTrail.gameObject.SetActive(true); //el trail queda prendido de aca en adelante (sigue la punta de la tijera de spine)
+        tijeraMejoradaTrail.gameObject.SetActive(false);
     }
 
     public void SetTijeraMejorada(params object[] parameters)
     {
         //Debug.Log("prendo la tijera mejorada");
-        tijeraHitbox.transform.parent.gameObject.SetActive(false);
-        tijeraMejoradaHitbox.transform.parent.gameObject.SetActive(true);
         currentTijera = TijeraType.Mejorada;
+        tijeraTrail.gameObject.SetActive(false);
+        tijeraMejoradaTrail.gameObject.SetActive(true);
     }
 
+    //las particulas de ataque estan siempre activas (hijas del hitboxParent): aca solo se les da play/stop
     public void EnableTijeraParticles()
     {
-        switch (currentTijera)
-        {
-            case TijeraType.Normal:
-                tijeraParticles.gameObject.SetActive(true);
-                break;
-            case TijeraType.Mejorada:
-                tijeraMejoradaParticles.gameObject.SetActive(true);
-                break;
-        }
+        CurrentAttackParticles().Play();
     }
 
     public void DisableTijeraParticles()
     {
-        switch (currentTijera)
-        {
-            case TijeraType.Normal:
-                tijeraParticles.gameObject.SetActive(false);
-                break;
-            case TijeraType.Mejorada:
-                tijeraMejoradaParticles.gameObject.SetActive(false);
-                break;
-        }
+        CurrentAttackParticles().Stop();
+    }
+
+    ParticleSystem CurrentAttackParticles()
+    {
+        return currentTijera == TijeraType.Mejorada ? tijeraMejoradaParticles : tijeraParticles;
     }
 
     public void SetTrailRadius(float newRadius)

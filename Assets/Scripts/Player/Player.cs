@@ -55,7 +55,6 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     public ParticleShooter particleShooter;
     [SerializeField] GameObject myPaperPlaneHat;
     [SerializeField] TijeraManager tijeraManager;
-    public ParticleSystem tijeraParticles, tijeraTrail;
     public InventorySlot rewardSticker;
     public Material waterBootsMaterial; //TODO: sin uso hasta que las botas de agua tengan feedback visual sobre el spine (skin?)
     public SkeletonAnimation SkeletonAnimation;
@@ -270,13 +269,13 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     void CalibrateHitboxPlacement()
     {
-        //toma la pose del prefab (hitbox a la derecha de kami) como referencia para los valores en auto
-        if (miTijeraHitbox == null)
+        //toma la pose del prefab (hitboxParent a la derecha de kami) como referencia para los valores en auto
+        if (tijeraManager == null || tijeraManager.hitboxParent == null)
         {
             return;
         }
 
-        Vector3 local = transform.InverseTransformPoint(miTijeraHitbox.transform.position);
+        Vector3 local = transform.InverseTransformPoint(tijeraManager.hitboxParent.position);
         if (hitboxDistance < 0f)
         {
             hitboxDistance = new Vector2(local.x, local.z).magnitude;
@@ -290,9 +289,9 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     void OrientTijeraHitbox()
     {
-        //la hitbox se acomoda alrededor de kami segun hacia donde se este moviendo (cualquier direccion del plano, no solo izq/der).
-        //si esta quieta y nunca se movio, cae al lado que mira el skeleton (ScaleX).
-        if (miTijeraHitbox == null)
+        //se orienta el hitboxParent entero (hitbox + particulas alineadas abajo) segun hacia donde se mueva kami:
+        //cualquier direccion del plano, no solo izq/der. si esta quieta y nunca se movio, cae al lado que mira el skeleton.
+        if (tijeraManager == null || tijeraManager.hitboxParent == null)
         {
             return;
         }
@@ -306,9 +305,9 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         }
         dir.Normalize();
 
-        miTijeraHitbox.transform.position = transform.position + dir * hitboxDistance + Vector3.up * hitboxHeight;
-        miTijeraHitbox.transform.rotation = Quaternion.LookRotation(dir);
-        Debug.Log($"[Player] hitbox orientada hacia {dir} (distancia {hitboxDistance:F3}, altura {hitboxHeight:F3})");
+        tijeraManager.hitboxParent.position = transform.position + dir * hitboxDistance + Vector3.up * hitboxHeight;
+        tijeraManager.hitboxParent.rotation = Quaternion.LookRotation(dir);
+        Debug.Log($"[Player] hitboxParent orientado hacia {dir} (distancia {hitboxDistance:F3}, altura {hitboxHeight:F3})");
     }
 
     public void StartPasoSFX(int step) //del spine event me dicen en que paso de la animation estoy.

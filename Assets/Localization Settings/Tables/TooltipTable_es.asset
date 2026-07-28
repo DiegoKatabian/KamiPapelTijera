@@ -23,11 +23,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 216298799104
-    m_Localized: Toca E para pasar de pagina
+    m_Localized: "Toc\xE1 E para pasar de p\xE1gina"
     m_Metadata:
       m_Items: []
   - m_Id: 289451655168
-    m_Localized: Toca E para volver a la pagina anterior
+    m_Localized: "Toc\xE1 E para volver a la p\xE1gina anterior"
     m_Metadata:
       m_Items: []
   - m_Id: 489079554048
@@ -35,19 +35,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2542224916480
-    m_Localized: Toca E para agarrar la tijera
+    m_Localized: "Toc\xE1 E para agarrar la tijera"
     m_Metadata:
       m_Items: []
   - m_Id: 2623854460928
-    m_Localized: Toca E para charlar
+    m_Localized: "Toc\xE1 E para charlar"
     m_Metadata:
       m_Items: []
   - m_Id: 2776837505024
-    m_Localized: Toca E para comenzar un origami
+    m_Localized: "Toc\xE1 E para comenzar un origami"
     m_Metadata:
       m_Items: []
   - m_Id: 2880432619520
-    m_Localized: Toca E para tirar de la solapa
+    m_Localized: "Toc\xE1 E para tirar de la solapa"
     m_Metadata:
       m_Items: []
   - m_Id: 2974607327232
@@ -60,7 +60,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3175216693248
-    m_Localized: "Cuidado con el agua! Salt\xE1 usando ESPACIO."
+    m_Localized: "Cuidado con el agua! \nSalt\xE1 usando ESPACIO."
     m_Metadata:
       m_Items: []
   - m_Id: 3266073706496
@@ -89,8 +89,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 5736808169472
-    m_Localized: "Arrastr\xE1 la flecha verde hasta el objetivo y solt\xE1. No te
-      salgas del camino!"
+    m_Localized: "Arrastr\xE1 la flecha verde hasta el objetivo y solt\xE1. \nNo
+      te salgas del camino!"
     m_Metadata:
       m_Items: []
   references:
