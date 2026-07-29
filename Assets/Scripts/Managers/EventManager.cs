@@ -68,7 +68,9 @@ public enum Evento //LOS EVENTOS SE AGREGAN AL FINAL. NO EN EL MEDIO, PORQUE ARR
     OnQuestRewardedEnd, //param0 es quest
     OnDialogueWriteText, //param0 es dialogue (pro tip: podes pedir dialogue.currentText)
     OnQuestRewardedStart, //param0 es quest
-    OnOrigamiCameraChange
+    OnOrigamiCameraChange,
+    OnPageZoneEnter, //el player entro a una esfera de cambio de pagina
+    OnPageZoneExit
 }
 
 public class EventManager

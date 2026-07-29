@@ -11,6 +11,7 @@ public class TriggerTurnPage : TriggerScript
     {
         base.OnEnterBehaviour(other);
         _positionMarker.ShowMarker();
+        EventManager.Trigger(Evento.OnPageZoneEnter);
     }
 
     private void OnTriggerStay(Collider other)
@@ -26,5 +27,6 @@ public class TriggerTurnPage : TriggerScript
     {
         base.OnExitBehaviour();
         _positionMarker.HideMarker();
+        EventManager.Trigger(Evento.OnPageZoneExit);
     }
 }
