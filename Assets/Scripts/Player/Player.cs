@@ -23,8 +23,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     public float weaponCooldown;
     [SerializeField] float tijeraHitBoxDuration = 0.1f;
-    [Tooltip("AttackMOVE no tiene el evento HandleAttack: la hitbox sale por este timer (mismo timing que el evento de Attack). Poner -1 cuando la anim ya traiga el evento")]
-    [SerializeField] float attackMoveHitboxDelay = 0.4667f;
+    [Tooltip("fallback por timer para cuando AttackMOVE no traia el evento HandleAttack. desde Atlas 5 el evento existe: -1 = apagado. si un atlas viejo no lo trae, poner el timing del evento (0.4667)")]
+    [SerializeField] float attackMoveHitboxDelay = -1f;
     [Tooltip("a que distancia de kami se pone la hitbox al atacar. -1 = auto: usa la distancia a la que quedo puesta en el prefab")]
     [SerializeField] float hitboxDistance = -1f;
     [Tooltip("a que altura (desde los pies de kami) se pone la hitbox al atacar. -1 = auto: usa la altura del prefab")]

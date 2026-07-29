@@ -40,6 +40,11 @@ public class TijeraHitbox : MonoBehaviour
 
     private void OnDisable()
     {
+        if (HitboxStartParticles != null)
+        {
+            HitboxStartParticles.Stop(); //corta la emision al apagar la hitbox; las particulas vivas terminan su vida sola (sin esto se acumulaban ataque tras ataque)
+        }
+
         if (missed)
         {
             AudioManager.instance.PlayByName("TijeraMiss", 1.1f);

@@ -283,8 +283,8 @@ public class PlayerView
 
         if (moving)
         {
-            //AttackMOVE (todavia) no tiene el evento HandleAttack en el skeleton,
-            //asi que la hitbox se dispara por timer imitando el timing del evento de Attack
+            //fallback por timer para atlas viejos sin el evento HandleAttack en AttackMOVE.
+            //desde Atlas 5 el evento existe y attackMoveHitboxDelay va en -1 (la corrutina sale sola)
             _player.StartTijeraCoroutineDelayed();
         }
 

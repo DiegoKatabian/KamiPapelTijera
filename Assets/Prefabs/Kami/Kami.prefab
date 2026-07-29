@@ -319,7 +319,7 @@ MonoBehaviour:
   hasWaterBoots: 0
   weaponCooldown: 0.05
   tijeraHitBoxDuration: 0.1
-  attackMoveHitboxDelay: 0.4667
+  attackMoveHitboxDelay: -1
   hitboxDistance: -1
   hitboxHeight: -1
   hitboxRotationOffset: -90
