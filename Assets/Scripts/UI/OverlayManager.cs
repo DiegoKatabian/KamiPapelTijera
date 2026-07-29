@@ -14,7 +14,7 @@ public class OverlayManager : Singleton<OverlayManager>
     {
         base.Awake();
         //DontDestroyOnLoad(this);
-        EventManager.Subscribe(Evento.OnPlayerDie, ShowDefeatOverlay);
+        //ojo: aca NO nos suscribimos a OnPlayerDie. el defeat overlay lo muestra Player.Die() despues de su delay (defeatOverlayDelay)
         EventManager.Subscribe(Evento.OnDialogueEnd, ShowOverlay);
         EventManager.Subscribe(Evento.OnPlayerPressedE, RequestUnlock);
     }
@@ -70,8 +70,15 @@ public class OverlayManager : Singleton<OverlayManager>
         isLocked = false;
         AudioManager.instance.PlayByName("PickupSFX", 0.66f);
 
+        bool wasDefeatShowing = _defeatOverlay.gameObject.activeSelf;
         _defeatOverlay.gameObject.SetActive(false);
         _mainQuestOverlay.gameObject.SetActive(false);
+
+        if (wasDefeatShowing)
+        {
+            //el respawn recien sucede aca: cuando el jugador cierra el overlay de derrota con E
+            PlayerPageSpawnManager.Instance.RespawnPlayer();
+        }
     }
 
     public void BTN_ContinueGame()
@@ -100,7 +107,6 @@ public class OverlayManager : Singleton<OverlayManager>
     {
         if (!gameObject.scene.isLoaded)
         {
-            EventManager.Unsubscribe(Evento.OnPlayerDie, ShowDefeatOverlay);
             EventManager.Unsubscribe(Evento.OnDialogueEnd, ShowOverlay);
             EventManager.Unsubscribe(Evento.OnPlayerPressedE, RequestUnlock);
         }

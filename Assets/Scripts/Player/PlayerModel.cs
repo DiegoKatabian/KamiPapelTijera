@@ -13,6 +13,7 @@ public class PlayerModel
     float _verticalVelocity;
     float _fallingTimer;
     float _landingTimer;
+    float _fullSpeedTimer; //cuanto lleva kami seguido a velocidad maxima (skip/run), para armar el runstop
 
     const float COYOTE_TIME = 0.2f;
     const float FALL_VELOCITY_THRESHOLD = -2f; //velocidad vertical a partir de la cual consideramos que kami cae
@@ -38,6 +39,11 @@ public class PlayerModel
         {
             input = default; //estados bloqueantes: se ignora todo input, pero la fisica sigue corriendo
         }
+        else if (_player.IsPullingSolapa)
+        {
+            input = default; //abrir la solapa interrumpe movimiento y salto mientras dure la anim
+            _fullSpeedTimer = 0f; //y desarma el runstop: la frenada de la solapa no es una frenada en seco
+        }
         else if (_player.IsInHitStun)
         {
             //hit stun configurable: se filtra solo lo que este bloqueado en hitFeedback (el ataque se bloquea en OnPrimaryClick)
@@ -45,6 +51,8 @@ public class PlayerModel
             {
                 input.hor = 0f;
                 input.ver = 0f;
+                input.horRaw = 0f;
+                input.verRaw = 0f;
             }
             if (_player.hitFeedback.blockJump)
             {
@@ -166,7 +174,21 @@ public class PlayerModel
                 return;
         }
 
-        float magnitude = new Vector2(input.hor, input.ver).magnitude;
+        //el estado se decide con el input CRUDO: al soltar teclado cae a 0 al instante,
+        //asi skip/run pasan directo a idle sin colarse por walking (el decay del smoothing pasaba por ahi)
+        float magnitude = new Vector2(input.horRaw, input.verRaw).magnitude;
+
+        //timer de velocidad maxima: arma el runstop cuando kami lleva un rato a fondo (el view lo lee al entrar a idle)
+        PlayerState state = _player.CurrentState;
+        if (state == PlayerState.Skipping || state == PlayerState.Running)
+        {
+            _fullSpeedTimer += Time.deltaTime;
+        }
+        else
+        {
+            _fullSpeedTimer = 0f;
+        }
+        _player.runstopReady = _fullSpeedTimer >= _player.runstopMinFullSpeedTime;
 
         if (magnitude < 0.01f)
         {

@@ -329,6 +329,7 @@ MonoBehaviour:
   landingLagModifier: 0.75
   landingLagTime: 0.25
   rewardAnimationWaitTime: 2
+  defeatOverlayDelay: 0.333
   hitFeedback:
     hitReplacesBodyAnimation: 0
     blockMovement: 1

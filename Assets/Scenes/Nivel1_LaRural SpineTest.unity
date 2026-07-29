@@ -15374,6 +15374,11 @@ PrefabInstance:
       propertyPath: nuevoTooltipPapelSalto
       value: 
       objectReference: {fileID: 811726220}
+    - target: {fileID: 7567128660997737823, guid: 55968c0be0eae574cac6fbf9493c0537,
+        type: 3}
+      propertyPath: runstopMinFullSpeedTime
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7567128661433650889, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
       propertyPath: m_Name
@@ -48892,27 +48897,27 @@ PrefabInstance:
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -32.4625
+      value: -35.8375
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -160.61981
+      value: -167.6038
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 185.99277
+      value: 205.29279
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9881183
+      value: 0.9962453
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.15369537
+      value: 0.08657493
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022667, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}

@@ -95,7 +95,19 @@ public class PlayerView
         switch (next)
         {
             case PlayerState.Idle:
-                SetBodyAnimation(ANIMATION_IDLE, true);
+                //frenada en seco: solo si venia a velocidad maxima hace un rato (runstopReady, lo arma el model
+                //con runstopMinFullSpeedTime). runstop entero y recien despues idle (encolado, asi nadie lo pisa).
+                //si el player vuelve a moverse en el medio, el proximo cambio de estado lo interrumpe solo.
+                if ((previous == PlayerState.Running || previous == PlayerState.Skipping) && _player.runstopReady)
+                {
+                    Spine.TrackEntry runstopEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, ANIMATION_RUNSTOP, false);
+                    _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, ANIMATION_IDLE, true, runstopEntry.Animation.Duration);
+                    Debug.Log($"[PlayerView] runstop -> idle (duracion {runstopEntry.Animation.Duration:F2}s)");
+                }
+                else
+                {
+                    SetBodyAnimation(ANIMATION_IDLE, true);
+                }
                 break;
 
             case PlayerState.Walking:
@@ -155,26 +167,9 @@ public class PlayerView
                 break;
 
             case PlayerState.Dead:
-                Spine.TrackEntry deathEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, ANIMATION_DEATH, false);
-
-                float deathDuration = 2f;
-                if (deathEntry?.Animation != null)
-                {
-                    deathDuration = deathEntry.Animation.Duration;
-                    if (deathDuration <= 0)
-                    {
-                        Debug.LogWarning($"[PlayerView] Death animation duration is {deathDuration}, using fallback 2.0s");
-                        deathDuration = 2f;
-                    }
-                }
-                else
-                {
-                    Debug.LogError($"[PlayerView] Death animation '{ANIMATION_DEATH}' not found or failed to set!");
-                    deathDuration = 2f;
-                }
-
-                Debug.Log($"[PlayerView] Entering Dead state, overlay will show after {deathDuration}s");
-                _player.ShowDefeatOverlayDelayed(deathDuration);
+                //non-loop y sin nada encolado despues: spine deja el ultimo frame puesto hasta que el respawn ponga Idle.
+                //el timing del overlay y el respawn viven en Player.Die() / OverlayManager, no aca.
+                SetBodyAnimation(ANIMATION_DEATH, false);
                 break;
         }
     }
@@ -189,18 +184,6 @@ public class PlayerView
             case PlayerState.ReceivingReward:
                 CameraManager.Instance.SetCamera(CameraMode.Normal);
                 _player.particleShooter.Enable(2, false);
-                break;
-            case PlayerState.Running:
-            case PlayerState.Skipping:
-                //si sale de correr/saltar hacia idle, dispara animación de frenada
-                if (next == PlayerState.Idle)
-                {
-                    Spine.TrackEntry runstopEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, ANIMATION_RUNSTOP, false);
-                    runstopEntry.MixDuration = 0;
-                    float runstopDuration = runstopEntry.Animation.Duration;
-                    _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, ANIMATION_IDLE, true, runstopDuration);
-                    Debug.Log($"[PlayerView] runstop played, duration: {runstopDuration}");
-                }
                 break;
         }
     }
@@ -274,12 +257,14 @@ public class PlayerView
 
     //---------- Ataque (track propio, se superpone al cuerpo) ----------
 
-    public void PlayPullSolapa()
+    public float PlayPullSolapa()
     {
+        //devuelve la duracion para que player sepa cuanto bloquear el movimiento
         Spine.TrackEntry solapaEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_ATTACK, ANIMATION_PULLSOLAPA, false);
         solapaEntry.MixDuration = _player.animMix.attackMixIn;
         _skeletonAnimation.AnimationState.AddEmptyAnimation(TRACK_ATTACK, _player.animMix.attackMixOut, solapaEntry.Animation.Duration);
         Debug.Log($"[PlayerView] pullsolapa triggered");
+        return solapaEntry.Animation.Duration;
     }
 
     public void StartAttack()

@@ -3,8 +3,10 @@ using UnityEngine;
 //snapshot de los inputs de un frame. el controller lo llena, el model decide que hacer con el
 public struct PlayerInputs
 {
-    public float hor;
+    public float hor;    //con smoothing de unity: para la fisica (aceleracion suave)
     public float ver;
+    public float horRaw; //sin smoothing: para decidir estados (al soltar teclado cae a 0 al instante)
+    public float verRaw;
     public bool jumpDown;
     public bool jumpUp;
 }
@@ -80,6 +82,8 @@ public class PlayerController
 
         Inputs.hor = Input.GetAxis("Horizontal");
         Inputs.ver = Input.GetAxis("Vertical");
+        Inputs.horRaw = Input.GetAxisRaw("Horizontal");
+        Inputs.verRaw = Input.GetAxisRaw("Vertical");
         Inputs.jumpDown = Input.GetButtonDown("Jump");
         Inputs.jumpUp = Input.GetButtonUp("Jump");
 

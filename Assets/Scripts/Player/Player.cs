@@ -37,6 +37,10 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     public float landingLagModifier = 0.75f;
     public float landingLagTime = 0.25f;
     public float rewardAnimationWaitTime = 2;
+    [Tooltip("cuanto tarda en aparecer el overlay de derrota despues de morir. mientras tanto se ve la anim de muerte")]
+    public float defeatOverlayDelay = 2f;
+    [Tooltip("cuantos segundos seguidos a velocidad maxima (skip/run) hacen falta para que al frenar en seco se vea la anim de runstop")]
+    public float runstopMinFullSpeedTime = 2f;
 
     [Header("Hit Feedback")]
     public HitFeedbackConfig hitFeedback = new HitFeedbackConfig();
@@ -90,6 +94,16 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     [HideInInspector] public bool isSprinting; //cuando tocas shift
     [HideInInspector] public int augmentedJumpsLeft;
     [HideInInspector] public Vector3 lastDirection;
+    [HideInInspector] public bool runstopReady; //lo mantiene el model: true si kami lleva el tiempo suficiente a velocidad maxima
+
+    float _pullSolapaLockEndTime; //mientras dura la anim de pullsolapa se bloquean movimiento y salto
+    public bool IsPullingSolapa
+    {
+        get
+        {
+            return Time.time < _pullSolapaLockEndTime;
+        }
+    }
 
     //State Machine
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
@@ -271,18 +285,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     public void PlayPullSolapa()
     {
-        _view.PlayPullSolapa();
-    }
-
-    public void ShowDefeatOverlayDelayed(float delay)
-    {
-        StartCoroutine(ShowDefeatOverlayDelayedCoroutine(delay));
-    }
-
-    IEnumerator ShowDefeatOverlayDelayedCoroutine(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        OverlayManager.Instance.ShowDefeatOverlay();
+        float duration = _view.PlayPullSolapa();
+        _pullSolapaLockEndTime = Time.time + duration; //el model bloquea movimiento y salto mientras dure la anim
     }
 
     void CalibrateHitboxPlacement()
@@ -448,18 +452,30 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     }
     public override void Die()
     {
-        //print("player: me mori");
-        SetState(PlayerState.Dead); //no puede hacer nada hasta que respawnee
-        Vida = _maxHp;
+        if (CurrentState == PlayerState.Dead)
+        {
+            return; //ya esta muerta: el drowning u otro daño repetido no puede matarla dos veces
+        }
+
+        //la muerte pasa en 3 tiempos: 1) anim + musica + evento, ya. 2) overlay tras el delay. 3) respawn cuando el jugador toca E (OverlayManager)
+        SetState(PlayerState.Dead);
         AudioManager.instance.PlayByName("GameOverOrchestral");
         EventManager.Trigger(Evento.OnPlayerDie);
-        PlayerPageSpawnManager.Instance.RespawnPlayer(); //spawnea al player en el inicio de la pagina actual
+        StartCoroutine(DeathSequence());
     }
+
+    IEnumerator DeathSequence()
+    {
+        yield return new WaitForSeconds(defeatOverlayDelay);
+        OverlayManager.Instance.ShowDefeatOverlay();
+    }
+
     private void OnPlayerPlaced(object[] parameters)
     {
         //el spawn manager avisa cuando reposiciono al player: si estaba muerto, revive
         if (CurrentState == PlayerState.Dead)
         {
+            Vida = _maxHp; //la vida recien vuelve al respawnear (mientras esta muerta queda en 0)
             SetState(PlayerState.Idle);
         }
     }
