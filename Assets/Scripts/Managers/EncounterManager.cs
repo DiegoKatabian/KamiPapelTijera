@@ -16,6 +16,7 @@ public class EncounterManager : MonoBehaviour
 
     [SerializeField] GameObject[] _objectsToDeactivateDuringEncounter; //page scroller, etc
     [SerializeField] GameObject[] _objectsToActivateDuringEncounter; //paredes invisibles, etc. 
+    [SerializeField] GameObject AngryParticlesGameObject;
 
     void Start()
     {
@@ -59,6 +60,7 @@ public class EncounterManager : MonoBehaviour
         }
 
         AudioManager.instance.PlayByName("MemoFloraBattleLoop01");
+        AngryParticlesGameObject.SetActive(true);   
         //AudioManager.instance.PlayOnEnd("EstampesPagodes_Battle_Intro", "MemoFloraBattleLoop01");
         firstTime = false;
     }
@@ -71,6 +73,8 @@ public class EncounterManager : MonoBehaviour
         AudioManager.instance.PlayByName("MemoFloraPostBattle01");
         AudioManager.instance.PlayByName("QuestCompleted02", 2f);
         AudioManager.instance.PlayOnEnd("MemoFloraPostBattle01", "MemoFloraMainLoop01");
+        AngryParticlesGameObject.SetActive(false);
+
         //EventManager.Trigger(Evento.OnEncounterEnd, Camara.Normal);
 
         foreach (GameObject go in _objectsToDeactivateDuringEncounter)

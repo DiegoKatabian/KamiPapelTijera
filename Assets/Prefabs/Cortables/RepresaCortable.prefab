@@ -141,8 +141,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 3.333937, z: 6.1600647}
-  m_Center: {x: 6.298189e-13, y: 0.059932016, z: -0.0033168043}
+  m_Size: {x: 3.7591078, y: 4.725973, z: 6.7673783}
+  m_Center: {x: -0.53705096, y: 0.48823777, z: -0.30697268}
 --- !u!114 &6900539331733233760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,17 +362,17 @@ PrefabInstance:
     - target: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.73
+      value: -3.058465
       objectReference: {fileID: 0}
     - target: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.09
+      value: 1.7436212
       objectReference: {fileID: 0}
     - target: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.05
+      value: -0.050003935
       objectReference: {fileID: 0}
     - target: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
         type: 3}
@@ -409,6 +409,66 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.9090909
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key0.a
+      value: 0.7254902
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key0.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key0.g
+      value: 0.7137255
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key0.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key1.b
+      value: 0.6179246
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key1.g
+      value: 0.95033896
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key1.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5079175795795833527, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 651960e9e663f074cb4de3dff5aaf6ce, type: 2}
     - target: {fileID: 6679400547164310947, guid: cf25ee50074cd3744888d54f5597b419,
         type: 3}
       propertyPath: m_Name

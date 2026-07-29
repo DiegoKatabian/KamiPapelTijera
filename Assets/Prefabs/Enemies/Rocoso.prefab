@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 386566045809580733}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.43, y: -0.86, z: 0}
+  m_LocalPosition: {x: 0.43, y: -1.074465, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -118,7 +118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _thisRocoso: {fileID: 2429854604947804655}
-  _isImmuneToTijeraMejorada: 0
+  _isImmuneToTijeraMejorada: 1
 --- !u!1 &1231572168594761324
 GameObject:
   m_ObjectHideFlags: 0
@@ -508,7 +508,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7897264121734106301}
   serializedVersion: 2
-  m_Mass: 20
+  m_Mass: 600
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -526,8 +526,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 2.37
-  m_Height: 6.36
+  m_Radius: 1.56
+  m_Height: 5.68
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1996276656420371745

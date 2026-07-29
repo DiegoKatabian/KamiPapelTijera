@@ -330,6 +330,7 @@ MonoBehaviour:
   landingLagTime: 0.25
   rewardAnimationWaitTime: 2
   defeatOverlayDelay: 0.333
+  runstopMinFullSpeedTime: 2
   hitFeedback:
     hitReplacesBodyAnimation: 0
     blockMovement: 1
@@ -371,6 +372,7 @@ MonoBehaviour:
   isSprinting: 0
   augmentedJumpsLeft: 0
   lastDirection: {x: 0, y: 0, z: 0}
+  runstopReady: 0
   nuevoTooltipPapelSalto: {fileID: 0}
 --- !u!114 &7567128660997737820
 MonoBehaviour:
@@ -13703,7 +13705,7 @@ PrefabInstance:
     - target: {fileID: 8489780117953336294, guid: 8760fdf0c5ef3e84191ccf7a814787ca,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8760fdf0c5ef3e84191ccf7a814787ca, type: 3}
