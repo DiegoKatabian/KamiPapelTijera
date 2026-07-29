@@ -291,10 +291,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: PedestalParent
       objectReference: {fileID: 0}
+    - target: {fileID: 227065340839989841, guid: 30a22737b1dbca347b4086af4fa8494e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 601727638938904023, guid: 30a22737b1dbca347b4086af4fa8494e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 634737019527280759, guid: 30a22737b1dbca347b4086af4fa8494e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2898261334805861199, guid: 30a22737b1dbca347b4086af4fa8494e,
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 3566241895630256244, guid: 30a22737b1dbca347b4086af4fa8494e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4194551645250254429, guid: 30a22737b1dbca347b4086af4fa8494e,
         type: 3}
