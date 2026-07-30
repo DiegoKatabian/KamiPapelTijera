@@ -123,10 +123,12 @@ public class PlayerView
                 //si el player vuelve a moverse en el medio, el proximo cambio de estado lo interrumpe solo.
                 if ((previous == PlayerState.Running || previous == PlayerState.Skipping) && _player.runstopReady)
                 {
-                    Spine.TrackEntry runstopEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, ANIMATION_RUNSTOP, false);
+                    string resolvedRunstop = ResolveAnimationName(ANIMATION_RUNSTOP);
+                    string resolvedIdle = ResolveAnimationName(ANIMATION_IDLE);
+                    Spine.TrackEntry runstopEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, resolvedRunstop, false);
                     _player.particleShooter.Create(PARTICLE_RUNSTOP, GetRunstopParticlePosition());
-                    _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, ANIMATION_IDLE, true, runstopEntry.Animation.Duration);
-                    Debug.Log($"[PlayerView] runstop -> idle (duracion {runstopEntry.Animation.Duration:F2}s)");
+                    _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, resolvedIdle, true, runstopEntry.Animation.Duration);
+                    Debug.Log($"[PlayerView] runstop ({resolvedRunstop}) -> idle ({resolvedIdle}) (duracion {runstopEntry.Animation.Duration:F2}s)");
                 }
                 else
                 {
@@ -581,7 +583,7 @@ public class PlayerView
 
         //determinar la dirección forward segun el facing actual
         Vector3 forward = _skeletonAnimation.Skeleton.ScaleX > 0 ? Vector3.forward : Vector3.back;
-        float offset = 0.5f; //tuneable: qué tan delante de los pies disparar las partículas
+        float offset = 0f; //tuneable: qué tan delante de los pies disparar las partículas
         Vector3 position = _player.FeetPosition + forward * offset;
 
         Debug.Log($"[PlayerView] runstop particles fired at {position} (FeetPosition: {_player.FeetPosition}, ScaleX: {_skeletonAnimation.Skeleton.ScaleX})");
