@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: f80909c0a11e3ba4fa55327973c40828, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: 05c6bb005236ca844b5a3a253eb2b8ab, type: 2}
   initialSkinName: 
   initialFlipX: 0
   initialFlipY: 0
@@ -329,8 +329,8 @@ MonoBehaviour:
   landingLagModifier: 0.75
   landingLagTime: 0.25
   rewardAnimationWaitTime: 2
-  defeatOverlayDelay: 0.333
-  runstopMinFullSpeedTime: 2
+  defeatOverlayDelay: 1
+  runstopMinFullSpeedTime: 1
   hitFeedback:
     hitReplacesBodyAnimation: 0
     blockMovement: 1
@@ -393,6 +393,7 @@ MonoBehaviour:
   - {fileID: 1597159253881706718}
   - {fileID: 1961439499254973002}
   - {fileID: 897716562938104413, guid: 59114b61fce443ce9dba215a81257838, type: 3}
+  - {fileID: 897716562938104413, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6, type: 3}
   timeToDestroy: 2
   offset: {x: 0, y: 1, z: 0}
 --- !u!1 &7567128661433650889

@@ -19,6 +19,7 @@ public class ParticleShooter : MonoBehaviour
     //la 3 es splash (pisar sobre agua)
     //la 4 es getaffectedbywind viento particles
     //la 5 es footstep (pasos secos)
+    //la 6 es runstop (frenada en seco)
 
     private void Start()
     {
