@@ -46,9 +46,18 @@ public class PlayerView
     const string ANIMATION_WIND = "Wind";
     const string ANIMATION_PAPERPLANE_OVERRIDE = "PaperPlaneOverride";
     const string ANIMATION_PULLSOLAPA = "PullSolapas"; //abrir solapa
-    const string ANIMATION_PULLSOLAPA_REVERSE = "PullSolapasReverse"; //cerrar solapa (pendiente de exportar del skeleton; mientras no exista se cae a PullSolapas)
+    const string ANIMATION_PULLSOLAPA_REVERSE = "DownSolapas"; //cerrar solapa (pendiente de exportar del skeleton; mientras no exista se cae a PullSolapas)
     const string ANIMATION_RUNSTOP = "RunStop";
     const string ANIMATION_DEATH = "Death";
+
+    //versiones sin tijera de las 7 animaciones principales (ahora se resuelven automaticamente en SetBodyAnimation)
+    const string ANIMATION_IDLE_NOSCISSORS = "IdleNoScissors";
+    const string ANIMATION_WALK_NOSCISSORS = "walkNoScissors";
+    const string ANIMATION_RUNSTOP_NOSCISSORS = "RunStopNoScissors";
+    const string ANIMATION_SKIP_NOSCISSORS = "SkipNoScissors";
+    const string ANIMATION_FALLING_NOSCISSORS = "fallingNoScissors";
+    const string ANIMATION_JUMP_NOSCISSORS = "jumpNoScissors";
+    const string ANIMATION_LANDING_NOSCISSORS = "landingNoScissors";
 
     //indices del array particleSystemGameObject del ParticleShooter (el orden vive en el prefab de Kami)
     const int PARTICLE_SPRINT = 0;
@@ -57,9 +66,9 @@ public class PlayerView
     const int PARTICLE_SPLASH = 3; //pasos sobre agua
     const int PARTICLE_WIND = 4;
     const int PARTICLE_FOOTSTEP = 5; //pasos secos
+    const int PARTICLE_RUNSTOP = 6; //frenada en seco
 
     //estado aplicado de cada override, para no re-setear el track (y reiniciar el loop) en cada cambio de estado
-    bool _noscissorsApplied;
     bool _windApplied;
     bool _paperplaneApplied;
     bool _affectedByWind = false;
@@ -83,10 +92,15 @@ public class PlayerView
         {
             _player.StartTijeraCoroutine();
         }
-        else if (e.Data.Name == "HandleFootstep")
+        else if (e.Data.Name == "HandleFootstep" && !_affectedByWind)
         {
             //we could get an int from the animation?
             StartPasoSFX(UnityEngine.Random.Range(0, 2));
+            Debug.Log("[PlayerView] footstep SFX/particle disparado");
+        }
+        else if (e.Data.Name == "HandleFootstep" && _affectedByWind)
+        {
+            Debug.Log("[PlayerView] footstep ignorado: Kami está siendo arrastrada por viento");
         }
     }
 
@@ -110,6 +124,7 @@ public class PlayerView
                 if ((previous == PlayerState.Running || previous == PlayerState.Skipping) && _player.runstopReady)
                 {
                     Spine.TrackEntry runstopEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, ANIMATION_RUNSTOP, false);
+                    _player.particleShooter.Create(PARTICLE_RUNSTOP, GetRunstopParticlePosition());
                     _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, ANIMATION_IDLE, true, runstopEntry.Animation.Duration);
                     Debug.Log($"[PlayerView] runstop -> idle (duracion {runstopEntry.Animation.Duration:F2}s)");
                 }
@@ -151,7 +166,18 @@ public class PlayerView
                     AudioManager.instance.PlayByName("JumpLand", 1f, 0.02f);
                     _player.particleShooter.Create(PARTICLE_JUMP, _player.FeetPosition); //polvito de aterrizaje en los pies
                 }
-                SetBodyAnimation(ANIMATION_LANDING, false);
+                if (_affectedByWind)
+                {
+                    //Si kami está siendo arrastrada por viento, Landing es one-shot pero después encolo Idle
+                    //para que no quede colgada sin animación mientras espera el siguiente cambio de estado.
+                    Spine.TrackEntry landingEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, ANIMATION_LANDING, false);
+                    _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, ANIMATION_IDLE, true, landingEntry.Animation.Duration);
+                    Debug.Log($"[PlayerView] landing en viento: encolo Idle despues (duracion landing {landingEntry.Animation.Duration:F2}s)");
+                }
+                else
+                {
+                    SetBodyAnimation(ANIMATION_LANDING, false);
+                }
                 break;
 
             case PlayerState.Casting:
@@ -198,18 +224,75 @@ public class PlayerView
         }
     }
 
+    string ResolveAnimationName(string animationName)
+    {
+        //resuelve si usar la version normal o NoScissors segun hasTijera en el momento
+        //si !hasTijera, intenta sustituir por version NoScissors; si no existe, usa la normal
+
+        if (_player.hasTijera)
+        {
+            return animationName; //con tijera, siempre la version normal
+        }
+
+        //sin tijera: intenta usar la version NoScissors para las 7 anims principales
+        string noscissorsName = animationName switch
+        {
+            ANIMATION_IDLE => ANIMATION_IDLE_NOSCISSORS,
+            ANIMATION_WALK => ANIMATION_WALK_NOSCISSORS,
+            ANIMATION_RUNSTOP => ANIMATION_RUNSTOP_NOSCISSORS,
+            ANIMATION_SKIP => ANIMATION_SKIP_NOSCISSORS,
+            ANIMATION_FALLING => ANIMATION_FALLING_NOSCISSORS,
+            ANIMATION_JUMP => ANIMATION_JUMP_NOSCISSORS,
+            ANIMATION_LANDING => ANIMATION_LANDING_NOSCISSORS,
+            _ => animationName //otras anims (Attack, Casting, etc.) sin version NoScissors
+        };
+
+        //si la version NoScissors existe en el skeleton, usarla; sino fallback a la normal
+        if (noscissorsName != animationName && _skeletonAnimation.Skeleton.Data.FindAnimation(noscissorsName) == null)
+        {
+            Debug.LogWarning($"[PlayerView] skeleton no tiene '{noscissorsName}', usando '{animationName}' en su lugar");
+            return animationName;
+        }
+
+        return noscissorsName;
+    }
+
     void SetBodyAnimation(string animationName, bool loop)
     {
-        _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, animationName, loop);
+        if (_player == null || animationName == null)
+        {
+            Debug.LogWarning("[PlayerView] SetBodyAnimation: _player o animationName es null");
+            return;
+        }
+
+        string resolvedName = ResolveAnimationName(animationName);
+        if (resolvedName != animationName)
+        {
+            Debug.Log($"[PlayerView] anim resuelta: {animationName} -> {resolvedName} (hasTijera: {_player.hasTijera})");
+        }
+
+        _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, resolvedName, loop);
     }
 
     //---------- Overrides (noscissors y paperplane: loopean encima del cuerpo mientras dure su condicion) ----------
 
+    public void RefreshBodyAnimation()
+    {
+        //se llama cuando hasTijera cambia mid-state para actualizar la anim del cuerpo
+        //de la version NoScissors a la normal (o viceversa, si algun dia el player pierde la tijera)
+        if (TryGetBodyAnimation(_player.CurrentState, out string bodyAnim, out bool bodyLoop))
+        {
+            SetBodyAnimation(bodyAnim, bodyLoop);
+            Debug.Log($"[PlayerView] RefreshBodyAnimation en estado {_player.CurrentState} (hasTijera: {_player.hasTijera})");
+        }
+    }
+
     public void RefreshOverrides()
     {
         //el player me llama cuando cambian hasTijera / isPaperPlaneHat, y yo tambien en cada cambio de estado
+        //nota: el override noscissors fue eliminado; ahora SetBodyAnimation() resuelve automaticamente
+        //cual version de la anim usar (normal o NoScissors) segun hasTijera en el momento
         bool allowed = OverridesAllowed(_player.CurrentState);
-        SetOverride(TRACK_NOSCISSORS, ANIMATION_NOSCISSORS_OVERRIDE, allowed && !_player.hasTijera, ref _noscissorsApplied);
         SetOverride(TRACK_WIND, ANIMATION_WIND, allowed && _affectedByWind, ref _windApplied);
         SetOverride(TRACK_PAPERPLANE, ANIMATION_PAPERPLANE_OVERRIDE, allowed && _player.isPaperPlaneHat, ref _paperplaneApplied);
     }
@@ -231,7 +314,7 @@ public class PlayerView
         }
     }
 
-    void SetOverride(int track, string animationName, bool wanted, ref bool applied)
+    void SetOverride(int track, string animationName, bool wanted, ref bool applied, float customMixOut = -1f)
     {
         if (wanted == applied)
         {
@@ -245,7 +328,8 @@ public class PlayerView
         }
         else
         {
-            _skeletonAnimation.AnimationState.SetEmptyAnimation(track, _player.animMix.overrideMixOut); //mix out suave hacia las anims de abajo
+            float mixOut = customMixOut >= 0f ? customMixOut : _player.animMix.overrideMixOut;
+            _skeletonAnimation.AnimationState.SetEmptyAnimation(track, mixOut); //mix out suave hacia las anims de abajo
         }
         Debug.Log($"[PlayerView] override {animationName}: {(wanted ? "ON" : "OFF")} (track {track})");
     }
@@ -410,6 +494,12 @@ public class PlayerView
 
     public void StartPasoSFX(int step)
     {
+        if (_affectedByWind)
+        {
+            Debug.Log("[PlayerView] StartPasoSFX paranoia guard: Kami está en viento, retornando sin crear SFX");
+            return;
+        }
+
         if (_player.isGettingWet)
         {
             switch (step)
@@ -473,7 +563,28 @@ public class PlayerView
     internal void EndAffectedByWind()
     {
         _affectedByWind = false;
-        RefreshOverrides();
+        // Apagar Wind con suavidad aumentada (0.5s de fade-out) para que no sea abrupto
+        SetOverride(TRACK_WIND, ANIMATION_WIND, false, ref _windApplied, customMixOut: 0.5f);
         _player.particleShooter.Enable(PARTICLE_WIND, false);
+        Debug.Log("[PlayerView] EndAffectedByWind: Wind apagado con suavidad aumentada (mix-out: 0.5s)");
+    }
+
+    //---------- Runstop particles ----------
+
+    Vector3 GetRunstopParticlePosition()
+    {
+        if (_skeletonAnimation == null)
+        {
+            Debug.LogWarning("[PlayerView] GetRunstopParticlePosition: _skeletonAnimation es null, devuelvo FeetPosition sin offset");
+            return _player.FeetPosition;
+        }
+
+        //determinar la dirección forward segun el facing actual
+        Vector3 forward = _skeletonAnimation.Skeleton.ScaleX > 0 ? Vector3.forward : Vector3.back;
+        float offset = 0.5f; //tuneable: qué tan delante de los pies disparar las partículas
+        Vector3 position = _player.FeetPosition + forward * offset;
+
+        Debug.Log($"[PlayerView] runstop particles fired at {position} (FeetPosition: {_player.FeetPosition}, ScaleX: {_skeletonAnimation.Skeleton.ScaleX})");
+        return position;
     }
 }
