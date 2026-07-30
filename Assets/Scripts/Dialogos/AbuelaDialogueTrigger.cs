@@ -67,6 +67,9 @@ public class AbuelaDialogueTrigger : TriggerDialogue
         abuela.GetFolded();
         AudioManager.instance.PlayByName("MagicSuccess", 1.6f);
         abuela.PlaceAbuelaAtUnfoldPoint();
+        PageScrollerManager.Instance.esferaNext.gameObject.SetActive(true);
+        PageScrollerManager.Instance.esferaPrev.gameObject.SetActive(true);
+
     }
 
     private void OnAbuelaUnfolded(params object[] parameters)

@@ -15,6 +15,7 @@ public class RepresaManager : MonoBehaviour
     [SerializeField] GameObject rioVertical, rioAbajo;
     [SerializeField] float delayTimeEntreRios = 1f;
     [SerializeField] float delayTimeRepresaFall = 1f;
+    [SerializeField] float delayTimeHastaCamaraBackToNormal = 1f;
 
     [SerializeField] List<GameObject> objectsToEliminate = new List<GameObject>();
     [SerializeField] List<GameObject> objectsToActivate = new List<GameObject>();
@@ -33,6 +34,7 @@ public class RepresaManager : MonoBehaviour
         {
             AudioManager.instance.PlayByName("RepresaFall", 1f);
             AudioManager.instance.PlayByName("MagicSuccess", 0.9f);
+            CameraManager.Instance.SetCamera(CameraMode.BookCenter);
             particulasSplash.SetActive(true);
             StartCoroutine(ActivarRiosCoroutine());
         }
@@ -51,6 +53,10 @@ public class RepresaManager : MonoBehaviour
         rioVertical.SetActive(true);
         yield return new WaitForSeconds(delayTimeEntreRios);
         rioAbajo.SetActive(true);
+        yield return new WaitForSeconds(delayTimeHastaCamaraBackToNormal);
+        CameraManager.Instance.SetCamera(CameraMode.Normal);
+
+
     }
 
     void OnDestroy()

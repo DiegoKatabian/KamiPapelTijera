@@ -17,6 +17,8 @@ public class EncounterManager : MonoBehaviour
     [SerializeField] GameObject[] _objectsToDeactivateDuringEncounter; //page scroller, etc
     [SerializeField] GameObject[] _objectsToActivateDuringEncounter; //paredes invisibles, etc. 
     [SerializeField] GameObject AngryParticlesGameObject;
+    [SerializeField] GameObject[] _objectsToDeactivateOnEncounterStart; //page scroller, etc
+
 
     void Start()
     {
@@ -43,6 +45,11 @@ public class EncounterManager : MonoBehaviour
             foreach (GameObject go in _objectsToActivateDuringEncounter)
             {
                 go.SetActive(true);
+            }
+
+            foreach (GameObject go in _objectsToDeactivateOnEncounterStart)
+            {
+                go.SetActive(false);
             }
         }
     }
