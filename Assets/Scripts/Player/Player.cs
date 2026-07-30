@@ -521,6 +521,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         hasTijera = true;
         LevelManager.Instance.AddResource(ResourceType.tijera, 1);
         tijeraManager.SetTijera();
+        StartReceiveRewardAutoEnd();
         _view.RefreshOverrides(); //chau override noscissors, de aca en adelante van las anims con tijera
     }
     public void GetTijeraMejorada()
@@ -566,10 +567,23 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         SetState(PlayerState.ReceivingReward);
         StartCoroutine(WaitForReceiveRewardAnimation(rewardAnimationWaitTime));
     }
+
+    private void StartReceiveRewardAutoEnd()
+    {
+        SetState(PlayerState.ReceivingReward);
+        StartCoroutine(WaitForReceiveRewardAnimationAutoEnd(rewardAnimationWaitTime));
+    }
     public IEnumerator WaitForReceiveRewardAnimation(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
         DialogueManager.Instance.lockedByAnimation = false;
+    }
+
+    public IEnumerator WaitForReceiveRewardAnimationAutoEnd(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        DialogueManager.Instance.lockedByAnimation = false;
+        EndReceiveReward(new object[] { });
     }
     private void EndReceiveReward(object[] parameters)
     {
