@@ -540,7 +540,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         LevelManager.Instance.AddResource(ResourceType.tijera, 1);
         tijeraManager.SetTijera();
         StartReceiveRewardAutoEnd();
-        _view.RefreshOverrides(); //chau override noscissors, de aca en adelante van las anims con tijera
+        _view.RefreshBodyAnimation(); //actualiza la anim del cuerpo si es necesario (de NoScissors a normal)
+        _view.RefreshOverrides(); //actualiza viento y paperplane
     }
     public void GetTijeraMejorada()
     {
