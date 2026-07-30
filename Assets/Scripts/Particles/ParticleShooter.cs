@@ -18,6 +18,7 @@ public class ParticleShooter : MonoBehaviour
     //la 2 va a ser reward received particles
     //la 3 es splash (pisar sobre agua)
     //la 4 es getaffectedbywind viento particles
+    //la 5 es footstep (pasos secos)
 
     private void Start()
     {
@@ -50,8 +51,38 @@ public class ParticleShooter : MonoBehaviour
 
     public void Create(int index, Transform targetTransform)
     {
-        GameObject particle = Instantiate(particleSystemGameObject[index], targetTransform.position + offset, targetTransform.rotation, null);
-        //particle.transform.parent = null;
+        //instancia siguiendo al transform dado, aplicando el offset serializado (comportamiento historico)
+        if (targetTransform == null)
+        {
+            Debug.LogWarning($"[ParticleShooter] Create: targetTransform null para el indice {index}, no instancio nada");
+            return;
+        }
+
+        CreateInternal(index, targetTransform.position + offset, targetTransform.rotation);
+    }
+
+    public void Create(int index, Vector3 worldPosition)
+    {
+        //instancia exactamente en la posicion world dada, SIN offset: el caller ya manda la posicion final (ej: Player.FeetPosition)
+        CreateInternal(index, worldPosition, Quaternion.identity);
+    }
+
+    void CreateInternal(int index, Vector3 worldPosition, Quaternion worldRotation)
+    {
+        //logica compartida de ambos overloads de Create: guards + instanciar detached (parent null) + autodestruir
+        if (particleSystemGameObject == null || index < 0 || index >= particleSystemGameObject.Length)
+        {
+            Debug.LogWarning($"[ParticleShooter] Create: indice {index} fuera de rango (array de {(particleSystemGameObject == null ? 0 : particleSystemGameObject.Length)} elementos)");
+            return;
+        }
+
+        if (particleSystemGameObject[index] == null)
+        {
+            Debug.LogWarning($"[ParticleShooter] Create: el elemento {index} del array esta vacio, no instancio nada");
+            return;
+        }
+
+        GameObject particle = Instantiate(particleSystemGameObject[index], worldPosition, worldRotation, null); //parent null: queda world-space, no sigue a kami
 
         StartCoroutine(DestroyCoroutine(timeToDestroy, particle));
     }

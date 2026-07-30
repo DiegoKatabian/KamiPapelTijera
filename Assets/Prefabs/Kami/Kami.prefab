@@ -392,6 +392,7 @@ MonoBehaviour:
   - {fileID: 7311175190894943868}
   - {fileID: 1597159253881706718}
   - {fileID: 1961439499254973002}
+  - {fileID: 897716562938104413, guid: 59114b61fce443ce9dba215a81257838, type: 3}
   timeToDestroy: 2
   offset: {x: 0, y: 1, z: 0}
 --- !u!1 &7567128661433650889

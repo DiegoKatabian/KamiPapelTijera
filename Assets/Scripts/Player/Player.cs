@@ -56,7 +56,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     [Header("Componentes")]
     public CharacterController cc;
-    public Transform particleAnchor; //ancla para particulas de salto/aterrizaje (sigue el hueso Smoke del skeleton via BoneFollower)
+    public Transform particleAnchor; //ancla que sigue el hueso Smoke del skeleton (BoneFollower). ya no se usa para salto/aterrizaje: esas van a FeetPosition
     public TijeraHitbox miTijeraHitbox;
     public ParticleShooter particleShooter;
     [SerializeField] GameObject myPaperPlaneHat;
@@ -107,6 +107,24 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     //State Machine
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
+
+    //la base de la capsula del CharacterController en world space: donde apoyan los pies de kami.
+    //center y height son locales al transform, asi que se ajustan por lossyScale por si el prefab esta escalado.
+    public Vector3 FeetPosition
+    {
+        get
+        {
+            if (cc == null)
+            {
+                Debug.LogWarning("[Player] FeetPosition: no hay CharacterController asignado, devuelvo transform.position como fallback");
+                return transform.position;
+            }
+
+            Vector3 scale = transform.lossyScale;
+            Vector3 worldCenter = transform.position + Vector3.Scale(cc.center, scale);
+            return worldCenter - Vector3.up * (cc.height * 0.5f * Mathf.Abs(scale.y));
+        }
+    }
 
     public bool IsInHitStun
     {
@@ -283,9 +301,9 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         }
     }
 
-    public void PlayPullSolapa()
+    public void PlayPullSolapa(bool closing = false)
     {
-        float duration = _view.PlayPullSolapa();
+        float duration = _view.PlayPullSolapa(closing); //closing = true pide la anim en reversa (cerrar la solapa)
         _pullSolapaLockEndTime = Time.time + duration; //el model bloquea movimiento y salto mientras dure la anim
     }
 
@@ -616,8 +634,9 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     public void BrieflySlowDown()
     {
+        //solo el landing lag: la particula de aterrizaje la dispara el view al entrar a Landing (en los pies),
+        //asi no se duplica en las caidas fuertes
         StartCoroutine(SlowDownCoroutine(landingLagModifier, landingLagTime));
-        particleShooter.Create(1, particleAnchor);
     }
     public IEnumerator SlowDownCoroutine(float speedModifier, float time)
     {

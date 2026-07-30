@@ -45,9 +45,18 @@ public class PlayerView
     const string ANIMATION_NOSCISSORS_OVERRIDE = "NoScissortsOverride"; //ojo: "Scissorts" es typo del skeleton, no corregir aca
     const string ANIMATION_WIND = "Wind";
     const string ANIMATION_PAPERPLANE_OVERRIDE = "PaperPlaneOverride";
-    const string ANIMATION_PULLSOLAPA = "PullSolapas";
+    const string ANIMATION_PULLSOLAPA = "PullSolapas"; //abrir solapa
+    const string ANIMATION_PULLSOLAPA_REVERSE = "PullSolapasReverse"; //cerrar solapa (pendiente de exportar del skeleton; mientras no exista se cae a PullSolapas)
     const string ANIMATION_RUNSTOP = "RunStop";
     const string ANIMATION_DEATH = "Death";
+
+    //indices del array particleSystemGameObject del ParticleShooter (el orden vive en el prefab de Kami)
+    const int PARTICLE_SPRINT = 0;
+    const int PARTICLE_JUMP = 1; //se usa para salto Y aterrizaje
+    const int PARTICLE_REWARD = 2;
+    const int PARTICLE_SPLASH = 3; //pasos sobre agua
+    const int PARTICLE_WIND = 4;
+    const int PARTICLE_FOOTSTEP = 5; //pasos secos
 
     //estado aplicado de cada override, para no re-setear el track (y reiniciar el loop) en cada cambio de estado
     bool _noscissorsApplied;
@@ -128,7 +137,7 @@ public class PlayerView
                     AudioManager.instance.PlayByName("Jump_Paperplane", 1f, 0.02f);
                 }
                 AudioManager.instance.PlayByName("JumpStart", 1f, 0.02f);
-                _player.particleShooter.Create(1, _player.particleAnchor);
+                _player.particleShooter.Create(PARTICLE_JUMP, _player.FeetPosition); //en los pies, world-space (el anchor del hueso Smoke quedaba a la altura del torso)
                 SetBodyAnimation(ANIMATION_JUMP, false);
                 break;
 
@@ -140,6 +149,7 @@ public class PlayerView
                 if (previous == PlayerState.Falling)
                 {
                     AudioManager.instance.PlayByName("JumpLand", 1f, 0.02f);
+                    _player.particleShooter.Create(PARTICLE_JUMP, _player.FeetPosition); //polvito de aterrizaje en los pies
                 }
                 SetBodyAnimation(ANIMATION_LANDING, false);
                 break;
@@ -160,7 +170,7 @@ public class PlayerView
             case PlayerState.ReceivingReward:
                 AudioManager.instance.PlayByName("Receive_Reward");
                 CameraManager.Instance.SetCamera(CameraMode.ReceiveReward);
-                _player.particleShooter.Enable(2, true);
+                _player.particleShooter.Enable(PARTICLE_REWARD, true);
                 SetBodyAnimation(ANIMATION_RECEIVE_REWARD, false);
                 _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, ANIMATION_RECEIVE_REWARD_LOOP, true, 0);
 
@@ -183,7 +193,7 @@ public class PlayerView
                 break;
             case PlayerState.ReceivingReward:
                 CameraManager.Instance.SetCamera(CameraMode.Normal);
-                _player.particleShooter.Enable(2, false);
+                _player.particleShooter.Enable(PARTICLE_REWARD, false);
                 break;
         }
     }
@@ -257,14 +267,32 @@ public class PlayerView
 
     //---------- Ataque (track propio, se superpone al cuerpo) ----------
 
-    public float PlayPullSolapa()
+    public float PlayPullSolapa(bool closing = false)
     {
-        //devuelve la duracion para que player sepa cuanto bloquear el movimiento
-        Spine.TrackEntry solapaEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_ATTACK, ANIMATION_PULLSOLAPA, false);
+        //devuelve la duracion para que player sepa cuanto bloquear el movimiento.
+        //closing = true pide la anim en reversa (cerrar la solapa).
+        //apertura usa PullSolapas; cierre usa PullSolapasReverse (export dedicado del skeleton).
+        //si el skeleton todavia no trae la de cierre, caemos a la normal con un warning (asi el juego no explota con atlas viejos).
+        string animName = ANIMATION_PULLSOLAPA;
+        if (closing)
+        {
+            if (_skeletonAnimation.Skeleton.Data.FindAnimation(ANIMATION_PULLSOLAPA_REVERSE) != null)
+            {
+                animName = ANIMATION_PULLSOLAPA_REVERSE;
+            }
+            else
+            {
+                Debug.LogWarning($"[PlayerView] el skeleton no trae '{ANIMATION_PULLSOLAPA_REVERSE}' todavia: el cierre usa '{ANIMATION_PULLSOLAPA}' normal");
+            }
+        }
+
+        Spine.TrackEntry solapaEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_ATTACK, animName, false);
         solapaEntry.MixDuration = _player.animMix.attackMixIn;
-        _skeletonAnimation.AnimationState.AddEmptyAnimation(TRACK_ATTACK, _player.animMix.attackMixOut, solapaEntry.Animation.Duration);
-        Debug.Log($"[PlayerView] pullsolapa triggered");
-        return solapaEntry.Animation.Duration;
+        float duration = solapaEntry.Animation.Duration;
+        _skeletonAnimation.AnimationState.AddEmptyAnimation(TRACK_ATTACK, _player.animMix.attackMixOut, duration);
+
+        Debug.Log($"[PlayerView] pullsolapa triggered con '{animName}' ({(closing ? "cierre" : "apertura")})");
+        return duration;
     }
 
     public void StartAttack()
@@ -370,13 +398,13 @@ public class PlayerView
     public void StartSprint()
     {
         //solo particulas y sonido: la animacion de correr la maneja el estado Running
-        _player.particleShooter.Enable(0, true);
+        _player.particleShooter.Enable(PARTICLE_SPRINT, true);
         AudioManager.instance.PlayByName("BootsOn", 2f, 0.01f);
     }
 
     public void EndSprint()
     {
-        _player.particleShooter.Enable(0, false);
+        _player.particleShooter.Enable(PARTICLE_SPRINT, false);
         AudioManager.instance.PlayByName("BootsOff", 2f, 0.01f);
     }
 
@@ -395,7 +423,7 @@ public class PlayerView
                 default:
                     break;
             }
-            _player.particleShooter.Shoot(3); //la 3 es la particula de splash
+            _player.particleShooter.Shoot(PARTICLE_SPLASH);
         }
         else
         {
@@ -411,6 +439,11 @@ public class PlayerView
                     AudioManager.instance.PlayRandom("Pasos_Kami_01", "Pasos_Kami_02", "Pasos_Kami_03", "Pasos_Kami_04");
                     break;
             }
+
+            //polvito seco en los pies en cada paso. ojo performance: los pasos son frecuentes y Create
+            //instancia + destruye con corrutina a los 2s; para este juego alcanza, pero si algun dia molesta
+            //en el profiler, este es el candidato numero uno a pooling.
+            _player.particleShooter.Create(PARTICLE_FOOTSTEP, _player.FeetPosition);
         }
     }
 
@@ -420,10 +453,10 @@ public class PlayerView
         RefreshOverrides();
 
         Debug.Log("view start affected by wind // windDirection: " + windDirection);
-        _player.particleShooter.Enable(4, true);
+        _player.particleShooter.Enable(PARTICLE_WIND, true);
 
         //rotate particle system so that it faces the wind direction
-        _player.particleShooter.particleSystemGameObject[4].transform.forward = windDirection;
+        _player.particleShooter.particleSystemGameObject[PARTICLE_WIND].transform.forward = windDirection;
 
         float minWindForce = 0f;
         float maxWindForce = 0.5f;
@@ -433,7 +466,7 @@ public class PlayerView
         float windForceNormalized = (windForce - minWindForce) / (maxWindForce - minWindForce);
         windForceNormalized = minParticleSize + (windForceNormalized * (maxParticleSize - minParticleSize));
 
-        _player.particleShooter.particleSystemGameObject[4].GetComponent<ParticleSizeUpdater>()?.UpdateSize(windForceNormalized);
+        _player.particleShooter.particleSystemGameObject[PARTICLE_WIND].GetComponent<ParticleSizeUpdater>()?.UpdateSize(windForceNormalized);
         Debug.Log("windforcenormalized = " + windForceNormalized);
     }
 
@@ -441,6 +474,6 @@ public class PlayerView
     {
         _affectedByWind = false;
         RefreshOverrides();
-        _player.particleShooter.Enable(4, false);
+        _player.particleShooter.Enable(PARTICLE_WIND, false);
     }
 }
