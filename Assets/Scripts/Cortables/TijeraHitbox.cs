@@ -17,21 +17,25 @@ public class TijeraHitbox : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //print("entre a un collider...");
-        if (other.GetComponent<ICortable>() != null)
+        ICortable objetoCortable = other.GetComponent<ICortable>();
+        if (objetoCortable == null)
         {
-            //print("...cortable");
-            ICortable objetoCortable = other.GetComponent<ICortable>();
-            objetoCortable.GetCut(tijeraDamage);
-            missed = false;
+            return; //tocar algo no-cortable (pared, suelo) no cambia el estado del miss
         }
-        else
-        {
-            missed = true;
-        }
+
+        //print("...cortable");
+        objetoCortable.GetCut(tijeraDamage);
+        missed = false; //corto algo: este swing ya no cuenta como miss
     }
 
     private void OnEnable()
     {
+        //semantica del flag: cada activacion arranca asumiendo miss, y solo se
+        //desmiente si OnTriggerEnter corta algo ICortable. Si la hitbox no toca
+        //ningun collider, OnTriggerEnter nunca corre, asi que el default tiene
+        //que ser true para que el swing al aire suene igual.
+        missed = true;
+
         if (HitboxStartParticles != null)
         {
             HitboxStartParticles.Play();
@@ -47,6 +51,7 @@ public class TijeraHitbox : MonoBehaviour
 
         if (missed)
         {
+            Debug.Log("[TijeraHitbox] Swing sin corte: reproduciendo TijeraMiss");
             AudioManager.instance.PlayByName("TijeraMiss", 1.1f);
             missed = false;
         }
