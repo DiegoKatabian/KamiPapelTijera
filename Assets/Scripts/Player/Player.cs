@@ -57,6 +57,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     [Header("Componentes")]
     public CharacterController cc;
     public Transform particleAnchor; //ancla que sigue el hueso Smoke del skeleton (BoneFollower). ya no se usa para salto/aterrizaje: esas van a FeetPosition
+    public Transform footstepAnchor; //GO vacío en los pies de Kami, para instanciar partículas de pasos y runstop. editable en el prefab para tuning visual
     public TijeraHitbox miTijeraHitbox;
     public ParticleShooter particleShooter;
     [SerializeField] GameObject myPaperPlaneHat;

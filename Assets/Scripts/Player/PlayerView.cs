@@ -535,7 +535,14 @@ public class PlayerView
             //polvito seco en los pies en cada paso. ojo performance: los pasos son frecuentes y Create
             //instancia + destruye con corrutina a los 2s; para este juego alcanza, pero si algun dia molesta
             //en el profiler, este es el candidato numero uno a pooling.
-            _player.particleShooter.Create(PARTICLE_FOOTSTEP, _player.FeetPosition);
+            if (_player.footstepAnchor != null)
+            {
+                _player.particleShooter.Create(PARTICLE_FOOTSTEP, _player.footstepAnchor.position);
+            }
+            else
+            {
+                Debug.LogWarning("[PlayerView] footstepAnchor es null, no se disparan particulas de paso");
+            }
         }
     }
 
@@ -575,18 +582,14 @@ public class PlayerView
 
     Vector3 GetRunstopParticlePosition()
     {
-        if (_skeletonAnimation == null)
+        if (_player.footstepAnchor != null)
         {
-            Debug.LogWarning("[PlayerView] GetRunstopParticlePosition: _skeletonAnimation es null, devuelvo FeetPosition sin offset");
-            return _player.FeetPosition;
+            return _player.footstepAnchor.position;
         }
-
-        //determinar la dirección forward segun el facing actual
-        Vector3 forward = _skeletonAnimation.Skeleton.ScaleX > 0 ? Vector3.forward : Vector3.back;
-        float offset = 0f; //tuneable: qué tan delante de los pies disparar las partículas
-        Vector3 position = _player.FeetPosition + forward * offset;
-
-        Debug.Log($"[PlayerView] runstop particles fired at {position} (FeetPosition: {_player.FeetPosition}, ScaleX: {_skeletonAnimation.Skeleton.ScaleX})");
-        return position;
+        else
+        {
+            Debug.LogWarning("[PlayerView] footstepAnchor es null, devolviendo transform.position");
+            return _player.transform.position;
+        }
     }
 }
