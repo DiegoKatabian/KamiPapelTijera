@@ -14,12 +14,12 @@ public class ParticleShooter : MonoBehaviour
     public Vector3 offset = Vector3.zero;
 
     //la 0 es sprint particles
-    //la 1 es jump particles
+    //la 1 es jump particles (hijo del Footstep Anchor, se dispara con Shoot)
     //la 2 va a ser reward received particles
     //la 3 es splash (pisar sobre agua)
     //la 4 es getaffectedbywind viento particles
-    //la 5 es footstep (pasos secos)
-    //la 6 es runstop (frenada en seco)
+    //la 5 es footstep pasos secos (hijo del Footstep Anchor, se dispara con Shoot)
+    //la 6 es runstop frenada en seco (hijo del Footstep Anchor, se dispara con Shoot)
 
     private void Start()
     {
@@ -35,6 +35,12 @@ public class ParticleShooter : MonoBehaviour
     public void Shoot(int index)
     {
         //shoot all the ps of the go in the index
+        if (particleSystemGameObject == null || index < 0 || index >= particleSystemGameObject.Length || particleSystemGameObject[index] == null)
+        {
+            Debug.LogWarning($"[ParticleShooter] Shoot: indice {index} fuera de rango o elemento vacio, no disparo nada");
+            return;
+        }
+
         foreach (ParticleSystem item in particleSystemsDict[particleSystemGameObject[index]])
         {
             item.Play();

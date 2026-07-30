@@ -59,7 +59,8 @@ public class PlayerView
     const string ANIMATION_JUMP_NOSCISSORS = "jumpNoScissors";
     const string ANIMATION_LANDING_NOSCISSORS = "landingNoScissors";
 
-    //indices del array particleSystemGameObject del ParticleShooter (el orden vive en el prefab de Kami)
+    //indices del array particleSystemGameObject del ParticleShooter (el orden vive en el prefab de Kami).
+    //jump/footstep/runstop son HIJOS del Footstep Anchor (world space, se disparan con ShootFootAnchorParticles)
     const int PARTICLE_SPRINT = 0;
     const int PARTICLE_JUMP = 1; //se usa para salto Y aterrizaje
     const int PARTICLE_REWARD = 2;
@@ -126,7 +127,7 @@ public class PlayerView
                     string resolvedRunstop = ResolveAnimationName(ANIMATION_RUNSTOP);
                     string resolvedIdle = ResolveAnimationName(ANIMATION_IDLE);
                     Spine.TrackEntry runstopEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, resolvedRunstop, false);
-                    _player.particleShooter.Create(PARTICLE_RUNSTOP, GetRunstopParticlePosition());
+                    ShootFootAnchorParticles(PARTICLE_RUNSTOP);
                     _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, resolvedIdle, true, runstopEntry.Animation.Duration);
                     Debug.Log($"[PlayerView] runstop ({resolvedRunstop}) -> idle ({resolvedIdle}) (duracion {runstopEntry.Animation.Duration:F2}s)");
                 }
@@ -154,7 +155,7 @@ public class PlayerView
                     AudioManager.instance.PlayByName("Jump_Paperplane", 1f, 0.02f);
                 }
                 AudioManager.instance.PlayByName("JumpStart", 1f, 0.02f);
-                _player.particleShooter.Create(PARTICLE_JUMP, _player.FeetPosition); //en los pies, world-space (el anchor del hueso Smoke quedaba a la altura del torso)
+                ShootFootAnchorParticles(PARTICLE_JUMP);
                 SetBodyAnimation(ANIMATION_JUMP, false);
                 break;
 
@@ -166,15 +167,18 @@ public class PlayerView
                 if (previous == PlayerState.Falling)
                 {
                     AudioManager.instance.PlayByName("JumpLand", 1f, 0.02f);
-                    _player.particleShooter.Create(PARTICLE_JUMP, _player.FeetPosition); //polvito de aterrizaje en los pies
+                    ShootFootAnchorParticles(PARTICLE_JUMP); //polvito de aterrizaje en los pies
                 }
                 if (_affectedByWind)
                 {
                     //Si kami está siendo arrastrada por viento, Landing es one-shot pero después encolo Idle
                     //para que no quede colgada sin animación mientras espera el siguiente cambio de estado.
-                    Spine.TrackEntry landingEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, ANIMATION_LANDING, false);
-                    _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, ANIMATION_IDLE, true, landingEntry.Animation.Duration);
-                    Debug.Log($"[PlayerView] landing en viento: encolo Idle despues (duracion landing {landingEntry.Animation.Duration:F2}s)");
+                    //ojo: resolver las anims (NoScissors) tambien aca, este camino no pasa por SetBodyAnimation.
+                    string resolvedLanding = ResolveAnimationName(ANIMATION_LANDING);
+                    string resolvedIdleWind = ResolveAnimationName(ANIMATION_IDLE);
+                    Spine.TrackEntry landingEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, resolvedLanding, false);
+                    _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, resolvedIdleWind, true, landingEntry.Animation.Duration);
+                    Debug.Log($"[PlayerView] landing en viento ({resolvedLanding}): encolo {resolvedIdleWind} despues (duracion landing {landingEntry.Animation.Duration:F2}s)");
                 }
                 else
                 {
@@ -532,17 +536,8 @@ public class PlayerView
                     break;
             }
 
-            //polvito seco en los pies en cada paso. ojo performance: los pasos son frecuentes y Create
-            //instancia + destruye con corrutina a los 2s; para este juego alcanza, pero si algun dia molesta
-            //en el profiler, este es el candidato numero uno a pooling.
-            if (_player.footstepAnchor != null)
-            {
-                _player.particleShooter.Create(PARTICLE_FOOTSTEP, _player.footstepAnchor.position);
-            }
-            else
-            {
-                Debug.LogWarning("[PlayerView] footstepAnchor es null, no se disparan particulas de paso");
-            }
+            //polvito seco en los pies en cada paso, junto al sonido (mismo evento HandleFootstep)
+            ShootFootAnchorParticles(PARTICLE_FOOTSTEP);
         }
     }
 
@@ -578,18 +573,23 @@ public class PlayerView
         Debug.Log("[PlayerView] EndAffectedByWind: Wind apagado con suavidad aumentada (mix-out: 0.5s)");
     }
 
-    //---------- Runstop particles ----------
+    //---------- Particulas del Footstep Anchor (pasos, salto/aterrizaje, runstop) ----------
 
-    Vector3 GetRunstopParticlePosition()
+    void ShootFootAnchorParticles(int index)
     {
-        if (_player.footstepAnchor != null)
+        //los particle systems de pasos/salto/runstop viven como HIJOS del Footstep Anchor dentro de Kami.prefab,
+        //con simulation space World: se reproducen en el lugar y las particulas emitidas NO siguen a kami.
+        //la direccion de la fuerza vive en el shape/startSpeed de cada prefab (footstep/jump hacia atras,
+        //runstop hacia adelante); aca solo giramos el anchor 180 segun el facing para que "atras" y "adelante"
+        //sean relativos a donde mira kami. si salen invertidas, cambiar el 0/180 de lugar aca (un solo punto).
+        if (_player.footstepAnchor == null)
         {
-            return _player.footstepAnchor.position;
+            Debug.LogWarning("[PlayerView] footstepAnchor es null: no se disparan particulas");
+            return;
         }
-        else
-        {
-            Debug.LogWarning("[PlayerView] footstepAnchor es null, devolviendo transform.position");
-            return _player.transform.position;
-        }
+
+        float facingY = _skeletonAnimation.Skeleton.ScaleX >= 0 ? 0f : 180f;
+        _player.footstepAnchor.localRotation = Quaternion.Euler(0f, facingY, 0f);
+        _player.particleShooter.Shoot(index);
     }
 }
