@@ -16,7 +16,15 @@ public class TriggerSolapa : TriggerScript
     {
         if (triggerBool)
         {
-            LevelManager.Instance.player.PlayPullSolapa();
+            if (solapaAfectada == null)
+            {
+                Debug.LogWarning("[TriggerSolapa] No hay solapa afectada asignada, se ignora la interaccion");
+                return;
+            }
+
+            // Si estaba abierta, kami la va a cerrar y la animacion de tironear va en reversa
+            bool estabaAbierta = solapaAfectada.IsOpen;
+            LevelManager.Instance.player.PlayPullSolapa(estabaAbierta);
             solapaAfectada.CambiarEstado();
             StartCoroutine(ToggleObject(objetoParaMostrar));
         }
