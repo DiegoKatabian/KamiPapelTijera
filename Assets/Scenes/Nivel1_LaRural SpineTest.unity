@@ -15604,6 +15604,21 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[14]
       value: 
       objectReference: {fileID: 2100000, guid: 47013ce19dd7f8948b0a8cea34d69abd, type: 2}
+    - target: {fileID: 8506776706752142909, guid: 55968c0be0eae574cac6fbf9493c0537,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8506776706752142993, guid: 55968c0be0eae574cac6fbf9493c0537,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8506776706752143221, guid: 55968c0be0eae574cac6fbf9493c0537,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9100000000000000005, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -23448,6 +23463,7 @@ MonoBehaviour:
   showTooltip: 1
   tooltipTextToShow: dialogue_tooltip
   postItColor: 0
+  _maxTooltipShows: 0
   _burnAfterReading: 0
   _dialogues:
   - {fileID: 11400000, guid: 589192ec4561a6743bc630c4b7497b92, type: 2}
@@ -24983,17 +24999,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   killTime: 2
   azulKillTime: 2
-  naranjaKillTime: 4
-  rosaKillTime: 4
+  naranjaKillTime: 5
+  rosaKillTime: 2
   amarilloKillTime: 2
-  verdeKillTime: 4
+  verdeKillTime: 2
   postIts:
   - {fileID: 1070129868}
   - {fileID: 1326810425}
   - {fileID: 1782766769}
   - {fileID: 1482843970}
   - {fileID: 1439516799}
-  getPaperPlaneText: 
 --- !u!1001 &583887437
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37422,6 +37437,11 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6282537975522926649, guid: 033f5b5aa64aaab49a6eadbeccc2549f,
+        type: 3}
+      propertyPath: _showOnEnable
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 033f5b5aa64aaab49a6eadbeccc2549f, type: 3}
 --- !u!224 &811726219 stripped
@@ -38648,6 +38668,7 @@ MonoBehaviour:
   showTooltip: 1
   tooltipTextToShow: dialogue_tooltip
   postItColor: 0
+  _maxTooltipShows: 0
   _burnAfterReading: 0
   _dialogues:
   - {fileID: 11400000, guid: 00a8f6cb5d1acf7428ee7646376f02c6, type: 2}
@@ -41003,6 +41024,7 @@ MonoBehaviour:
   showTooltip: 1
   tooltipTextToShow: abuela_dropoff
   postItColor: 4
+  _maxTooltipShows: 0
   abuela: {fileID: 1440911855}
   dropOffPoint: {fileID: 1941685242}
 --- !u!65 &944663229
@@ -65490,6 +65512,21 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6282537975522926649, guid: 033f5b5aa64aaab49a6eadbeccc2549f,
+        type: 3}
+      propertyPath: _dismissOnJump
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6282537975522926649, guid: 033f5b5aa64aaab49a6eadbeccc2549f,
+        type: 3}
+      propertyPath: _dismissOnAttack
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6282537975522926649, guid: 033f5b5aa64aaab49a6eadbeccc2549f,
+        type: 3}
+      propertyPath: _dismissOnInteract
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 033f5b5aa64aaab49a6eadbeccc2549f, type: 3}
 --- !u!224 &1482843969 stripped
@@ -70920,6 +70957,7 @@ MonoBehaviour:
   showTooltip: 0
   tooltipTextToShow: 
   postItColor: 0
+  _maxTooltipShows: 0
   tutorialObject: {fileID: 419958437}
 --- !u!65 &1644117877
 BoxCollider:
@@ -84986,6 +85024,7 @@ MonoBehaviour:
   tooltipTextToShow: "-... --- -.- .. - .-\u2800 -. ---\u2800 -.. . ... -.-. .. .
     -. -.. ."
   postItColor: 4
+  _maxTooltipShows: 0
   isOneTimeOnly: 1
 --- !u!1001 &2140251304
 PrefabInstance:
@@ -88039,6 +88078,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6282537975522926649, guid: 033f5b5aa64aaab49a6eadbeccc2549f,
+        type: 3}
+      propertyPath: _dismissOnJump
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6282537975522926649, guid: 033f5b5aa64aaab49a6eadbeccc2549f,
+        type: 3}
+      propertyPath: _dismissOnAttack
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6282537975522926649, guid: 033f5b5aa64aaab49a6eadbeccc2549f,
+        type: 3}
+      propertyPath: _dismissOnInteract
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 033f5b5aa64aaab49a6eadbeccc2549f, type: 3}
 --- !u!1001 &3946213971095798184
@@ -89540,11 +89594,6 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -2.5275266
       objectReference: {fileID: 0}
-    - target: {fileID: 8471465313233729667, guid: 5242af2ee5dc6a74da62f7f53cb59575,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8621498527565570154, guid: 5242af2ee5dc6a74da62f7f53cb59575,
         type: 3}
       propertyPath: player
@@ -89707,7 +89756,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5549367393259815879
 Transform:
   m_ObjectHideFlags: 0
@@ -89777,7 +89826,7 @@ PrefabInstance:
     - target: {fileID: 5549367394310565229, guid: b10d773730f3e814c80e3450cd124562,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5549367394491038700, guid: b10d773730f3e814c80e3450cd124562,
         type: 3}

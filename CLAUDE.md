@@ -7,9 +7,14 @@ Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spin
 - `Assets/Scripts/Player/` — Kami, en MVC casero (ver abajo)
 - `Assets/Scripts/PUBMechanics/` — solapas del libro pop-up (Solapa, TriggerSolapa)
 - `Assets/Scripts/Cortables/` — todo lo que la tijera corta (`ICortable`) + `TijeraHitbox`
-- `Assets/Scripts/Managers/` — AudioManager, LevelManager, etc. (singletons)
+- `Assets/Scripts/Managers/` — AudioManager, LevelManager, EventManager, etc. (singletons)
+- `Assets/Scripts/TriggerS/` — triggers de zona (base `TriggerScript`, con tooltip por color)
+- `Assets/Scripts/Origami/` — minijuego de origami + `PedestalCanvasDisplay` (costo en pedestal)
+- `Assets/Scripts/UI/` — `TooltipManager` + `PostIt` (post-its de tutorial)
 - `Assets/Scripts/Particles/ParticleShooter.cs` — partículas del player por índice
 - `Assets/Prefabs/Kami/Kami.prefab` — el player completo
+- `Assets/Prefabs/OrigamiRoutes/` — sellos, `PedestalParent.prefab` y rutas de origami
+- `Assets/Prefabs/UI/PostIt.prefab` — los post-its de escena son instancias de este
 - `Assets/Prefabs/Particulas/` — prefabs de partículas
 - `Assets/2D/Kami Spine/Atlas 5/skeleton.json` — skeleton ACTIVO (Atlas 1-4 son viejos)
 - Escena de trabajo: `Nivel1_LaRural SpineTest.unity` (las otras escenas viejas pueden tirar warnings de refs stale)
@@ -38,9 +43,12 @@ Construye y coordina a los otros tres — ellos hablan con Player, nunca entre s
 
 - Spine/skeleton/animaciones de Kami: @docs/claude/spine-kami.md
 - Audio y partículas: @docs/claude/audio-y-particulas.md
+- Canvas de costo de origami y tooltips/post-its: @docs/claude/origami-y-tooltips.md
 
 ## Ojo al editar
 
-- El editor de Unity suele estar ABIERTO mientras trabajamos: al crear un asset, esperar/usar el `.meta` que Unity autogenera en vez de inventar un GUID.
-- Cirugía YAML de prefabs: leer el archivo entero antes, copiar patrones existentes (ej. referencias *stripped* a prefabs anidados), y verificar GUIDs con grep.
+- El editor de Unity suele estar ABIERTO mientras trabajamos: al crear un asset, preferir el `.meta` que Unity autogenera. Pero si Unity no tiene foco puede tardar MUCHO en generarlo: es válido crear el `.meta` a mano con un GUID random, verificado sin colisiones por grep (Unity lo adopta al refrescar).
+- Cirugía YAML de prefabs: leer el archivo entero antes y copiar patrones existentes. Referencias a componentes de prefabs anidados = bloques MonoBehaviour *stripped* (patrón copiable en `OrigamiRoute 1-Easy.prefab`). El fileID que una escena usa para un target dentro de una instancia anidada se computa `(source XOR prefabInstance) & 0x7FFFFFFFFFFFFFFF`.
+- Line endings mixtos: algunos prefabs son CRLF y otros LF — preservar el del archivo al editar.
+- Verificación post-cirugía: contar bloques `--- !u!` antes/después + grep de unicidad de fileIDs.
 - No hay Unity CLI para compilar desde acá: la verificación final de compilación la hace el editor de Diego.

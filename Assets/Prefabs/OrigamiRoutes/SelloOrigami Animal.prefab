@@ -164,6 +164,7 @@ MonoBehaviour:
   checkPrefab: {fileID: 5179789006546423716, guid: 60ad54eca839f334f9eb8baf62ee92cd,
     type: 3}
   particleSystemGO: {fileID: 1293152911158955150}
+  _canvasDisplay: {fileID: 6423918522280104213}
   blueParticleActiveColor: {r: 0, g: 0.0666666, b: 1, a: 0.7372549}
   activeSpeed: 1.6
   activeSize: 0.8
@@ -303,9 +304,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 73138b32b7ee0c94782d5547e799936a,
         type: 3}
-    - target: {fileID: 8148756059669502358, guid: 30a22737b1dbca347b4086af4fa8494e,
+    - target: {fileID: 6423918522280104202, guid: 30a22737b1dbca347b4086af4fa8494e,
         type: 3}
-      propertyPath: triggerOrigami
+      propertyPath: _triggerOrigami
       value: 
       objectReference: {fileID: 7900591175090712496}
     - target: {fileID: 8747860609549830176, guid: 30a22737b1dbca347b4086af4fa8494e,
@@ -327,3 +328,15 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2459061867986445590}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6423918522280104213 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6423918522280104202, guid: 30a22737b1dbca347b4086af4fa8494e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2459061867986445590}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a42529b629c4b0e9c13aee1643cfaca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

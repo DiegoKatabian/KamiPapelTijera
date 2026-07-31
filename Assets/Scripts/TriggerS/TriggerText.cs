@@ -1,26 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TriggerText : TriggerScript
 {
-    //este es un tipo de triggerscript que solo muestra texto. 
-    [SerializeField] bool isOneTimeOnly;
-    bool wasShown = false;
+    //este es un tipo de triggerscript que solo muestra texto.
+
+    [SerializeField, Tooltip("Legacy: mostrar una unica vez. Equivale a poner Max Tooltip Shows en 1 (se queda por compatibilidad con las escenas ya configuradas)")]
+    bool isOneTimeOnly;
 
     public override void OnEnterBehaviour(Collider other)
     {
-        //print("entro el player");
+        triggerBool = true;
 
-        if (isOneTimeOnly && wasShown)
+        //forceShow: un TriggerText existe justamente para mostrar texto, siempre ignoro
+        //el flag showTooltip (comportamiento historico). El limite de muestras SI se respeta
+        TryShowTooltip(true);
+    }
+
+    protected override int GetMaxTooltipShows()
+    {
+        int baseMax = base.GetMaxTooltipShows();
+
+        if (!isOneTimeOnly)
         {
-            return;
+            return baseMax;
         }
-        else
-        {
-            triggerBool = true;
-            TooltipManager.Instance.ShowTooltip(tooltipTextToShow, postItColor);
-            wasShown = true;
-        }
+
+        //isOneTimeOnly equivale a un maximo de 1: si ademas configuraron _maxTooltipShows,
+        //gana el mas restrictivo (1, porque no hay maximo valido menor)
+        return 1;
     }
 }

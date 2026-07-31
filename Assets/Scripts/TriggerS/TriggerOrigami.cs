@@ -13,6 +13,9 @@ public class TriggerOrigami : TriggerScript
     public MultipleRectCheck checkPrefab;
     [SerializeField] GameObject particleSystemGO;
 
+    [Tooltip("Canvas del pedestal que muestra el costo de papel; si queda vacio se busca solo en los hijos del padre")]
+    [SerializeField] PedestalCanvasDisplay _canvasDisplay;
+
     [Header("Particle Parameters When Step On")]
     public Color blueParticleActiveColor;
     public float activeSpeed = 1.5f;
@@ -43,6 +46,24 @@ public class TriggerOrigami : TriggerScript
         //originalEmissionRate = mainModule.emission.rateOverTime.constant;
 
         EventManager.Subscribe(Evento.OnPlayerDie, ForceTriggerExit);
+
+        //fallback por si nadie asigno el canvas en el inspector: lo buscamos desde el padre (PedestalParent)
+        if (_canvasDisplay == null)
+        {
+            if (transform.parent != null)
+            {
+                _canvasDisplay = transform.parent.GetComponentInChildren<PedestalCanvasDisplay>();
+            }
+
+            if (_canvasDisplay == null)
+            {
+                Debug.LogWarning($"[TriggerOrigami] {gameObject.name}: no encontre PedestalCanvasDisplay ni asignado ni en los hijos del padre, el costo no se va a mostrar");
+            }
+            else
+            {
+                Debug.LogWarning($"[TriggerOrigami] {gameObject.name}: _canvasDisplay no estaba asignado en el inspector, lo encontre por fallback en {_canvasDisplay.gameObject.name}");
+            }
+        }
     }
 
     protected override void OnDestroy()
@@ -67,6 +88,17 @@ public class TriggerOrigami : TriggerScript
         }
         else
         {
+            //mostramos el costo en AMBAS ramas (tenga o no papel suficiente): justamente cuando
+            //no le alcanza es cuando mas le sirve al player ver cuanto papel necesita
+            if (_canvasDisplay != null)
+            {
+                _canvasDisplay.ShowCost(origami.paperCost);
+            }
+            else
+            {
+                Debug.LogWarning($"[TriggerOrigami] {gameObject.name}: _canvasDisplay es null, no puedo mostrar el costo del origami");
+            }
+
             if (LevelManager.Instance.recursosRecolectados[ResourceType.papel] >= origami.paperCost)
             {
                 base.OnEnterBehaviour(other);
@@ -85,6 +117,13 @@ public class TriggerOrigami : TriggerScript
     public override void OnExitBehaviour()
     {
         //print("on exit beh");
+
+        //el canvas se esconde SIEMPRE al salir, incluso si currentCheck es null:
+        //cuando el player entro sin papel suficiente no hay check pero el canvas de costo esta visible igual
+        if (_canvasDisplay != null)
+        {
+            _canvasDisplay.Hide();
+        }
 
         if (currentCheck != null)
         {

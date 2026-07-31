@@ -84,7 +84,7 @@ public class AbuelaDialogueTrigger : TriggerDialogue
 
     void CheckQuestCompletion(params object[] parameters)
     {
-        //si la quest que se completó es la required...
+        //si la quest que se completï¿½ es la required...
         if ((QuestSO)parameters[0] == requiredQuest)
         {
             //Debug.Log("required quest completed");
@@ -118,7 +118,9 @@ public class AbuelaDialogueTrigger : TriggerDialogue
 
         if (!isLocked)
         {
-            TooltipManager.Instance.ShowTooltip(tooltipTextToShow, postItColor);
+            //ruteado por TryShowTooltip para que el exit sepa si esta entrada mostro algo
+            //(forceShow porque este trigger siempre ignoro el flag showTooltip)
+            TryShowTooltip(true);
         }
     }
     public override void Interact(params object[] parameter)

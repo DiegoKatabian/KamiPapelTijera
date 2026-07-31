@@ -118,7 +118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _thisRocoso: {fileID: 2429854604947804655}
-  _isImmuneToTijeraMejorada: 1
+  _isImmuneToTijeraMejorada: 0
 --- !u!1 &1231572168594761324
 GameObject:
   m_ObjectHideFlags: 0
