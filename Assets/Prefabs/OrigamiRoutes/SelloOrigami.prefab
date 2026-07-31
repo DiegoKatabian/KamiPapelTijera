@@ -63,11 +63,12 @@ MonoBehaviour:
   showTooltip: 1
   tooltipTextToShow: "Manten\xE9 E para comenzar un origami"
   postItColor: 0
+  _maxTooltipShows: 0
   origami: {fileID: 0}
   checkPrefab: {fileID: 5179789006546423716, guid: 60ad54eca839f334f9eb8baf62ee92cd,
     type: 3}
   particleSystemGO: {fileID: 1293152911158955150}
-  _canvasDisplay: {fileID: 6423918522280104210}
+  _canvasDisplay: {fileID: 8864773336635585564}
   blueParticleActiveColor: {r: 0, g: 0.0666666, b: 1, a: 0.7372549}
   activeSpeed: 1
   activeSize: 0.4
@@ -319,23 +320,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4194551645250254429, guid: 30a22737b1dbca347b4086af4fa8494e,
         type: 3}
-      propertyPath: m_fontColor.b
-      value: 0.5176471
-      objectReference: {fileID: 0}
-    - target: {fileID: 4194551645250254429, guid: 30a22737b1dbca347b4086af4fa8494e,
-        type: 3}
-      propertyPath: m_fontColor.g
-      value: 0.882353
-      objectReference: {fileID: 0}
-    - target: {fileID: 4194551645250254429, guid: 30a22737b1dbca347b4086af4fa8494e,
-        type: 3}
-      propertyPath: m_fontColor.r
-      value: 0.9568628
-      objectReference: {fileID: 0}
-    - target: {fileID: 4194551645250254429, guid: 30a22737b1dbca347b4086af4fa8494e,
-        type: 3}
       propertyPath: m_fontColor32.rgba
-      value: 4286898676
+      value: 4278196253
       objectReference: {fileID: 0}
     - target: {fileID: 6158900432739752130, guid: 30a22737b1dbca347b4086af4fa8494e,
         type: 3}
@@ -348,6 +334,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 73138b32b7ee0c94782d5547e799936a,
         type: 3}
+    - target: {fileID: 6423918522280104201, guid: 30a22737b1dbca347b4086af4fa8494e,
+        type: 3}
+      propertyPath: m_Alpha
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6423918522280104202, guid: 30a22737b1dbca347b4086af4fa8494e,
         type: 3}
       propertyPath: _triggerOrigami
@@ -372,7 +363,7 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2459061867986445590}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6423918522280104210 stripped
+--- !u!114 &8864773336635585564 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6423918522280104202, guid: 30a22737b1dbca347b4086af4fa8494e,
     type: 3}

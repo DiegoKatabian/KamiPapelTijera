@@ -16,5 +16,4 @@ MonoBehaviour:
   itemDescription: scissors_gold_text
   itemSprite: {fileID: 21300000, guid: 76da2568a90024b4287fa1535d64e129, type: 3}
   itemColor: {r: 1, g: 0.880132, b: 0.514151, a: 1}
-  amount: 1
   resourceType: 6

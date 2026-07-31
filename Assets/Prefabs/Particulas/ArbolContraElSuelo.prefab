@@ -731,6 +731,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7386932153020398195, guid: f948d18115e95eb418f7411c8f27ac6b,
+        type: 3}
+      propertyPath: UVModule.rowMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7386932153020398195, guid: f948d18115e95eb418f7411c8f27ac6b,
+        type: 3}
+      propertyPath: UVModule.rowIndex
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7386932153020398195, guid: f948d18115e95eb418f7411c8f27ac6b,
+        type: 3}
+      propertyPath: UVModule.animationType
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f948d18115e95eb418f7411c8f27ac6b, type: 3}
 --- !u!4 &6551113514847055786 stripped

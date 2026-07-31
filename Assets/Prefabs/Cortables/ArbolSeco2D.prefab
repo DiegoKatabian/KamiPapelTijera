@@ -329,6 +329,7 @@ MonoBehaviour:
   showTooltip: 1
   tooltipTextToShow: 
   postItColor: 0
+  _maxTooltipShows: 0
 --- !u!1 &783937543529692683
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,6 +782,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6551113514847055786, guid: a576f5059ee24614ebd1ca50fdb656ee,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.44236258
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551113514847055786, guid: a576f5059ee24614ebd1ca50fdb656ee,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.44236258
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551113514847055786, guid: a576f5059ee24614ebd1ca50fdb656ee,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.44236258
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551113514847055786, guid: a576f5059ee24614ebd1ca50fdb656ee,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.23
+      objectReference: {fileID: 0}
     - target: {fileID: 9163110612162866128, guid: a576f5059ee24614ebd1ca50fdb656ee,
         type: 3}
       propertyPath: m_Name
@@ -789,7 +810,7 @@ PrefabInstance:
     - target: {fileID: 9163110612162866128, guid: a576f5059ee24614ebd1ca50fdb656ee,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a576f5059ee24614ebd1ca50fdb656ee, type: 3}
