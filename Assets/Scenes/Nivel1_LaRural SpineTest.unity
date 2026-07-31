@@ -15116,6 +15116,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7311175191795985226, guid: 55968c0be0eae574cac6fbf9493c0537,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7567128660997737820, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
       propertyPath: particleSystemGameObject.Array.data[1]
@@ -85210,6 +85215,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CamWheelManager
       objectReference: {fileID: 0}
+    - target: {fileID: 1990694134426447065, guid: f21fdbf5d1ec79844888f3c93b417d77,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f21fdbf5d1ec79844888f3c93b417d77, type: 3}
 --- !u!1001 &2032512338763246085
@@ -87429,6 +87439,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FlapManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5233239164944141723, guid: 23b727bf4fe434147ac1692c8349de3a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5233239164995536253, guid: 23b727bf4fe434147ac1692c8349de3a,
         type: 3}
