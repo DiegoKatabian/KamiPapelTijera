@@ -32,7 +32,7 @@ public class ParticleShooter : MonoBehaviour
         }
     }
 
-    public void Shoot(int index)
+    public void Shoot(int index, float facing)
     {
         //shoot all the ps of the go in the index
         if (particleSystemGameObject == null || index < 0 || index >= particleSystemGameObject.Length || particleSystemGameObject[index] == null)
@@ -43,9 +43,35 @@ public class ParticleShooter : MonoBehaviour
 
         foreach (ParticleSystem item in particleSystemsDict[particleSystemGameObject[index]])
         {
+            ParticleSystemRenderer psr = item.GetComponent<ParticleSystemRenderer>();
+
+            if (facing == 0)
+            {
+                if (psr.flip == Vector3.zero)
+                {
+                    psr.flip = Vector3.right; //flip horizontal
+                }
+                else
+                {
+                    psr.flip = Vector3.zero; //dejar igual
+                }
+            }
+            else
+            {
+                if (psr.flip == Vector3.zero)
+                {
+                    psr.flip = Vector3.zero; //flip horizontal
+                }
+                else
+                {
+                    psr.flip = Vector3.right; //dejar igual
+                }
+            }
             item.Play();
         }
     }
+
+
 
     public void Enable(int index, bool value)
     {

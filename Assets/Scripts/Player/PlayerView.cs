@@ -519,7 +519,7 @@ public class PlayerView
                 default:
                     break;
             }
-            _player.particleShooter.Shoot(PARTICLE_SPLASH);
+            _player.particleShooter.Shoot(PARTICLE_SPLASH, 0);
         }
         else
         {
@@ -590,6 +590,6 @@ public class PlayerView
 
         float facingY = _skeletonAnimation.Skeleton.ScaleX >= 0 ? 0f : 180f;
         _player.footstepAnchor.localRotation = Quaternion.Euler(0f, facingY, 0f);
-        _player.particleShooter.Shoot(index);
+        _player.particleShooter.Shoot(index, facingY);
     }
 }
