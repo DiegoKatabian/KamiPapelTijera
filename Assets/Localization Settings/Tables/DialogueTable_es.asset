@@ -94,25 +94,25 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 655892767424512
-    m_Localized: "Qu\xE9 grande mi nietita! Ahora vamos pa casa que tengo un hambre!"
+    m_Localized: "Qu\xE9 grande mi nietita! Ahora vamos para casa que tengo un hammmbre!"
     m_Metadata:
       m_Items: []
   - m_Id: 656053900001280
-    m_Localized: "Eso s\xED, no sab\xE9s c\xF3mo me duele la espalda! No me doblar\xEDas
-      as\xED me llev\xE1s en tu morralcito?"
+    m_Localized: "Ay, no sab\xE9s c\xF3mo me duele la espalda! No me doblar\xEDas
+      y me llev\xE1s en tu morralcito?"
     m_Metadata:
       m_Items: []
   - m_Id: 656153699270656
-    m_Localized: "[Manten\xE9 E para doblar a la abuela.]"
+    m_Localized: "[Toc\xE1 E para doblar a la abuela.]"
     m_Metadata:
       m_Items: []
   - m_Id: 656247265804288
-    m_Localized: "Muchas gracias Kami. Ya ven\xEDa sintiendo el olorcito a los choris
-      desde adentro del morral. Dale, ven\xED, vamos a comer!"
+    m_Localized: Muchas gracias por traerme Kami. Bueno, ya! Vamos a comer!
     m_Metadata:
       m_Items: []
   - m_Id: 656294703382528
-    m_Localized: "Pero guardate lugar para el postre que hice un mont\xF3n de galletitas!"
+    m_Localized: Pero guardate lugar para el postre porque me parece que hice un
+      flancito.
     m_Metadata:
       m_Items: []
   - m_Id: 656360126136320
@@ -128,26 +128,25 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 656803698950144
-    m_Localized: "Che, sab\xE9s que no estoy pudiendo prender el horno? Est\xE1 re
+    m_Localized: "Che, sab\xE9s que no estoy pudiendo prender el horno? Est\xE1 muy
       fuerte el viento hoy..."
     m_Metadata:
       m_Items: []
   - m_Id: 656879393554432
-    m_Localized: "Pod\xE9s traerme 100 PAPELES? Igual tranqui, no hace falta que
-      los traigas ahora. Pod\xE9s ir y volver entre p\xE1ginas cuando quieras."
+    m_Localized: "Pod\xE9s traerme 100 PAPELES? No hace falta que los traigas ahora.
+      Pod\xE9s ir y volver entre p\xE1ginas cuando quieras."
     m_Metadata:
       m_Items: []
   - m_Id: 657038307344384
-    m_Localized: "Bien ah\xED! Muchas gracias. Ahora pasame tu tijera un segundito."
+    m_Localized: "Bien ah\xED! Muchas gracias por los papeles."
     m_Metadata:
       m_Items: []
   - m_Id: 657081387040768
-    m_Localized: "Listo, ah\xED va. Ahora pod\xE9s cortar algunas piedras con tu
-      tijera!"
+    m_Localized: Para darte las gracias, voy a afilar tus tijeras.
     m_Metadata:
       m_Items: []
   - m_Id: 657144913969152
-    m_Localized: Espero que te sirva la tijera mejorada!
+    m_Localized: "Listo, ahora pod\xE9s cortar piedras! \nEspero que te sirva!"
     m_Metadata:
       m_Items: []
   - m_Id: 657248433586176
@@ -155,23 +154,22 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 657286689832960
-    m_Localized: 'Perdoname que te joda pero ando necesitando tu ayuda con algo. '
+    m_Localized: "Perd\xF3n que te moleste pero necesito tu ayuda con algo. "
     m_Metadata:
       m_Items: []
   - m_Id: 657288740847616
-    m_Localized: "Estoy haciendo unas pociones especiales pero justo me qued\xE9
-      sin FLORES VIOLETAS, las necesito s\xED o s\xED!"
+    m_Localized: "Estoy haciendo unas pociones especiales pero me qued\xE9 sin FLORES
+      VIOLETAS!"
     m_Metadata:
       m_Items: []
   - m_Id: 657290133356544
-    m_Localized: "Son grandotas y s\xFAper llamativas, pero no puedo dejar mi puestito
-      para ir a agarrarlas! Porfa, no podr\xE1s buscarte 3 y tra\xE9rmelas? Gracias
-      Kami, sos lo m\xE1s!"
+    m_Localized: "Son grandotas y llamativas, pero no puedo dejar mi puestito para
+      ir a buscarlas! Vos podr\xE1s traerme tres? Gracias Kami, sos lo m\xE1s!"
     m_Metadata:
       m_Items: []
   - m_Id: 657748046495744
     m_Localized: "Las FLORES VIOLETAS son como \xE9stas que ves ac\xE1. Me traes
-      3 porfa? "
+      tres porfa? "
     m_Metadata:
       m_Items: []
   - m_Id: 657925180342272
@@ -197,13 +195,13 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 660088149360640
-    m_Localized: "La abuela se perdi\xF3 de nuevo. Se fue a hacer su caminata hace
-      rato y todav\xEDa no volvi\xF3!"
+    m_Localized: "La abuela se perdi\xF3 de nuevo. Se fue a hacer su caminata y todav\xEDa
+      no volvi\xF3!"
     m_Metadata:
       m_Items: []
   - m_Id: 660089567035392
-    m_Localized: No vas a buscarla? Yo estoy justo por tirar los choris a la parrila,
-      se va a perder el asado de nuevo!
+    m_Localized: "Pod\xE9s ir a buscarla? Yo acabo de tirar los choris y tengo miedo
+      que se me quemen."
     m_Metadata:
       m_Items: []
   - m_Id: 660091592884224
@@ -211,7 +209,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 660424608038912
-    m_Localized: "Busc\xE1tela a la abuela que ya estamos por comer! "
+    m_Localized: "Us\xE1 tu tijera y tu magia de origami para encontrar a la abuela
+      y traerla!"
     m_Metadata:
       m_Items: []
   - m_Id: 660494095073280
@@ -233,7 +232,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661274998980608
-    m_Localized: Joya, avisale a la abuela que ya salen los choris!
+    m_Localized: "Qu\xE9 ingenioso traer a la Abuela doblada. Nunca vi eso!"
     m_Metadata:
       m_Items: []
   - m_Id: 661432029528064
@@ -278,7 +277,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661838587609088
-    m_Localized: "Qu\xE9 hiciste?! Venga pa'c\xE1."
+    m_Localized: "Qu\xE9 hiciste?! Ven\xED para ac\xE1."
     m_Metadata:
       m_Items: []
   - m_Id: 661840252747776
@@ -287,12 +286,12 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 661841552982016
     m_Localized: "No pod\xE9s andar cambiando las historias! Se supon\xEDa que la
-      abuela nunca lograba salir de esa p\xE1gina..."
+      abuela no lograba salir de esa p\xE1gina..."
     m_Metadata:
       m_Items: []
   - m_Id: 661842916130816
-    m_Localized: "Ahora vamos a leer otro libro, \n\"Crimen, Castigo y Sangre\".
-      A ver si aprend\xE9s..."
+    m_Localized: "Ahora vamos a leer otro libro, \n\"Kami, Tinta y Condena\". A ver
+      si aprend\xE9s..."
     m_Metadata:
       m_Items: []
   references:

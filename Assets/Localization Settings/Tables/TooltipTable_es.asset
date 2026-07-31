@@ -39,7 +39,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2623854460928
-    m_Localized: "Toc\xE1 E para charlar"
+    m_Localized: "Toc\xE1 E para hablar"
     m_Metadata:
       m_Items: []
   - m_Id: 2776837505024
@@ -68,7 +68,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3331534209024
-    m_Localized: 'No te olvides: los origamis cuestan papel.'
+    m_Localized: Necesitas papel para doblar un origami.
     m_Metadata:
       m_Items: []
   - m_Id: 3418658291712
@@ -89,8 +89,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 5736808169472
-    m_Localized: "Arrastr\xE1 la flecha verde hasta el objetivo y solt\xE1. \nNo
-      te salgas del camino!"
+    m_Localized: "Arrastr\xE1 la flecha verde hasta el objetivo. \nNo te salgas del
+      camino!"
     m_Metadata:
       m_Items: []
   references:

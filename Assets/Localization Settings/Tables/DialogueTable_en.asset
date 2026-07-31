@@ -107,8 +107,8 @@ MonoBehaviour:
   - m_Id: 661842916130816
     m_Localized: 'I''m going to take you to another book,
 
-      "Crime, Death &
-      Justice". This should teach you a lesson...'
+      "Kami, Ink and Punishment".
+      This should teach you a lesson...'
     m_Metadata:
       m_Items: []
   - m_Id: 661653480390656
@@ -262,7 +262,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 656153699270656
-    m_Localized: '[Hold E to fold Grandma.]'
+    m_Localized: '[Press E to fold Grandma.]'
     m_Metadata:
       m_Items: []
   - m_Id: 656053900001280

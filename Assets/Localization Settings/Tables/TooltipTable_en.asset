@@ -31,7 +31,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3331534209024
-    m_Localized: 'Remember: it costs paper to make the origamis.'
+    m_Localized: You need paper to fold an origami.
     m_Metadata:
       m_Items: []
   - m_Id: 3266073706496

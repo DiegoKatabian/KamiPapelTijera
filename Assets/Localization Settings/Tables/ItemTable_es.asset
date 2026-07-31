@@ -76,8 +76,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 960443826176
-    m_Localized: 'Estas enormes tijeras forjadas por El Chino pueden cortar piedras
-      y rocas. '
+    m_Localized: 'Estas tijeras forjadas por El Chino pueden cortar piedras y rocas. '
     m_Metadata:
       m_Items: []
   - m_Id: 989661347840
