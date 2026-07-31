@@ -107,6 +107,7 @@ MonoBehaviour:
   showTooltip: 1
   tooltipTextToShow: Toca E para charlar
   postItColor: 1
+  _maxTooltipShows: 10
   _burnAfterReading: 0
   _dialogues:
   - {fileID: 11400000, guid: a727208a659258b4eb483c76b4169f90, type: 2}
@@ -233,6 +234,7 @@ MonoBehaviour:
   maxForce: 40
   isDropoff: 0
   dropoffPoint: {fileID: 0}
+  unfoldPoint: {fileID: 0}
   anim: {fileID: 3175414029089527560}
 --- !u!95 &3175414029089527560
 Animator:

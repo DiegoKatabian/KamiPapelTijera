@@ -11,15 +11,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 55454ebd98a4d6d45ad66dbb2ddbddd2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
     path: Assets/Scenes/Nivel1_EndCutscene.unity
     guid: a91efb5a4eb769c40a002802af9658df
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Nivel1_LaRural.unity
     guid: cf6a2c49d47ad244994ffdfe199a3d8f
+  - enabled: 1
+    path: Assets/Scenes/Nivel1_LaRural SpineTest.unity
+    guid: f4ddd6c331b854640b46aee4b860eb53
+  - enabled: 1
+    path: Assets/Scenes/Level2_Newspaper.unity
+    guid: 5533ceefded01c2478537ca7ab42f920
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 034a83661b805c742bed26f59cbe4731,
       type: 2}

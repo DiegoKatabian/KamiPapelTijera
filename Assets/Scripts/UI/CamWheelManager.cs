@@ -75,11 +75,32 @@ public class CamWheelManager : Singleton<CamWheelManager>, IFlap
         //Debug.Log("isopen" + _isOpen);
 
     }
-    public void ChangeCamera(int index)
+    public void ChangeCamera(int cameraIndex)
     {
-        CameraManager.Instance.SetCamera((CameraMode)index);
+        CameraManager.Instance.SetCamera((CameraMode)cameraIndex);
         CameraManager.Instance.PlaySetCameraSound();
-        FakeSelectButton(index);
+
+        switch (cameraIndex)
+        {
+            case 0: //close up
+                FakeSelectButton(0);
+                break;
+                case 1: //close up origami
+                //FakeSelectButton(1);
+                break;
+                case 2: //normal
+                FakeSelectButton(1);
+                break;
+                case 3: //general
+                FakeSelectButton(2);
+                break;
+                case 4: //book
+                FakeSelectButton(3);
+                break;
+                case 5: //receive reward
+                //FakeSelectButton(5);
+                break;
+        }
     }
     public void FakeSelectButton(params object[] parameters)
     {

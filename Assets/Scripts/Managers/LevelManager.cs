@@ -22,7 +22,9 @@ public enum ResourceType
 
 public class LevelManager : Singleton<LevelManager>
 {
-    public string Level1SceneName = "Nivel1_LaRural";
+    public string Level1SceneName = "Nivel1_LaRural SpineTest";
+    public string Level2SceneName = "Level2_Newspaper";
+
     public bool agency;
     public bool inDialogue;
 
@@ -31,9 +33,8 @@ public class LevelManager : Singleton<LevelManager>
 
     public Player player;
 
-    public bool enablePCheat = false;
-
-
+    public bool enableCheats = false;
+    public bool enableEditorCheats = false;
 
     protected override void Awake()
     {
@@ -57,32 +58,52 @@ public class LevelManager : Singleton<LevelManager>
         if (gameObject.scene.name == Level1SceneName)
         {
             AudioManager.instance.StopByName("IntroStoryboardLoop");
+
             AudioManager.instance.PlayByName("MemoFloraMainLoop01");
             AudioManager.instance.PlayByName("ForestAtDay");
+        }
+
+        if (gameObject.scene.name == Level2SceneName)
+        {
+            AudioManager.instance.StopByName("IntroStoryboardLoop");
+            AudioManager.instance.StopByName("MemoFloraMainLoop01");
+            AudioManager.instance.StopByName("MemoFloraPostBattle01");
+            AudioManager.instance.StopByName("MemoFloraBattleLoop01");
+
+            AudioManager.instance.PlayByName("BohrenDestroyingAngels");
+            //AudioManager.instance.PlayByName("ForestAtDay");
         }
     }
 
     public void Update()
     {
 
-        if (enablePCheat)
+        if (!enableCheats)
         {
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                AllItemsCheat();
-            }
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.P) && enableEditorCheats)
+        {
+            AllItemsCheat();
         }
 
         if (Input.GetKey(KeyCode.LeftControl) && player != null)
         {
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                AllItemsCheat();
-            }
-
+            
             if (Input.GetKeyDown(KeyCode.F12))
             {
                 GoToScene("MainMenu");
+            }
+
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                GoToScene("Nivel1_LaRural SpineTest");
+            }
+
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                GoToScene("Level2_Newspaper");
             }
         }
     }

@@ -5420,7 +5420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _autoDialogo: {fileID: 920302444}
-  sceneToLoadOnDialogueEnd: Nivel1_LaRural
+  sceneToLoadOnDialogueEnd: Nivel1_LaRural SpineTest
   LoadingAnimationCanvas: {fileID: 1677121774}
 --- !u!1001 &936256367
 PrefabInstance:
@@ -13989,6 +13989,11 @@ PrefabInstance:
         type: 3}
       propertyPath: enablePCheat
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8080490743462372626, guid: a09f749237a161e41b1d5453e1bf4efc,
+        type: 3}
+      propertyPath: Level1SceneName
+      value: Nivel1_LaRural SpineTest
       objectReference: {fileID: 0}
     - target: {fileID: 8080490743462372627, guid: a09f749237a161e41b1d5453e1bf4efc,
         type: 3}

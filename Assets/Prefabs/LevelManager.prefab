@@ -44,4 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dcb7dad924cba94cb9b07c0aef1127f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Level1SceneName: Nivel1_LaRural SpineTest
+  Level2SceneName: Level2_Newspaper
   agency: 1
+  inDialogue: 0
+  player: {fileID: 0}
+  enableCheats: 1
+  enableEditorCheats: 0
