@@ -63379,6 +63379,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4635396284289242029, guid: 7034bc42a08ff9141995d7f8c0d5a6f5,
         type: 3}
+      propertyPath: _maxTooltipShows
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4635396284289242029, guid: 7034bc42a08ff9141995d7f8c0d5a6f5,
+        type: 3}
       propertyPath: tooltipTextToShow
       value: esfera_next
       objectReference: {fileID: 0}
@@ -87090,6 +87095,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4635396284289242029, guid: 7034bc42a08ff9141995d7f8c0d5a6f5,
         type: 3}
+      propertyPath: _maxTooltipShows
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4635396284289242029, guid: 7034bc42a08ff9141995d7f8c0d5a6f5,
+        type: 3}
       propertyPath: tooltipTextToShow
       value: esfera_prev
       objectReference: {fileID: 0}
@@ -88886,6 +88896,16 @@ PrefabInstance:
       propertyPath: postItColor
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3649359020304989098, guid: 5242af2ee5dc6a74da62f7f53cb59575,
+        type: 3}
+      propertyPath: _maxTooltipShows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3649359020304989098, guid: 5242af2ee5dc6a74da62f7f53cb59575,
+        type: 3}
+      propertyPath: tooltipTextToShow
+      value: dialogue_tooltip
+      objectReference: {fileID: 0}
     - target: {fileID: 4168949760877653277, guid: 5242af2ee5dc6a74da62f7f53cb59575,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -89234,7 +89254,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5549367393259815879
 Transform:
   m_ObjectHideFlags: 0
@@ -89304,7 +89324,7 @@ PrefabInstance:
     - target: {fileID: 5549367394310565229, guid: b10d773730f3e814c80e3450cd124562,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5549367394491038700, guid: b10d773730f3e814c80e3450cd124562,
         type: 3}

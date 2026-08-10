@@ -97,11 +97,11 @@ public class PlayerView
         {
             //we could get an int from the animation?
             StartPasoSFX(UnityEngine.Random.Range(0, 2));
-            Debug.Log("[PlayerView] footstep SFX/particle disparado");
+            //Debug.Log("[PlayerView] footstep SFX/particle disparado");
         }
         else if (e.Data.Name == "HandleFootstep" && _affectedByWind)
         {
-            Debug.Log("[PlayerView] footstep ignorado: Kami está siendo arrastrada por viento");
+            //Debug.Log("[PlayerView] footstep ignorado: Kami está siendo arrastrada por viento");
         }
     }
 
@@ -129,7 +129,7 @@ public class PlayerView
                     Spine.TrackEntry runstopEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, resolvedRunstop, false);
                     ShootFootAnchorParticles(PARTICLE_RUNSTOP);
                     _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, resolvedIdle, true, runstopEntry.Animation.Duration);
-                    Debug.Log($"[PlayerView] runstop ({resolvedRunstop}) -> idle ({resolvedIdle}) (duracion {runstopEntry.Animation.Duration:F2}s)");
+                    //Debug.Log($"[PlayerView] runstop ({resolvedRunstop}) -> idle ({resolvedIdle}) (duracion {runstopEntry.Animation.Duration:F2}s)");
                 }
                 else
                 {
@@ -178,7 +178,7 @@ public class PlayerView
                     string resolvedIdleWind = ResolveAnimationName(ANIMATION_IDLE);
                     Spine.TrackEntry landingEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, resolvedLanding, false);
                     _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, resolvedIdleWind, true, landingEntry.Animation.Duration);
-                    Debug.Log($"[PlayerView] landing en viento ({resolvedLanding}): encolo {resolvedIdleWind} despues (duracion landing {landingEntry.Animation.Duration:F2}s)");
+                    //Debug.Log($"[PlayerView] landing en viento ({resolvedLanding}): encolo {resolvedIdleWind} despues (duracion landing {landingEntry.Animation.Duration:F2}s)");
                 }
                 else
                 {
