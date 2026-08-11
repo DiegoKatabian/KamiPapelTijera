@@ -22,13 +22,13 @@ public class PostProcessManager : Singleton<PostProcessManager>
 
         if (bloomVolume.profile.TryGet<ColorAdjustments>(out colorAdj))
         {
-            Debug.Log("got color adjustment");
+            //Debug.Log("got color adjustment");
             colorAdjustment = colorAdj;
         }
 
         if (bloomVolume.profile.TryGet<Bloom>(out bloomAdj))
         {
-            Debug.Log("got bloom");
+            //Debug.Log("got bloom");
             bloom = bloomAdj;
             baseBloom = bloom.intensity.value;
         }

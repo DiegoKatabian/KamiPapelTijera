@@ -36,7 +36,7 @@ public class ResourceParticleManager : Singleton<ResourceParticleManager>
     #region prepare system
     public void PrepareSystem(params object[] parameter)
     {
-        Debug.Log("prepare system normal");
+        //Debug.Log("prepare system normal");
         Vector3 position = (Vector3)parameter[0];
         SetParticlePosition(position);
         SetStickerPosition(position);

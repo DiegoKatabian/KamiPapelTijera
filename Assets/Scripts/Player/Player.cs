@@ -125,6 +125,15 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         }
     }
 
+    [Header("Riding Page")]
+    [Tooltip("ajuste fino de la posicion de kami respecto al hueso de borde, por si la animacion de riding no calza justo con el pivot del hueso")]
+    [SerializeField] Vector3 rideRootOffset = Vector3.zero;
+
+    public bool IsRidingPage { get; private set; }
+    Transform _rideEdgeBone;
+    float _rideZOffset;
+    bool _rideLoggedFirstFrame;
+
     //State Machine
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
 
@@ -286,6 +295,32 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         _model.Tick(_controller.Inputs); //el model decide que hacer con los inputs segun el estado actual
     }
 
+    void LateUpdate()
+    {
+        //mientras dura el enganche a la hoja, la posicion la maneja este seguimiento (no el CharacterController):
+        //corre en LateUpdate para leer al hueso de la hoja ya actualizado por su Animator este mismo cuadro
+        //(mismo patron que BoneFollower/SpineBoneTipFollower usan en el proyecto para seguir huesos).
+        if (!IsRidingPage || _rideEdgeBone == null)
+        {
+            return;
+        }
+
+        Vector3 bonePos = _rideEdgeBone.position;
+        Vector3 newPos = new Vector3(bonePos.x, bonePos.y, bonePos.z + _rideZOffset) + rideRootOffset;
+
+        if (!_rideLoggedFirstFrame)
+        {
+            _rideLoggedFirstFrame = true;
+            Debug.Log($"[Player] RidingPage LateUpdate arranco: hueso '{_rideEdgeBone.name}' en {bonePos}, kami va a {newPos}");
+        }
+        else if (Time.frameCount % 15 == 0) //un log cada ~0.25s (60fps) para no inundar la consola durante el giro
+        {
+            Debug.Log($"[Player] RidingPage LateUpdate: hueso en {bonePos} -> kami en {newPos}");
+        }
+
+        transform.position = newPos;
+    }
+
     //State Machine
     public void SetState(PlayerState newState)
     {
@@ -306,6 +341,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
             case PlayerState.Casting:
             case PlayerState.ReceivingReward:
             case PlayerState.Dead:
+            case PlayerState.RidingPage:
                 return false;
             default:
                 return true; //idle, walk, skip, run, jump, fall, landing: se puede atacar
@@ -339,6 +375,42 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         _pullSolapaLockEndTime = Time.time + duration; //el model bloquea movimiento y salto mientras dure la anim
     }
 
+    //enganche al borde de la hoja durante el giro de pagina (ver PageScrollerManager.CerrarPaginaCoroutine)
+    public void StartRidingPage(Transform edgeBone, bool? faceRight = null)
+    {
+        if (edgeBone == null)
+        {
+            Debug.LogWarning("[Player] StartRidingPage: edgeBone nulo, kami no se engancha a la hoja");
+            return;
+        }
+
+        _rideEdgeBone = edgeBone;
+        _rideZOffset = transform.position.z - edgeBone.position.z; //conserva su Z relativa sobre el borde (misma logica que PositionMarker)
+        _rideLoggedFirstFrame = false;
+        cc.enabled = false;
+        IsRidingPage = true;
+        if (faceRight.HasValue)
+        {
+            _view.ForceFacing(faceRight.Value);
+        }
+        SetState(PlayerState.RidingPage);
+        Debug.Log($"[Player] StartRidingPage: enganchada a '{edgeBone.name}' (bone pos {edgeBone.position}, kami pos {transform.position}, offset Z {_rideZOffset:F2}), cc.enabled={cc.enabled}, estado={CurrentState}");
+    }
+
+    public void StopRidingPage()
+    {
+        if (!IsRidingPage)
+        {
+            return;
+        }
+
+        IsRidingPage = false;
+        _rideEdgeBone = null;
+        cc.enabled = true;
+        SetState(PlayerState.Idle); //PlayerModel re-evalua el estado real (walk/idle/etc) en el proximo Tick segun el input
+        Debug.Log($"[Player] StopRidingPage: kami se suelta de la hoja en {transform.position}, cc.enabled={cc.enabled}");
+    }
+
     void CalibrateHitboxPlacement()
     {
         //toma la pose del prefab (hitboxParent a la derecha de kami) como referencia para los valores en auto
@@ -356,7 +428,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         {
             hitboxHeight = local.y;
         }
-        Debug.Log($"[Player] hitbox calibrada: distancia {hitboxDistance:F3}, altura {hitboxHeight:F3}");
+        //Debug.Log($"[Player] hitbox calibrada: distancia {hitboxDistance:F3}, altura {hitboxHeight:F3}");
     }
 
     void OrientTijeraHitbox()
@@ -393,7 +465,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         Vector3 rotatedDir = Quaternion.Euler(0, hitboxRotationOffset, 0) * dir;
         tijeraManager.hitboxParent.rotation = Quaternion.LookRotation(rotatedDir, Vector3.up);
 
-        Debug.Log($"[Player] hitboxParent orientado hacia {dir} (rotationOffset: {hitboxRotationOffset}°, distancia {hitboxDistance:F3}, altura {hitboxHeight:F3})");
+        //Debug.Log($"[Player] hitboxParent orientado hacia {dir} (rotationOffset: {hitboxRotationOffset}°, distancia {hitboxDistance:F3}, altura {hitboxHeight:F3})");
     }
 
     public void StartPasoSFX(int step) //del spine event me dicen en que paso de la animation estoy.

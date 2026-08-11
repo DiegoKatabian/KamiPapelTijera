@@ -51,7 +51,7 @@ public class TijeraHitbox : MonoBehaviour
 
         if (missed)
         {
-            Debug.Log("[TijeraHitbox] Swing sin corte: reproduciendo TijeraMiss");
+            //Debug.Log("[TijeraHitbox] Swing sin corte: reproduciendo TijeraMiss");
             AudioManager.instance.PlayByName("TijeraMiss", 1.1f);
             missed = false;
         }

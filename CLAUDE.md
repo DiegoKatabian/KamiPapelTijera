@@ -72,6 +72,7 @@ La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso) decide la anim, el te
 - Spine/skeleton/animaciones de Kami: @docs/claude/spine-kami.md
 - Audio y partículas: @docs/claude/audio-y-particulas.md
 - Canvas de costo de origami y tooltips/post-its: @docs/claude/origami-y-tooltips.md
+- Paso de página (HojaMaster es Mecanim, no Spine), PositionMarker y el enganche de Kami al borde (RidingPage): @docs/claude/paginas-y-hoja.md
 
 ## Ojo al editar
 

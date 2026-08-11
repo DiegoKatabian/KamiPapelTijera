@@ -9,7 +9,7 @@ public class SpineBoneTipFollower : MonoBehaviour
 {
     public SkeletonAnimation skeletonAnimation;
     public string boneName = "tijera_front3";
-    [Range(0f, 1f)] public float alongBone = 1f; //0 = base del hueso, 1 = punta (usa el length del hueso)
+    [Range(0f, 1f)] public float alongBone = 0f; //0 = base del hueso, 1 = punta (usa el length del hueso)
 
     Bone _bone;
     bool _warned;

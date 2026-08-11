@@ -12,5 +12,6 @@ public enum PlayerState
     Landing,         //ventanita al tocar el suelo, bloquea inputs
     Casting,         //origami: no puede hacer nada mas
     ReceivingReward,
-    Dead
+    Dead,
+    RidingPage       //enganchada al borde de la hoja mientras gira: bloquea input y fisica, la mueve Player.LateUpdate
 }

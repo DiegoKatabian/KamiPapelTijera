@@ -17,7 +17,7 @@ public class PUBManager : Singleton<PUBManager>
 
     public void OpenPUBs()
     {
-        Debug.Log("pubmanager: open all pubs");
+        //Debug.Log("pubmanager: open all pubs");
         foreach (PUB pub in pubs)
         {
             pub.OpenPUB();
@@ -25,7 +25,7 @@ public class PUBManager : Singleton<PUBManager>
     }
     public void ClosePUBs()
     {
-        Debug.Log("pubmanager: close all pubs");
+        //Debug.Log("pubmanager: close all pubs");
         foreach (PUB pub in pubs)
         {
             pub.ClosePUB();
@@ -35,17 +35,17 @@ public class PUBManager : Singleton<PUBManager>
     {
         if (!pubs.Contains(pub))
         {
-            Debug.Log("pubmanager: added pub to list");
+            //Debug.Log("pubmanager: added pub to list");
             pubs.Add(pub);
         }
         else
         {
-            Debug.Log("pubmanager: cant add pub " + pub + " because i already contain it");
+            //Debug.Log("pubmanager: cant add pub " + pub + " because i already contain it");
         }
     }
     public void RemovePUB(PUB pub)
     {
-        Debug.Log("pubmanager: removed pub from list");
+        //Debug.Log("pubmanager: removed pub from list");
         pubs.Remove(pub);
     }
 }

@@ -140,7 +140,7 @@ public class PostIt : MonoBehaviour
                 return;
             }
 
-            Debug.Log($"[PostIt] {gameObject.name}: cerrado por input de ataque (Fire1)");
+            //Debug.Log($"[PostIt] {gameObject.name}: cerrado por input de ataque (Fire1)");
             Hide();
         }
     }
@@ -152,14 +152,14 @@ public class PostIt : MonoBehaviour
     {
         if (_canvasGroup == null)
         {
-            Debug.LogWarning($"[PostIt] {gameObject.name}: Show llamado antes de Awake, lo ignoro");
+            //Debug.LogWarning($"[PostIt] {gameObject.name}: Show llamado antes de Awake, lo ignoro");
             return;
         }
 
         //StartCoroutine sobre un GO inactivo tira excepcion: mejor un warning que dice QUIEN es
         if (!gameObject.activeInHierarchy)
         {
-            Debug.LogWarning($"[PostIt] {gameObject.name}: Show con el GameObject (o un padre) inactivo, no puedo arrancar corrutinas. Revisa la jerarquia del canvas");
+            //Debug.LogWarning($"[PostIt] {gameObject.name}: Show con el GameObject (o un padre) inactivo, no puedo arrancar corrutinas. Revisa la jerarquia del canvas");
             return;
         }
 
@@ -195,7 +195,7 @@ public class PostIt : MonoBehaviour
     {
         if (_dismissOnInteract && _isVisible)
         {
-            Debug.Log($"[PostIt] {gameObject.name}: cerrado por input E");
+            //Debug.Log($"[PostIt] {gameObject.name}: cerrado por input E");
             Hide();
         }
     }
@@ -204,7 +204,7 @@ public class PostIt : MonoBehaviour
     {
         if (_dismissOnJump && _isVisible)
         {
-            Debug.Log($"[PostIt] {gameObject.name}: cerrado por input de salto (Espacio)");
+            //Debug.Log($"[PostIt] {gameObject.name}: cerrado por input de salto (Espacio)");
             Hide();
         }
     }
@@ -225,7 +225,7 @@ public class PostIt : MonoBehaviour
     {
         yield return new WaitForSeconds(killTime);
 
-        Debug.Log($"[PostIt] {gameObject.name}: se cumplio su killTime de {killTime}s, lo escondo");
+        //Debug.Log($"[PostIt] {gameObject.name}: se cumplio su killTime de {killTime}s, lo escondo");
         _deathTimerCoroutine = null;
         Hide();
     }

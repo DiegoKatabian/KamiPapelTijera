@@ -65,6 +65,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0.44757703
       objectReference: {fileID: 0}
+    - target: {fileID: 1060539236945432199, guid: 3bc7638cb78b1b34da62aece966d3fad,
+        type: 3}
+      propertyPath: _edgeBone
+      value: 
+      objectReference: {fileID: 4582208606565921077}
     - target: {fileID: 2076408316303257139, guid: 3bc7638cb78b1b34da62aece966d3fad,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -425,6 +430,12 @@ PrefabInstance:
 --- !u!4 &2770488565990044729 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4757432954868093241, guid: 4a91eb41038b7af4ea91ea70b22e0e3f,
+    type: 3}
+  m_PrefabInstance: {fileID: 7239268932106347776}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4582208606565921077 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6620373701707764789, guid: 4a91eb41038b7af4ea91ea70b22e0e3f,
     type: 3}
   m_PrefabInstance: {fileID: 7239268932106347776}
   m_PrefabAsset: {fileID: 0}

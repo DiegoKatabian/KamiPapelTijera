@@ -50,6 +50,7 @@ public class PlayerView
     const string ANIMATION_RUNSTOP = "RunStop";
     const string ANIMATION_DEATH = "Death";
     const string ANIMATION_DROWNING = "Drowning";
+    const string ANIMATION_RIDING_PAGE = "Drowning"; //agarrada al borde de la hoja durante el giro de pagina (pendiente de exportar del skeleton; mientras no exista se cae a Idle con warning)
 
     //versiones sin tijera de las 7 animaciones principales (ahora se resuelven automaticamente en SetBodyAnimation)
     const string ANIMATION_IDLE_NOSCISSORS = "IdleNoScissors";
@@ -214,6 +215,19 @@ public class PlayerView
                 //el timing del overlay y el respawn viven en Player.Die() / OverlayManager, no aca.
                 SetDeathAnimation(_player.LastDeathCause);
                 break;
+
+            case PlayerState.RidingPage:
+                //mismo patron de fallback que PullSolapasReverse: si el skeleton todavia no trae la anim, no explota
+                if (_skeletonAnimation.Skeleton.Data.FindAnimation(ANIMATION_RIDING_PAGE) != null)
+                {
+                    SetBodyAnimation(ANIMATION_RIDING_PAGE, true);
+                }
+                else
+                {
+                    Debug.LogWarning($"[PlayerView] el skeleton no trae '{ANIMATION_RIDING_PAGE}' todavia: kami queda en Idle mientras viaja agarrada a la hoja");
+                    SetBodyAnimation(ANIMATION_IDLE, true);
+                }
+                break;
         }
     }
 
@@ -257,7 +271,7 @@ public class PlayerView
         //si la version NoScissors existe en el skeleton, usarla; sino fallback a la normal
         if (noscissorsName != animationName && _skeletonAnimation.Skeleton.Data.FindAnimation(noscissorsName) == null)
         {
-            Debug.LogWarning($"[PlayerView] skeleton no tiene '{noscissorsName}', usando '{animationName}' en su lugar");
+            //Debug.LogWarning($"[PlayerView] skeleton no tiene '{noscissorsName}', usando '{animationName}' en su lugar");
             return animationName;
         }
 
@@ -275,7 +289,7 @@ public class PlayerView
         string resolvedName = ResolveAnimationName(animationName);
         if (resolvedName != animationName)
         {
-            Debug.Log($"[PlayerView] anim resuelta: {animationName} -> {resolvedName} (hasTijera: {_player.hasTijera})");
+            //Debug.Log($"[PlayerView] anim resuelta: {animationName} -> {resolvedName} (hasTijera: {_player.hasTijera})");
         }
 
         _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, resolvedName, loop);
@@ -285,7 +299,7 @@ public class PlayerView
     {
         string deathAnim = cause == DeathCause.Drowning ? ANIMATION_DROWNING : ANIMATION_DEATH;
         SetBodyAnimation(deathAnim, false);
-        Debug.Log($"[PlayerView] muerte: {cause} -> anim {deathAnim}");
+        //Debug.Log($"[PlayerView] muerte: {cause} -> anim {deathAnim}");
     }
 
     //---------- Overrides (noscissors y paperplane: loopean encima del cuerpo mientras dure su condicion) ----------
@@ -363,6 +377,12 @@ public class PlayerView
         }
     }
 
+    //flip explicito, sin depender de input crudo (para el enganche a la hoja: ver Player.StartRidingPage)
+    public void ForceFacing(bool faceRight)
+    {
+        _skeletonAnimation.Skeleton.ScaleX = faceRight ? 1f : -1f;
+    }
+
     //---------- Ataque (track propio, se superpone al cuerpo) ----------
 
     public float PlayPullSolapa(bool closing = false)
@@ -414,7 +434,7 @@ public class PlayerView
             _player.StartTijeraCoroutineDelayed();
         }
 
-        Debug.Log($"[PlayerView] ataque con '{attackAnim}' (estado: {_player.CurrentState})");
+        //Debug.Log($"[PlayerView] ataque con '{attackAnim}' (estado: {_player.CurrentState})");
         _player.StartTijeraParticles();
     }
 
@@ -433,7 +453,7 @@ public class PlayerView
             hitEntry.MixDuration = _player.animMix.hitMixIn;
             Spine.TrackEntry backEntry = _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, bodyAnim, bodyLoop, hitEntry.Animation.Duration);
             backEntry.MixDuration = _player.animMix.hitMixOut;
-            Debug.Log($"[PlayerView] hit REEMPLAZA al cuerpo, despues vuelve a '{bodyAnim}'");
+            //Debug.Log($"[PlayerView] hit REEMPLAZA al cuerpo, despues vuelve a '{bodyAnim}'");
         }
         else
         {

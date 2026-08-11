@@ -167,6 +167,7 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
         LevelManager.Instance.inDialogue = true;  //freezeo a kami
         PUBManager.Instance.ClosePUBs();
         CreateHoja(_isNext); //instancio la hoja que corresponda
+        StartPlayerRide();
         CheckSpheres(activePageIndex); //chequeo si hay que poner/sacar zona
         PlayPageSound();
     }
@@ -204,6 +205,23 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
         else
         {
             hojaAux = Instantiate(hojaMasterRev, transform);
+        }
+    }
+    void StartPlayerRide()
+    {
+        //engancha a kami al borde de la hoja recien instanciada para que viaje agarrada durante el giro.
+        //ojo: el componente Hoja NO esta en la raiz de HojaMaster/HojaMaster_Rev, esta en el hijo HojaCaraAbajo
+        //(instancia anidada de Hoja.prefab/Hoja_Rev.prefab) -> hace falta GetComponentInChildren, no GetComponent.
+        Hoja hojaComponent = hojaAux.GetComponentInChildren<Hoja>(true);
+        Debug.Log($"[PageScrollerManager] StartPlayerRide en '{hojaAux.name}': hojaComponent {(hojaComponent == null ? "NO encontrado" : $"encontrado en '{hojaComponent.name}'")}, edgeBone {(hojaComponent != null && hojaComponent.EdgeBone != null ? $"'{hojaComponent.EdgeBone.name}' @ {hojaComponent.EdgeBone.position}" : "NULO")}");
+
+        if (hojaComponent != null && hojaComponent.EdgeBone != null)
+        {
+            LevelManager.Instance.player.StartRidingPage(hojaComponent.EdgeBone, _isNext);
+        }
+        else
+        {
+            Debug.LogWarning("[PageScrollerManager] no se encontro el hueso de borde en la hoja instanciada: kami no queda agarrada");
         }
     }
     void FinishTurning(params object[] parameter) //esto recien se triggerea cuando TERMINA de cambiar la pagina

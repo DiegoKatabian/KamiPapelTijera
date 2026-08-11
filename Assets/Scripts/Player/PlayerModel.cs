@@ -37,6 +37,11 @@ public class PlayerModel
 
     public void Tick(PlayerInputs input)
     {
+        if (_player.IsRidingPage)
+        {
+            return; //la posicion la maneja Player.LateUpdate mientras dura el enganche a la hoja (cc esta deshabilitado)
+        }
+
         bool grounded = _player.cc.isGrounded;
 
         UpdateLandingTimer();

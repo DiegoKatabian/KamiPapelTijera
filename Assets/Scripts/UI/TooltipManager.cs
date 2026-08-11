@@ -60,7 +60,7 @@ public class TooltipManager : Singleton<TooltipManager>
 
         if (target.tmPro == null)
         {
-            Debug.LogWarning($"[TooltipManager] el PostIt {postIt} no tiene tmPro asignado, no puedo escribirle el texto");
+            //Debug.LogWarning($"[TooltipManager] el PostIt {postIt} no tiene tmPro asignado, no puedo escribirle el texto");
         }
         else
         {
@@ -68,7 +68,7 @@ public class TooltipManager : Singleton<TooltipManager>
         }
 
         float colorKillTime = GetKillTimeFor(postIt);
-        Debug.Log($"[TooltipManager] muestro {postIt} por {colorKillTime}s");
+        //Debug.Log($"[TooltipManager] muestro {postIt} por {colorKillTime}s");
         target.Show(colorKillTime);
     }
 
