@@ -7,6 +7,7 @@ public class OverlayManager : Singleton<OverlayManager>
     [SerializeField] Overlay _defeatOverlay, _victoryOverlay, _mainQuestOverlay;
 
     public bool isLocked;
+    Vector3? _pendingRespawnOverride; //posicion que el player resolvio al morir (null = respawn comun en la entrada de la pagina)
 
     [SerializeField] DialogueSO victoryTriggeringDialogue, mainQuestTriggeringDialogue;
 
@@ -19,10 +20,24 @@ public class OverlayManager : Singleton<OverlayManager>
         EventManager.Subscribe(Evento.OnPlayerPressedE, RequestUnlock);
     }
 
-    public void ShowDefeatOverlay(params object[] parameter)
+    public void ShowDefeatOverlay(DeathCause cause = DeathCause.Generic, Vector3? respawnOverride = null)
     {
+        //el player ya resolvio DONDE respawnear segun su politica; aca solo guardamos y ejecutamos al cerrar
+        _pendingRespawnOverride = respawnOverride;
         _defeatOverlay.gameObject.SetActive(true);
+
+        //el texto de la causa lo maneja el propio overlay (necesita el componente DefeatOverlay + causeText asignado)
+        if (_defeatOverlay is DefeatOverlay defeatOverlay)
+        {
+            defeatOverlay.ShowCause(cause); //despues del SetActive: el GO tiene que estar activo para la coroutine de localizacion
+        }
+        else
+        {
+            Debug.LogWarning("[OverlayManager] el defeat overlay no tiene el componente DefeatOverlay: no se muestra la causa de muerte");
+        }
+
         Lock();
+        Debug.Log($"[OverlayManager] ShowDefeatOverlay: causa {cause}, respawn {(respawnOverride.HasValue ? respawnOverride.Value.ToString() : "entrada de pagina")}");
     }
 
     public void ShowOverlay(params object[] parameter)
@@ -77,7 +92,17 @@ public class OverlayManager : Singleton<OverlayManager>
         if (wasDefeatShowing)
         {
             //el respawn recien sucede aca: cuando el jugador cierra el overlay de derrota con E
-            PlayerPageSpawnManager.Instance.RespawnPlayer();
+            if (_pendingRespawnOverride.HasValue)
+            {
+                Debug.Log($"[OverlayManager] Unlock: respawn en lugar seguro {_pendingRespawnOverride.Value}");
+                PlayerPageSpawnManager.Instance.PositionPlayerAtPoint(_pendingRespawnOverride.Value);
+            }
+            else
+            {
+                Debug.Log("[OverlayManager] Unlock: respawn comun (entrada de la pagina)");
+                PlayerPageSpawnManager.Instance.RespawnPlayer();
+            }
+            _pendingRespawnOverride = null; //consumido: la proxima muerte trae el suyo
         }
     }
 

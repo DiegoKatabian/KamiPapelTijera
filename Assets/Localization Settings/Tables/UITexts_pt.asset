@@ -111,6 +111,16 @@ MonoBehaviour:
     m_Localized: "p\xE1gina "
     m_Metadata:
       m_Items: []
+  - m_Id: 244717473178976256
+    m_Localized: "A morte te alcan\xE7ou\ne voc\xEA n\xE3o conseguiu escapar.\n\nMas
+      o jogo continua: pressione E para reiniciar."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717383034994688
+    m_Localized: "A morte te alcan\xE7ou\ne voc\xEA n\xE3o conseguiu escapar.\n\nMas
+      o jogo continua: pressione E para reiniciar."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -70,7 +70,7 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 37532140683264
     m_Localized: "Te alcanz\xF3 la muerte\ny no la pudiste esquivar.\nPero el juego
-      contin\xFAa:\nToca E para reiniciar."
+      contin\xFAa:\nToc\xE1 E para reiniciar."
     m_Metadata:
       m_Items: []
   - m_Id: 38029492862976
@@ -87,8 +87,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 38489905807360
-    m_Localized: "Este cap\xEDtulo comienza\ny a la abuela ten\xE9s que encontrar.\nPreparate
-      para buscarla bien,\ny toca E para continuar.\n"
+    m_Localized: "Este cap\xEDtulo comienza\ny a la abuela ten\xE9s que encontrar.\n\nPreparate
+      para buscarla bien,\ny toc\xE1 E para continuar.\n"
     m_Metadata:
       m_Items: []
   - m_Id: 62309911871488
@@ -109,6 +109,14 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 240248127471878144
     m_Localized: "p\xE1gina "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717383034994688
+    m_Localized: "Ca\xEDste al agua!\nToc\xE1 E para reiniciar."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717473178976256
+    m_Localized: "El Rocoso te derrot\xF3!\nToc\xE1 E para reiniciar."
     m_Metadata:
       m_Items: []
   references:

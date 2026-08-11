@@ -64,7 +64,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 37532140683264
-    m_Key: overlay_death
+    m_Key: DefeatGeneric
     m_Metadata:
       m_Items: []
   - m_Id: 38029492862976
@@ -97,6 +97,14 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 240248127471878144
     m_Key: PaginaActual
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717383034994688
+    m_Key: DefeatDrowning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717473178976256
+    m_Key: DefeatRocoso
     m_Metadata:
       m_Items: []
   m_Metadata:

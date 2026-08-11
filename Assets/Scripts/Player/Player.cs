@@ -5,6 +5,17 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Spine.Unity;
 
+public enum TijeraEquipment
+{
+	Normal,    // Spine skin: "Tijera_Normal"
+	Mejorada   // Spine skin: "Tijera_Upgrade_1"
+}
+
+public enum RespawnBehavior
+{
+	LastSafePosition, // ultimo lugar seguro (snapshot con antiguedad, no literal al borde del agua)
+	LevelSpawnPoint   // punto de entrada de kami a la pagina actual (el respawn comun de siempre)
+}
 
 public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 {
@@ -17,9 +28,15 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     [Header("Stats")]
     public bool hasTijera = false;
-    public bool hasTijeraMejorada = false;
+    public TijeraEquipment currentTijera = TijeraEquipment.Normal;
     public bool hasSprintBoots = false;
     public bool hasWaterBoots = false;
+
+    [Header("Respawn")]
+    [Tooltip("donde respawnea kami al morir ahogada. las demas muertes usan siempre el respawn comun (entrada de la pagina)")]
+    [SerializeField] RespawnBehavior drowningRespawnMode = RespawnBehavior.LastSafePosition;
+    [Tooltip("cada cuantos segundos en el suelo se confirma un snapshot de lugar seguro. mas alto = respawn mas lejos del peligro")]
+    public float safeSnapshotInterval = 2f;
 
     public float weaponCooldown;
     [SerializeField] float tijeraHitBoxDuration = 0.1f;
@@ -83,6 +100,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     bool _readyToAttack = true;
     float _hitStunEndTime; //hasta cuando duran los bloqueos configurados en hitFeedback
     Coroutine _flashCoroutine;
+    Vector3 _lastSafePosition;
+    DeathCause _lastDeathCause = DeathCause.Generic;
 
     //flash de daño sobre el skeleton de spine
     MeshRenderer _skeletonMeshRenderer; //el mesh renderer del SkeletonAnimation, lo agarro solo en Start
@@ -133,6 +152,17 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         {
             return Time.time < _hitStunEndTime;
         }
+    }
+
+    public Vector3 LastSafePosition
+    {
+        get { return _lastSafePosition; }
+        set { _lastSafePosition = value; }
+    }
+
+    public DeathCause LastDeathCause
+    {
+        get { return _lastDeathCause; }
     }
 
     //MVC
@@ -221,6 +251,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         augmentedJumpsLeft = augmentedJumpsMax;
         originalJumpForce = jumpForce;
         originalMaxSpeed = _maxSpeed;
+        _lastSafePosition = transform.position; //arranque: si muere antes del primer snapshot, respawnea donde nacio
 
         if (SkeletonAnimation == null)
         {
@@ -413,10 +444,16 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     //Entity
     public override void TakeDamage(float dmg)
     {
+        TakeDamage(dmg, DeathCause.Generic);
+    }
+
+    //overload con causa: si este daño mata, la causa llega hasta la anim de muerte y el texto del overlay
+    public override void TakeDamage(float dmg, DeathCause cause)
+    {
         Vida -= dmg;
         if (Vida <= 0)
         {
-            Die();
+            Die(cause);
             isGettingWet = false;
         }
         else
@@ -469,33 +506,50 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
                 break;
         }
     }
-    public override void Die()
+    public override void Die(DeathCause cause = DeathCause.Generic)
     {
         if (CurrentState == PlayerState.Dead)
         {
             return; //ya esta muerta: el drowning u otro daño repetido no puede matarla dos veces
         }
+        isGettingWet = false;
 
+        _lastDeathCause = cause;
+        _model.InvalidateSafeCandidate(); //la candidata sin confirmar pudo tomarse en el peligro (ej: dentro del rio en el delay): se descarta
+        Debug.Log($"[Player] Die: causa {cause}");
         //la muerte pasa en 3 tiempos: 1) anim + musica + evento, ya. 2) overlay tras el delay. 3) respawn cuando el jugador toca E (OverlayManager)
         SetState(PlayerState.Dead);
         AudioManager.instance.PlayByName("GameOverOrchestral");
-        EventManager.Trigger(Evento.OnPlayerDie);
-        StartCoroutine(DeathSequence());
+        EventManager.Trigger(Evento.OnPlayerDie, cause); //la causa viaja en el evento por si alguien mas la necesita
+        StartCoroutine(DeathSequence(cause));
     }
 
-    IEnumerator DeathSequence()
+    IEnumerator DeathSequence(DeathCause cause = DeathCause.Generic)
     {
         yield return new WaitForSeconds(defeatOverlayDelay);
-        OverlayManager.Instance.ShowDefeatOverlay();
+
+        //el player es el dueño de la politica de respawn: resuelve la posicion aca y el overlay solo la ejecuta al cerrar.
+        //null = respawn comun (entrada de la pagina actual, lo maneja PlayerPageSpawnManager como siempre)
+        Vector3? respawnOverride = null;
+        if (cause == DeathCause.Drowning && drowningRespawnMode == RespawnBehavior.LastSafePosition)
+        {
+            respawnOverride = LastSafePosition;
+        }
+
+        Debug.Log($"[Player] DeathSequence: muestro overlay (causa {cause}, respawn {(respawnOverride.HasValue ? $"lugar seguro {respawnOverride.Value}" : "entrada de pagina")})");
+        OverlayManager.Instance.ShowDefeatOverlay(cause, respawnOverride);
     }
 
     private void OnPlayerPlaced(object[] parameters)
     {
         //el spawn manager avisa cuando reposiciono al player: si estaba muerto, revive
+        isGettingWet = false; //por seguridad: un respawn no puede dejarla marcada como mojada
+
         if (CurrentState == PlayerState.Dead)
         {
             Vida = _maxHp; //la vida recien vuelve al respawnear (mientras esta muerta queda en 0)
             SetState(PlayerState.Idle);
+            Debug.Log($"[Player] OnPlayerPlaced: revivida en {transform.position} (vida llena, estado Idle)");
         }
     }
 
@@ -507,31 +561,60 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
         if (!hasWaterBoots)
         {
+            Debug.Log("[Player] GetWet: me mojé, feedback + muerte por ahogo");
             _view.StartGetWetAnimation(); //solo el trigger de arranque. los pasos van aparte
-            StartCoroutine(DrowningCoroutine(wetDamage));
+            Die(DeathCause.Drowning);
+        }
+        else
+        {
+            Debug.Log("[Player] GetWet: me mojé pero tengo las botas de agua, no muero");
         }
     }
     public void StopGettingWet()
     {
         isGettingWet = false;
     }
-    public IEnumerator DrowningCoroutine(float wetDamage)
-    {
-        while (isGettingWet)
-        {
-            TakeDamage(wetDamage);
-            yield return new WaitForSeconds(0.8f);
-        }
-    }
     public void GetGolpeado(float dmg)
     {
         //print("me han golpeao");
         _view.StartGetGolpeadoAnimation(); //es solo x el sonido por ahora
-        TakeDamage(dmg);
+        TakeDamage(dmg, DeathCause.Rocoso); //por ahora solo el rocoso golpea; si aparece otro golpeador, pasar la causa por parametro
     }
     public void GetCured(int curacion)
     {
         Vida += curacion;
+    }
+
+    //Equipamiento
+    public void SetTijeraEquipment(TijeraEquipment newTijera)
+    {
+        if (currentTijera == newTijera)
+        {
+            return;
+        }
+
+        currentTijera = newTijera;
+
+        // Aplica skin en Spine
+        string skinName = newTijera == TijeraEquipment.Mejorada
+            ? "Tijera_Upgrade_1"
+            : "Tijera_Normal";
+        SkeletonAnimation.Skeleton.SetSkin(skinName);
+        SkeletonAnimation.Skeleton.SetSlotsToSetupPose();
+
+        // Actualiza lógica de daño en TijeraManager
+        if (newTijera == TijeraEquipment.Mejorada)
+        {
+            tijeraManager.SetTijeraMejorada();
+            miTijeraHitbox = tijeraManager.tijeraMejoradaHitbox;
+        }
+        else
+        {
+            tijeraManager.SetTijera();
+            miTijeraHitbox = tijeraManager.tijeraHitbox;
+        }
+
+        Debug.Log($"[Player] Tijera equipada: {newTijera}");
     }
 
     //Eventos
@@ -544,12 +627,9 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         _view.RefreshBodyAnimation(); //actualiza la anim del cuerpo si es necesario (de NoScissors a normal)
         _view.RefreshOverrides(); //actualiza viento y paperplane
     }
-    public void GetTijeraMejorada()
+    public void GetTijeraMejorada(params object[] parameters)
     {
-        //Debug.Log("player - get tijera mejorada");
-        hasTijeraMejorada = true;
-        tijeraManager.SetTijeraMejorada();
-        miTijeraHitbox = tijeraManager.tijeraMejoradaHitbox;
+        SetTijeraEquipment(TijeraEquipment.Mejorada);
     }
     public void StartOrigamiCast(params object[] parameters)
     {

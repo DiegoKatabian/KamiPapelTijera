@@ -46,7 +46,7 @@ public class NPC : Entity
         yield return new WaitForSeconds(0.25f);
         _sr.material.color = Color.white;
     }
-    public override void Die()
+    public override void Die(DeathCause cause = DeathCause.Generic)
     {
         TooltipManager.Instance.ShowTooltip("Este NPC no puede morir", PostItColor.Verde);
     }

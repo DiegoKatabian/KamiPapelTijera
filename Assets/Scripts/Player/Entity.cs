@@ -29,14 +29,20 @@ public abstract class Entity : MonoBehaviour
 
     public virtual void TakeDamage(float dmg)
     {
+        TakeDamage(dmg, DeathCause.Generic);
+    }
+
+    //overload con causa: si este daño termina matando, Die() se entera de que lo mato (rio, rocoso, etc)
+    public virtual void TakeDamage(float dmg, DeathCause cause)
+    {
         //print("entity: recibi " + dmg + " damage");
         _hp -= dmg;
         if (_hp <= 0)
         {
-            Die();
+            Die(cause);
         }
     }
-    public virtual void Die()
+    public virtual void Die(DeathCause cause = DeathCause.Generic)
     {
         //print("entity: me mori");
         Destroy(gameObject);

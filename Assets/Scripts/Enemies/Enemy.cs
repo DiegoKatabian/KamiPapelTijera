@@ -26,7 +26,7 @@ public abstract class Enemy : Entity
         _sr.material.color = Color.white;
     }
 
-    public override void Die()
+    public override void Die(DeathCause cause = DeathCause.Generic)
     {
         float pitch = 1;
         if (endsEncounter)

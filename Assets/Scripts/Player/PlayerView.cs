@@ -49,6 +49,7 @@ public class PlayerView
     const string ANIMATION_PULLSOLAPA_REVERSE = "DownSolapas"; //cerrar solapa (pendiente de exportar del skeleton; mientras no exista se cae a PullSolapas)
     const string ANIMATION_RUNSTOP = "RunStop";
     const string ANIMATION_DEATH = "Death";
+    const string ANIMATION_DROWNING = "Drowning";
 
     //versiones sin tijera de las 7 animaciones principales (ahora se resuelven automaticamente en SetBodyAnimation)
     const string ANIMATION_IDLE_NOSCISSORS = "IdleNoScissors";
@@ -211,7 +212,7 @@ public class PlayerView
             case PlayerState.Dead:
                 //non-loop y sin nada encolado despues: spine deja el ultimo frame puesto hasta que el respawn ponga Idle.
                 //el timing del overlay y el respawn viven en Player.Die() / OverlayManager, no aca.
-                SetBodyAnimation(ANIMATION_DEATH, false);
+                SetDeathAnimation(_player.LastDeathCause);
                 break;
         }
     }
@@ -278,6 +279,13 @@ public class PlayerView
         }
 
         _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, resolvedName, loop);
+    }
+
+    void SetDeathAnimation(DeathCause cause)
+    {
+        string deathAnim = cause == DeathCause.Drowning ? ANIMATION_DROWNING : ANIMATION_DEATH;
+        SetBodyAnimation(deathAnim, false);
+        Debug.Log($"[PlayerView] muerte: {cause} -> anim {deathAnim}");
     }
 
     //---------- Overrides (noscissors y paperplane: loopean encima del cuerpo mientras dure su condicion) ----------
@@ -478,6 +486,8 @@ public class PlayerView
         //solo el sonido de arranque
         //los pasos mojados se disparan abajo desde otro metodo
         AudioManager.instance.PlayByName("BigWaterSplash", 1.2f);
+        _player.particleShooter.Shoot(PARTICLE_SPLASH, 0);
+
     }
 
     public void StartGetGolpeadoAnimation()

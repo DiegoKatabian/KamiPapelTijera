@@ -17,13 +17,17 @@ El cuerpo va abajo y el resto se superpone, en este orden:
 
 Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del SkeletonDataAsset es 0.2. Los one-shots encolan `AddEmptyAnimation` con delay = duración de la anim (con delay 0, el mix se comía el final de la anim).
 
-## Animaciones (nombres exactos, Atlas 5)
+## Animaciones (nombres exactos, Atlas 8)
 
 - Locomoción: `Idle`, `walk`, `Skip`, `Run`, `RunStop`, `jump`, `falling`, `landing`
 - Acción: `Attack` (parado), `AttackMOVE` (moviéndose/aire, no keyea piernas), `PullSolapas` (abrir solapa), `PullSolapasReverse` (cerrar solapa — **pendiente de exportar**; mientras no exista, PlayerView cae a `PullSolapas` con warning)
-- Otros: `Casting`, `IdleToCasting`, `Reward`, `RewardLoop`, `Hit` (recibir daño), `Death`, `Wind`, `TitleScreen`
+- Otros: `Casting`, `IdleToCasting`, `Reward`, `RewardLoop`, `Hit` (recibir daño), `Death`, `Drowning` (muerte por río, sin variante NoScissors), `Wind`, `TitleScreen`
 - Overrides: `NoScissortsOverride` (typo del skeleton), `PaperPlaneOverride`
 - Existen pero NO se usan: `IdleNoScissors`, `walk2`, `jumpComplete`
+
+## Skins (Atlas 8)
+
+`default`, `Tijera_Normal`, `Tijera_Upgrade_1`. Se cambian con `Player.SetTijeraEquipment()`: `Skeleton.SetSkin(nombre)` + `SetSlotsToSetupPose()` + actualiza TijeraManager/hitbox. Botas/guantes a futuro (multi-slot recién con Spine 4.x — hoy 3.8).
 
 ## Eventos dentro de las anims
 

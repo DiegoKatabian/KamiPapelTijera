@@ -15,6 +15,12 @@ public class PlayerModel
     float _landingTimer;
     float _fullSpeedTimer; //cuanto lleva kami seguido a velocidad maxima (skip/run), para armar el runstop
 
+    //snapshot de lugar seguro con doble buffer: la confirmada siempre tiene entre 1 y 2 intervalos
+    //de antiguedad, asi el respawn por ahogo no la deja literal al borde del agua
+    float _safePosTimer;
+    Vector3 _candidateSafePos;
+    bool _hasSafeCandidate;
+
     const float COYOTE_TIME = 0.2f;
     const float FALL_VELOCITY_THRESHOLD = -2f; //velocidad vertical a partir de la cual consideramos que kami cae
     const float HARD_FALL_TIME = 0.2f; //caidas mas largas que esto aplican landing lag
@@ -100,6 +106,7 @@ public class PlayerModel
         if (grounded)
         {
             _coyoteTimer = COYOTE_TIME;
+            UpdateSafePosition();
 
             PlayerState state = _player.CurrentState;
             if (state == PlayerState.Jumping || state == PlayerState.Falling)
@@ -137,6 +144,43 @@ public class PlayerModel
                 _player.SetState(PlayerState.Falling);
             }
         }
+    }
+
+    void UpdateSafePosition()
+    {
+        //no snapshotear mojada ni muerta: esas posiciones no son "seguras" (podrian estar adentro del rio)
+        if (_player.isGettingWet || _player.CurrentState == PlayerState.Dead)
+        {
+            return;
+        }
+
+        _safePosTimer += Time.deltaTime;
+        if (_safePosTimer < _player.safeSnapshotInterval)
+        {
+            return;
+        }
+        _safePosTimer = 0f;
+
+        //doble buffer: confirmo la candidata vieja y tomo una nueva. transform.position (no FeetPosition)
+        //porque PositionPlayerAtPoint del spawn manager setea transform.position directo.
+        if (_hasSafeCandidate)
+        {
+            _player.LastSafePosition = _candidateSafePos;
+        }
+        _candidateSafePos = _player.transform.position;
+        _hasSafeCandidate = true;
+    }
+
+    public void InvalidateSafeCandidate()
+    {
+        //al morir se tira la candidata sin confirmar: pudo haberse tomado parada en el peligro
+        //(ej: adentro del rio durante el activationDelay, cuando isGettingWet todavia era false).
+        //sin esto, esa candidata se confirmaba en el primer tick post-respawn y un segundo ahogo
+        //podia respawnear a kami adentro del agua. la confirmada queda: esa ya sobrevivio
+        //un intervalo entero antes de la muerte, es genuinamente segura.
+        _hasSafeCandidate = false;
+        _safePosTimer = 0f;
+        Debug.Log("[PlayerModel] candidata de lugar seguro descartada por muerte");
     }
 
     bool CanStartFalling()

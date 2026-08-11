@@ -190,7 +190,9 @@ MonoBehaviour:
   showTooltip: 0
   tooltipTextToShow: 
   postItColor: 2
+  _maxTooltipShows: 0
   wetDamage: 20
+  activationDelay: 0.25
 --- !u!1 &6363894180030326304
 GameObject:
   m_ObjectHideFlags: 0

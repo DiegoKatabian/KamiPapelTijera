@@ -96,6 +96,7 @@ MonoBehaviour:
 
       and Grandma you must find!
 
+
       Search
       in every corner of the book,
 
@@ -150,6 +151,18 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 240248127471878144
     m_Localized: 'page '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717473178976256
+    m_Localized: 'You were defeated!
+
+      Press E to try again.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717383034994688
+    m_Localized: 'You fell into the water!
+
+      Press E to try again.'
     m_Metadata:
       m_Items: []
   references:

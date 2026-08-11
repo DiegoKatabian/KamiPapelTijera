@@ -30,6 +30,34 @@ Construye y coordina a los otros tres — ellos hablan con Player, nunca entre s
 - **PlayerView** — reacciona: animaciones de Spine, sonidos y partículas. Escucha `OnStateChanged` y los eventos de las anims de Spine (`HandleAttack`, `HandleFootstep`)
 - **PlayerController** — recibe input
 
+## Sistema de Equipamiento (Tijeras) — Agosto 2026
+
+**Status**: ✅ Implementado (solo skins de tijeras por ahora)
+
+Kami tiene dos tipos de tijera con skins diferentes en Spine (Atlas 8):
+- `TijeraEquipment.Normal` → Spine skin `"Tijera_Normal"`
+- `TijeraEquipment.Mejorada` → Spine skin `"Tijera_Upgrade_1"`
+
+**Código**:
+- `Player.cs:SetTijeraEquipment()` — cambia skin + lógica de daño en TijeraManager
+- `Player.currentTijera` — enum que trackea equipo actual
+- Al completar quest del chino, `LevelManager` llama `Player.GetTijeraMejorada()` que usa `SetTijeraEquipment()`
+
+**Futuro (comentado en código para Spine 4.x):**
+Cuando actualicemos a Spine 4.0, agregar multi-slot (botas, guantes, etc) usando `CurrentEquipment` struct y composición de skins. Hoy es simple porque solo maneja tijeras.
+
+## Muerte con causa (río, rocoso) — Agosto 2026
+
+La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso) decide la anim, el texto del overlay y el respawn:
+
+1. **Río**: `Rio.cs` espera `activationDelay` (tuneable) con el IMojable adentro — si sale antes, cancela y no pasa nada. Cumplido el delay llama `GetWet()`: para Kami eso es feedback (anim mojarse + sonido) y `Die(DeathCause.Drowning)` de una; otros IMojable siguen con damage normal. Rio NO conoce a Player, trata todo por IMojable.
+2. **Rocoso**: `GetGolpeado()` → `TakeDamage(dmg, DeathCause.Rocoso)` (overload que enhebra la causa hasta `Die`).
+3. **Anim**: `PlayerView.SetDeathAnimation(cause)` elige "Drowning" o "Death".
+4. **Overlay**: `Player.DeathSequence` resuelve la posición de respawn (dueño de la política) y llama `ShowDefeatOverlay(cause, respawnOverride)`. `DefeatOverlay` (hereda `Overlay`) muestra la causa localizada — keys en tabla `UITexts`: `DefeatDrowning`, `DefeatRocoso`, `DefeatGeneric`.
+5. **Respawn** al cerrar con E: drowning usa `Player.drowningRespawnMode` (`LastSafePosition` = snapshot generoso con doble buffer en PlayerModel, antigüedad 1-2× `safeSnapshotInterval`; o `LevelSpawnPoint` = entrada de página). Las demás muertes siempre respawn común (`lastUsedSpawn` del `PlayerPageSpawnManager`).
+
+**Setup de escena pendiente**: el GO del defeat overlay necesita el componente `DefeatOverlay` (reemplaza a `Overlay`), con `causeText` (TMP) asignado, y reasignar la ref en `OverlayManager`. Las 3 keys hay que crearlas en los localization sheets.
+
 ## Convenciones de código
 
 - Comentarios en español, explicando el *por qué*
