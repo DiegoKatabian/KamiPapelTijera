@@ -146,6 +146,7 @@ MonoBehaviour:
   rioAbajo: {fileID: 5743267890974260669}
   delayTimeEntreRios: 1
   delayTimeRepresaFall: 1
+  delayTimeHastaCamaraBackToNormal: 1
   objectsToEliminate: []
   objectsToActivate: []
 --- !u!1 &7368799726970105853
@@ -1435,6 +1436,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4035993592421701}
     m_Modifications:
+    - target: {fileID: 1496400181336397239, guid: 7db44859a6336c94ebd25c2b6843a7d9,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1717708727582070104, guid: 7db44859a6336c94ebd25c2b6843a7d9,
         type: 3}
       propertyPath: m_Name

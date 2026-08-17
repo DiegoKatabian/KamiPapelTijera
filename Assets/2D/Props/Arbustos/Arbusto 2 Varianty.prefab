@@ -13,10 +13,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: a428d68f88ce5284d9a03027c19c8dbf,
         type: 3}
+    - target: {fileID: 567288017354426532, guid: 5cc5492d50450464aa83c4f28181a5e1,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 567288017354426532, guid: 5cc5492d50450464aa83c4f28181a5e1,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 755407224040207078, guid: 5cc5492d50450464aa83c4f28181a5e1,
         type: 3}
       propertyPath: m_Name
-      value: Arbusto 2
+      value: Arbusto 2 Varianty
       objectReference: {fileID: 0}
     - target: {fileID: 755407224040207079, guid: 5cc5492d50450464aa83c4f28181a5e1,
         type: 3}
@@ -104,12 +114,32 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 2a55ff6fd381803438e7e35e89c392bd,
         type: 3}
+    - target: {fileID: 5612509873270464288, guid: 5cc5492d50450464aa83c4f28181a5e1,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5612509873270464288, guid: 5cc5492d50450464aa83c4f28181a5e1,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5693622361642184601, guid: 5cc5492d50450464aa83c4f28181a5e1,
         type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 5c98f5b15b2c0284592fe2fda747b967,
         type: 3}
+    - target: {fileID: 5693622361642184601, guid: 5cc5492d50450464aa83c4f28181a5e1,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5693622361642184601, guid: 5cc5492d50450464aa83c4f28181a5e1,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7029812016766763093, guid: 5cc5492d50450464aa83c4f28181a5e1,
         type: 3}
       propertyPath: m_IsActive

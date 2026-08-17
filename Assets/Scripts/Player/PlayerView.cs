@@ -37,7 +37,7 @@ public class PlayerView
     const string ANIMATION_RUNSTOP = "RunStop";
     const string ANIMATION_DEATH = "Death";
     const string ANIMATION_DROWNING = "Drowning";
-    const string ANIMATION_RIDING_PAGE = "RidePage2";
+    const string ANIMATION_RIDING_PAGE = "RidePage";
 
     const string ANIMATION_IDLE_NOSCISSORS = "IdleNoScissors";
     const string ANIMATION_WALK_NOSCISSORS = "walkNoScissors";

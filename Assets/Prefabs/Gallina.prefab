@@ -62,6 +62,7 @@ MonoBehaviour:
   showTooltip: 1
   tooltipTextToShow: La gallina intenta esquivarte!
   postItColor: 0
+  _maxTooltipShows: 0
   _thisGallina: {fileID: 5429628501580455459}
 --- !u!1 &7897264121734106301
 GameObject:
