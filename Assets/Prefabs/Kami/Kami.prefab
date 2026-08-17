@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: 48a70debdc4b7db45b2c89ea30270b3b, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: 7f148e0479b0a504082881f8644f7d0d, type: 2}
   initialSkinName: 
   initialFlipX: 0
   initialFlipY: 0
@@ -290,12 +290,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 4.45
-  m_Radius: 0.49999997
+  m_Radius: 1
   m_SlopeLimit: 45
   m_StepOffset: 2
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: -0.27, z: 0}
+  m_Center: {x: 0, y: -0.15, z: 0}
 --- !u!114 &7567128660997737823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,9 +312,11 @@ MonoBehaviour:
   _maxSpeed: 20
   _attackDamage: 0
   hasTijera: 0
-  hasTijeraMejorada: 0
+  currentTijera: 0
   hasSprintBoots: 0
   hasWaterBoots: 0
+  drowningRespawnMode: 1
+  safeSnapshotInterval: 4
   weaponCooldown: 0.05
   tijeraHitBoxDuration: 0.1
   attackMoveHitboxDelay: -1
@@ -327,7 +329,7 @@ MonoBehaviour:
   landingLagModifier: 0.75
   landingLagTime: 0.25
   rewardAnimationWaitTime: 2
-  defeatOverlayDelay: 1
+  defeatOverlayDelay: 2
   runstopMinFullSpeedTime: 1
   hitFeedback:
     hitReplacesBodyAnimation: 0
@@ -372,6 +374,9 @@ MonoBehaviour:
   augmentedJumpsLeft: 0
   lastDirection: {x: 0, y: 0, z: 0}
   runstopReady: 0
+  RideRootOffset: {x: 4, y: 4, z: 0}
+  OriginalRideRootOffset: {x: 0, y: 0, z: 0}
+  TurnOffTijeraTrailsDuringChangePage: 1
   nuevoTooltipPapelSalto: {fileID: 0}
 --- !u!114 &7567128660997737820
 MonoBehaviour:
@@ -5510,7 +5515,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9100000000000000001}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.25042504, y: 1.7599599, z: 0}
+  m_LocalPosition: {x: 0.25042343, y: 1.7599597, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5563,7 +5568,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9100000000000000004}
   m_LocalRotation: {x: -0, y: -0, z: 0.6047382, w: 0.7964243}
-  m_LocalPosition: {x: -0.04634232, y: 1.5450835, z: 0}
+  m_LocalPosition: {x: -0.046340942, y: 1.5450835, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

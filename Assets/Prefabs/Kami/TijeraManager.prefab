@@ -9938,7 +9938,7 @@ MonoBehaviour:
   tijeraMejoradaParticles: {fileID: 8916479658894510841}
   tijeraMejoradaTrail: {fileID: 5354815963992254887}
   hitboxParent: {fileID: 6164159423316543078}
-  tipBoneName: tijera_front3
+  tipBoneName: Trail
 --- !u!1 &5059498458301482096
 GameObject:
   m_ObjectHideFlags: 0

@@ -22,9 +22,11 @@ public class TijeraManager : MonoBehaviour
     [Tooltip("las hitbox y las particulas de ataque viven aca abajo. el player orienta este transform al atacar y todo se alinea junto")]
     public Transform hitboxParent;
 
-    [SerializeField] string tipBoneName = "tijera_front3"; //el hueso de la punta de la tijera en el skeleton de spine
+    [SerializeField] string tipBoneName = "Trail"; //el hueso de la punta de la tijera en el skeleton de spine
 
     TijeraType currentTijera;
+
+    bool tijeraTrailIsOn, tijeraMejoradaTrailIsOn;
 
     public void InitTipFollowers(SkeletonAnimation kamiSkeleton) //lo llama player en su start
     {
@@ -84,5 +86,38 @@ public class TijeraManager : MonoBehaviour
     {
         ParticleSystem.ShapeModule shape = tijeraTrail.shape;
         shape.radius = newRadius;
+    }
+
+    public void TurnOffTrailsDuringChangePage()
+    {
+        //get the current state of the tijeratrail and mejoradatrail, if theyre on turn them off
+
+        tijeraTrailIsOn = tijeraTrail.gameObject.activeSelf;
+        tijeraMejoradaTrailIsOn = tijeraMejoradaTrail.gameObject.activeSelf;
+
+        if (tijeraTrailIsOn)
+        {
+            tijeraTrail.gameObject.SetActive(false);
+        }
+
+        if (tijeraMejoradaTrailIsOn)
+        {
+            tijeraMejoradaTrail.gameObject.SetActive(false);
+        }
+    }
+
+    public void TurnBackOnTrailsAfterChangePage()
+    {
+        //if any of the trail had to be turned off, turn it on again
+
+        if (tijeraTrailIsOn)
+        {
+            tijeraTrail.gameObject.SetActive(true);
+        }
+
+        if (tijeraMejoradaTrailIsOn)
+        {
+            tijeraMejoradaTrail.gameObject.SetActive(true);
+        }
     }
 }

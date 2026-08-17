@@ -50,7 +50,7 @@ public class PlayerView
     const string ANIMATION_RUNSTOP = "RunStop";
     const string ANIMATION_DEATH = "Death";
     const string ANIMATION_DROWNING = "Drowning";
-    const string ANIMATION_RIDING_PAGE = "Drowning"; //agarrada al borde de la hoja durante el giro de pagina (pendiente de exportar del skeleton; mientras no exista se cae a Idle con warning)
+    const string ANIMATION_RIDING_PAGE = "RidePage2"; //agarrada al borde de la hoja durante el giro de pagina (pendiente de exportar del skeleton; mientras no exista se cae a Idle con warning)
 
     //versiones sin tijera de las 7 animaciones principales (ahora se resuelven automaticamente en SetBodyAnimation)
     const string ANIMATION_IDLE_NOSCISSORS = "IdleNoScissors";
@@ -381,7 +381,10 @@ public class PlayerView
     public void ForceFacing(bool faceRight)
     {
         _skeletonAnimation.Skeleton.ScaleX = faceRight ? 1f : -1f;
+        _player.SetRideRootOffsetAccordingToForcedFacing(faceRight);
     }
+
+    
 
     //---------- Ataque (track propio, se superpone al cuerpo) ----------
 
@@ -518,14 +521,19 @@ public class PlayerView
     public void StartSprint()
     {
         //solo particulas y sonido: la animacion de correr la maneja el estado Running
-        _player.particleShooter.Enable(PARTICLE_SPRINT, true);
+        SetSprintParticlesState(true);
         AudioManager.instance.PlayByName("BootsOn", 2f, 0.01f);
     }
 
     public void EndSprint()
     {
-        _player.particleShooter.Enable(PARTICLE_SPRINT, false);
+        SetSprintParticlesState(false);
         AudioManager.instance.PlayByName("BootsOff", 2f, 0.01f);
+    }
+
+    public void SetSprintParticlesState(bool state)
+    {
+        _player.particleShooter.Enable(PARTICLE_SPRINT, state);
     }
 
     public void StartPasoSFX(int step)

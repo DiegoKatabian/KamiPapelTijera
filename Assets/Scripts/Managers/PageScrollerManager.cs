@@ -33,6 +33,8 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
 
     bool _bossfightWasCompleted;
 
+    public float DelayBetweenCamCloseUpAndCamBook = 2;
+
 
     protected override void Awake()
     {
@@ -122,11 +124,19 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
 
     void StartChangePageFX()
     {
-        CameraManager.Instance.SetCamera(CameraMode.BookCenter);
+        StartCoroutine(ChangePageCameraSequence());
         AudioManager.instance.PlayByName("MagicSuccess", 0.5f, 0.01f);
         StartCoroutine(PostProcessManager.Instance.LerpBloomIntensity());
         PlayGlitter();
     }
+
+    IEnumerator ChangePageCameraSequence()
+    {
+        CameraManager.Instance.SetCamera(CameraMode.CloseUp);
+        yield return new WaitForSeconds(DelayBetweenCamCloseUpAndCamBook);
+        CameraManager.Instance.SetCamera(CameraMode.BookCenter);
+    }
+
     public void CheckSpheres(int activePageIndex)
     {
         //este metodo chequea, segun la currentPage, que esferas deberian estar activas

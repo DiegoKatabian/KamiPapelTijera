@@ -1,9 +1,9 @@
+using Spine.Unity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using Spine.Unity;
 
 public enum TijeraEquipment
 {
@@ -127,7 +127,9 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     [Header("Riding Page")]
     [Tooltip("ajuste fino de la posicion de kami respecto al hueso de borde, por si la animacion de riding no calza justo con el pivot del hueso")]
-    [SerializeField] Vector3 rideRootOffset = Vector3.zero;
+    public Vector3 RideRootOffset = new Vector3 (2, 4, 0);
+    [HideInInspector] public Vector3 OriginalRideRootOffset;
+    public bool TurnOffTijeraTrailsDuringChangePage = true;
 
     public bool IsRidingPage { get; private set; }
     Transform _rideEdgeBone;
@@ -261,6 +263,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         originalJumpForce = jumpForce;
         originalMaxSpeed = _maxSpeed;
         _lastSafePosition = transform.position; //arranque: si muere antes del primer snapshot, respawnea donde nacio
+        OriginalRideRootOffset = RideRootOffset;
 
         if (SkeletonAnimation == null)
         {
@@ -306,7 +309,11 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         }
 
         Vector3 bonePos = _rideEdgeBone.position;
-        Vector3 newPos = new Vector3(bonePos.x, bonePos.y, bonePos.z + _rideZOffset) + rideRootOffset;
+        Vector3 newPos = new Vector3(bonePos.x, bonePos.y, bonePos.z + _rideZOffset) + RideRootOffset;
+
+        //if kami is being flipped, add the riderootoffset.x positive value, if not, its negative value
+
+
 
         if (!_rideLoggedFirstFrame)
         {
@@ -319,6 +326,18 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         }
 
         transform.position = newPos;
+    }
+
+    public void SetRideRootOffsetAccordingToForcedFacing(bool faceRight)
+    {
+        if (!faceRight)
+        {
+            RideRootOffset = new Vector3(-OriginalRideRootOffset.x, OriginalRideRootOffset.y, OriginalRideRootOffset.z);
+        }
+        else
+        {
+            RideRootOffset = OriginalRideRootOffset;
+        }
     }
 
     //State Machine
@@ -389,10 +408,18 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         _rideLoggedFirstFrame = false;
         cc.enabled = false;
         IsRidingPage = true;
+
+        if (TurnOffTijeraTrailsDuringChangePage)
+        {
+            tijeraManager.TurnOffTrailsDuringChangePage();
+        }
+
         if (faceRight.HasValue)
         {
-            _view.ForceFacing(faceRight.Value);
+            _view.ForceFacing(!faceRight.Value);
         }
+        _view.SetSprintParticlesState(true);
+
         SetState(PlayerState.RidingPage);
         Debug.Log($"[Player] StartRidingPage: enganchada a '{edgeBone.name}' (bone pos {edgeBone.position}, kami pos {transform.position}, offset Z {_rideZOffset:F2}), cc.enabled={cc.enabled}, estado={CurrentState}");
     }
@@ -407,6 +434,15 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         IsRidingPage = false;
         _rideEdgeBone = null;
         cc.enabled = true;
+
+        if (TurnOffTijeraTrailsDuringChangePage)
+        {
+            tijeraManager.TurnBackOnTrailsAfterChangePage();
+        }
+
+        _view.SetSprintParticlesState(false);
+
+
         SetState(PlayerState.Idle); //PlayerModel re-evalua el estado real (walk/idle/etc) en el proximo Tick segun el input
         Debug.Log($"[Player] StopRidingPage: kami se suelta de la hoja en {transform.position}, cc.enabled={cc.enabled}");
     }
