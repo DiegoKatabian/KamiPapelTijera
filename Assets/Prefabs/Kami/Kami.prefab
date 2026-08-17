@@ -313,7 +313,7 @@ MonoBehaviour:
   _attackDamage: 0
   hasTijera: 0
   currentTijera: 0
-  hasSprintBoots: 0
+  hasSprintBoots: 1
   hasWaterBoots: 0
   drowningRespawnMode: 1
   safeSnapshotInterval: 4
