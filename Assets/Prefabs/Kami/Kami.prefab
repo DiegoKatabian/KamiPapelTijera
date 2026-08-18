@@ -112,7 +112,7 @@ MonoBehaviour:
   initialFlipY: 0
   updateWhenInvisible: 3
   separatorSlotNames: []
-  zSpacing: 0
+  zSpacing: -0.002
   useClipping: 1
   immutableTriangles: 0
   pmaVertexColors: 1
@@ -349,6 +349,8 @@ MonoBehaviour:
     hitMixOut: 0.05
     overrideMixIn: 0.2
     overrideMixOut: 0.2
+    jumpMixDuration: 0
+    changePageJumpToRideMix: 0.5
   walkThreshold: 0.5
   jumpCutMultiplier: 0.4
   landingDuration: 0.15

@@ -95,6 +95,10 @@ public class PlayerView
         // --- Lógica de partículas de sprint: se activan/desactivan según el estado Running ---
         if (next == PlayerState.Running)
         {
+            // resincronizo el flip aca tambien: si venimos de un ChangePage, el flip de las sprint
+            // particles pudo haber quedado seteado para esa direccion y quedaria pegado en la
+            // proxima corrida normal si no lo refrescamos con el facing actual.
+            SyncSprintParticlesFlipToFacing();
             SetSprintParticlesState(true);
             AudioManager.instance.PlayByName("BootsOn", 2f, 0.01f);
         }
@@ -137,12 +141,19 @@ public class PlayerView
                 break;
 
             case PlayerState.Jumping:
+            {
                 if (_player.isPaperPlaneHat)
                     AudioManager.instance.PlayByName("Jump_Paperplane", 1f, 0.02f);
                 AudioManager.instance.PlayByName("JumpStart", 1f, 0.02f);
                 ShootFootAnchorParticles(PARTICLE_JUMP);
-                SetBodyAnimation(ANIMATION_JUMP, false);
+                Spine.TrackEntry jumpEntry = SetBodyAnimation(ANIMATION_JUMP, false);
+                if (jumpEntry != null)
+                {
+                    jumpEntry.MixDuration = _player.animMix.jumpMixDuration;
+                    Debug.Log($"[PlayerView] Jump: mix forzado a {jumpEntry.MixDuration}s hacia '{jumpEntry.Animation.Name}'");
+                }
                 break;
+            }
 
             case PlayerState.Falling:
                 SetBodyAnimation(ANIMATION_FALLING, true);
@@ -194,7 +205,19 @@ public class PlayerView
 
             case PlayerState.RidingPage:
                 if (_skeletonAnimation.Skeleton.Data.FindAnimation(ANIMATION_RIDING_PAGE) != null)
-                    SetBodyAnimation(ANIMATION_RIDING_PAGE, true);
+                {
+                    // ChangePage: primero pasa por Jump (mix 0f, misma excepcion que el salto normal)
+                    // y desde ahi mezcla hacia RidePage con un mix configurable, para que se vea como
+                    // que kami "salta" a la hoja y despues queda rideandola.
+                    Spine.TrackEntry jumpEntry = SetBodyAnimation(ANIMATION_JUMP, false);
+                    if (jumpEntry != null)
+                    {
+                        jumpEntry.MixDuration = _player.animMix.jumpMixDuration;
+                        Spine.TrackEntry rideEntry = _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, ANIMATION_RIDING_PAGE, true, jumpEntry.Animation.Duration);
+                        rideEntry.MixDuration = _player.animMix.changePageJumpToRideMix;
+                        Debug.Log($"[PlayerView] ChangePage: '{jumpEntry.Animation.Name}' (mix-in {jumpEntry.MixDuration}s) -> '{ANIMATION_RIDING_PAGE}' (mix {rideEntry.MixDuration}s)");
+                    }
+                }
                 else
                 {
                     Debug.LogWarning($"[PlayerView] el skeleton no trae '{ANIMATION_RIDING_PAGE}' todavia: kami queda en Idle mientras viaja agarrada a la hoja");
@@ -240,16 +263,16 @@ public class PlayerView
         return noscissorsName;
     }
 
-    void SetBodyAnimation(string animationName, bool loop)
+    Spine.TrackEntry SetBodyAnimation(string animationName, bool loop)
     {
         if (_player == null || animationName == null)
         {
             Debug.LogWarning("[PlayerView] SetBodyAnimation: _player o animationName es null");
-            return;
+            return null;
         }
 
         string resolvedName = ResolveAnimationName(animationName);
-        _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, resolvedName, loop);
+        return _skeletonAnimation.AnimationState.SetAnimation(TRACK_BODY, resolvedName, loop);
     }
 
     void SetDeathAnimation(DeathCause cause)
@@ -322,6 +345,17 @@ public class PlayerView
     {
         _skeletonAnimation.Skeleton.ScaleX = faceRight ? 1f : -1f;
         _player.SetRideRootOffsetAccordingToForcedFacing(faceRight);
+    }
+
+    // ChangePage: footstep (Shoot) y ForceFacing manejan el flip por separado, asi que las sprint
+    // particles (que solo se prenden/apagan con Enable, nunca pasan por Shoot) no seguian el ForceFacing
+    // y quedaban espejadas. Sincronizo el flip de las sprint particles con el ScaleX ya seteado arriba.
+    // Uso solo en el punto de ChangePage (Player.StartRidingPage) para no tocar el resto de los casos.
+    public void SyncSprintParticlesFlipToFacing()
+    {
+        bool flipped = _skeletonAnimation.Skeleton.ScaleX < 0f;
+        _player.particleShooter.SetFlip(PARTICLE_SPRINT, flipped);
+        Debug.Log($"[PlayerView] ChangePage: sprint particles flip sincronizado (ScaleX={_skeletonAnimation.Skeleton.ScaleX:F0} -> flipped={flipped})");
     }
 
     //---------- Ataque ----------

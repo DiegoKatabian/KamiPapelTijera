@@ -351,7 +351,10 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
             tijeraManager.TurnOffTrailsDuringChangePage();
 
         if (faceRight.HasValue)
+        {
             _view.ForceFacing(!faceRight.Value);
+            _view.SyncSprintParticlesFlipToFacing();
+        }
         _view.SetSprintParticlesState(true);
 
         SetState(PlayerState.RidingPage);

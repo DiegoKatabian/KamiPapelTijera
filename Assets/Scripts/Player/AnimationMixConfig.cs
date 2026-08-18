@@ -19,4 +19,10 @@ public class AnimationMixConfig
     [Header("Overrides (noscissors / paperplane)")]
     public float overrideMixIn = 0.2f;
     public float overrideMixOut = 0.2f;
+
+    [Header("Jump / JumpNoScissors")]
+    public float jumpMixDuration = 0f;
+
+    [Header("ChangePage (salto -> ridepage)")]
+    public float changePageJumpToRideMix = 0.5f;
 }

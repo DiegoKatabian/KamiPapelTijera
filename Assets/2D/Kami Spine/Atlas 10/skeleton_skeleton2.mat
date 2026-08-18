@@ -8,38 +8,99 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: skeleton_skeleton2
-  m_Shader: {fileID: 4800000, guid: 45495790b394f894a967dbf44489b57b, type: 3}
+  m_Shader: {fileID: 4800000, guid: b77e51f117177954ea863bdb422344fb, type: 3}
   m_ValidKeywords:
+  - _RECEIVE_SHADOWS
   - _STRAIGHT_ALPHA_INPUT
   m_InvalidKeywords:
+  - _ALPHABLEND_ON
+  - _ALPHA_CLIP
+  - _OLD_HARD_RAMP
   - _USE8NEIGHBOURHOOD_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    AlphaDepth: False
+    IGNOREPROJECTOR: true
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BlendTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DiffuseRamp:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: db1590e0a04dcfe42847eea4d703fdd1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - PixelSnap: 0
+    - _BlendAmount: 0
+    - _Brightness: 1
+    - _BumpScale: 1
+    - _CanvasGroupCompatible: 0
+    - _ColorMask: 15
+    - _Cull: 0
+    - _CustomRenderQueue: 0
     - _Cutoff: 0.1
+    - _DarkColorAlphaAdditive: 0
+    - _DoubleSidedLighting: 0
+    - _DstBlend: 10
+    - _EmissionPower: 2
     - _FillPhase: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _Hue: 0
+    - _Metallic: 0
     - _OutlineMipLevel: 0
     - _OutlineReferenceTexWidth: 1024
     - _OutlineSmoothness: 1
     - _OutlineWidth: 3
+    - _ReceiveShadows: 1
+    - _RenderQueue: 0
+    - _RimPower: 2
+    - _Saturation: 1
+    - _ShadowAlphaCutoff: 0.1
+    - _SrcBlend: 1
+    - _Stencil: 0
     - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
     - _StencilRef: 1
+    - _StencilWriteMask: 255
     - _StraightAlphaInput: 1
+    - _TextureFade: 0
     - _ThresholdEnd: 0.25
     - _Use8Neighbourhood: 1
+    - _UseUIAlphaClip: 0
+    - _ZWrite: 0
     m_Colors:
+    - _Black: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _FillColor: {r: 0.8196079, g: 0.12941177, b: 0.10980393, a: 1}
+    - _FixedNormal: {r: 0, g: 0, b: -1, a: 1}
     - _OutlineColor: {r: 1, g: 1, b: 0, a: 1}
+    - _OverlayColor: {r: 0, g: 0, b: 0, a: 0}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

@@ -73,6 +73,24 @@ public class ParticleShooter : MonoBehaviour
 
 
 
+    // Setea el flip de forma directa (no toggle, a diferencia de Shoot). Pensado para sistemas que
+    // solo se prenden/apagan con Enable() y necesitan quedar orientados de una vez, sin depender
+    // del estado previo del renderer.
+    public void SetFlip(int index, bool flipped)
+    {
+        if (particleSystemGameObject == null || index < 0 || index >= particleSystemGameObject.Length || particleSystemGameObject[index] == null)
+        {
+            Debug.LogWarning($"[ParticleShooter] SetFlip: indice {index} fuera de rango o elemento vacio, no flipeo nada");
+            return;
+        }
+
+        Vector3 flip = flipped ? Vector3.right : Vector3.zero;
+        foreach (ParticleSystem item in particleSystemsDict[particleSystemGameObject[index]])
+        {
+            item.GetComponent<ParticleSystemRenderer>().flip = flip;
+        }
+    }
+
     public void Enable(int index, bool value)
     {
         foreach (ParticleSystem item in particleSystemsDict[particleSystemGameObject[index]])

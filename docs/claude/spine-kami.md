@@ -15,7 +15,7 @@ El cuerpo va abajo y el resto se superpone, en este orden:
 | 4 | paperplane | override loop con el paper plane hat |
 | 5 | hit | one-shot de daño (modo override) |
 
-Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del SkeletonDataAsset es 0.2. Los one-shots encolan `AddEmptyAnimation` con delay = duración de la anim (con delay 0, el mix se comía el final de la anim).
+Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del SkeletonDataAsset es 0.2, pero `jump`/`jumpNoScissors` siempre fuerzan `jumpMixDuration` (0 = instantáneo) por código — no tocar el defaultMix del asset para esto. Los one-shots encolan `AddEmptyAnimation` con delay = duración de la anim (con delay 0, el mix se comía el final de la anim).
 
 ## Animaciones (nombres exactos, Atlas 8)
 

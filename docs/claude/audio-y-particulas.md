@@ -17,7 +17,7 @@ Array `particleSystemGameObject` por índice (constantes `PARTICLE_*` en PlayerV
 
 | # | Constante | Prefab / uso |
 |---|-----------|--------------|
-| 0 | PARTICLE_SPRINT | KamiSprintParticles — `Enable` on/off con el sprint |
+| 0 | PARTICLE_SPRINT | KamiSprintParticles — `Enable` on/off con el sprint, flip explícito con `SetFlip` (ver glosario) |
 | 1 | PARTICLE_JUMP | KamiJumpParticles — `Shoot` en salto y aterrizaje |
 | 2 | PARTICLE_REWARD | reward — `Enable` durante ReceivingReward |
 | 3 | PARTICLE_SPLASH | SplashPasosKamiMojados — `Shoot` por paso mojado |
@@ -52,6 +52,11 @@ para que esto funcione, en los PREFABS de `Assets/Prefabs/Particulas/`:
    ParticleShooter lo evita destruyendo a los `timeToDestroy` (2s).
 3. *Emisión que nunca para* → sistema `looping: 1` al que le dan `Play()` y nadie `Stop()`. Fix
    tipo TijeraHitbox: `Stop()` en OnDisable ("sin esto se acumulaban ataque tras ataque").
+4. *Flip no sincronizado* → partículas que solo usan `Enable` (sprint) nunca pasan por `Shoot()`,
+   así que nunca tenían flip explícito y quedaban espejadas al forzar facing (`ForceFacing`, ej.
+   ChangePage). Fix: `ParticleShooter.SetFlip(index, flipped)` — asignación directa, a diferencia
+   de `Shoot()` que hace TOGGLE del flip (no sirve para este caso). Se llama desde
+   `PlayerView.SyncSprintParticlesFlipToFacing()`, en ChangePage y al entrar a `Running`.
 
 ## Brillitos de solapa
 
