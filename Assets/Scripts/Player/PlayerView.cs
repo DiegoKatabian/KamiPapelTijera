@@ -46,6 +46,7 @@ public class PlayerView
     const string ANIMATION_FALLING_NOSCISSORS = "fallingNoScissors";
     const string ANIMATION_JUMP_NOSCISSORS = "jumpNoScissors";
     const string ANIMATION_LANDING_NOSCISSORS = "landingNoScissors";
+    const string ANIMATION_RUN_NOSCISSORS = "RunNoScissors";
 
     const int PARTICLE_SPRINT = 0;
     const int PARTICLE_JUMP = 1;
@@ -254,6 +255,7 @@ public class PlayerView
             ANIMATION_FALLING => ANIMATION_FALLING_NOSCISSORS,
             ANIMATION_JUMP => ANIMATION_JUMP_NOSCISSORS,
             ANIMATION_LANDING => ANIMATION_LANDING_NOSCISSORS,
+            ANIMATION_RUN => ANIMATION_RUN_NOSCISSORS,
             _ => animationName
         };
 
