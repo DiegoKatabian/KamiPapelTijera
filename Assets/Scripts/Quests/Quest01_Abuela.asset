@@ -21,4 +21,4 @@ MonoBehaviour:
     evento: 0
   rewardType: 3
   questSprite: {fileID: 21300000, guid: 8984a29ba2c97ab4d9f69644fc89d4fa, type: 3}
-  rewardRt: 8
+  rewardRt: 2

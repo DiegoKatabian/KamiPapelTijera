@@ -19493,7 +19493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0220edb2f782f274ebba80d948111ee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocidadRotacionX: -45
+  velocidadRotacionX: -90
   velocidadRotacionY: 0
 --- !u!4 &3249147035734270945 stripped
 Transform:
