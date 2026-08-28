@@ -13,7 +13,7 @@ public class GallinaAI : Enemy
     public Rigidbody rb;
     public float evadeSpeed = 20;
     public GallinaSounds gallinaSounds;
-    [HideInInspector] public bool startAnimationHasFinished = false; //si el player ya se acerco y me despert�
+    [HideInInspector] public bool startAnimationHasFinished = false; //si el player ya se acerco y me desperto
     [HideInInspector] public Vector3 velocity;
     [HideInInspector] public List<Node> _pathToFollow = new List<Node>();
     [HideInInspector] public Pathfinding _pf = new Pathfinding();

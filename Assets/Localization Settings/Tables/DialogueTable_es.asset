@@ -236,16 +236,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661432029528064
-    m_Localized: "Kami! Por favor ayudame!"
+    m_Localized: "Kami, Kami! Me ten\xE9s que ayudar!"
     m_Metadata:
       m_Items: []
   - m_Id: 661435837956096
-    m_Localized: "Las gallinas est\xE1n atrapadas del otro lado del r\xEDo! Necesito
-      que cortes ese \xE1rbol para que caiga y hagan un puente."
+    m_Localized: "Las gallinas qudaron atrapadas del otro lado del r\xEDo! "
     m_Metadata:
       m_Items: []
   - m_Id: 661449255534592
-    m_Localized: "Vos no ten\xE9s unas tijeras de casualidad?"
+    m_Localized: "Vos podr\xEDas cortar el \xE1rbol para hacerles un puente?"
     m_Metadata:
       m_Items: []
   - m_Id: 661548048171008
@@ -253,17 +252,17 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661576607186944
-    m_Localized: "Gracias! Mira, las gallinas ya est\xE1n cruzando. Tom\xE1 esto como
-      recompensa."
+    m_Localized: "Gracias! Mir\xE1, las gallinas ya est\xE1n cruzando. Tom\xE1 esto
+      como recompensa."
     m_Metadata:
       m_Items: []
   - m_Id: 661588523204608
-    m_Localized: "[Con estas botas de agua, ya no tendr\xE1s miedo del r\xEDo!]"
+    m_Localized: "[Con estas botas pod\xE9s caminar sobre el agua!]"
     m_Metadata:
       m_Items: []
   - m_Id: 661653480390656
-    m_Localized: "Gracias por darme una mano Kami! Las gallinas est\xE1n felices en
-      el rancho."
+    m_Localized: "Gracias por darme una mano Kami! Las gallinas est\xE1n felices
+      en el rancho."
     m_Metadata:
       m_Items: []
   - m_Id: 661833231482880
