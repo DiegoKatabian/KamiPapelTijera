@@ -4,42 +4,48 @@ using UnityEngine;
 
 public class HongueroTiburcioDialogueTrigger : TriggerDialogue
 {
-    //tiburcio es el de la quest de los hongos. si le llevas 3 hongos te da 20 de papel.
+    //tiburcio es el de la quest del arbol cortado. cuando el arbol cae, la quest se completa y puede venir a entregar reward.
 
-    [SerializeField] int hongosRequeridos = 3;
-
+    [SerializeField] QuestSO myQuest;
     [SerializeField] int paperReward = 20;
 
-    bool questCompleted;
+    bool treeWasCut = false; //flag si el arbol ya fue cortado (quest completada)
 
     protected override void Start()
     {
-        EventManager.Subscribe(Evento.OnPlayerPressedE, Interact); //los triggers siempre estan atentos a que el player aprete E
+        EventManager.Subscribe(Evento.OnPlayerPressedE, Interact);
         EventManager.Subscribe(Evento.OnDialogueEnd, PasarAlSiguienteDialogo);
+        EventManager.Subscribe(Evento.OnQuestCompleted, HandleQuestCompleted); //escuchar cuando corta el arbol
     }
 
     public override void Interact(params object[] parameter)
     {
         if (triggerBool)
         {
-            //print("trigger dialogue interact: muestro el dialogo " + _dialogues[currentDialogue].name);
-            if (LevelManager.Instance.recursosRecolectados[ResourceType.hongos] >= hongosRequeridos)
+            //flujo: dialogo0→1 (esperando arbol) → dialogo2 (arbol cayó) → dialogo3 (después de entregar)
+            if (!treeWasCut)
             {
-                if (!questCompleted)
+                //arbol aun no fue cortado
+                if (currentDialogue == 0)
                 {
-                    currentDialogue = 2; //paso al dialogo 2, que es el de Gracias por traer!
-                    LevelManager.Instance.AddResource(ResourceType.hongos, -hongosRequeridos);
-                    LevelManager.Instance.AddResource(ResourceType.papel, paperReward);
-                    AudioManager.instance.PlayByName("QuestCompleted02");
-                    questCompleted = true;
-                }
-                else
-                {
-                    currentDialogue = 3; //paso al dialogo 3, que es el de Gracias por haberme traido!
+                    currentDialogue = 1; //dialogo: "please cut the tree"
                 }
             }
-            DialogueManager.Instance.ShowDialogue(_dialogues[currentDialogue]);
+            else
+            {
+                //arbol ya fue cortado
+                if (currentDialogue <= 1)
+                {
+                    currentDialogue = 2; //dialogo: "gracias por el arbol!"
+                    AudioManager.instance.PlayByName("QuestCompleted02");
+                }
+                else if (currentDialogue == 2)
+                {
+                    currentDialogue = 3; //dialogo repetido post-delivery
+                }
+            }
 
+            DialogueManager.Instance.ShowDialogue(_dialogues[currentDialogue]);
         }
 
         if (_burnAfterReading)
@@ -48,11 +54,22 @@ public class HongueroTiburcioDialogueTrigger : TriggerDialogue
         }
     }
 
+    private void HandleQuestCompleted(params object[] parameters)
+    {
+        //cuando se completa la quest (arbol cortado), marcar el flag
+        QuestSO completedQuest = (QuestSO)parameters[0];
+        if (completedQuest == myQuest)
+        {
+            treeWasCut = true;
+            Debug.Log("[HongueroTiburcioDialogueTrigger] Arbol fue cortado, quest completada");
+        }
+    }
+
     protected override void PasarAlSiguienteDialogo(params object[] parameter)
     {
         if ((DialogueSO)parameter[1] == _dialogues[0])
         {
-            //si el dialogo q termino fue mi dialogo0, paso al 1
+            //si el dialogo q termino fue mi dialogo0, paso al 1 automaticamente
             base.PasarAlSiguienteDialogo(parameter);
         }
     }
@@ -63,6 +80,7 @@ public class HongueroTiburcioDialogueTrigger : TriggerDialogue
         {
             EventManager.Unsubscribe(Evento.OnPlayerPressedE, Interact);
             EventManager.Unsubscribe(Evento.OnDialogueEnd, PasarAlSiguienteDialogo);
+            EventManager.Unsubscribe(Evento.OnQuestCompleted, HandleQuestCompleted);
         }
     }
 }

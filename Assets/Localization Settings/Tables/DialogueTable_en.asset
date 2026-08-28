@@ -112,34 +112,33 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661653480390656
-    m_Localized: Thanks for the help! The chickens are grateful too!
+    m_Localized: Thanks for the help, Kami! The chickens are happy back at the ranch.
     m_Metadata:
       m_Items: []
   - m_Id: 661576607186944
-    m_Localized: Thank ya'! Here, thake this. With theese boots ya' can walk on water
-      without getting all wet.
+    m_Localized: Thanks! Look, the chickens are already crossing the tree. Here, take
+      this as reward.
     m_Metadata:
       m_Items: []
   - m_Id: 661588523204608
-    m_Localized: '[If what you are walking on is water, with these boots it doesn''t
-      matter!]'
+    m_Localized: '[With these water boots, you won''t be afraid of the river anymore!]'
     m_Metadata:
       m_Items: []
   - m_Id: 661548048171008
-    m_Localized: Please help me cut the mushrooms on ma' three babies!
+    m_Localized: I need you to cut that tree!
     m_Metadata:
       m_Items: []
   - m_Id: 661432029528064
-    m_Localized: Kami! Please help me!!
+    m_Localized: Kami! Please help me!
     m_Metadata:
       m_Items: []
   - m_Id: 661435837956096
-    m_Localized: Ma' chickens have grown mushrooms on their heads! I gotta cut 'em
-      before the fungi take over them...
+    m_Localized: My chickens are trapped on the other side of the river! I need you
+      to cut that tree so it falls and makes a bridge.
     m_Metadata:
       m_Items: []
   - m_Id: 661449255534592
-    m_Localized: But I ain't got no scissors, do ya' have a pair on ya'?
+    m_Localized: You don't happen to have scissors on you, do ya?
     m_Metadata:
       m_Items: []
   - m_Id: 661274998980608

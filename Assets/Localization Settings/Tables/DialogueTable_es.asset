@@ -236,36 +236,34 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661432029528064
-    m_Localized: Kami! Por favor ayudame!
+    m_Localized: "Kami! Por favor ayudame!"
     m_Metadata:
       m_Items: []
   - m_Id: 661435837956096
-    m_Localized: "A las gallinas les crecieron hongos en la cabeza! Hay que cort\xE1rselos
-      ya!"
+    m_Localized: "Las gallinas est\xE1n atrapadas del otro lado del r\xEDo! Necesito
+      que cortes ese \xE1rbol para que caiga y hagan un puente."
     m_Metadata:
       m_Items: []
   - m_Id: 661449255534592
-    m_Localized: "Vos no ten\xE9s unas tijeras de casualidad y me quer\xE9s dar una
-      mano?"
+    m_Localized: "Vos no ten\xE9s unas tijeras de casualidad?"
     m_Metadata:
       m_Items: []
   - m_Id: 661548048171008
-    m_Localized: Por favor ayudame a cortarles los hongo a las 3 gallinas!
+    m_Localized: "Necesito que cortes ese \xE1rbol!"
     m_Metadata:
       m_Items: []
   - m_Id: 661576607186944
-    m_Localized: "Peero muchas gracias! Tom\xE1. Estas botas te van a servir mucho
-      m\xE1s a vo'."
+    m_Localized: "Gracias! Mira, las gallinas ya est\xE1n cruzando. Tom\xE1 esto como
+      recompensa."
     m_Metadata:
       m_Items: []
   - m_Id: 661588523204608
-    m_Localized: "[Si sobre agua est\xE1s caminando, con estas botas de mojarte te
-      pod\xE9s ir olvidando!]"
+    m_Localized: "[Con estas botas de agua, ya no tendr\xE1s miedo del r\xEDo!]"
     m_Metadata:
       m_Items: []
   - m_Id: 661653480390656
-    m_Localized: "Gracias por darme una mano Kami! La' chicas est\xE1n agradecidas
-      tambi\xE9n!"
+    m_Localized: "Gracias por darme una mano Kami! Las gallinas est\xE1n felices en
+      el rancho."
     m_Metadata:
       m_Items: []
   - m_Id: 661833231482880

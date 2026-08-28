@@ -7,16 +7,19 @@ public class GallinaAI : Enemy
     float maxForce = 5;
     protected FiniteStateMachine _fsm;
     public Node[] allNodes;
+    [SerializeField][Tooltip("Nodos de patrullar en el rancho despues de que cae el arbol")]
+    public Node[] ranchNodes;
     public float arriveRadius = 1;
     public Rigidbody rb;
     public float evadeSpeed = 20;
     public GallinaSounds gallinaSounds;
-    [HideInInspector] public bool startAnimationHasFinished = false; //si el player ya se acerco y me despertó
+    [HideInInspector] public bool startAnimationHasFinished = false; //si el player ya se acerco y me despertï¿½
     [HideInInspector] public Vector3 velocity;
     [HideInInspector] public List<Node> _pathToFollow = new List<Node>();
     [HideInInspector] public Pathfinding _pf = new Pathfinding();
     [HideInInspector] public Player _player;
     [HideInInspector] public bool playerIsInRange;
+    [HideInInspector] public bool questCompleted = false;
     
 
 
@@ -26,6 +29,8 @@ public class GallinaAI : Enemy
         _fsm.AddState(State.GallinaWalk, new GallinaWalkState(_fsm, this));
         _fsm.AddState(State.GallinaEvade, new GallinaEvadeState(_fsm, this));
         _fsm.ChangeState(State.GallinaWalk);
+
+        EventManager.Subscribe(Evento.OnTreeCutForChickens, HandleTreeCut);
     }
 
     private void Update()
@@ -88,5 +93,26 @@ public class GallinaAI : Enemy
 
     private void OnDisable()
     {
+        EventManager.Unsubscribe(Evento.OnTreeCutForChickens, HandleTreeCut);
+    }
+
+    private void HandleTreeCut(params object[] parameters)
+    {
+        if (questCompleted) return; //ya lo procesamos una vez
+
+        questCompleted = true;
+
+        //cambiar a nodos de rancho
+        if (ranchNodes != null && ranchNodes.Length > 0)
+        {
+            allNodes = ranchNodes;
+            _fsm.ChangeState(State.GallinaWalk); //forzar walk state para empezar nueva ruta (OnEnter reinicia currentNodeIndex)
+
+            Debug.Log($"[GallinaAI] {gameObject.name} cambio a ranchNodes");
+        }
+        else
+        {
+            Debug.LogWarning($"[GallinaAI] {gameObject.name} no tiene ranchNodes configurado");
+        }
     }
 }

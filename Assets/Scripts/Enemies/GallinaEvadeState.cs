@@ -21,6 +21,13 @@ public class GallinaEvadeState : IState
 
     public void OnUpdate()
     {
+        //si completamos la quest (arbol cayo), ignora al player y vuelve a Walk
+        if (_gallina.questCompleted)
+        {
+            _fsm.ChangeState(State.GallinaWalk);
+            return;
+        }
+
         _gallina.RotateAccordingly();
         WalkAwayFromPlayer();
         if (!_gallina.playerIsInRange)

@@ -70,7 +70,8 @@ public enum Evento //LOS EVENTOS SE AGREGAN AL FINAL. NO EN EL MEDIO, PORQUE ARR
     OnQuestRewardedStart, //param0 es quest
     OnOrigamiCameraChange,
     OnPageZoneEnter, //el player entro a una esfera de cambio de pagina
-    OnPageZoneExit
+    OnPageZoneExit,
+    OnTreeCutForChickens //arbol cortado para quest de tiburcio
 }
 
 public class EventManager

@@ -17,10 +17,10 @@ MonoBehaviour:
 
 '
   condition:
-    conditionType: 0
+    conditionType: 1
     resourceType: 0
-    requiredAmount: 3
-    evento: 0
+    requiredAmount: 0
+    evento: 46
   rewardType: 1
   questSprite: {fileID: 21300000, guid: f4d0d0ffa132da345bb237faf0caf55b, type: 3}
   rewardRt: 3

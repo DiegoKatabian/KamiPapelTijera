@@ -240,34 +240,33 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661432029528064
-    m_Localized: Kami! Por favor, me ajude!
+    m_Localized: "Kami! Por favor, me ajude!"
     m_Metadata:
       m_Items: []
   - m_Id: 661435837956096
-    m_Localized: "Criou-se fungo na cabe\xE7a das galinhas! Temos que cortar agora
-      mesmo!"
+    m_Localized: "As galinhas est\xE3o presas do outro lado do rio! Preciso que voc\xEA
+      corte aquela \xE1rvore para que caia e fa\xE7a uma ponte."
     m_Metadata:
       m_Items: []
   - m_Id: 661449255534592
-    m_Localized: "Por acaso voc\xEA n\xE3o tem uma tesoura e gostaria de me ajudar?"
+    m_Localized: "Voc\xEA por acaso n\xE3o tem uma tesoura?"
     m_Metadata:
       m_Items: []
   - m_Id: 661548048171008
-    m_Localized: Por favor, me ajude a remover o fungo das 3 galinhas!
+    m_Localized: "Preciso que voc\xEA corte aquela \xE1rvore!"
     m_Metadata:
       m_Items: []
   - m_Id: 661576607186944
-    m_Localized: "Mas muito obrigada! Aqui est\xE3o. Essas botas ser\xE3o muito mais
-      \xFAteis para voc\xEA."
+    m_Localized: "Obrigada! Veja, as galinhas j\xE1 est\xE3o atravessando. Aqui, tome
+      isso como recompensa."
     m_Metadata:
       m_Items: []
   - m_Id: 661588523204608
-    m_Localized: "[Se voc\xEA estiver caminhando sobre a \xE1gua, com essas botas
-      pode esquecer de se molhar!]"
+    m_Localized: "[Com essas botas de \xE1gua, voc\xEA n\xE3o ter\xE1 medo do rio!]"
     m_Metadata:
       m_Items: []
   - m_Id: 661653480390656
-    m_Localized: "Obrigada pela ajuda, Kami! As meninas tamb\xE9m est\xE3o agradecidas!"
+    m_Localized: "Obrigada pela ajuda, Kami! As galinhas est\xE3o felizes na faz\xEDenda."
     m_Metadata:
       m_Items: []
   - m_Id: 661833231482880

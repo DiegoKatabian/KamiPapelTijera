@@ -35,6 +35,7 @@ public class QuestManager : Singleton<QuestManager>
         EventManager.Subscribe(Evento.OnResourceUpdated, CheckQuests);
         EventManager.Subscribe(Evento.OnAbuelaDropoff, SetAbuelaDropoff);
         EventManager.Subscribe(Evento.OnQuestDelivered, GiveReward);
+        EventManager.Subscribe(Evento.OnTreeCutForChickens, SetTreeCutForChickens);
         //clear all quests
         //quests.Clear();
     }
@@ -70,6 +71,17 @@ public class QuestManager : Singleton<QuestManager>
         }
 
         eventosSucedidos[Evento.OnAbuelaDropoff] = true;
+        CheckQuests();
+    }
+
+    public void SetTreeCutForChickens(params object[] parameter)
+    {
+        if (!eventosSucedidos.ContainsKey(Evento.OnTreeCutForChickens))
+        {
+            eventosSucedidos.Add(Evento.OnTreeCutForChickens, false);
+        }
+
+        eventosSucedidos[Evento.OnTreeCutForChickens] = true;
         CheckQuests();
     }
     public void CheckQuests(params object[] parameters)
@@ -141,6 +153,7 @@ public class QuestManager : Singleton<QuestManager>
             EventManager.Unsubscribe(Evento.OnResourceUpdated, CheckQuests);
             EventManager.Unsubscribe(Evento.OnAbuelaDropoff, SetAbuelaDropoff);
             EventManager.Unsubscribe(Evento.OnQuestDelivered, GiveReward);
+            EventManager.Unsubscribe(Evento.OnTreeCutForChickens, SetTreeCutForChickens);
         }
     }
 }
