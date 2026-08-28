@@ -6,13 +6,19 @@ public class HongueroTiburcioDialogueTrigger : TriggerDialogue
 {
     //tiburcio es el de la quest del arbol cortado. cuando el arbol cae, la quest se completa y puede venir a entregar reward.
 
-    [SerializeField] QuestSO myQuest;
+    [SerializeField][Tooltip("Quest del arbol (se dispara cuando OnTreeCutForChickens)")]
+    QuestSO myQuest;
     [SerializeField] int paperReward = 20;
 
     bool treeWasCut = false; //flag si el arbol ya fue cortado (quest completada)
 
     protected override void Start()
     {
+        if (myQuest == null)
+        {
+            Debug.LogError("[HongueroTiburcioDialogueTrigger] myQuest no esta asignada en inspector! Quest system no funcionara.");
+        }
+
         EventManager.Subscribe(Evento.OnPlayerPressedE, Interact);
         EventManager.Subscribe(Evento.OnDialogueEnd, PasarAlSiguienteDialogo);
         EventManager.Subscribe(Evento.OnQuestCompleted, HandleQuestCompleted); //escuchar cuando corta el arbol
@@ -22,6 +28,12 @@ public class HongueroTiburcioDialogueTrigger : TriggerDialogue
     {
         if (triggerBool)
         {
+            //si es la primera vez, agregar quest a QuestManager
+            if (currentDialogue == 0 && myQuest != null)
+            {
+                QuestManager.Instance.AddQuest(myQuest);
+            }
+
             //flujo: dialogo0→1 (esperando arbol) → dialogo2 (arbol cayó) → dialogo3 (después de entregar)
             if (!treeWasCut)
             {

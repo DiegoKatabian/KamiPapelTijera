@@ -22,6 +22,7 @@ public class GallinaWalkState : IState
     {
         //Debug.Log("gallina - entre a walk");
         //_gallina.anim.SetBool("isWalk", true);
+        currentNodeIndex = 0; //reiniciar index al entrar al estado (por si los nodos cambiaron)
         SetGoal(_gallina);
     }
 
