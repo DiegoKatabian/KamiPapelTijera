@@ -47,7 +47,8 @@ public class Arbol2DCortable : ObjetoCortable
         //Debug.Log("apago la hitbox");
         _hitbox.SetActive(false);
 
-        //disparar evento para quest tiburcio (gallinas caminan a rancho)
+        //disparar evento para quest tiburcio (gallinas caminan a rancho + cambian anim)
+        AudioManager.instance.PlayByName("QuestCompleted02");
         EventManager.Trigger(Evento.OnTreeCutForChickens);
     }
 

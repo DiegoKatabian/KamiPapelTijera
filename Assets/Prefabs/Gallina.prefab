@@ -44,7 +44,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 60, y: 15, z: 60}
+  m_Size: {x: 40, y: 15, z: 40}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3664596389247205331
 MonoBehaviour:
@@ -59,11 +59,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerBool: 0
-  showTooltip: 1
+  showTooltip: 0
   tooltipTextToShow: La gallina intenta esquivarte!
   postItColor: 0
   _maxTooltipShows: 0
-  _thisGallina: {fileID: 5429628501580455459}
 --- !u!1 &7897264121734106301
 GameObject:
   m_ObjectHideFlags: 0
@@ -76,6 +75,7 @@ GameObject:
   - component: {fileID: 2698636374348165167}
   - component: {fileID: 5429628501580455459}
   - component: {fileID: 611710696874855421}
+  - component: {fileID: 8834127659123478521}
   m_Layer: 0
   m_Name: Gallina
   m_TagString: Untagged
@@ -112,7 +112,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -125,24 +125,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 7897264121734106301}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f30a017905d3f6f45b98bb49735e14e1, type: 3}
+  m_Script: {fileID: 11500000, guid: 65f2f7276170ebd4490aeedcef98fa86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hp: 100
-  _maxSpeed: 8
-  _attackDamage: 10
-  _sr: {fileID: 6008200199915845047}
-  endsEncounter: 0
-  allNodes: []
-  arriveRadius: 1
-  rb: {fileID: 2698636374348165167}
-  evadeSpeed: 40
+  waypoints: []
+  stoppingDistance: 0.5
+  debugMode: 1
+  preTreeWaypoints: []
+  treeStart: {fileID: 0}
+  treeCenter: {fileID: 0}
+  treeEnd: {fileID: 0}
+  postTreeWaypoints: []
+  player: {fileID: 0}
+  evadeDistance: 5
+  evadeSeekDistance: 10
   gallinaSounds: {fileID: 5154599602260900625}
-  startAnimationHasFinished: 0
-  velocity: {x: 0, y: 0, z: 0}
-  _pathToFollow: []
-  _player: {fileID: 0}
-  playerIsInRange: 0
 --- !u!65 &611710696874855421
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -154,8 +151,30 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4.179533, y: 6.862627, z: 0.3}
-  m_Center: {x: -0.5317457, y: -0.4313135, z: 0}
+  m_Size: {x: 4.179533, y: 6.8626256, z: 1.6301063}
+  m_Center: {x: -0.53174555, y: -0.43131363, z: -0.20871112}
+--- !u!195 &8834127659123478521
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7897264121734106301}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 8
+  m_Acceleration: 20
+  avoidancePriority: 50
+  m_AngularSpeed: 360
+  m_StoppingDistance: 0.5
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 3.95
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1001 &4618872518290727426
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -261,6 +280,11 @@ PrefabInstance:
     - target: {fileID: 3407858799241410177, guid: e8751e52e97fda448be0044dc402949a,
         type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4460866578473358796, guid: e8751e52e97fda448be0044dc402949a,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6869142402802870411, guid: e8751e52e97fda448be0044dc402949a,
@@ -276,7 +300,7 @@ PrefabInstance:
     - target: {fileID: 6869142402802870411, guid: e8751e52e97fda448be0044dc402949a,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7009003680000460756, guid: e8751e52e97fda448be0044dc402949a,
         type: 3}
@@ -301,11 +325,13 @@ PrefabInstance:
     - target: {fileID: 8746060627207873154, guid: e8751e52e97fda448be0044dc402949a,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1902992293085615690, guid: e8751e52e97fda448be0044dc402949a, type: 3}
     - {fileID: 2467245976564216227, guid: e8751e52e97fda448be0044dc402949a, type: 3}
+    - {fileID: 4460866578473358796, guid: e8751e52e97fda448be0044dc402949a, type: 3}
+    - {fileID: 6869142402802870411, guid: e8751e52e97fda448be0044dc402949a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e8751e52e97fda448be0044dc402949a, type: 3}
 --- !u!114 &5154599602260900625 stripped
 MonoBehaviour:
@@ -319,12 +345,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36e43579b283f734e821e5c246c5cc22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!212 &6008200199915845047 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 1403119957648234421, guid: e8751e52e97fda448be0044dc402949a,
-    type: 3}
-  m_PrefabInstance: {fileID: 4618872518290727426}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6829072852146917364 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2223711169329458678, guid: e8751e52e97fda448be0044dc402949a,

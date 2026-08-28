@@ -1,19 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+/// <summary>
+/// Trigger de proximidad de la gallina: solo maneja el tooltip ("La gallina intenta esquivarte!").
+/// GallinaAgent calcula su propia distancia al player para evadir, no necesita que este
+/// trigger le pase estado (a diferencia del viejo GallinaAI que dependia de playerIsInRange).
+/// </summary>
 public class TriggerGallina : TriggerScript
 {
-    [SerializeField] GallinaAI _thisGallina;
-
-    public override void OnEnterBehaviour(Collider other)
-    {
-        _thisGallina.playerIsInRange = true;
-        _thisGallina._player = other.GetComponent<Player>();
-    }
-
-    public override void OnExitBehaviour()
-    {
-        _thisGallina.playerIsInRange = false;
-    }
+    // Sin overrides: OnEnterBehaviour/OnExitBehaviour de TriggerScript ya manejan el tooltip.
 }
