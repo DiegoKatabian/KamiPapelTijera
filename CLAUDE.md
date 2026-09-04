@@ -7,19 +7,38 @@ Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spin
 - `Assets/Scripts/Player/` — Kami, en MVC casero (ver abajo)
 - `Assets/Scripts/PUBMechanics/` — solapas del libro pop-up (Solapa, TriggerSolapa)
 - `Assets/Scripts/Cortables/` — todo lo que la tijera corta (`ICortable`) + `TijeraHitbox`
-- `Assets/Scripts/Managers/` — AudioManager, LevelManager, EventManager, etc. (singletons)
+- `Assets/Scripts/Managers/` — AudioManager, LevelManager, EventManager, PageScrollerManager, PlayerPageSpawnManager, CameraManager, etc. (singletons)
 - `Assets/Scripts/TriggerS/` — triggers de zona (base `TriggerScript`, con tooltip por color)
 - `Assets/Scripts/Origami/` — minijuego de origami + `PedestalCanvasDisplay` (costo en pedestal)
-- `Assets/Scripts/UI/` — `TooltipManager` + `PostIt` (post-its de tutorial)
+- `Assets/Scripts/UI/` — `TooltipManager`/`PostIt` (tutorial), `FlapManager`/`CamWheelManager` (menú y selector de cámara), `InventorySlot`
+- `Assets/Scripts/Inventory/` — `InventoryManager`/`InventoryItem` (recursos recolectables)
+- `Assets/Scripts/Quests/` — `QuestManager`/`QuestEffector` + un ScriptableObject `QuestNN_Nombre.asset` por quest
+- `Assets/Scripts/Dialogos/` — un `*DialogueTrigger.cs` por NPC + estados de NPC (`NPC_Abuela`, `NPC_Florista`, etc.)
+- `Assets/Scripts/Enemies/` — Rocoso (FSM + física, ver `enemigos-e-ia.md`), `EnemySpawner` (armado, sin usar todavía)
+- `Assets/Scripts/AI/` — `PatrollingAgent` (base NavMesh, agosto 2026) + `GallinaAgent`; ver `enemigos-e-ia.md`
+- `Assets/Scripts/Barquito/` — NPC bote con A* propio por nodos (no NavMesh)
+- `Assets/Scripts/AttackHitBoxes/` — `IGolpeable` + hitboxes de ataque de enemigos
 - `Assets/Scripts/Particles/ParticleShooter.cs` — partículas del player por índice
 - `Assets/Prefabs/Kami/Kami.prefab` — el player completo
 - `Assets/Prefabs/OrigamiRoutes/` — sellos, `PedestalParent.prefab` y rutas de origami
 - `Assets/Prefabs/UI/PostIt.prefab` — los post-its de escena son instancias de este
 - `Assets/Prefabs/Particulas/` — prefabs de partículas
 - `Assets/2D/Kami Spine/Atlas 5/skeleton.json` — skeleton ACTIVO (Atlas 1-4 son viejos)
-- Escena de trabajo: `Nivel1_LaRural SpineTest.unity` (las otras escenas viejas pueden tirar warnings de refs stale)
+- Escena de trabajo Nivel 1: `Nivel1_KamiPapelTijera.unity` (activa desde fines de agosto 2026 — `Nivel1_LaRural SpineTest.unity` quedó vieja/stale, no confundir; puede tener referencias rotas)
+- Escena de trabajo Nivel 2: `Level2_Newspaper.unity` — ver `nivel2-y-ui.md` para estado actual (página del museo en progreso)
 
-Branch de laburo de animaciones: `feature/spine-animations`.
+Branch de laburo de animaciones: `feature/spine-animations`. Roadmap y specs de features futuras: `specs/` (Spec Kit) y `ROADMAP.md`.
+
+## Herramientas de análisis del proyecto
+
+- **graphify** (`graphify-out/`): grafo de conocimiento del código en `Assets/Scripts` —
+  `graphify-out/graph.html` (interactivo), `graphify-out/GRAPH_REPORT.md` (god nodes,
+  comunidades, conexiones sorprendentes). Regenerar con `/graphify Assets/Scripts` tras
+  cambios grandes de arquitectura; `--update` para incremental.
+- **Spec Kit** (`.specify/`): flujo spec-driven para features medianas/grandes —
+  `/speckit-specify` → `/speckit-plan` → `/speckit-tasks` → `/speckit-implement`.
+  Constitución del proyecto en `.specify/memory/constitution.md`. Specs existentes en
+  `specs/`.
 
 ## Arquitectura del Player (MVC casero)
 
@@ -73,6 +92,9 @@ La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso) decide la anim, el te
 - Audio y partículas: @docs/claude/audio-y-particulas.md
 - Canvas de costo de origami y tooltips/post-its: @docs/claude/origami-y-tooltips.md
 - Paso de página (HojaMaster es Mecanim, no Spine), PositionMarker y el enganche de Kami al borde (RidingPage): @docs/claude/paginas-y-hoja.md
+- Enemigos e IA (Rocoso, PatrollingAgent/GallinaAgent, Barquito, patrón de hitboxes): @docs/claude/enemigos-e-ia.md
+- Nivel 2 (estado actual), LevelManager, Inventario, Flap/CamWheel UI, Cámara: @docs/claude/nivel2-y-ui.md
+- Quests y diálogos de NPCs: @docs/claude/quests-y-dialogos.md
 
 ## Ojo al editar
 

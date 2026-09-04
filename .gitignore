@@ -10,6 +10,12 @@
 [Ll]ogs/
 [Uu]ser[Ss]ettings/
 
+# graphify knowledge-graph output - regenerable local artifact (run /graphify to rebuild)
+graphify-out/
+
+# Claude Code local-only settings (permission allowlist, machine-specific)
+.claude/settings.local.json
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
