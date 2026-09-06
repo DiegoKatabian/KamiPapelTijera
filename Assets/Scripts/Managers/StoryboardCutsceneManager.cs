@@ -30,7 +30,7 @@ public class StoryboardCutsceneManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (InputHub.InteractDown)
         {
             if (_waitingForInput)
             {

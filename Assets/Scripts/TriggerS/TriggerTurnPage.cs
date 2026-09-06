@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TriggerTurnPage : TriggerScript
 {
+    //Interactuable: aca el boton de accion sirve para pasar de pagina (lo escucha PageScrollerManager, gateado por este triggerBool).
+    public override bool EsInteractuable => true;
+
     [SerializeField] PositionMarker _positionMarker;
     public bool soyElIsNext = false;
 

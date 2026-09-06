@@ -28,6 +28,12 @@ public abstract class TriggerScript : MonoBehaviour
     //vivo de OTRO trigger del mismo color
     bool _shownThisEntry = false;
 
+    //Si apretar el boton de accion parado adentro de este trigger HACE algo. Lo usa el joystick:
+    //el boton B es contextual (interactua si hay algo, si no ataca), y para decidirlo consulta
+    //InteractionContext, que se llena con los triggers que declaran esto en true.
+    //Default false porque la mayoria de los triggers son de zona/tooltip y no responden al boton.
+    public virtual bool EsInteractuable => false;
+
     protected virtual void Start()
     {
         //print("me suscribo a onplayerpressed E - triggerscript " + gameObject.name);
@@ -54,6 +60,12 @@ public abstract class TriggerScript : MonoBehaviour
     {
         //print("entro el player");
         triggerBool = true;
+
+        if (EsInteractuable)
+        {
+            InteractionContext.Registrar(this);
+        }
+
         TryShowTooltip();
     }
 
@@ -61,6 +73,10 @@ public abstract class TriggerScript : MonoBehaviour
     {
         //print("se salio el player de " + gameObject.name);
         triggerBool = false;
+
+        //ojo: esto va ANTES del early return de abajo. si se desregistrara despues, un trigger
+        //que no mostro tooltip se quedaria registrado para siempre y el boton B nunca atacaria
+        InteractionContext.Desregistrar(this);
 
         if (!_shownThisEntry)
         {
@@ -128,8 +144,18 @@ public abstract class TriggerScript : MonoBehaviour
         //print("trigger script interact");
     }
 
+    //Red de seguridad: hay triggers que se destruyen o se apagan con el player adentro (pickups
+    //consumidos, cambio de pagina, SetActive(false) por quest). Sin esto quedarian registrados
+    //como interaccion disponible para siempre y el boton B del joystick dejaria de atacar ahi.
+    protected virtual void OnDisable()
+    {
+        InteractionContext.Desregistrar(this);
+    }
+
     protected virtual void OnDestroy()
     {
+        InteractionContext.Desregistrar(this);
+
         if (!gameObject.scene.isLoaded)
         {
             EventManager.Unsubscribe(Evento.OnPlayerPressedE, Interact);

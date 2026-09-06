@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TriggerBarquito : TriggerScript
 {
+    //Interactuable: aca el boton de accion sirve para subirse o bajarse del bote.
+    public override bool EsInteractuable => true;
+
     //el trigger del barquito que viaja solo.
     //cuando tocas E, arranca.
     //por ahora no se usa.

@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class TriggerOrigami : TriggerScript
 {
+    //Interactuable: aca el boton de accion sirve para arrancar el minijuego de origami (lo escucha el MultipleRectCheck que instancia).
+    public override bool EsInteractuable => true;
+
     //cuando entras a este trigger hace nacer al origamicheck
     //el origami check se va a encargar de chequear que apretes tab y hagas el origami
 

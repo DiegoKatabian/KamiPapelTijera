@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TriggerTijeraPickup : TriggerScript
 {
+    //Interactuable: aca el boton de accion sirve para levantar la tijera.
+    public override bool EsInteractuable => true;
+
     [SerializeField] bool isAutoPickup = true;
 
     public override void OnEnterBehaviour(Collider other)

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TriggerDialogue : TriggerScript
 {
+    //Interactuable: aca el boton de accion sirve para hablar con el NPC / avanzar el dialogo.
+    public override bool EsInteractuable => true;
+
     [SerializeField] protected bool _burnAfterReading;
     [SerializeField] protected DialogueSO[] _dialogues;
 

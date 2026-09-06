@@ -49,7 +49,9 @@ public class CameraManager : Singleton<CameraManager>
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse2))
+        //click del medio (como siempre), R1 o el gatillo L2 del joystick. Los tres nombres de
+        //botones viven en InputHub, no aca.
+        if (InputHub.CambiarCamaraDown)
         {
             ToggleNextCamera();
         }

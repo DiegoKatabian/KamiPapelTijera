@@ -132,7 +132,7 @@ public class PostIt : MonoBehaviour
         //pero nadie lo triggerea (PlayerController llama Player.OnPrimaryClick() directo).
         //Por eso leemos el boton "Fire1" nosotros: en el Input Manager cubre clic izquierdo
         //y Ctrl izquierdo, que es exactamente el input de ataque del juego.
-        if (_dismissOnAttack && _isVisible && Input.GetButtonDown("Fire1"))
+        if (_dismissOnAttack && _isVisible && (InputHub.AtaqueTecladoDown || InputHub.AccionGamepadDown))
         {
             //respetamos el mismo gate de agency que usa PlayerController para sus eventos
             if (LevelManager.Instance != null && !LevelManager.Instance.agency)

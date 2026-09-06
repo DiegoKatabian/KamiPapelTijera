@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TriggerSolapa : TriggerScript
 {
+    //Interactuable: aca el boton de accion sirve para abrir o cerrar la solapa del pop-up.
+    public override bool EsInteractuable => true;
+
     //esto se lo pones a una solapa
     //cuando la interactuas 
 
