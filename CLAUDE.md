@@ -23,13 +23,13 @@ Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spin
 - `Assets/Prefabs/OrigamiRoutes/` — sellos, `PedestalParent.prefab` y rutas de origami
 - `Assets/Prefabs/UI/PostIt.prefab` — los post-its de escena son instancias de este
 - `Assets/Prefabs/Particulas/` — prefabs de partículas
-- `Assets/2D/Kami Spine/Atlas 5/skeleton.json` — skeleton ACTIVO (Atlas 1-4 son viejos)
+- `Assets/2D/Kami Spine/Atlas 11/skeleton.json` — skeleton ACTIVO (lo referencia `Kami.prefab`; los Atlas 1-10 son viejos)
 - Escena de trabajo Nivel 1: `Nivel1_KamiPapelTijera.unity` (activa desde fines de agosto 2026 — `Nivel1_LaRural SpineTest.unity` quedó vieja/stale, no confundir; puede tener referencias rotas)
 - Escena de trabajo Nivel 2: `Level2_Newspaper.unity` — ver `nivel2-y-ui.md` para estado actual (página del museo en progreso)
 
 Active work branches:
 - `feature/spine-animations` — Spine character animations (Spanish code/comments)
-- `feature/joystick-controls` (issue #41) — gamepad support with animated input prompts, target M4 (Oct 15). See `specs/004-joystick-controls/spec.md` (English spec).
+- `feature/joystick-controls` (issue #41) — gamepad support with animated input prompts (A=jump, B=attack/interact, L1=sprint, L2=camera), target M4 (Oct 15). See `specs/004-joystick-controls/spec.md` (English).
 
 Roadmap and future feature specs: `specs/` (Spec Kit) and `ROADMAP.md`.
 
@@ -44,6 +44,22 @@ Roadmap and future feature specs: `specs/` (Spec Kit) and `ROADMAP.md`.
   Constitución del proyecto en `.specify/memory/constitution.md`. Specs existentes en
   `specs/`.
 
+### Modus operandi: documentación viva (NO es un issue, es una regla)
+
+Mantener el grafo, las specs y los docs al día es **parte de terminar cualquier tarea**,
+no un trabajo aparte que se agenda. Al cerrar un pedazo de trabajo:
+
+1. **Docs primero**: si el cambio toca algo descrito en `CLAUDE.md` o `docs/claude/*.md`,
+   se actualiza ese archivo **en el mismo commit**. Doc desactualizada = trabajo sin terminar.
+2. **Specs**: si la feature tiene spec en `specs/`, marcar ahí lo implementado y las
+   decisiones que cambiaron respecto al draft (con el porqué). La spec es la memoria del
+   diseño, no un documento congelado.
+3. **Grafo**: tras cambios de arquitectura (clases/managers nuevos, borrados, o
+   dependencias nuevas entre sistemas), regenerar con `/graphify Assets/Scripts --update`.
+   No hace falta por un bugfix de una línea.
+4. **Código muerto**: si algo quedó sin callers, se borra en el momento — no se deja
+   "por si acaso" (ver el caso `EnemySpawner`, issue #23).
+
 ## Arquitectura del Player (MVC casero)
 
 `Player.cs` es la fachada: stats, componentes, y `CurrentState` (única fuente de verdad).
@@ -57,7 +73,7 @@ Construye y coordina a los otros tres — ellos hablan con Player, nunca entre s
 
 **Status**: ✅ Implementado (solo skins de tijeras por ahora)
 
-Kami tiene dos tipos de tijera con skins diferentes en Spine (Atlas 8):
+Kami tiene dos tipos de tijera con skins diferentes en Spine (Atlas 11):
 - `TijeraEquipment.Normal` → Spine skin `"Tijera_Normal"`
 - `TijeraEquipment.Mejorada` → Spine skin `"Tijera_Upgrade_1"`
 
