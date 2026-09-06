@@ -184,7 +184,7 @@ public class PlayerModel
 
         float magnitude = new Vector2(input.horRaw, input.verRaw).magnitude;
 
-        // Timer de velocidad máxima para runstop
+        // Timer de velocidad mï¿½xima para runstop
         PlayerState state = _player.CurrentState;
         if (state == PlayerState.Skipping || state == PlayerState.Running)
             _fullSpeedTimer += Time.deltaTime;
@@ -196,7 +196,7 @@ public class PlayerModel
         {
             if (_player.CurrentState != PlayerState.Landing)
             {
-                // Ya no se desactiva IsSprinting aquí; se mantiene según la entrada del jugador.
+                // Ya no se desactiva IsSprinting aquï¿½; se mantiene segï¿½n la entrada del jugador.
                 _player.SetState(PlayerState.Idle);
             }
         }
@@ -261,6 +261,17 @@ public class PlayerModel
 
         // Usamos CurrentSpeed en lugar de Speed
         _move *= _player.CurrentSpeed;
+
+        //el empuje del viento se suma DESPUES del normalize y del CurrentSpeed: no es input del
+        //jugador sino una fuerza externa, y si entrara antes contaminaria la magnitud del input
+        //(frenando a Kami). Va aca adentro, y no en un cc.Move() aparte, para que el
+        //desplazamiento horizontal viaje junto con la componente vertical: asi isGrounded no
+        //parpadea y no se dispara el falso loop Falling->Landing (ver Player.GetAffectedByWind)
+        if (_player.IsWindLatchAlive)
+        {
+            _move += _player.windVelocity;
+        }
+
         _move.y = _verticalVelocity;
         _player.cc.Move(_move * Time.deltaTime);
 
@@ -302,6 +313,10 @@ public class PlayerModel
         planeoImpulse = 0f;
     }
 
+    //CUIDADO: hoy no lo llama nadie, y conviene que siga asi. Un cc.Move() horizontal disparado
+    //fuera del Move() de ApplyPhysics (sobre todo desde la fase de fisica, como hacia el viento)
+    //deja isGrounded en false y reintroduce el falso loop Falling->Landing del issue #30.
+    //Si necesitas empujar a Kami desde afuera, sumale una velocidad como hace el viento.
     public void ForcedMove(Vector3 move)
     {
         _player.cc.Move(move);

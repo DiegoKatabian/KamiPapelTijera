@@ -10,7 +10,9 @@ public class HongueroTiburcioDialogueTrigger : TriggerDialogue
     QuestSO myQuest;
     [SerializeField] int paperReward = 20;
 
-    bool treeWasCut = false; //flag si el arbol ya fue cortado (quest completada)
+    //cache de "el arbol ya fue cortado". OJO: es una CACHE, no la fuente de verdad.
+    //la fuente de verdad la tiene QuestManager (eventosSucedidos): ver ArbolYaCortado().
+    bool treeWasCut = false;
 
     protected override void Start()
     {
@@ -35,7 +37,7 @@ public class HongueroTiburcioDialogueTrigger : TriggerDialogue
             }
 
             //flujo: dialogo0→1 (esperando arbol) → dialogo2 (arbol cayó) → dialogo3 (después de entregar)
-            if (!treeWasCut)
+            if (!ArbolYaCortado())
             {
                 //arbol aun no fue cortado
                 if (currentDialogue == 0)
@@ -64,6 +66,44 @@ public class HongueroTiburcioDialogueTrigger : TriggerDialogue
         {
             Destroy(this);
         }
+    }
+
+    private bool ArbolYaCortado()
+    {
+        //POR QUE existe esto: treeWasCut solo se prende si llega OnQuestCompleted EN VIVO.
+        //si ese evento se pierde (el trigger se suscribio despues de que paso, la quest todavia
+        //no estaba en la lista del QuestManager cuando cayo el arbol, etc) el flag quedaba en
+        //false para siempre y Tiburcio nunca reconocia el arbol cortado: el jugador quedaba
+        //trabado sin forma de recuperarse salvo reiniciar.
+        //aca consultamos el estado autoritativo (QuestManager.eventosSucedidos) recien al momento
+        //de interactuar, asi el flag pasa a ser una cache recuperable y no la unica verdad.
+
+        if (treeWasCut)
+        {
+            return true; //ya lo sabiamos, ni consultamos
+        }
+
+        if (myQuest == null || myQuest.condition.conditionType != ConditionType.Event)
+        {
+            //sin quest (o si algun dia la reconfiguran como Resource) no hay evento que consultar
+            return false;
+        }
+
+        if (QuestManager.Instance == null)
+        {
+            Debug.LogWarning("[HongueroTiburcioDialogueTrigger] No hay QuestManager en escena: no puedo verificar si el arbol ya fue cortado, sigo con el flag cacheado.");
+            return false;
+        }
+
+        if (!QuestManager.Instance.EventoYaSucedio(myQuest.condition.evento))
+        {
+            return false; //el arbol realmente no fue cortado todavia
+        }
+
+        //llegamos aca solo si el evento paso pero nunca nos enteramos: recuperamos la cache
+        treeWasCut = true;
+        Debug.LogWarning("[HongueroTiburcioDialogueTrigger] Nunca llego OnQuestCompleted, pero QuestManager confirma que el arbol ya fue cortado: recupero el estado.");
+        return true;
     }
 
     private void HandleQuestCompleted(params object[] parameters)

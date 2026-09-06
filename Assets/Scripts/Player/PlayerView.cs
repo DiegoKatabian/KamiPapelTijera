@@ -75,13 +75,13 @@ public class PlayerView
         {
             _player.StartTijeraCoroutine();
         }
-        else if (e.Data.Name == "HandleFootstep" && !_affectedByWind)
+        else if (e.Data.Name == "HandleFootstep")
         {
+            //antes se ignoraba el paso dentro del viento, como parche contra el falso loop
+            //Falling->Landing que dejaba a Kami "tosqueando". El efecto colateral era que Kami
+            //caminaba MUDA en el viento. Arreglada la causa raiz (ver Player.GetAffectedByWind),
+            //el parche ya no hace falta y recupera el sonido de pasos
             StartPasoSFX(UnityEngine.Random.Range(0, 2));
-        }
-        else if (e.Data.Name == "HandleFootstep" && _affectedByWind)
-        {
-            // footstep ignorado en viento
         }
     }
 

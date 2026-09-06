@@ -21,11 +21,10 @@ ya probados en producción por `GallinaAgent`. Este enemigo nuevo es candidato n
 a heredar de `PatrollingAgent` en vez de reinventar patrulla+NavMesh desde cero.
 
 **Esta spec asume el diseño mínimo más simple que cumple "enemigo de sigilo"**: un
-enemigo que patrulla una ruta, y si detecta al jugador (visión y/o distancia) dentro
-de un cono/radio, entra en un estado de alerta que termina en persecución o en aviso.
-El diseño de gameplay concreto (¿persigue? ¿avisa a otros enemigos? ¿el jugador puede
-escabullirse agachándose o escondiéndose?) queda con `[NEEDS CLARIFICATION]` marcado
-abajo — decidir con Diego antes de `/speckit-plan`.
+enemigo que patrulla una ruta, y si detecta al jugador (visión) dentro de un cono,
+dispara una muerte con causa (checkpoint respawn, mismo patrón que el río) — ver
+Edge Cases y FR-005/006/007 para las decisiones ya tomadas con Diego el 2026-09-05.
+Ambas `NEEDS CLARIFICATION` quedaron resueltas; listo para `/speckit-plan`.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -99,12 +98,14 @@ que tras el timeout configurado el enemigo vuelve a Patrolling.
   entre waypoints (ya en movimiento)? No debería requerir estar "quieto" para
   detectar.
 - ¿El enemigo debe reaccionar a sonido (ej. la tijera cortando algo) además de
-  visión, o solo visión para la v1? → `[NEEDS CLARIFICATION: alcance de detección —
-  solo visión, o visión + oído?]`
+  visión, o solo visión para la v1? → **Resuelto (2026-09-05, Diego): solo visión
+  para v1.** No hay pedido de oído; queda fuera de alcance.
 - ¿Qué le pasa al jugador si lo detectan — daño directo, alarma que llama a otros
-  enemigos, game over, o solo lo empuja/persigue como Rocoso? →
-  `[NEEDS CLARIFICATION: consecuencia de ser detectado, no está definida por el pedido
-  original]`
+  enemigos, game over, o solo lo empuja/persigue como Rocoso? → **Resuelto
+  (2026-09-05, Diego): si el jugador es detectado, pierde y respawnea desde el
+  checkpoint** — mismo patrón de "muerte con causa" que el río (`DeathCause`, ver
+  `docs/claude/spine-kami.md`): agregar una causa nueva (p. ej. `DeathCause.Stealth`)
+  reusando el flujo de `Player.DeathSequence`, no una mecánica nueva de daño/alarma.
 
 ## Requirements *(mandatory)*
 
@@ -120,8 +121,14 @@ que tras el timeout configurado el enemigo vuelve a Patrolling.
   acerca/investiga).
 - **FR-004**: El enemigo MUST volver a Patrolling si pierde al jugador por un timeout
   configurable, reusando `SetWaypoints()` para retomar su ruta original.
-- **FR-005**: System MUST [NEEDS CLARIFICATION: consecuencia de detección — daño,
-  alarma a otros enemigos, o abrir un game-over/checkpoint como hace `Player.Die()`]
+- **FR-005**: System MUST, al detectar al jugador, disparar la secuencia de muerte con
+  causa `DeathCause.Stealth` (o equivalente) y respawnear desde el checkpoint, igual
+  que la muerte por río — no daño directo ni alarma a otros enemigos.
+- **FR-006**: El cono de visión y el circuito de patrullaje MUST ser visualmente
+  obvios para el jugador en juego (no solo en el editor) — el sigilo depende de que el
+  jugador pueda leer el peligro antes de entrar en él.
+- **FR-007**: Esta feature SHOULD implementarse primero en una escena de prueba
+  separada de Nivel 1/2, para poder iterar sin arriesgar romper esas escenas.
 
 ### Key Entities
 

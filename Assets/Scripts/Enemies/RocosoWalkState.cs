@@ -22,14 +22,9 @@ public class RocosoWalkState : IState
     {
         WalkTowardsPlayer();
 
-        if (_rocoso.target.x > _rocoso.transform.position.x) //roto al rocoso
-        {
-            _rocoso.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-        }
-        else
-        {
-            _rocoso.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-        }
+        //el giro ahora pasa por SetFacing: ademas de rotar, corrige la profundidad de las
+        //particulas de rayos, que si no quedan tapadas por el sprite al mirar para el otro lado
+        _rocoso.SetFacing(_rocoso.target.x > _rocoso.transform.position.x);
 
         if (_rocoso.DistanceToPlayer() < _rocoso.enterAttackRange)
         {

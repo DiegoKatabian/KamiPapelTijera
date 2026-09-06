@@ -76,9 +76,11 @@ public abstract class TriggerScript : MonoBehaviour
             return;
         }
 
-        //escondemos SOLO nuestro color: antes se escondian todos y el exit de un trigger
-        //pisaba post-its ajenos que seguian vivos
-        TooltipManager.Instance.HideTooltip(postItColor);
+        //escondemos SOLO nuestro color Y SOLO si el post-it sigue siendo nuestro: hay un unico
+        //PostIt por color y varios triggers comparten el mismo (la abuela y las dos esferas de
+        //cambio de pagina usan todas el Azul), asi que sin pasar 'this' nuestro exit mataba el
+        //tooltip que otro trigger acababa de mostrar
+        TooltipManager.Instance.HideTooltip(postItColor, this);
     }
 
     //unico camino para mostrar el tooltip del trigger: encapsula el gate de showTooltip,
@@ -108,7 +110,9 @@ public abstract class TriggerScript : MonoBehaviour
 
         _tooltipShowCount++;
         _shownThisEntry = true;
-        TooltipManager.Instance.ShowTooltip(tooltipTextToShow, postItColor);
+        //nos registramos como duenos del color: asi el exit de otro trigger que comparta
+        //este mismo PostIt no puede escondernos el tooltip antes de tiempo
+        TooltipManager.Instance.ShowTooltip(tooltipTextToShow, postItColor, this);
         return true;
     }
 

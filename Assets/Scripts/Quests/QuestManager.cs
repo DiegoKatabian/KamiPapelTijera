@@ -84,6 +84,16 @@ public class QuestManager : Singleton<QuestManager>
         eventosSucedidos[Evento.OnTreeCutForChickens] = true;
         CheckQuests();
     }
+    public bool EventoYaSucedio(Evento evento)
+    {
+        //consulta de SOLO LECTURA del estado autoritativo de eventos ya sucedidos.
+        //existe para que un NPC pueda recuperarse si se perdio el OnQuestCompleted en vivo
+        //(se suscribio tarde, el evento paso antes de que su quest estuviera en la lista, etc):
+        //en vez de confiar unicamente en su flag cacheado, pregunta aca.
+        //no muta nada ni dispara eventos, asi que es seguro llamarlo cuando sea.
+        return eventosSucedidos.TryGetValue(evento, out bool sucedio) && sucedio;
+    }
+
     public void CheckQuests(params object[] parameters)
     {
         //Debug.Log("me pongo a chequear todas las quests");

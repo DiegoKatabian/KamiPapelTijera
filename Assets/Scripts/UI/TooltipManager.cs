@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization.Tables;
@@ -40,15 +41,32 @@ public class TooltipManager : Singleton<TooltipManager>
     [SerializeField, Tooltip("Un PostIt por color, en el mismo orden que el enum PostItColor")]
     PostIt[] postIts;
 
+    //quien mostro por ultima vez cada color. HAY UN SOLO PostIt POR COLOR, y varios triggers
+    //distintos pueden compartirlo (hoy la abuela y las dos esferas de cambio de pagina apuntan
+    //todas al Azul): sin dueno, el exit de un trigger escondia el tooltip que OTRO acababa de
+    //mostrar. El guard _shownThisEntry de TriggerScript solo protegia ENTRE colores distintos,
+    //no dentro del mismo color, asi que el bug se "contagiaba" entre triggers hermanos.
+    readonly Dictionary<PostItColor, object> _owners = new Dictionary<PostItColor, object>();
+
     //muestra el post-it del color pedido con el texto localizado.
     //si ya estaba visible: se actualiza el texto y se reinicia su timer, sin parpadeo de fade
     public void ShowTooltip(string text, PostItColor postIt)
+    {
+        ShowTooltip(text, postIt, null);
+    }
+
+    //owner = quien pide mostrar (los triggers pasan 'this'). Queda registrado como dueno del
+    //color para que despues solo EL pueda esconderlo con HideTooltip(color, owner).
+    //owner null = show anonimo (origami, sonidos, NPC.Die): no reclama el post-it
+    public void ShowTooltip(string text, PostItColor postIt, object owner)
     {
         PostIt target = GetPostIt(postIt);
         if (target == null)
         {
             return; //GetPostIt ya logueo el warning
         }
+
+        _owners[postIt] = owner;
 
         //los post-its pueden arrancar desactivados a mano en la escena: los prendemos UNA sola
         //vez y de aca en mas quedan siempre activos (el "apagado" es alpha 0 via CanvasGroup).
@@ -128,11 +146,22 @@ public class TooltipManager : Singleton<TooltipManager>
 
             postIts[i].Hide();
         }
+
+        //un hide global (muerte del player, fin de origami) le saca el post-it a cualquier dueno
+        _owners.Clear();
     }
 
     //esconde SOLO el post-it de ese color: es lo que usan los triggers al salir,
     //para no pisar post-its de otros colores que siguen vivos
     public void HideTooltip(PostItColor postIt)
+    {
+        HideTooltip(postIt, null);
+    }
+
+    //owner = quien pide esconder. Si el color lo esta usando OTRO dueno (porque ese otro lo
+    //mostro despues), no lo escondemos: el tooltip que se ve en pantalla no es el nuestro.
+    //owner null = hide incondicional (camino historico, para los que nunca reclamaron el color)
+    public void HideTooltip(PostItColor postIt, object owner)
     {
         PostIt target = GetPostIt(postIt);
         if (target == null)
@@ -140,6 +169,17 @@ public class TooltipManager : Singleton<TooltipManager>
             return; //GetPostIt ya logueo el warning
         }
 
+        object currentOwner;
+        if (owner != null
+            && _owners.TryGetValue(postIt, out currentOwner)
+            && currentOwner != null
+            && !ReferenceEquals(currentOwner, owner))
+        {
+            Debug.Log($"[TooltipManager] no escondo {postIt}: lo mostro otro despues ({currentOwner}), el pedido vino de {owner}");
+            return;
+        }
+
+        _owners.Remove(postIt);
         target.Hide();
     }
 

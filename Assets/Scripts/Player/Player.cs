@@ -661,7 +661,31 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     //Utilities
     public void AddPlaning() => StartCoroutine(_model.AddExtraForwardForce(planeoDelayTime, planeoDuration, planeoImpulse, lastDirection));
 
-    public void GetAffectedByWind(float windForce, Vector3 windDirection) => _model.ForcedMove(windDirection * windForce);
+    //POR QUE el viento ya NO mueve al CharacterController por su cuenta:
+    //GetAffectedByWind lo llama TriggerViento desde OnTriggerStay, o sea en la fase de fisica,
+    //antes del Update. Hacer ahi un cc.Move() propio con un vector 100% horizontal dejaba
+    //isGrounded en false en todo frame con paso de fisica (Unity solo detecta suelo si el
+    //desplazamiento tiene componente hacia abajo). Eso disparaba el loop Falling->Landing ~10
+    //veces por segundo: sonido de aterrizaje, nubecita de polvo y la anim de caminar
+    //reiniciandose. Ahora el viento solo DEJA ANOTADA una velocidad y el desplazamiento lo hace
+    //el unico cc.Move() de PlayerModel.ApplyPhysics, junto con la componente vertical.
+    [HideInInspector] public Vector3 windVelocity;
+    float _windLatchExpiry;
+
+    public void GetAffectedByWind(float windForce, Vector3 windDirection)
+    {
+        //los windForce de las escenas estan tuneados como "unidades por paso de fisica"
+        //(se aplicaban crudos, sin deltaTime), asi que los paso a unidades por segundo para
+        //conservar EXACTAMENTE el mismo empuje que antes y no cambiar el feel
+        windVelocity = windDirection.normalized * (windForce / Time.fixedDeltaTime);
+
+        //OnTriggerStay corre a 50Hz y Update a 60: por eso la velocidad se latchea en vez de
+        //consumirse. El vencimiento evita que Kami quede empujada para siempre si el exit del
+        //trigger nunca llega (objeto destruido, SetActive(false), respawn)
+        _windLatchExpiry = Time.time + Time.fixedDeltaTime * 3f;
+    }
+
+    public bool IsWindLatchAlive => Time.time <= _windLatchExpiry;
 
     public void StartAffectedByWind(float windForce, Vector3 windDirection)
     {
@@ -672,6 +696,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     public void EndAffectedByWind()
     {
         Debug.Log("player end affected");
+        _windLatchExpiry = 0f;
+        windVelocity = Vector3.zero;
         _view.EndAffectedByWind();
     }
 

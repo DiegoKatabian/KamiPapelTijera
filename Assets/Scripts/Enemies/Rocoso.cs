@@ -20,6 +20,17 @@ public class Rocoso : Enemy
     [HideInInspector] public bool isDead = false;
     [HideInInspector] public bool deathAnimationEnded = false;
 
+    [Header("Facing")]
+    [SerializeField]
+    [Tooltip("Anclas que tienen que quedar SIEMPRE delante del sprite (las particulas de rayos). " +
+             "Si se deja vacio, se usan todos los ParticleSystem hijos.")]
+    Transform[] _anclasFrontales;
+
+    //posicion local original de cada ancla, para poder espejar su Z sin acumular error
+    readonly Dictionary<Transform, Vector3> _posicionesBaseAnclas = new Dictionary<Transform, Vector3>();
+    bool _mirandoAlaDerecha;
+    bool _facingInicializado;
+
     Player _player;
     protected FiniteStateMachine _fsm;
     protected bool isDrowning;
@@ -27,6 +38,7 @@ public class Rocoso : Enemy
     protected virtual void Start()
     {
         //Debug.Log("Rocoso Start");
+        CachearAnclasFrontales();
         _fsm = new FiniteStateMachine();
         _fsm.AddState(State.RocosoSleep, new RocosoSleepState(_fsm, this));
         _fsm.AddState(State.RocosoStart, new RocosoStartState(_fsm, this));
@@ -44,6 +56,74 @@ public class Rocoso : Enemy
         if (_player != null)
         {
             target = _player.transform.position;
+        }
+    }
+
+    void CachearAnclasFrontales()
+    {
+        //si nadie las wireo en el inspector, agarramos las particulas hijas: hoy son los rayos
+        //de enojo, que estan puestas en la escena sobre la instancia (no vienen en el prefab)
+        if (_anclasFrontales == null || _anclasFrontales.Length == 0)
+        {
+            ParticleSystem[] particulas = GetComponentsInChildren<ParticleSystem>(true);
+            _anclasFrontales = new Transform[particulas.Length];
+            for (int i = 0; i < particulas.Length; i++)
+            {
+                _anclasFrontales[i] = particulas[i].transform;
+            }
+
+            if (_anclasFrontales.Length == 0)
+            {
+                Debug.LogWarning($"[Rocoso] {name} no tiene anclas frontales ni particulas hijas: " +
+                                 "si le agregas particulas delante de la cabeza, van a quedar detras del sprite al girar.");
+            }
+        }
+
+        foreach (Transform ancla in _anclasFrontales)
+        {
+            if (ancla == null)
+            {
+                Debug.LogWarning($"[Rocoso] {name} tiene un ancla frontal vacia en el inspector, la salteo.");
+                continue;
+            }
+
+            _posicionesBaseAnclas[ancla] = ancla.localPosition;
+        }
+    }
+
+    /// <summary>
+    /// Unico punto que decide hacia donde mira el Rocoso. Rota el transform como siempre (de eso
+    /// dependen los offsets en X de RocosoAttackHitBox y MojableCollider, asi que NO se puede
+    /// reemplazar por un flipX del sprite) y ademas corrige la profundidad de las anclas frontales.
+    ///
+    /// POR QUE lo segundo: girar 180 grados en Y invierte el eje Z local, no solo el X. El X que se
+    /// invierta es lo que queremos (los rayos acompanan a la cabeza), pero el Z hace que las
+    /// particulas, que estan 0.18 delante del plano del sprite, terminen 0.18 DETRAS y las tape el
+    /// propio sprite. Por eso se les espeja la Z a contramano del giro: asi quedan siempre al frente.
+    /// </summary>
+    public void SetFacing(bool mirandoAlaDerecha)
+    {
+        if (_facingInicializado && _mirandoAlaDerecha == mirandoAlaDerecha)
+        {
+            return; //ya estabamos mirando para ese lado, no rehacemos nada
+        }
+
+        _mirandoAlaDerecha = mirandoAlaDerecha;
+        _facingInicializado = true;
+
+        transform.rotation = mirandoAlaDerecha ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.identity;
+
+        foreach (KeyValuePair<Transform, Vector3> par in _posicionesBaseAnclas)
+        {
+            Transform ancla = par.Key;
+            if (ancla == null)
+            {
+                continue; //la escena pudo destruirla (ej. al morir el Rocoso)
+            }
+
+            Vector3 baseLocal = par.Value;
+            float z = mirandoAlaDerecha ? -baseLocal.z : baseLocal.z;
+            ancla.localPosition = new Vector3(baseLocal.x, baseLocal.y, z);
         }
     }
 
