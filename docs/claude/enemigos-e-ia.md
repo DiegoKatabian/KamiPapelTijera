@@ -40,21 +40,43 @@ Evading. Hoy **no existe ningún sistema de detección** (vision cone, line-of-s
 hearing) en el proyecto — se buscó explícitamente y no hay precedente, salvo un
 método `InLineOfSight()` comentado (nunca implementado) en `Barquito/Pathfinding.cs`.
 
-## Rocoso — FSM + física, todavía NO listo para NavMesh
+## Rocoso — FSM + NavMeshAgent (migrado, issue #21)
 
 `Assets/Scripts/Enemies/Rocoso.cs` + `FiniteStateMachine.cs` (5 estados: Sleep, Start,
 Walk, Attack, Death — `IState` genérico, mismo patrón que usan Barquito y algunos NPC).
 
-**Movimiento actual**: `Rigidbody.AddForce()` cada frame hacia el jugador
-(`RocosoWalkState`, `ForceMode.VelocityChange`) — sin path planning, persecución
-directa. Esto es **directamente incompatible con `NavMeshAgent`** (que espera control
-cinemático del transform, no física por fuerzas): darle NavMesh a Rocoso no es
-"agregar un componente", es sacar el `Rigidbody` de la ecuación de movimiento y portar
-la detección de llegada/estado a la API de `NavMeshAgent` (`remainingDistance` como
-hace `PatrollingAgent`).
+**Movimiento actual**: `NavMeshAgent` propio (`[RequireComponent(typeof(NavMeshAgent))]`
+en `Rocoso.cs`, campo público `navAgent`, cableado directo — Rocoso NO hereda
+`PatrollingAgent`, esa base es para patrulla por waypoints y Rocoso solo persigue).
+`RocosoWalkState.WalkTowardsPlayer()` llama `navAgent.SetDestination(target)` cada
+frame; `OnEnter`/`OnExit` de Walk son el único lugar que togglea `isStopped` (retoma en
+`false` al entrar, frena en `true` al salir — cubre Attack/Sleep/Death/Start sin tocar
+esos archivos). El giro sigue siendo `SetFacing()` (180° instantáneo, ver `spine-kami.md`
+para el patrón), por eso `navAgent.updateRotation = false`. El `Rigidbody` (`myRigidbody`)
+queda en el GO pero `isKinematic = true` desde `Start()` — si no, la física de Unity le
+pelea la posición al NavMeshAgent (jitter); ya no se usa para moverlo, solo pudo quedar
+para colisión física con el jugador u otro uso.
+
+**Reposicionamiento si el jugador está inalcanzable por altura**: `alturaInalcanzable`
+(tuneable en el inspector, default 2.5) — si Kami está más alto que eso respecto a
+Rocoso (subida a una plataforma), `Rocoso.PlayerEsInalcanzablePorAltura()` da `true` y
+`RocosoWalkState` deja de perseguirla directamente. En vez de quedarse quieto contra la
+base de la plataforma, busca el nodo más cercano de `_nodosEstrategicos` (array de
+`Transform` ubicados a mano en la escena, misma página que Rocoso — pensado para la
+represa: así Rocoso queda bien parado debajo cuando Kami la tira) y camina hasta ahí
+UNA sola vez por "sesión" de inalcanzable (`RocosoWalkState._nodoEstrategicoEvaluado`
+evita recalcular o titubear si ella se mueve un poco arriba; recién se reevalúa cuando
+vuelve a ser alcanzable y sube de nuevo). Si `_nodosEstrategicos` está vacío, cae al
+comportamiento viejo de quedarse quieto en el lugar (`navAgent.ResetPath()`), con
+warning. Mientras es inalcanzable tampoco se dispara la transición a Attack (gate
+`!inalcanzable &&` antes del chequeo de `enterAttackRange`) — sin ese gate,
+`DistanceToPlayer()` (distancia 3D, incluye Y) podría dar un valor chico por cercanía
+horizontal y Rocoso "atacaría" a través de la plataforma sin poder llegar.
 
 **Tuning** (`Rocoso.cs`): `enterAttackRange` (11), `exitAttackRange` (30),
-`viewRange` (60, distancia a la que despierta del sleep).
+`viewRange` (60, distancia a la que despierta del sleep), `alturaInalcanzable` (2.5),
+`_nodosEstrategicos` (array de `Transform`, vacío por default — hay que ubicarlos a
+mano en la escena, mismo patrón que los waypoints de `GallinaAgent`).
 
 **Ataque**: `RocosoHeadbuttHitBox` — mismo patrón que `TijeraHitbox`
 (`audio-y-particulas.md`): collider trigger deshabilitado por default, se habilita
@@ -65,9 +87,15 @@ marca un flag (`didHit`) que el estado de ataque revisa al terminar la animació
 cada 0.8s) — llamado directo desde el sistema de río, sin implementar `IMojable`
 explícitamente (a diferencia de Kami, ver `spine-kami.md` sobre `Rio.cs`/`IMojable`).
 
-**Veredicto NavMesh**: el NavMesh recién baked en Nivel1 parece pensado para las
-gallinas — no hay evidencia de que Rocoso ya lo use. Migrarlo es un refactor real, no
-un flag para prender (ver plan de la feature "Rocoso NavMesh" en `specs/`).
+**Veredicto NavMesh**: migrado. Rocoso persigue con su propio `NavMeshAgent`, gira con
+`SetFacing` (no con `updateRotation`) y espera abajo si el jugador está a más de
+`alturaInalcanzable` unidades de altura (tuneable en el inspector).
+
+**Dependencia de NavMesh bakeado por página**: Rocoso necesita que la página en la que
+vive tenga un `NavMeshData` bakeado y activo — lo resuelve `PageNavMeshManager`
+(`Assets/Scripts/AI/`), desacoplado de Rocoso. Las plataformas que Kami puede escalar
+pero Rocoso no se marcan con un NavMesh Area custom excluido del `areaMask` del
+`NavMeshAgent` de Rocoso (paso de Editor, no de código).
 
 ## EnemySpawner — no usado todavía
 
@@ -81,10 +109,9 @@ armado pero sin caller activo en el gameplay actual.
 `Assets/Scripts/Barquito/BarquitoBehaviour.cs`: FSM (Idle/Moving) + A* propio sobre un
 grafo de `Node` colocados a mano en la escena (`Pathfinding.cs`), con steering
 `Arrive()` (desaceleración suave al acercarse al destino). No usa NavMesh ni Rigidbody
-— es su propio sistema, pensado para el bote NPC. Vale la pena saber que el proyecto
-ya tiene **tres paradigmas de movimiento distintos** conviviendo (NavMeshAgent en
-Gallina, física por fuerzas en Rocoso, A* por nodos en Barquito) — al planear el
-refactor de Rocoso, no asumir que "como Gallina ya tiene NavMesh, es trivial".
+— es su propio sistema, pensado para el bote NPC. El proyecto convive con **dos
+paradigmas de movimiento distintos** (NavMeshAgent en Gallina y Rocoso, cada uno con
+su propio wiring — Rocoso no hereda `PatrollingAgent`; A* por nodos en Barquito).
 
 ## Patrón de daño (IGolpeable)
 

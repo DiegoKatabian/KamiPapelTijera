@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.AI;
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class Rocoso : Enemy
 {
     public Rigidbody myRigidbody;
+    public NavMeshAgent navAgent;
     public Animator anim; //mi animator
     public RocosoHeadbuttHitBox _hitBox;
     [SerializeField] float hitboxDuration = 0.2f;
@@ -12,6 +15,14 @@ public class Rocoso : Enemy
     public float exitAttackRange = 30; //si se aleja a 30, dejo de pegarle y lo vuelvo a perseguir
     public float viewRange = 60; //me despierto si el pj se acerca a 50 o menos. me duermo si se aleja eso
     [SerializeField] protected GameObject _particulasSplash;
+
+    [SerializeField]
+    [Tooltip("Si el jugador esta mas alto que esto (ej. subido a una plataforma), Rocoso no puede llegar y en vez de caminar contra la plataforma se reposiciona en el nodo estrategico mas cercano (ver nodosEstrategicos).")]
+    float alturaInalcanzable = 2.5f;
+
+    [SerializeField]
+    [Tooltip("Nodos ubicados a mano en la escena (misma pagina que Rocoso) para cuando Kami esta inalcanzable por altura: Rocoso va al mas cercano a la posicion de ella en vez de quedarse quieto. Pensado para la represa: asi Rocoso queda bien posicionado cuando ella la tira. Si se deja vacio, cae al comportamiento viejo de quedarse quieto.")]
+    Transform[] _nodosEstrategicos;
 
     public bool startAnimationHasFinished = false;
     public bool playerEnteredWakeUpCollider = false;
@@ -39,6 +50,22 @@ public class Rocoso : Enemy
     {
         //Debug.Log("Rocoso Start");
         CachearAnclasFrontales();
+
+        navAgent = GetComponent<NavMeshAgent>();
+        navAgent.updateRotation = false; //el giro lo maneja SetFacing (180 instantaneo), no queremos que el agent le pelee la rotacion
+        navAgent.speed = Speed;
+
+        //el Rigidbody ya no mueve a Rocoso (eso lo hace el NavMeshAgent), pero si no queda kinematic
+        //la fisica de Unity le va a pelear la posicion al agent y produce jitter
+        if (myRigidbody != null)
+        {
+            myRigidbody.isKinematic = true;
+        }
+        else
+        {
+            Debug.LogWarning($"[Rocoso] {name} no tiene myRigidbody wireado en el inspector.");
+        }
+
         _fsm = new FiniteStateMachine();
         _fsm.AddState(State.RocosoSleep, new RocosoSleepState(_fsm, this));
         _fsm.AddState(State.RocosoStart, new RocosoStartState(_fsm, this));
@@ -258,5 +285,46 @@ public class Rocoso : Enemy
     public bool PlayerIsInViewRange()
     {
         return DistanceToPlayer() < viewRange;
+    }
+
+    public bool PlayerEsInalcanzablePorAltura()
+    {
+        if (_player == null) return false;
+        return (_player.transform.position.y - transform.position.y) > alturaInalcanzable;
+    }
+
+    /// <summary>
+    /// Nodo estrategico (de _nodosEstrategicos) mas cercano a la posicion dada, o null si no hay
+    /// ninguno configurado. Se usa para reposicionar a Rocoso cuando el jugador esta inalcanzable
+    /// por altura, en vez de dejarlo quieto contra la base de la plataforma.
+    /// </summary>
+    public Transform NodoEstrategicoMasCercanoA(Vector3 posicion)
+    {
+        if (_nodosEstrategicos == null || _nodosEstrategicos.Length == 0)
+        {
+            Debug.LogWarning($"[Rocoso] {name} no tiene nodos estrategicos asignados: cuando Kami este " +
+                              "inalcanzable por altura, va a quedarse quieto en vez de reposicionarse.");
+            return null;
+        }
+
+        Transform masCercano = null;
+        float distanciaMinima = float.MaxValue;
+
+        foreach (Transform nodo in _nodosEstrategicos)
+        {
+            if (nodo == null)
+            {
+                continue; //slot vacio en el inspector, lo salteamos
+            }
+
+            float distancia = Vector3.Distance(nodo.position, posicion);
+            if (distancia < distanciaMinima)
+            {
+                distanciaMinima = distancia;
+                masCercano = nodo;
+            }
+        }
+
+        return masCercano;
     }
 }

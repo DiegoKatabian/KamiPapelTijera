@@ -15,7 +15,7 @@ Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spin
 - `Assets/Scripts/Quests/` — `QuestManager`/`QuestEffector` + un ScriptableObject `QuestNN_Nombre.asset` por quest
 - `Assets/Scripts/Dialogos/` — un `*DialogueTrigger.cs` por NPC + estados de NPC (`NPC_Abuela`, `NPC_Florista`, etc.)
 - `Assets/Scripts/Enemies/` — Rocoso (FSM + física, ver `enemigos-e-ia.md`), `EnemySpawner` (armado, sin usar todavía)
-- `Assets/Scripts/AI/` — `PatrollingAgent` (base NavMesh, agosto 2026) + `GallinaAgent`; ver `enemigos-e-ia.md`
+- `Assets/Scripts/AI/` — `PatrollingAgent` (base NavMesh, agosto 2026) + `GallinaAgent`; `PageNavMeshManager` swapea el NavMesh activo por página (issue #21); ver `enemigos-e-ia.md`
 - `Assets/Scripts/Barquito/` — NPC bote con A* propio por nodos (no NavMesh)
 - `Assets/Scripts/AttackHitBoxes/` — `IGolpeable` + hitboxes de ataque de enemigos
 - `Assets/Scripts/Particles/ParticleShooter.cs` — partículas del player por índice
@@ -27,7 +27,11 @@ Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spin
 - Escena de trabajo Nivel 1: `Nivel1_KamiPapelTijera.unity` (activa desde fines de agosto 2026 — `Nivel1_LaRural SpineTest.unity` quedó vieja/stale, no confundir; puede tener referencias rotas)
 - Escena de trabajo Nivel 2: `Level2_Newspaper.unity` — ver `nivel2-y-ui.md` para estado actual (página del museo en progreso)
 
-Branch de laburo de animaciones: `feature/spine-animations`. Roadmap y specs de features futuras: `specs/` (Spec Kit) y `ROADMAP.md`.
+Active work branches:
+- `feature/spine-animations` — Spine character animations (Spanish code/comments)
+- `feature/joystick-controls` (issue #41) — gamepad support with animated input prompts, target M4 (Oct 15). See `specs/004-joystick-controls/spec.md` (English spec).
+
+Roadmap and future feature specs: `specs/` (Spec Kit) and `ROADMAP.md`.
 
 ## Herramientas de análisis del proyecto
 
