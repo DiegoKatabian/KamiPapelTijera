@@ -12,7 +12,37 @@ public abstract class TriggerScript : MonoBehaviour
 
     //el player es la layer 3
 
-    [HideInInspector] public bool triggerBool = false;
+    bool _triggerBool = false;
+
+    //Propiedad y no campo publico A PROPOSITO: setearla es lo que registra/desregistra este
+    //trigger en InteractionContext, que es lo que hace contextual al boton B del joystick.
+    //Con un campo suelto era imposible no olvidarselo: hay subclases que setean triggerBool
+    //sin llamar a base.OnEnterBehaviour (AbuelaDialogueTrigger, TriggerText, TriggerSound) y
+    //PageScrollerManager lo apaga desde afuera al terminar un cambio de pagina. Todos esos
+    //caminos se salteaban el registro, y el boton B terminaba atacando donde tenia que
+    //interactuar (o al reves, quedando pegado en "interactuar" para siempre).
+    public bool triggerBool
+    {
+        get { return _triggerBool; }
+        set
+        {
+            _triggerBool = value;
+
+            if (!EsInteractuable)
+            {
+                return;
+            }
+
+            if (value)
+            {
+                InteractionContext.Registrar(this);
+            }
+            else
+            {
+                InteractionContext.Desregistrar(this);
+            }
+        }
+    }
 
     [SerializeField] protected bool showTooltip = true;
     [SerializeField] protected string tooltipTextToShow;
@@ -59,24 +89,14 @@ public abstract class TriggerScript : MonoBehaviour
     public virtual void OnEnterBehaviour(Collider other)
     {
         //print("entro el player");
-        triggerBool = true;
-
-        if (EsInteractuable)
-        {
-            InteractionContext.Registrar(this);
-        }
-
+        triggerBool = true; //el setter se encarga de registrar en InteractionContext
         TryShowTooltip();
     }
 
     public virtual void OnExitBehaviour()
     {
         //print("se salio el player de " + gameObject.name);
-        triggerBool = false;
-
-        //ojo: esto va ANTES del early return de abajo. si se desregistrara despues, un trigger
-        //que no mostro tooltip se quedaria registrado para siempre y el boton B nunca atacaria
-        InteractionContext.Desregistrar(this);
+        triggerBool = false; //el setter se encarga de desregistrar
 
         if (!_shownThisEntry)
         {

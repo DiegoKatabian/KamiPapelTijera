@@ -124,12 +124,20 @@ public static class InputHub
     static int _frameJoystick = -1;
     static bool _hayJoystickConectado = false;
 
-    /// <summary>Hay al menos un joystick enchufado. Se re-chequea una vez por frame (no es gratis).</summary>
+    /// <summary>
+    /// Cada cuantos frames se re-chequea si hay joystick enchufado. Input.GetJoystickNames()
+    /// ALLOCA un string[] en cada llamada, asi que preguntarlo todos los frames es basura para
+    /// el GC a cambio de nada: media docena de frames de latencia para notar que enchufaron un
+    /// joystick no la percibe nadie.
+    /// </summary>
+    const int FRAMES_ENTRE_CHEQUEOS_DE_JOYSTICK = 30;
+
+    /// <summary>Hay al menos un joystick enchufado. Se re-chequea cada tanto, no todos los frames.</summary>
     public static bool HayJoystickConectado
     {
         get
         {
-            if (_frameJoystick == Time.frameCount)
+            if (_frameJoystick >= 0 && Time.frameCount - _frameJoystick < FRAMES_ENTRE_CHEQUEOS_DE_JOYSTICK)
             {
                 return _hayJoystickConectado;
             }
