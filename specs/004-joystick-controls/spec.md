@@ -254,3 +254,66 @@ Origami uses the **same left stick** as movement, not a separate right stick. Th
 - Gamepad is the natural interface for arcade cabinets or console ports (per transmedia roadmap in GDD).
 - The emphasis on **origami generosity** is critical: it's the game's signature mechanic and must shine with any input device.
 - A harsh origami breaks the game for kids; a generous one makes it accessible and delightful.
+
+---
+
+## Implementation Status (2026-09-06)
+
+Branch `feature/joystick-controls`, off `feature/spine-animations`. Commits `bc3e1d9`,
+`e848cc4`, `0259f83`. Full technical notes in `docs/claude/controles-y-gamepad.md`.
+
+**Zero Unity Editor wiring required.** Everything works on Play: the only non-code change
+is `ProjectSettings/InputManager.asset` (plus two UI prefabs switched from
+`Navigation = None` to `Automatic`). New singletons build themselves at runtime.
+
+### Done
+
+| Req | Status | Notes |
+|---|---|---|
+| FR-001 gamepad buttons in `PlayerController` | Done | A=jump, B=action, L1=sprint, via `InputHub` |
+| FR-002 same events as keyboard | Done | B fires `OnPlayerPressedE`, no parallel event |
+| FR-003 origami with left stick | Done | `GamepadCursor` reports screen pixels, so `MultipleRectCheck` logic is untouched |
+| FR-004 tolerance radius | Done | `_toleranciaJoystickPx`, default 80px, **gamepad only** |
+| FR-006 no auto-reset | Done | Behaviour unchanged; releasing off-route cancels, as before |
+| FR-007 `{INPUT:*}` placeholders | Done | Plus legacy-token translation, so today's tables work untouched |
+| FR-008 device detection | Done | `InputHub.UltimoDeviceFueJoystick` |
+| US4 camera cycle | Done | L2 (9th axis) **and** R1, plus middle-click as always |
+| UI navigation | Done | `UISelector`; was a blocker — the victory overlay only closes via its buttons |
+
+### Deliberately not done
+
+- **FR-005 origami colour feedback (green/yellow/red)**: the tolerance makes the mechanic
+  forgiving, but there is no visual signal of "you are near the edge". Needs art direction.
+- **FR-009 animated icons / FR-007 sprites**: prompts are **text** (`(A)`, `(B)`, `(L1)`)
+  because the gamepad button sprite atlas does not exist yet (art dependency, Valentino).
+  `InputPromptSystem.PromptJoystick()` is a single switch — swapping to
+  `<sprite name=button_A>` is a one-place change.
+- **FR-010 haptics**: legacy `Input` has no rumble API. Needs the new Input System package
+  or a native plugin — a separate decision, not a detail of this feature.
+- **Localization tables still use literal key names.** Translated at runtime by the legacy
+  token pass. Migrating them to `{INPUT:*}` is content work (Diego/Valentino) and would let
+  the legacy path be deleted entirely.
+
+### Design decisions that changed from the draft
+
+1. **B does not cancel the origami minigame on gamepad.** B is both "open" and "grab"; if it
+   also cancelled, the grab press would close the fold. Cancel is: release off-route, press
+   E/Enter, or walk off the pedestal. The player can never get stuck.
+2. **Kami needed no new movement gate during origami.** `OnOrigamiStart` already puts her in
+   `PlayerState.Casting`, which `PlayerModel.IsInputLocked()` already blocks. The draft
+   assumed `PlayerModel.Tick()` had to be overridden; it did not.
+3. **`triggerBool` became a property.** Its setter owns registration in `InteractionContext`.
+   Found via adversarial review: `AbuelaDialogueTrigger` sets `triggerBool` without calling
+   base, so B attacked instead of talking to her — the level was unfinishable on gamepad.
+
+### Verification
+
+- **Compiles**: `python tools/compile-check.py` (real Roslyn, Unity's own defines and
+  references, no Editor needed). No new warnings over baseline.
+- **Prompt translation**: the regexes were run against all 25 real strings from the es/en/pt
+  tables. All 25 read correctly; trap strings (the Spanish conjunction "e", lowercase
+  Portuguese "espaço", "no lo toques") are untouched.
+- **Input map**: `InputManager.asset` parsed and asserted entry by entry.
+- **NOT verified — needs Diego at the Editor**: everything runtime. Cursor feel and speed,
+  whether 80px of tolerance is enough, whether L2 maps to the 9th axis on his particular
+  gamepad, and the UI selection retry.
