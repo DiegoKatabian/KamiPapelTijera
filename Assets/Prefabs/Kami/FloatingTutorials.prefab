@@ -63,6 +63,7 @@ GameObject:
   - component: {fileID: 804599474727246313}
   - component: {fileID: 804599474727246319}
   - component: {fileID: 804599474727246312}
+  - component: {fileID: 804599474700000001}
   m_Layer: 0
   m_Name: Tutorial_WASD
   m_TagString: Untagged
@@ -168,6 +169,7 @@ GameObject:
   - component: {fileID: 804599474762639709}
   - component: {fileID: 804599474762639699}
   - component: {fileID: 804599474762639708}
+  - component: {fileID: 804599474700000002}
   m_Layer: 0
   m_Name: Tutorial_Space
   m_TagString: Untagged
@@ -367,3 +369,35 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &804599474700000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 804599474727246314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c114608071c496a8dbbe4d60490006c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteTeclado: {fileID: 21300000, guid: 3bdf94630d874ce4d858438a21542574, type: 3}
+  _animatorTeclado: {fileID: 9100000, guid: 3607330c248502b4fb078b85ba0c2710, type: 2}
+  _spriteJoystick: {fileID: 0}
+  _animatorJoystick: {fileID: 0}
+--- !u!114 &804599474700000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 804599474762639710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c114608071c496a8dbbe4d60490006c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteTeclado: {fileID: 21300000, guid: e68415a45a9aa3048920b9e7f1e1a027, type: 3}
+  _animatorTeclado: {fileID: 9100000, guid: 0b71597ba4431da49a21a451b3d967e0, type: 2}
+  _spriteJoystick: {fileID: 0}
+  _animatorJoystick: {fileID: 0}

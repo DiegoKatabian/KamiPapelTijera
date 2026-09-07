@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7057583173279867034}
   - component: {fileID: 1505789483956491378}
   - component: {fileID: 2416605858218575617}
+  - component: {fileID: 5086938129700000001}
   m_Layer: 0
   m_Name: Left Click
   m_TagString: Untagged
@@ -97,6 +98,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &5086938129700000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086938129796935732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c114608071c496a8dbbe4d60490006c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteTeclado: {fileID: 21300000, guid: 08d54e2bb8c665c48becdbb955218498, type: 3}
+  _animatorTeclado: {fileID: 9100000, guid: 2beb9779bb906374aafc6366f53234a8, type: 2}
+  _spriteJoystick: {fileID: 0}
+  _animatorJoystick: {fileID: 0}
 --- !u!1 &5418449225323618739
 GameObject:
   m_ObjectHideFlags: 0
