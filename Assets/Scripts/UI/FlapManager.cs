@@ -59,6 +59,10 @@ public class FlapManager : Singleton<FlapManager>
         _tiritaPull.gameObject.SetActive(true);
         _tiritaPush.gameObject.SetActive(false);
 
+        //sin esto queda un boton del menu seleccionado y, como el boton B del joystick es Submit,
+        //el jugador lo seguiria apretando sin querer mientras juega
+        UISelector.Limpiar();
+
         StopAllCoroutines();
         StartCoroutine(MoveFlap(_posYClosed));
     }
@@ -123,6 +127,11 @@ public class FlapManager : Singleton<FlapManager>
         _seguroOverlay.SetActive(true);
         Debug.Log("prendo el overlay");
         AudioManager.instance.PlayByName("PickupSFX", 1.25f);
+
+        //el seguro es un dialogo modal (Si/No) encima del menu: si no seleccionamos uno de sus
+        //botones, con joystick no habria forma de contestarle. UISelector avisa si _seguroOverlay
+        //fuera null o no tuviera botones, no explota.
+        UISelector.SeleccionarPrimeroSiJoystick(_seguroOverlay);
     }
     public void BTN_Settings()
     {
@@ -161,6 +170,10 @@ public class FlapManager : Singleton<FlapManager>
         AudioManager.instance.PlayByName("PickupReversedSFX", 2.5f);
 
         Debug.Log("apago el overlay");
+
+        //el boton que estaba seleccionado (el "No" del seguro) se acaba de desactivar: si no
+        //devolvemos el foco al display visible, el joystick se queda sin nada que navegar
+        SeleccionarDisplayVisible();
     }
     public void SLIDER_Volumen()
     {
@@ -204,6 +217,37 @@ public class FlapManager : Singleton<FlapManager>
         //Debug.Log("show desired display - " + flapDisplay);
         flapDisplay.display.SetActive(true);
         flapDisplay.flapButton.Activate();
+
+        //con joystick hace falta que HAYA algo seleccionado para que el stick pueda navegar el menu.
+        //ojo: OpenQuests/OpenInventory/OpenSettings llaman aca ANTES de ToggleFlap, asi que si el flap
+        //estaba abierto esta seleccion se hace y acto seguido CloseFlap() la limpia. Esta bien asi.
+        UISelector.SeleccionarPrimeroSiJoystick(flapDisplay.display);
+    }
+
+    /// <summary>
+    /// Vuelve a poner el foco en el display que se este viendo (lo usa BTN_No al apagar el seguro
+    /// de salir). Si el flap ya no esta abierto no selecciona nada: un boton seleccionado con el
+    /// menu cerrado seria un boton fantasma que el B del joystick apretaria durante el gameplay.
+    /// </summary>
+    void SeleccionarDisplayVisible()
+    {
+        if (!_isOpen)
+        {
+            UISelector.Limpiar();
+            return;
+        }
+
+        foreach (FlapDisplay d in _flapDisplays)
+        {
+            if (d.display != null && d.display.activeInHierarchy)
+            {
+                UISelector.SeleccionarPrimeroSiJoystick(d.display);
+                return;
+            }
+        }
+
+        //ningun display prendido: mejor sin seleccion que con una que no se ve
+        UISelector.Limpiar();
     }
 
     private void OnDestroy()

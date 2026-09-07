@@ -60,7 +60,7 @@ public class InputPromptSystem : MonoBehaviour
     
     /// <summary>
     /// Get prompt text/icon for an input action.
-    /// Returns: "E" (keyboard), "<sprite name=button_Y>" (gamepad), or "E / [Y]" (both)
+    /// Returns: "E" (keyboard), "<sprite name=button_A>" (gamepad), or "E / [A]" (both)
     /// </summary>
     public string GetPromptText(InputAction action)
     {
@@ -82,7 +82,7 @@ public class InputPromptSystem : MonoBehaviour
     
     private string GetKeyboardPrompt(InputAction action) => action switch
     {
-        InputAction.Interact => "E",
+        InputAction.Action => "E",
         InputAction.Jump => "Space",
         InputAction.Attack => "Click",
         InputAction.Sprint => "Shift",
@@ -91,7 +91,7 @@ public class InputPromptSystem : MonoBehaviour
     
     private string GetGamepadPrompt(InputAction action) => action switch
     {
-        InputAction.Interact => "<sprite name=button_Y>", // Y = yellow
+        InputAction.Action => "<sprite name=button_B>", // B = red (context: attack or interact)
         InputAction.Jump => "<sprite name=button_B>",     // B = green
         InputAction.Attack => "<sprite name=button_X>",   // X = blue
         InputAction.Sprint => "<sprite name=button_LB>",  // L1 = white/gray
@@ -100,7 +100,7 @@ public class InputPromptSystem : MonoBehaviour
     
     private string GetCoexistencePrompt(InputAction action) => action switch
     {
-        InputAction.Interact => $"{GetKeyboardPrompt(action)} / {GetGamepadPrompt(action)}",
+        InputAction.Action => $"{GetKeyboardPrompt(action)} / {GetGamepadPrompt(action)}",
         InputAction.Jump => $"{GetKeyboardPrompt(action)} / {GetGamepadPrompt(action)}",
         InputAction.Attack => $"{GetKeyboardPrompt(action)} / {GetGamepadPrompt(action)}",
         InputAction.Sprint => $"{GetKeyboardPrompt(action)} / {GetGamepadPrompt(action)}",
@@ -120,9 +120,9 @@ public class DialogueTextProcessor : MonoBehaviour
 {
     public static string ProcessInputPlaceholders(string rawText)
     {
-        // Replace {INPUT:interact} → icon/text via InputPromptSystem
+        // Replace {INPUT:action} → icon/text via InputPromptSystem
         rawText = Regex.Replace(rawText, @"\{INPUT:interact\}", 
-            InputPromptSystem.Instance.GetPromptText(InputAction.Interact));
+            InputPromptSystem.Instance.GetPromptText(InputAction.Action));
         
         rawText = Regex.Replace(rawText, @"\{INPUT:jump\}", 
             InputPromptSystem.Instance.GetPromptText(InputAction.Jump));
@@ -149,34 +149,37 @@ InteractPrompt:
 
 # NEW (input-aware)
 InteractPrompt:
-  en: "Press {INPUT:interact} to talk"
+  en: "Press {INPUT:action} to talk"
 
 JumpTutorial:
   en: "Jump with {INPUT:jump} to reach high places"
 
 AttackTutorial:
-  en: "{INPUT:attack} to cut the paper"
+  en: "{INPUT:action} to cut the paper"
+
+CameraHelp:
+  en: "Press {INPUT:camera} to cycle camera"
 ```
 
 At runtime:
 - Keyboard active: "Press E to talk" → "Press E to talk"
-- Gamepad active: "Press E to talk" → "Press [Y icon] to talk"
-- Both: "Press E to talk" → "Press E / [Y icon] to talk"
+- Gamepad active: "Press E to talk" → "Press [B icon] to talk"
+- Both: "Press E to talk" → "Press E / [B icon] to talk"
 
 ## Step 4: TextMesh Pro Rich Text Tags
 
 TMP supports inline sprite rendering:
 
 ```
-Raw: "Press <sprite name=button_Y> to continue"
+Raw: "Press <sprite name=button_A> to continue"
 Rendered: "Press [yellow Y icon] to continue"
 ```
 
 **Setup**:
 1. Create or import gamepad button sprite atlas (32×32 px per button recommended)
 2. In TextMesh Pro Material, add sprite atlas as `Sprite Asset`
-3. Name sprites consistently: `button_A`, `button_B`, `button_X`, `button_Y`, `button_LB`, `button_RB`, `button_Start`, `button_Dpad_Up`, etc.
-4. TMP automatically recognizes `<sprite name=button_Y>` tags and renders them inline
+3. Name sprites consistently: `button_A`, `button_B`, `button_X`, `button_A`, `button_LB`, `button_RB`, `button_Start`, `button_Dpad_Up`, etc.
+4. TMP automatically recognizes `<sprite name=button_A>` tags and renders them inline
 
 ## Step 5: Sprite Animation (Optional)
 
@@ -226,8 +229,8 @@ IEnumerator PulseSprite(TMP_Text textComponent, int spriteIndex)
 ```csharp
 // Manually wrap sprites in animation tags
 rawText = rawText.Replace(
-    "<sprite name=button_Y>",
-    "<sprite name=button_Y><scale=1.15><anim=1><scale=1.0>" // Pulse effect
+    "<sprite name=button_A>",
+    "<sprite name=button_A><scale=1.15><anim=1><scale=1.0>" // Pulse effect
 );
 ```
 
@@ -247,17 +250,20 @@ private string GetGamepadPrompt(InputAction action)
     
     return action switch
     {
-        InputAction.Interact => "<sprite name=button_Y>",
+        InputAction.Jump => "<sprite name=button_A>",
+        InputAction.Action => "<sprite name=button_B>", // action (attack/interact)
+        InputAction.Sprint => "<sprite name=button_LB>",
+        InputAction.Camera => "<sprite name=button_L2>",
         // ... etc
     };
 }
 
 private string GetGamepadPromptFallback(InputAction action) => action switch
 {
-    InputAction.Interact => "Y",
-    InputAction.Jump => "B",
-    InputAction.Attack => "X",
+    InputAction.Jump => "A",
+    InputAction.Action => "B",     // action (attack/interact)
     InputAction.Sprint => "L1",
+    InputAction.Camera => "L2",
     _ => ""
 };
 ```
@@ -338,7 +344,7 @@ tutorialText.text = DialogueTextProcessor.ProcessInputPlaceholders(hint);
 
 ## Future Enhancements
 
-- **Smart coexistence display**: "E / [Y]" could be prettier as side-by-side icons without text
+- **Smart coexistence display**: "E / [A]" could be prettier as side-by-side icons without text
 - **Controller detection per player**: if multiplayer, detect Gamepad 1 vs. Gamepad 2
 - **Vibration prompts**: show "[rumble icon]" for haptic feedback hints
 - **Keyboard alternative text**: some players prefer "Press [letter]" over just "[E]" — make configurable per localization table

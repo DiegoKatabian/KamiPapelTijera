@@ -10,6 +10,7 @@ Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spin
 - `Assets/Scripts/Managers/` — AudioManager, LevelManager, EventManager, PageScrollerManager, PlayerPageSpawnManager, CameraManager, etc. (singletons)
 - `Assets/Scripts/TriggerS/` — triggers de zona (base `TriggerScript`, con tooltip por color)
 - `Assets/Scripts/Origami/` — minijuego de origami + `PedestalCanvasDisplay` (costo en pedestal)
+- `Assets/Scripts/Input/` — `InputHub` (fachada única de input), `InteractionContext` (el botón B contextual), `GamepadCursor`, `InputPromptSystem`
 - `Assets/Scripts/UI/` — `TooltipManager`/`PostIt` (tutorial), `FlapManager`/`CamWheelManager` (menú y selector de cámara), `InventorySlot`
 - `Assets/Scripts/Inventory/` — `InventoryManager`/`InventoryItem` (recursos recolectables)
 - `Assets/Scripts/Quests/` — `QuestManager`/`QuestEffector` + un ScriptableObject `QuestNN_Nombre.asset` por quest
@@ -115,6 +116,7 @@ La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso) decide la anim, el te
 - Enemigos e IA (Rocoso, PatrollingAgent/GallinaAgent, Barquito, patrón de hitboxes): @docs/claude/enemigos-e-ia.md
 - Nivel 2 (estado actual), LevelManager, Inventario, Flap/CamWheel UI, Cámara: @docs/claude/nivel2-y-ui.md
 - Quests y diálogos de NPCs: @docs/claude/quests-y-dialogos.md
+- Controles (teclado + joystick), botón B contextual, cursor virtual del origami: @docs/claude/controles-y-gamepad.md
 
 ## Ojo al editar
 
@@ -122,4 +124,11 @@ La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso) decide la anim, el te
 - Cirugía YAML de prefabs: leer el archivo entero antes y copiar patrones existentes. Referencias a componentes de prefabs anidados = bloques MonoBehaviour *stripped* (patrón copiable en `OrigamiRoute 1-Easy.prefab`). El fileID que una escena usa para un target dentro de una instancia anidada se computa `(source XOR prefabInstance) & 0x7FFFFFFFFFFFFFFF`.
 - Line endings mixtos: algunos prefabs son CRLF y otros LF — preservar el del archivo al editar.
 - Verificación post-cirugía: contar bloques `--- !u!` antes/después + grep de unicidad de fileIDs.
-- No hay Unity CLI para compilar desde acá: la verificación final de compilación la hace el editor de Diego.
+- **Sí se puede compilar desde acá**: `python tools/compile-check.py [tag]` compila
+  `Assembly-CSharp` con el Roslyn que trae Unity, reusando el response file real que el
+  editor dejó en `Library/Bee/artifacts/` (mismos defines, mismas referencias), en ~20s y
+  sin abrir Unity. Warnings de baseline conocidos: `JumpFloodOutlineRenderer` CS0162 y
+  `HongueroTiburcioDialogueTrigger` CS0414. **Ojo**: verifica compilación, NO runtime — el
+  feel, la física y el input real los sigue validando Diego en el editor.
+- `python tools/make-meta.py <ruta...>` genera los `.meta` de scripts/carpetas nuevas con
+  GUID random verificado sin colisiones, sin depender de que Unity refresque.

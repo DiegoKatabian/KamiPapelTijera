@@ -105,11 +105,13 @@ public class TooltipManager : Singleton<TooltipManager>
                 var entry = stringTable.GetEntry(fallbackText);
                 if (entry != null && !string.IsNullOrEmpty(entry.GetLocalizedString()))
                 {
-                    textElement.text = entry.GetLocalizedString();
+                    //InputPromptSystem: el texto de la tabla nombra teclas ("Toca E"), asi que
+                    //si el jugador esta con joystick hay que decirle el boton que existe de verdad
+                    textElement.text = InputPromptSystem.Procesar(entry.GetLocalizedString());
                 }
                 else
                 {
-                    textElement.text = fallbackText;
+                    textElement.text = InputPromptSystem.Procesar(fallbackText);
                 }
             }
             else
@@ -117,7 +119,7 @@ public class TooltipManager : Singleton<TooltipManager>
                 //si la tabla no cargo, igual escribimos ALGO: un post-it visible con texto
                 //viejo o vacio es mucho mas dificil de diagnosticar que este warning
                 Debug.LogWarning("[TooltipManager] no pude cargar TooltipTable, uso el texto sin localizar");
-                textElement.text = fallbackText;
+                textElement.text = InputPromptSystem.Procesar(fallbackText);
             }
         }
         else

@@ -102,11 +102,16 @@ public class DialogueManager : Singleton<DialogueManager>
                 var entry = stringTable.GetEntry(fallbackText);
                 if (entry != null && !string.IsNullOrEmpty(entry.GetLocalizedString()))
                 {
-                    textElement.text = entry.GetLocalizedString();
+                    //InputPromptSystem: unico punto donde se resuelve el string COMPLETO del
+                    //dialogo antes de escribirlo al TMP. Se procesa aca (una sola vez) y no
+                    //letra por letra: si algun dia se agrega maquina de escribir, tiene que
+                    //correr sobre ESTE resultado, nunca sobre el texto crudo (romperia los
+                    //tags de TMP y los prompts a medio escribir).
+                    textElement.text = InputPromptSystem.Procesar(entry.GetLocalizedString());
                 }
                 else
                 {
-                    textElement.text = fallbackText;
+                    textElement.text = InputPromptSystem.Procesar(fallbackText);
                 }
             }
         }

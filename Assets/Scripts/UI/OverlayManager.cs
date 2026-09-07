@@ -36,6 +36,11 @@ public class OverlayManager : Singleton<OverlayManager>
             Debug.LogWarning("[OverlayManager] el defeat overlay no tiene el componente DefeatOverlay: no se muestra la causa de muerte");
         }
 
+        //el defeat overlay hoy no tiene botones (se cierra con E / boton B via RequestUnlock), pero si
+        //algun dia se le agrega uno, con joystick tiene que quedar seleccionado. avisarSiNoHay=false
+        //para no tirar un warning en cada muerte mientras no tenga botones.
+        UISelector.SeleccionarPrimeroSiJoystick(_defeatOverlay.gameObject, false);
+
         Lock();
         Debug.Log($"[OverlayManager] ShowDefeatOverlay: causa {cause}, respawn {(respawnOverride.HasValue ? respawnOverride.Value.ToString() : "entrada de pagina")}");
     }
@@ -49,12 +54,21 @@ public class OverlayManager : Singleton<OverlayManager>
             //Debug.Log("overlay manager: show victory overlay");
             _victoryOverlay.gameObject.SetActive(true);
             _victoryOverlay.isShowing = true;
+
+            //este es el caso critico: RequestUnlock ignora la E cuando el victory esta arriba, asi que
+            //la UNICA salida son sus botones. Sin seleccion, el jugador con joystick queda trabado.
+            UISelector.SeleccionarPrimeroSiJoystick(_victoryOverlay.gameObject);
+
             Lock();
         }
 
         if ((DialogueSO)parameter[1] == mainQuestTriggeringDialogue)
         {
             _mainQuestOverlay.gameObject.SetActive(true);
+
+            //hoy no tiene botones (se cierra con E / boton B), por eso avisarSiNoHay=false
+            UISelector.SeleccionarPrimeroSiJoystick(_mainQuestOverlay.gameObject, false);
+
             Lock();
         }
     }
@@ -84,6 +98,10 @@ public class OverlayManager : Singleton<OverlayManager>
         LevelManager.Instance.inDialogue = false;
         isLocked = false;
         AudioManager.instance.PlayByName("PickupSFX", 0.66f);
+
+        //se vuelve al juego: no puede quedar un boton seleccionado, o el B del joystick (Submit)
+        //lo apretaria mientras el jugador juega
+        UISelector.Limpiar();
 
         bool wasDefeatShowing = _defeatOverlay.gameObject.activeSelf;
         _defeatOverlay.gameObject.SetActive(false);
