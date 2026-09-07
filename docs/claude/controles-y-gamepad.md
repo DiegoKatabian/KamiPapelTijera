@@ -13,28 +13,38 @@ origami) — nunca qué se puede hacer.
 | Acción | Teclado / mouse | Joystick (layout Xbox) |
 |---|---|---|
 | Mover | WASD / flechas | stick izquierdo |
-| Saltar | Espacio | **A** (botón 0) |
-| Atacar / cortar | Click izq, Ctrl | **B** (botón 1), contextual |
-| Interactuar (hablar, solapas, pasar página, origami) | E, Enter | **B** (botón 1), contextual |
+| Saltar | Espacio | **A** (botón 0), contextual |
+| Interactuar (hablar, solapas, pasar página, origami) | E, Enter | **A** (botón 0), contextual |
+| Atacar / cortar | Click izq, Ctrl | **B** (botón 1) |
 | Correr | Shift | **L1** (botón 4) |
-| Cambiar cámara | Click del medio | **L2** (9no eje) o **R1** (botón 5) |
+| Cambiar cámara | Click del medio | **L2** (9no eje) |
 | Menú Flap | Esc, O | **Start** (botón 7) |
 | Inventario / Quests directo | I / U | — (se llega por el menú con Start) |
 | Mutear | M | — |
-| Navegar UI | flechas / mouse | stick izquierdo; **B** = Submit, **Start** = Cancel |
+| Navegar UI | flechas / mouse | stick izquierdo; **A** = Submit, **Start** = Cancel |
 
-### El botón B es contextual (lo más importante de este diseño)
+### El botón A es contextual (lo más importante de este diseño)
 
-Un solo botón para "hacer": si hay algo con qué interactuar, interactúa; si no, ataca.
-Así un chico no tiene que aprender cuál botón es cuál.
+Un solo botón para "hacer": si hay algo con qué interactuar, interactúa; si no, **salta**.
+Así un chico no tiene que aprender cuál botón es cuál, y A queda donde todo el mundo espera
+que esté el botón de confirmar.
 
 Quién decide: `PlayerController.CheckControls()` pregunta a
-`InteractionContext.HayInteraccionDisponible`. Si da `true` → interactúa. Si da `false`
-(y el juego no está pausado) → ataca.
+`InteractionContext.HayInteraccionDisponible`. Si da `true`, el apretón de A se resuelve
+como interactuar **y se le tapa el salto de ese frame** (`_gamepadInteractua`): es el mismo
+botón físico, no puede hacer las dos cosas.
 
-**El teclado NO pasa por esta lógica**: E siempre interactúa y el click siempre ataca,
-exactamente como antes. Es una regla de oro de este feature — cero regresiones en lo que
-ya funcionaba.
+Consecuencia aceptada: parada adentro de un trigger interactuable (una solapa, el borde de
+página), Kami **no salta con A**. Con el teclado sí, porque el espacio no pasa por esta
+lógica.
+
+B ataca siempre, sin contexto. Durante el origami Kami está en `PlayerState.Casting` y
+`CanAttack()` da false, así que ahí B queda libre y lo usamos para **cancelar el
+minijuego** (es la convención de "volver" de cualquier joystick).
+
+**El teclado NO pasa por esta lógica**: E siempre interactúa, el espacio siempre salta y el
+click siempre ataca, exactamente como antes. Es una regla de oro de este feature — cero
+regresiones en lo que ya funcionaba.
 
 ## Arquitectura
 
@@ -58,6 +68,14 @@ Cosas no obvias que resuelve:
 - **`UltimoDeviceFueJoystick`**: qué device usó último el jugador. Barre
   `KeyCode.JoystickButton0..19` + sticks; cualquier tecla o movimiento de mouse devuelve
   el foco al teclado. Se usa SOLO para presentación.
+  **Ojo con una trampa que ya nos mordió**: para preguntar "¿se movió el stick?" hay que
+  usar los ejes `JoystickDetectX`/`JoystickDetectY`, que leen SOLO el joystick. Los
+  `Horizontal`/`Vertical` normales **mezclan WASD con el stick**, así que caminar con el
+  teclado contaba como input de joystick y el juego se quedaba convencido de que estabas
+  con joystick para siempre (los textos mostraban botones en vez de teclas).
+- **`OnDeviceCambio`**: evento estático que salta cuando el jugador cambia de device. Lo
+  escuchan los textos de la UI y los prompts visuales: sin esto, un tooltip escrito con
+  teclado se quedaba diciendo "E" aunque después agarraras el joystick.
 
 ### `Assets/Scripts/Input/InteractionContext.cs` — "¿hay algo con qué interactuar?"
 
@@ -77,7 +95,7 @@ todos los de NPC), `TriggerSolapa`, `TriggerBarquito`, `TriggerTijeraPickup`,
 mayoría de los triggers son de zona o de tooltip y no responden al botón.
 
 **Si agregás un trigger nuevo que reacciona al botón de acción, acordate de overridear
-`EsInteractuable`.** Si no, el botón B va a atacar en vez de interactuar ahí.
+`EsInteractuable`.** Si no, el botón A va a saltar en vez de interactuar ahí.
 
 ### `Assets/Scripts/Input/GamepadCursor.cs` — cursor virtual del origami
 
@@ -101,12 +119,12 @@ Traduce los textos de la UI al device activo. Ver la sección "Prompts" más aba
 - **Kami ya queda quieta sola**: `Evento.OnOrigamiStart` → `Player.StartOrigamiCast` →
   `PlayerState.Casting` → `PlayerModel.IsInputLocked()` bloquea el movimiento. No hizo
   falta agregar ningún gate nuevo; el stick mueve el cursor y no a Kami.
-- **B abre el minijuego y B agarra la flecha.** Son el mismo botón, así que
+- **A abre el minijuego y A agarra la flecha.** Son el mismo botón, así que
   `MultipleRectCheck.Update()` corta el frame (`return`) después de `StartOrigami`: sin
   eso, el apretón que abre agarraría en el mismo cuadro y un toque corto terminaría en
   "soltaste mal" al instante.
-- **Con joystick B NO cancela el minijuego** (si cancelara, el apretón de agarrar lo
-  cerraría). Se cancela soltando fuera de la ruta, con E/Enter, o caminando fuera del
+- **Con joystick cancela B**, no A (si cancelara A, el apretón de agarrar cerraría el
+  origami). También cancelan E/Enter, soltar fuera de la ruta, o caminar fuera del
   pedestal. El jugador nunca queda trabado.
 - **Tolerancia generosa**: `MultipleRectCheck._toleranciaJoystickPx` (default 80 px) agranda
   la zona válida alrededor de la ruta. **Sólo aplica con joystick**: con mouse la ruta sigue
@@ -118,7 +136,7 @@ Traduce los textos de la UI al device activo. Ver la sección "Prompts" más aba
 ## Navegación de UI
 
 El `EventSystem` de las escenas ya venía con `m_SubmitButton: Interact` y
-`m_CancelButton: Options`, y esos ejes ahora tienen joystick: **B es Submit y Start es
+`m_CancelButton: Options`, y esos ejes ahora tienen joystick: **A es Submit y Start es
 Cancel sin tocar nada**.
 
 Lo que faltaba: uGUI **no navega con stick si no hay nada seleccionado**, y
@@ -127,7 +145,7 @@ cierra con E, sólo con sus botones) dejaba trabado a un jugador de joystick. Lo
 `Assets/Scripts/UI/UISelector.cs`, enganchado en el Flap y en los overlays.
 
 **Cuidado al tocar esto**: si queda un botón seleccionado durante el gameplay normal, el
-botón B (que es Submit) lo apretaría mientras el jugador juega. Por eso la selección se
+botón A (que es Submit) lo apretaría mientras el jugador juega. Por eso la selección se
 limpia al cerrar menús y overlays, y por eso sólo se selecciona cuando hay joystick.
 
 ## Prompts de botones en los textos
@@ -179,7 +197,8 @@ pueden validar jugando.
 - Botones Xbox en Windows: 0=A, 1=B, 2=X, 3=Y, 4=LB, 5=RB, 6=Back, 7=Start, 8=click stick
   izq, 9=click stick der.
 - Se **sacaron** bindings viejos que ahora molestaban: `Jump` estaba en el botón 3 (Y),
-  `Mute` en el botón 1 (que ahora es la acción principal), e `Inventory`/`Quests` en los
-  clicks de stick (8 y 9), que se apretaban sin querer al correr.
+  `Mute` en el botón 1 (que ahora es atacar), e `Inventory`/`Quests` en los clicks de stick
+  (8 y 9), que se apretaban sin querer al correr. La cámara tuvo un tiempo R1 (botón 5)
+  además de L2; se sacó a pedido de Diego, queda **sólo L2** (más el click del medio).
 - Quedan bindings de joystick en las entradas `Debug *` de Unity (botones 4, 5, 8, 9),
   pero están detrás de apretar L3+R3 juntos. Pre-existente, no lo tocamos.
