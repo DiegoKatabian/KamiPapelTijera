@@ -680,6 +680,18 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &29930927 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2343045842677637873, guid: 55968c0be0eae574cac6fbf9493c0537,
+    type: 3}
+  m_PrefabInstance: {fileID: 419958434}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25edf181e37e35a4294087c6f0c02138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &30563074
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22062,7 +22074,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14f8dde19f00044db4607232f237be6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerBool: 0
   showTooltip: 1
   tooltipTextToShow: dialogue_tooltip
   postItColor: 0
@@ -30499,6 +30510,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 670692908}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &670692910 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5549367394310565231, guid: b10d773730f3e814c80e3450cd124562,
+    type: 3}
+  m_PrefabInstance: {fileID: 670692908}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &671008656 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8418949308599850210, guid: 67f52439f8ec08d44af61532afac0e89,
@@ -33914,19 +33931,19 @@ MonoBehaviour:
     lightIntensity: 0.96
   - lightPosition: {x: -80, y: 20.2, z: -88}
     lightRotation: {x: 46, y: 37.2, z: 52}
-    lightColor: {r: 0.9, g: 0.5640553, b: 0.5723503, a: 1}
+    lightColor: {r: 0.9245283, g: 0.6497864, b: 0.65617573, a: 1}
     lightIntensity: 0.92
   - lightPosition: {x: -80, y: 19.6, z: -88}
     lightRotation: {x: 42, y: 37.2, z: 47.7}
-    lightColor: {r: 0.85, g: 0.47549504, b: 0.71113855, a: 1}
+    lightColor: {r: 0.9056604, g: 0.61089355, b: 0.7951228, a: 1}
     lightIntensity: 0.88
   - lightPosition: {x: -80, y: 19, z: -88}
     lightRotation: {x: 38, y: 34.8, z: 41.1}
-    lightColor: {r: 0.5807106, g: 0.4060914, b: 0.8, a: 1}
+    lightColor: {r: 0.67305094, g: 0.5199359, b: 0.8679245, a: 1}
     lightIntensity: 0.84
   - lightPosition: {x: -80, y: 17.8, z: -88}
     lightRotation: {x: 34, y: 31.9, z: 37.5}
-    lightColor: {r: 0.29577473, g: 0.2007042, b: 0.75, a: 1}
+    lightColor: {r: 0.40974042, g: 0.32079923, b: 0.8396226, a: 1}
     lightIntensity: 0.8
   _transitionDuration: 2
 --- !u!1 &781753130
@@ -36051,7 +36068,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14f8dde19f00044db4607232f237be6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerBool: 0
   showTooltip: 1
   tooltipTextToShow: dialogue_tooltip
   postItColor: 0
@@ -38132,7 +38148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337c8ee6d004f134c9542a26f326c21a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerBool: 0
   showTooltip: 1
   tooltipTextToShow: abuela_dropoff
   postItColor: 4
@@ -63105,7 +63120,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb203da783a01404bb6a53197071d605, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerBool: 0
   showTooltip: 0
   tooltipTextToShow: 
   postItColor: 0
@@ -74880,7 +74894,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17c3335d810ed744f8545fe6ec765666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerBool: 0
   showTooltip: 1
   tooltipTextToShow: "-... --- -.- .. - .-\u2800 -. ---\u2800 -.. . ... -.-. .. .
     -. -.. ."
@@ -75732,7 +75745,7 @@ PrefabInstance:
         type: 3}
       propertyPath: kamiRewardSticker
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 29930927}
     - target: {fileID: 878916765532225283, guid: f74833a1c67aa5f419ada1b15c9fac0e,
         type: 3}
       propertyPath: receiveRewardPoint
@@ -76344,6 +76357,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
         type: 3}
+      propertyPath: pagesAnimators.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
+        type: 3}
       propertyPath: pagesToToggle.Array.data[0]
       value: 
       objectReference: {fileID: 165442788}
@@ -76395,6 +76413,11 @@ PrefabInstance:
     - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
         type: 3}
       propertyPath: pagesAnimators.Array.data[4]
+      value: 
+      objectReference: {fileID: 670692910}
+    - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
+        type: 3}
+      propertyPath: pagesAnimators.Array.data[5]
       value: 
       objectReference: {fileID: 5549367393259815876}
     - target: {fileID: 2466450927891767468, guid: df87262475a84ce428582318f125976c,

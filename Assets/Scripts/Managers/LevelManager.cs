@@ -22,7 +22,7 @@ public enum ResourceType
 
 public class LevelManager : Singleton<LevelManager>
 {
-    public string Level1SceneName = "Nivel1_LaRural SpineTest";
+    public string Level1SceneName = "Nivel1_KamiPapelTijera";
     public string Level2SceneName = "Level2_Newspaper";
 
     public bool agency;
@@ -98,7 +98,7 @@ public class LevelManager : Singleton<LevelManager>
 
             if (Input.GetKeyDown(KeyCode.F1))
             {
-                GoToScene("Nivel1_LaRural SpineTest");
+                GoToScene("Nivel1_KamiPapelTijera");
             }
 
             if (Input.GetKeyDown(KeyCode.F2))

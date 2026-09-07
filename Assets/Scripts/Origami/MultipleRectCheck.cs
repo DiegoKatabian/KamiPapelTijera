@@ -69,9 +69,9 @@ public class MultipleRectCheck : MonoBehaviour
             if (InputHub.InteractDown)
             {
                 StartOrigami(desiredOrigami);
-                //cortamos el frame: con joystick el MISMO boton B que abre el minijuego es tambien
+                //cortamos el frame: con joystick el MISMO boton A que abre el minijuego es tambien
                 //el de agarrar la flecha, asi que sin este return el apreton que abre agarraria de
-                //una y un toque corto de B terminaria en "soltaste mal" al instante.
+                //una y un toque corto de A terminaria en "soltaste mal" al instante.
                 //Con mouse esto no cambia nada: en el frame de la E no habia arrastre posible.
                 return;
             }
@@ -166,16 +166,17 @@ public class MultipleRectCheck : MonoBehaviour
     }
 
     /// <summary>
-    /// Apretaron el boton de cancelar el minijuego en curso. Con joystick filtramos el boton B
-    /// porque ahi B es tambien el de agarrar la flecha: si dejaramos que cancele, el mismo apreton
-    /// con el que el jugador agarra el papel le cerraria el origami. E/Enter siguen cancelando
-    /// siempre, y con mouse el comportamiento queda identico al de antes.
+    /// Apretaron el boton de cancelar el minijuego en curso. Con joystick el boton A NO cancela:
+    /// A es el que agarra la flecha, y si tambien cancelara, el mismo apreton con el que el
+    /// jugador agarra el papel le cerraria el origami. Cancela B, que es "volver" en cualquier
+    /// joystick (durante el origami Kami esta en Casting, asi que B no ataca: esta libre).
+    /// E/Enter siguen cancelando siempre, y con mouse el comportamiento queda identico al de antes.
     /// </summary>
     bool CancelarDown()
     {
         if (_usandoJoystick)
         {
-            return InputHub.InteractDown && !InputHub.AccionGamepadDown;
+            return InputHub.AtaqueGamepadDown || (InputHub.InteractDown && !InputHub.AccionGamepadDown);
         }
         return InputHub.InteractDown;
     }

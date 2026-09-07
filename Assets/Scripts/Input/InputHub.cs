@@ -18,8 +18,10 @@ public static class InputHub
     const string EJE_FIRE1 = "Fire1";                 //click izq / ctrl (solo teclado+mouse)
     const string EJE_JUMP = "Jump";                   //espacio / boton A del joystick
     const string EJE_RUN = "Run";                     //shift / L1
-    const string EJE_ACCION_GAMEPAD = "GamepadAction";//SOLO el boton B: hace falta distinguirlo
-                                                      //de E para el B contextual (ver PlayerController)
+    const string EJE_ACCION_GAMEPAD = "GamepadAction";//SOLO el boton A del joystick: hace falta
+                                                      //distinguirlo de E/Espacio para resolver el
+                                                      //A contextual (ver PlayerController)
+    const string EJE_ATAQUE_GAMEPAD = "GamepadAttack";//boton B: atacar, siempre
     const string EJE_CAMARA = "CameraToggle";         //click del medio / R1
     const string EJE_CAMARA_TRIGGER = "CameraTrigger";//L2 (gatillo, es un EJE y no un boton)
     const string EJE_MUTE = "Mute";                   //M (solo teclado: en el joystick no hay boton de sobra)
@@ -28,6 +30,13 @@ public static class InputHub
     const string EJE_QUESTS = "Quests";               //U (solo teclado)
     const string EJE_HORIZONTAL = "Horizontal";       //A/D + stick izquierdo (ya venia mapeado)
     const string EJE_VERTICAL = "Vertical";           //W/S + stick izquierdo (ya venia mapeado)
+
+    //Ejes que leen SOLO el stick, sin el teclado. Existen para una sola cosa: saber que device
+    //esta usando el jugador. Los Horizontal/Vertical de arriba MEZCLAN WASD con el stick, asi que
+    //preguntarles "se movio el stick?" daba true al caminar con el teclado, y el juego se quedaba
+    //convencido de que estabas con joystick (los textos mostraban botones en vez de teclas).
+    const string EJE_DETECCION_X = "JoystickDetectX";
+    const string EJE_DETECCION_Y = "JoystickDetectY";
 
     /// <summary>Cuanto hay que apretar L2 para que cuente como "apretado".</summary>
     const float UMBRAL_GATILLO = 0.5f;
@@ -51,13 +60,22 @@ public static class InputHub
     public static bool InventarioDown => GetButtonDownSeguro(EJE_INVENTARIO);
     public static bool QuestsDown => GetButtonDownSeguro(EJE_QUESTS);
 
-    /// <summary>El boton B del joystick, solito. Contextual: interactua si hay algo, si no ataca.</summary>
+    /// <summary>
+    /// El boton A del joystick, solito. Es CONTEXTUAL: si hay algo con que interactuar interactua,
+    /// y si no, salta (ver PlayerController). Tambien es el Submit de la UI y el agarre del origami.
+    /// </summary>
     public static bool AccionGamepadDown => GetButtonDownSeguro(EJE_ACCION_GAMEPAD);
 
-    /// <summary>El boton B mantenido apretado (lo usa el arrastre del origami).</summary>
+    /// <summary>El boton A mantenido apretado (lo usa el arrastre del origami).</summary>
     public static bool AccionGamepadHeld => GetButtonSeguro(EJE_ACCION_GAMEPAD);
 
     public static bool AccionGamepadUp => GetButtonUpSeguro(EJE_ACCION_GAMEPAD);
+
+    /// <summary>El boton B del joystick: atacar. Sin contexto, siempre ataca.</summary>
+    public static bool AtaqueGamepadDown => GetButtonDownSeguro(EJE_ATAQUE_GAMEPAD);
+
+    /// <summary>Atacar con cualquier device: click/ctrl del teclado, o boton B del joystick.</summary>
+    public static bool AtaqueDown => AtaqueTecladoDown || AtaqueGamepadDown;
 
     /// <summary>Cambiar de camara: click del medio, R1, o el gatillo L2.</summary>
     public static bool CambiarCamaraDown => GetButtonDownSeguro(EJE_CAMARA) || GatilloIzquierdoDown;
@@ -176,6 +194,13 @@ public static class InputHub
 
     static int _frameDevice = -1;
 
+    /// <summary>
+    /// Salta cada vez que el jugador cambia de device (agarra el joystick, vuelve al teclado).
+    /// Lo escuchan los textos de la UI, que tienen que reescribirse mostrando el control correcto:
+    /// sin esto, un tooltip escrito con teclado se quedaba diciendo "E" para siempre.
+    /// </summary>
+    public static event System.Action OnDeviceCambio;
+
     static void ActualizarUltimoDevice()
     {
         if (_frameDevice == Time.frameCount)
@@ -184,24 +209,40 @@ public static class InputHub
         }
         _frameDevice = Time.frameCount;
 
+        bool antes = _ultimoDeviceFueJoystick;
+
         if (!HayJoystickConectado)
         {
             _ultimoDeviceFueJoystick = false;
-            return;
         }
-
-        //cualquier boton del joystick o movimiento de stick pasa el foco al joystick
-        if (HuboInputDeJoystick())
+        else if (HuboInputDeJoystick())
         {
+            //cualquier boton del joystick o movimiento de stick pasa el foco al joystick
             _ultimoDeviceFueJoystick = true;
-            return;
         }
-
-        //cualquier tecla o movimiento de mouse lo devuelve al teclado
-        if (Input.anyKeyDown || Input.GetAxisRaw("Mouse X") != 0f || Input.GetAxisRaw("Mouse Y") != 0f)
+        else if (HuboInputDeTeclado())
         {
+            //cualquier tecla o movimiento de mouse lo devuelve al teclado
             _ultimoDeviceFueJoystick = false;
         }
+
+        if (antes != _ultimoDeviceFueJoystick && OnDeviceCambio != null)
+        {
+            Debug.Log($"[InputHub] cambio de device: ahora {(_ultimoDeviceFueJoystick ? "joystick" : "teclado/mouse")}");
+            OnDeviceCambio();
+        }
+    }
+
+    static bool HuboInputDeTeclado()
+    {
+        if (Input.GetAxisRaw("Mouse X") != 0f || Input.GetAxisRaw("Mouse Y") != 0f)
+        {
+            return true;
+        }
+
+        //anyKeyDown incluye los botones del joystick, pero a este punto ya sabemos que el joystick
+        //no toco nada este frame (lo chequeo el else-if de arriba), asi que cualquier tecla es real
+        return Input.anyKeyDown;
     }
 
     static bool HuboInputDeJoystick()
@@ -215,7 +256,10 @@ public static class InputHub
             }
         }
 
-        return StickIzquierdo != Vector2.zero
+        //ojo: aca van los ejes de deteccion (solo stick), NO los Horizontal/Vertical, que
+        //tambien devuelven valor cuando el jugador camina con WASD
+        return Mathf.Abs(GetAxisRawSeguro(EJE_DETECCION_X)) >= ZONA_MUERTA_STICK
+            || Mathf.Abs(GetAxisRawSeguro(EJE_DETECCION_Y)) >= ZONA_MUERTA_STICK
             || Mathf.Abs(GetAxisRawSeguro(EJE_CAMARA_TRIGGER)) >= UMBRAL_GATILLO;
     }
 
