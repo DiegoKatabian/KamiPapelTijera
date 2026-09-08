@@ -78615,6 +78615,16 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2501635081393108390, guid: 633cd82ef18ce4f40919d006d55197d0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2501635081511116504, guid: 633cd82ef18ce4f40919d006d55197d0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3305814896052810394, guid: 633cd82ef18ce4f40919d006d55197d0,
         type: 3}
       propertyPath: objetoParaSpawnear
@@ -78790,11 +78800,41 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1915449716}
+    - target: {fileID: 6868149997510759957, guid: 633cd82ef18ce4f40919d006d55197d0,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.9575472
+      objectReference: {fileID: 0}
+    - target: {fileID: 6868149997510759957, guid: 633cd82ef18ce4f40919d006d55197d0,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6868149997510759957, guid: 633cd82ef18ce4f40919d006d55197d0,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.99701035
+      objectReference: {fileID: 0}
     - target: {fileID: 6868149997519200667, guid: 633cd82ef18ce4f40919d006d55197d0,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1915449716}
+    - target: {fileID: 6868149999004136925, guid: 633cd82ef18ce4f40919d006d55197d0,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.9858491
+      objectReference: {fileID: 0}
+    - target: {fileID: 6868149999004136925, guid: 633cd82ef18ce4f40919d006d55197d0,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.9858491
+      objectReference: {fileID: 0}
+    - target: {fileID: 6868149999004136925, guid: 633cd82ef18ce4f40919d006d55197d0,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7924539069987925431, guid: 633cd82ef18ce4f40919d006d55197d0,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -78863,7 +78903,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5549367393259815879
 Transform:
   m_ObjectHideFlags: 0
