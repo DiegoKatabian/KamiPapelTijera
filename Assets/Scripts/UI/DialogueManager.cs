@@ -1,8 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization.Tables;
-using UnityEngine.Localization.Settings;
 
 public class DialogueManager : Singleton<DialogueManager>
 {
@@ -56,6 +54,10 @@ public class DialogueManager : Singleton<DialogueManager>
 
     public void HideDialogue(DialogueSO dialogue)
     {
+        //los sacamos del registro de LocalizedText antes de vaciarlos: si no, un cambio de
+        //device con el globo cerrado les reescribiria la ultima linea del dialogo
+        LocalizedText.Limpiar(dialogueGlobeText);
+        LocalizedText.Limpiar(dialogueGlobeSpeaker);
         dialogueGlobeText.text = "";
         dialogueGlobeSpeaker.text = "";
         LevelManager.Instance.inDialogue = false;
@@ -87,38 +89,18 @@ public class DialogueManager : Singleton<DialogueManager>
         HideDialogue(dialogue);
     }
 
+    //la corrutina se fue a LocalizedText (era una de siete copias). El dialogo se resuelve
+    //COMPLETO de una sola vez antes de escribirlo al TMP: si algun dia se agrega maquina de
+    //escribir tiene que correr sobre ESE resultado, nunca sobre el texto crudo (romperia los
+    //tags de TMP y dejaria prompts a medio escribir).
     private IEnumerator SetLocalizedText(string fallbackText, TMPro.TextMeshProUGUI textElement)
     {
-        //textElement.text = fallbackText;
-
-        if (!string.IsNullOrEmpty(fallbackText))
+        //sin escribirSinTabla: si la tabla no carga, el globo se queda con lo que tenia,
+        //que es como venia funcionando
+        return LocalizedText.Escribir(textElement, fallbackText, "DialogueTable", new LocalizedText.Opciones
         {
-            var tableOperation = LocalizationSettings.StringDatabase.GetTableAsync("DialogueTable");
-            yield return tableOperation;
-
-            StringTable stringTable = tableOperation.Result;
-            if (stringTable != null)
-            {
-                var entry = stringTable.GetEntry(fallbackText);
-                if (entry != null && !string.IsNullOrEmpty(entry.GetLocalizedString()))
-                {
-                    //InputPromptSystem: unico punto donde se resuelve el string COMPLETO del
-                    //dialogo antes de escribirlo al TMP. Se procesa aca (una sola vez) y no
-                    //letra por letra: si algun dia se agrega maquina de escribir, tiene que
-                    //correr sobre ESTE resultado, nunca sobre el texto crudo (romperia los
-                    //tags de TMP y los prompts a medio escribir).
-                    textElement.text = InputPromptSystem.Procesar(entry.GetLocalizedString());
-                }
-                else
-                {
-                    textElement.text = InputPromptSystem.Procesar(fallbackText);
-                }
-            }
-        }
-        else
-        {
-            textElement.text = fallbackText;
-        }
+            origen = "DialogueManager"
+        });
     }
 
     public void SetNativeSize(Sprite sprite)

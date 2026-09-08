@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Localization.Settings;
-using UnityEngine.Localization.Tables;
 
 public abstract class TextUpdater : MonoBehaviour
 {
@@ -26,25 +24,18 @@ public abstract class TextUpdater : MonoBehaviour
         //print("updateo el text");
     }
 
+    //la corrutina se fue a LocalizedText (era una de siete copias identicas). Aca el fallback
+    //SIEMPRE escribe, y arrastra el secondPart: la UI de pagina/pliegue tiene que mostrar el
+    //numero aunque la clave del prefijo no exista.
     protected IEnumerator SetLocalizedText(string key, string secondPart = "")
     {
-        if (!string.IsNullOrEmpty(key))
+        return LocalizedText.Escribir(myText, key, "UITexts", new LocalizedText.Opciones
         {
-            var tableOperation = LocalizationSettings.StringDatabase.GetTableAsync("UITexts");
-            yield return tableOperation;
-
-            StringTable stringTable = tableOperation.Result;
-            if (stringTable != null)
-            {
-                var entry = stringTable.GetEntry(key);
-                if (entry != null && !string.IsNullOrEmpty(entry.GetLocalizedString()))
-                {
-                    myText.text = entry.GetLocalizedString() + secondPart;
-                    yield break;
-                }
-            }
-        }
-        myText.text = key + secondPart;
+            sufijo = secondPart,
+            sufijoEnFallback = true,
+            escribirSinTabla = true,
+            origen = "TextUpdater"
+        });
     }
 
     protected virtual void OnDestroy()

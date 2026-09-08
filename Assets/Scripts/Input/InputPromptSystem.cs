@@ -5,8 +5,9 @@ using System.Text.RegularExpressions;
 /// device que esta usando. Con un joystick en la mano, "Apreta E para hablar" es
 /// informacion falsa: no hay tecla E.
 ///
-/// Es una clase ESTATICA a proposito: la usan TooltipManager y DialogueManager, y no
-/// puede depender de que alguien acuerde de poner un GameObject en cada escena.
+/// Es una clase ESTATICA a proposito: la usa LocalizedText (el unico lugar del juego que
+/// escribe texto localizado en un TMP), y no puede depender de que alguien se acuerde de
+/// poner un GameObject en cada escena.
 ///
 /// Tiene dos caminos, y conviene entender por que existen los dos:
 ///
@@ -31,7 +32,8 @@ public static class InputPromptSystem
     enum Accion
     {
         Saltar,
-        AccionContextual, //atacar / interactuar: en el joystick los dos son el boton B
+        Interactuar, //hablar, agarrar, pasar de pagina, avanzar el dialogo
+        Atacar,      //cortar con la tijera
         Correr,
         Camara,
         Menu,
@@ -47,7 +49,8 @@ public static class InputPromptSystem
         switch (accion)
         {
             case Accion.Saltar: return "Espacio";
-            case Accion.AccionContextual: return "E";
+            case Accion.Interactuar: return "E";
+            case Accion.Atacar: return "Click";
             case Accion.Correr: return "Shift";
             case Accion.Camara: return "Click del medio";
             case Accion.Menu: return "Esc";
@@ -63,21 +66,28 @@ public static class InputPromptSystem
     // exista, se cambia SOLO este switch por los tags de TMP y todo el resto del sistema
     // (placeholders, tokens legacy, los dos enganches de UI) sigue igual:
     //
-    //     case Accion.Saltar:           return "<sprite name=button_A>";
-    //     case Accion.AccionContextual: return "<sprite name=button_B>";
-    //     case Accion.Correr:           return "<sprite name=button_L1>";
-    //     case Accion.Camara:           return "<sprite name=button_L2>";
-    //     case Accion.Menu:             return "<sprite name=button_Start>";
-    //     case Accion.Mover:            return "<sprite name=stick_left>";
+    //     case Accion.Saltar:      return "<sprite name=button_A>";
+    //     case Accion.Interactuar: return "<sprite name=button_A>";
+    //     case Accion.Atacar:      return "<sprite name=button_B>";
+    //     case Accion.Correr:      return "<sprite name=button_L1>";
+    //     case Accion.Camara:      return "<sprite name=button_L2>";
+    //     case Accion.Menu:        return "<sprite name=button_Start>";
+    //     case Accion.Mover:       return "<sprite name=stick_left>";
     //
     // Ojo cuando llegue ese dia: el sprite asset tiene que estar en el fallback global de
     // TMP (o en la fuente de cada TMP que muestre prompts), si no se ve el tag crudo.
+    //
+    // MAPEO VIGENTE (cambio en septiembre 2026, antes era al reves): el boton A es
+    // CONTEXTUAL y hace las dos cosas que el teclado separa en E y Espacio -- si hay algo
+    // con que interactuar interactua, y si no, salta (ver InteractionContext). El B queda
+    // solo para atacar, que en teclado es el click / CTRL.
     static string PromptJoystick(Accion accion)
     {
         switch (accion)
         {
             case Accion.Saltar: return "(A)";
-            case Accion.AccionContextual: return "(B)";
+            case Accion.Interactuar: return "(A)";
+            case Accion.Atacar: return "(B)";
             case Accion.Correr: return "(L1)";
             case Accion.Camara: return "(L2)";
             case Accion.Menu: return "(Start)";
@@ -148,15 +158,21 @@ public static class InputPromptSystem
             case "jump":
                 return PromptDe(Accion.Saltar);
 
-            // "accion" es contextual: en el joystick el boton B ataca o interactua segun
-            // el contexto (ver InteractionContext). En teclado no se puede resolver desde
-            // aca sin saber si el jugador tiene algo cerca, asi que damos el prompt de
-            // interactuar ("E"), que es el caso de casi todos los tooltips.
+            // "accion" es el A contextual del joystick: interactua si hay algo cerca y si
+            // no salta. En teclado no se puede resolver desde aca sin saber si el jugador
+            // tiene algo al lado, asi que damos el prompt de interactuar ("E"), que es el
+            // caso de casi todos los tooltips.
             case "accion":
             case "action":
             case "interactuar":
             case "interact":
-                return PromptDe(Accion.AccionContextual);
+                return PromptDe(Accion.Interactuar);
+
+            case "atacar":
+            case "attack":
+            case "cortar":
+            case "cut":
+                return PromptDe(Accion.Atacar);
 
             case "correr":
             case "run":
@@ -199,6 +215,12 @@ public static class InputPromptSystem
     // "Click Central" quedarian como "Middle (B)" / "(B) Central".
     static readonly Regex RxCamaraMultiPalabra = new Regex(
         @"\b(?:middle\s+click|click\s+del\s+medio|click\s+central|clique\s+do\s+meio)\b",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    // "Click / CTRL" (la pantalla de controles lista las DOS formas de atacar del teclado)
+    // colapsa a un solo boton: sin esta regla quedaba "(B) / (B) - Cortar".
+    static readonly Regex RxClickOCtrl = new Regex(
+        @"\b(?:clicks?|clics?|cliques?)\s*/\s*ctrl\b",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     static readonly Regex RxClick = new Regex(
@@ -249,6 +271,14 @@ public static class InputPromptSystem
         @"^E(?=\s+(?:para|to)\b)",
         RegexOptions.Compiled);
 
+    // La pantalla de controles es una lista "TECLA - que hace" con una linea por control.
+    // Ahi la letra sola SI es la tecla, y se reconoce por el guion que viene atras. Va
+    // anclada al arranque de RENGLON (Multiline) y con el guion como testigo obligatorio:
+    // sin las dos cosas esto se comeria cualquier "e" suelta del castellano.
+    static readonly Regex RxTeclaEnListaDeControles = new Regex(
+        @"(?m)^(?<letra>[EUI])(?=\s*[-–—]\s)",
+        RegexOptions.Compiled);
+
     static string TraducirTokensLegacy(string texto)
     {
         //Regex.Replace devuelve el MISMO string cuando no hay match, asi que un texto sin
@@ -256,17 +286,24 @@ public static class InputPromptSystem
         string r = texto;
 
         r = RxCamaraMultiPalabra.Replace(r, PromptJoystick(Accion.Camara));
-        r = RxClick.Replace(r, PromptJoystick(Accion.AccionContextual));
-        r = RxCtrl.Replace(r, PromptJoystick(Accion.AccionContextual));
+        r = RxClickOCtrl.Replace(r, PromptJoystick(Accion.Atacar));
+        r = RxClick.Replace(r, PromptJoystick(Accion.Atacar));
+        r = RxCtrl.Replace(r, PromptJoystick(Accion.Atacar));
         r = RxShift.Replace(r, PromptJoystick(Accion.Correr));
         r = RxEspacio.Replace(r, PromptJoystick(Accion.Saltar));
         r = RxEsc.Replace(r, PromptJoystick(Accion.Menu));
         r = RxWasd.Replace(r, "stick izquierdo");
 
         r = RxTeclaConVerbo.Replace(r, ReemplazarTeclaConVerbo);
-        r = RxTeclaAlInicio.Replace(r, PromptJoystick(Accion.AccionContextual));
+        r = RxTeclaAlInicio.Replace(r, PromptJoystick(Accion.Interactuar));
+        r = RxTeclaEnListaDeControles.Replace(r, ReemplazarTeclaDeLista);
 
         return r;
+    }
+
+    static string ReemplazarTeclaDeLista(Match m)
+    {
+        return PromptDeLetra(m.Groups["letra"].Value);
     }
 
     static string ReemplazarTeclaConVerbo(Match m)
@@ -281,7 +318,7 @@ public static class InputPromptSystem
         switch (letra)
         {
             case "E":
-                return PromptJoystick(Accion.AccionContextual);
+                return PromptJoystick(Accion.Interactuar);
 
             // U (Tareas) e I (Morral) no tienen boton propio en el joystick: se llega a las
             // dos por el menu con Start. Mandar al jugador al menu es lo mas honesto que

@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
-using UnityEngine.Localization.Tables;
 
 public class PliegueTextUpdater : TextUpdater
 {
@@ -18,36 +16,15 @@ public class PliegueTextUpdater : TextUpdater
         StartCoroutine(SetLocalizedText(textoInicial, myText, secondPart));
     }
 
+    //la corrutina se fue a LocalizedText (era una de siete copias identicas). Esta variante
+    //se diferenciaba de la de TextUpdater en una sola cosa, y se respeta: cuando la clave no
+    //existe escribe SOLO el fallback, sin pegarle el "2/5" atras.
     private IEnumerator SetLocalizedText(string fallbackText, TMPro.TextMeshProUGUI textElement, string secondPart)
     {
-        // Primero asignamos el texto por defecto
-        //textElement.text = fallbackText;
-
-        if (!string.IsNullOrEmpty(fallbackText))
+        return LocalizedText.Escribir(textElement, fallbackText, "UITexts", new LocalizedText.Opciones
         {
-            // Obtenemos la tabla de localización
-            var tableOperation = LocalizationSettings.StringDatabase.GetTableAsync("UITexts");
-            yield return tableOperation;
-
-            StringTable stringTable = tableOperation.Result;
-            if (stringTable != null)
-            {
-                // Verificamos si la clave existe en la tabla
-                var entry = stringTable.GetEntry(fallbackText);
-                if (entry != null && !string.IsNullOrEmpty(entry.GetLocalizedString()))
-                {
-                    textElement.text = entry.GetLocalizedString() + secondPart;
-                }
-                else
-                {
-                    textElement.text = fallbackText;
-                }
-            }
-        }
-        else
-        {
-            textElement.text = fallbackText;
-        }
-
+            sufijo = secondPart,
+            origen = "PliegueTextUpdater"
+        });
     }
 }

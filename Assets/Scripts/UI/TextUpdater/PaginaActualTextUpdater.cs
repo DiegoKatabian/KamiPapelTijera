@@ -1,8 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization.Settings;
-using UnityEngine.Localization.Tables;
 
 public class PaginaActualTextUpdater : TextUpdater
 {
@@ -71,24 +69,11 @@ public class PaginaActualTextUpdater : TextUpdater
 
     IEnumerator ShowNewPageWithTypewriter(string key, string pageNumber)
     {
-        string localizedPrefix = key;
-        if (!string.IsNullOrEmpty(key))
-        {
-            var tableOperation = LocalizationSettings.StringDatabase.GetTableAsync("UITexts");
-            yield return tableOperation;
+        //esta era una OCTAVA copia de SetLocalizedText, inline. Ahora reusa la de la base:
+        //deja el texto localizado, con los prompts del device resueltos y registrado en
+        //LocalizedText. La maquina de escribir corre sobre ESE resultado, nunca sobre el crudo.
+        yield return StartCoroutine(SetLocalizedText(key, pageNumber));
 
-            StringTable stringTable = tableOperation.Result;
-            if (stringTable != null)
-            {
-                var entry = stringTable.GetEntry(key);
-                if (entry != null && !string.IsNullOrEmpty(entry.GetLocalizedString()))
-                {
-                    localizedPrefix = entry.GetLocalizedString();
-                }
-            }
-        }
-
-        myText.text = localizedPrefix + pageNumber;
         myText.maxVisibleCharacters = 0;
 
         int totalChars = myText.text.Length;

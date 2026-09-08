@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Localization.Tables;
-using UnityEngine.Localization.Settings;
 
 public class QuestSlot : MonoBehaviour
 {
@@ -75,32 +73,12 @@ public class QuestSlot : MonoBehaviour
         Destroy(gameObject);
     }
 
+    //la corrutina se fue a LocalizedText (era una de siete copias identicas)
     private IEnumerator SetLocalizedText(string fallbackText, TMPro.TextMeshProUGUI textElement)
     {
-
-        if (!string.IsNullOrEmpty(fallbackText))
+        return LocalizedText.Escribir(textElement, fallbackText, "QuestTable", new LocalizedText.Opciones
         {
-            var tableOperation = LocalizationSettings.StringDatabase.GetTableAsync("QuestTable");
-            yield return tableOperation;
-
-            StringTable stringTable = tableOperation.Result;
-            if (stringTable != null)
-            {
-                // Verificamos si la clave existe en la tabla
-                var entry = stringTable.GetEntry(fallbackText);
-                if (entry != null && !string.IsNullOrEmpty(entry.GetLocalizedString()))
-                {
-                    textElement.text = entry.GetLocalizedString();
-                }
-                else
-                {
-                    textElement.text = fallbackText;
-                }
-            }
-        }
-        else
-        {
-            textElement.text = fallbackText;
-        }
+            origen = "QuestSlot"
+        });
     }
 }

@@ -1,8 +1,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
-using UnityEngine.Localization.Tables;
 
 public class DefeatOverlay : Overlay
 {
@@ -43,24 +41,16 @@ public class DefeatOverlay : Overlay
         }
     }
 
+    //la corrutina se fue a LocalizedText (era una de siete copias identicas). Se mantiene el
+    //fallback de siempre: si la key no esta en la tabla, se muestra la key cruda + warning.
     IEnumerator SetLocalizedText(string key)
     {
-        //mismo patron que TextUpdater/InventorySlot: si la key no esta en la tabla, se muestra la key cruda como fallback
-        var tableOperation = LocalizationSettings.StringDatabase.GetTableAsync("UITexts");
-        yield return tableOperation;
-
-        StringTable stringTable = tableOperation.Result;
-        if (stringTable != null)
+        return LocalizedText.Escribir(causeText, key, "UITexts", new LocalizedText.Opciones
         {
-            var entry = stringTable.GetEntry(key);
-            if (entry != null && !string.IsNullOrEmpty(entry.GetLocalizedString()))
-            {
-                causeText.text = entry.GetLocalizedString();
-                yield break;
-            }
-        }
-
-        Debug.LogWarning($"[DefeatOverlay] key '{key}' no encontrada en la tabla UITexts, muestro la key cruda");
-        causeText.text = key;
+            escribirSinTabla = true,
+            avisarSinTabla = true,
+            avisarSinClave = true,
+            origen = "DefeatOverlay"
+        });
     }
 }

@@ -299,6 +299,7 @@ GameObject:
   - component: {fileID: 5486409409636648715}
   - component: {fileID: 8085968092267145577}
   - component: {fileID: 3308196567317901673}
+  - component: {fileID: 5082241558982184727}
   m_Layer: 5
   m_Name: E para avanzarText (1)
   m_TagString: Untagged
@@ -424,6 +425,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5082241558982184727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5044285323897869464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e4b8ddf96e4dffa05df0ebeffba5f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tabla: DialogueTable
+  clave: e_para_avanzar
 --- !u!1 &5079432211889322573
 GameObject:
   m_ObjectHideFlags: 0

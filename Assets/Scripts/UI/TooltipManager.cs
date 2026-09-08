@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
-using UnityEngine.Localization.Tables;
 
 public enum PostItColor
 {
@@ -90,42 +88,19 @@ public class TooltipManager : Singleton<TooltipManager>
         target.Show(colorKillTime);
     }
 
+    //la corrutina propia se fue a LocalizedText: era una de siete copias identicas y solo
+    //dos pasaban por InputPromptSystem. Aca queda unicamente la configuracion de fallback
+    //que este call site necesita, que es lo unico que lo diferenciaba de las demas.
     protected IEnumerator SetLocalizedText(string fallbackText, TMPro.TextMeshProUGUI textElement)
     {
-        if (!string.IsNullOrEmpty(fallbackText))
+        return LocalizedText.Escribir(textElement, fallbackText, "TooltipTable", new LocalizedText.Opciones
         {
-            // Obtenemos la tabla de localizacion
-            var tableOperation = LocalizationSettings.StringDatabase.GetTableAsync("TooltipTable");
-            yield return tableOperation;
-
-            StringTable stringTable = tableOperation.Result;
-            if (stringTable != null)
-            {
-                // Verificamos si la clave existe en la tabla
-                var entry = stringTable.GetEntry(fallbackText);
-                if (entry != null && !string.IsNullOrEmpty(entry.GetLocalizedString()))
-                {
-                    //InputPromptSystem: el texto de la tabla nombra teclas ("Toca E"), asi que
-                    //si el jugador esta con joystick hay que decirle el boton que existe de verdad
-                    textElement.text = InputPromptSystem.Procesar(entry.GetLocalizedString());
-                }
-                else
-                {
-                    textElement.text = InputPromptSystem.Procesar(fallbackText);
-                }
-            }
-            else
-            {
-                //si la tabla no cargo, igual escribimos ALGO: un post-it visible con texto
-                //viejo o vacio es mucho mas dificil de diagnosticar que este warning
-                Debug.LogWarning("[TooltipManager] no pude cargar TooltipTable, uso el texto sin localizar");
-                textElement.text = InputPromptSystem.Procesar(fallbackText);
-            }
-        }
-        else
-        {
-            textElement.text = fallbackText;
-        }
+            //si la tabla no cargo, igual escribimos ALGO: un post-it visible con texto
+            //viejo o vacio es mucho mas dificil de diagnosticar que este warning
+            escribirSinTabla = true,
+            avisarSinTabla = true,
+            origen = "TooltipManager"
+        });
     }
 
     //esconde TODOS los post-its (con fade). Hide sobre uno ya escondido es un no-op,

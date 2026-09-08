@@ -1,0 +1,311 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Localization.Components;
+using UnityEngine.Localization.Settings;
+using UnityEngine.Localization.Tables;
+using UnityEngine.SceneManagement;
+
+/// <summary>
+/// EL UNICO lugar del juego que escribe texto localizado en un TextMeshPro.
+///
+/// Por que existe: la misma corrutina "SetLocalizedText" estaba copypasteada en SIETE
+/// clases (TooltipManager, DialogueManager, InventorySlot, QuestSlot, DefeatOverlay,
+/// TextUpdater, PliegueTextUpdater). Cuando llego el joystick hubo que enchufar
+/// <see cref="InputPromptSystem"/> a mano en cada copia, y solo DOS quedaron enchufadas:
+/// el resto de la UI seguia diciendo "Toca E" con un joystick en la mano. Con un solo
+/// camino, enchufar algo nuevo se hace una vez y lo hereda toda la UI.
+///
+/// Ademas resuelve el segundo problema: el texto YA PROCESADO perdio el original, asi
+/// que no alcanza con re-procesarlo cuando el jugador cambia de device. Por eso guardamos
+/// el string CRUDO (localizado pero sin resolver los prompts) contra el TMP donde se
+/// escribio, y ante <see cref="InputHub.OnDeviceCambio"/> reescribimos todo lo vivo.
+/// Con eso no hay que cablear NADA por objeto: cualquier texto que pase por aca se
+/// actualiza solo al agarrar el joystick y al volver al teclado.
+/// </summary>
+public static class LocalizedText
+{
+    // --------------------------------------------------------------- opciones
+
+    /// <summary>
+    /// Las diferencias reales entre las siete copias viejas. No son gustos: cada call site
+    /// tenia su semantica de fallback y su nivel de ruido en consola, y cambiarlas ahora
+    /// seria cambiar comportamiento que hoy funciona.
+    /// </summary>
+    public struct Opciones
+    {
+        /// <summary>Se concatena al texto localizado (ej: "Pliegue: " + "2/5").</summary>
+        public string sufijo;
+
+        /// <summary>El sufijo tambien se concatena cuando la clave NO existe en la tabla.</summary>
+        public bool sufijoEnFallback;
+
+        /// <summary>Si la tabla no carga: escribir igual la clave cruda en vez de dejar el texto viejo.</summary>
+        public bool escribirSinTabla;
+
+        /// <summary>Loguear warning cuando la tabla no carga.</summary>
+        public bool avisarSinTabla;
+
+        /// <summary>Loguear warning cuando la clave no esta en la tabla.</summary>
+        public bool avisarSinClave;
+
+        /// <summary>Prefijo de los warnings (ej: "TooltipManager"). Solo para diagnostico.</summary>
+        public string origen;
+    }
+
+    // ------------------------------------------------------------------- API
+
+    /// <summary>
+    /// Resuelve la clave contra la tabla, la pasa por <see cref="InputPromptSystem"/> y la
+    /// escribe en el TMP, dejandola registrada para reescribirla si cambia el device.
+    /// Es corrutina porque cargar la tabla es asincronico (igual que las siete copias viejas).
+    /// </summary>
+    public static IEnumerator Escribir(TMP_Text destino, string clave, string tabla, Opciones opciones)
+    {
+        if (destino == null)
+        {
+            Debug.LogWarning($"[LocalizedText] me pidieron escribir '{clave}' pero el TMP destino es null (origen: {opciones.origen})");
+            yield break;
+        }
+
+        //clave vacia = "borrame el texto". Las copias viejas escribian el fallback tal cual,
+        //que con clave vacia es cadena vacia (o solo el sufijo, en los TextUpdater).
+        if (string.IsNullOrEmpty(clave))
+        {
+            Aplicar(destino, TextoDeFallback(clave, opciones));
+            yield break;
+        }
+
+        var tableOperation = LocalizationSettings.StringDatabase.GetTableAsync(tabla);
+        yield return tableOperation;
+
+        //el TMP se pudo destruir mientras cargaba la tabla (cambio de pagina, overlay cerrado)
+        if (destino == null)
+        {
+            yield break;
+        }
+
+        StringTable stringTable = tableOperation.Result;
+        if (stringTable == null)
+        {
+            if (opciones.avisarSinTabla)
+            {
+                Debug.LogWarning($"[{Origen(opciones)}] no pude cargar la tabla '{tabla}', uso el texto sin localizar");
+            }
+
+            if (opciones.escribirSinTabla)
+            {
+                Aplicar(destino, TextoDeFallback(clave, opciones));
+            }
+            yield break;
+        }
+
+        var entry = stringTable.GetEntry(clave);
+        if (entry != null && !string.IsNullOrEmpty(entry.GetLocalizedString()))
+        {
+            Aplicar(destino, entry.GetLocalizedString() + opciones.sufijo);
+            yield break;
+        }
+
+        if (opciones.avisarSinClave)
+        {
+            Debug.LogWarning($"[{Origen(opciones)}] la clave '{clave}' no esta en la tabla '{tabla}', muestro la clave cruda");
+        }
+        Aplicar(destino, TextoDeFallback(clave, opciones));
+    }
+
+    /// <summary>
+    /// Escribe un texto YA resuelto (no viene de una tabla) pasandolo por los prompts, y lo
+    /// deja registrado. Lo usan el puente con LocalizeStringEvent y cualquier texto armado a mano.
+    /// </summary>
+    public static void Aplicar(TMP_Text destino, string crudo)
+    {
+        if (destino == null)
+        {
+            return;
+        }
+
+        if (string.IsNullOrEmpty(crudo))
+        {
+            //nada que reprocesar: sacarlo del registro evita que un refresh posterior le
+            //resucite el texto que tenia antes de que lo limpiaran
+            _crudos.Remove(destino);
+            destino.text = crudo;
+            return;
+        }
+
+        _crudos[destino] = crudo;
+        destino.text = InputPromptSystem.Procesar(crudo);
+    }
+
+    /// <summary>
+    /// Saca un TMP del registro. Hay que llamarla cuando alguien le asigna '.text' A MANO
+    /// (ClearSlot, HideDialogue): si no, el proximo cambio de device le reescribe el texto viejo.
+    /// </summary>
+    public static void Limpiar(TMP_Text destino)
+    {
+        if (destino == null)
+        {
+            return;
+        }
+        _crudos.Remove(destino);
+    }
+
+    static string TextoDeFallback(string clave, Opciones opciones)
+    {
+        return opciones.sufijoEnFallback ? clave + opciones.sufijo : clave;
+    }
+
+    static string Origen(Opciones opciones)
+    {
+        return string.IsNullOrEmpty(opciones.origen) ? "LocalizedText" : opciones.origen;
+    }
+
+    // ------------------------------------------------- registro y refresh por device
+
+    //TMP -> string crudo (localizado, con sufijo, SIN los prompts resueltos). El crudo es lo
+    //unico que permite reescribir el texto cuando el jugador cambia de device: del texto ya
+    //procesado no se puede volver ("(A)" no sabe si salio de "E" o de "ESPACIO").
+    static readonly Dictionary<TMP_Text, string> _crudos = new Dictionary<TMP_Text, string>();
+
+    //buffer reusado: sacar entradas del diccionario mientras se recorre no se puede
+    static readonly List<TMP_Text> _muertos = new List<TMP_Text>();
+
+    //instance IDs de los LocalizeStringEvent ya enganchados. Guardamos el ID y no el
+    //componente a proposito: dos objetos de Unity YA DESTRUIDOS se comparan iguales entre si
+    //(el "fake null" hace Equals true), asi que un HashSet de componentes se vuelve traicionero
+    //en cuanto uno muere. El ID es un int y nunca se reusa dentro de la misma corrida.
+    static readonly HashSet<int> _enganchados = new HashSet<int>();
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void Reiniciar()
+    {
+        //con "Enter Play Mode" sin domain reload los estaticos sobreviven entre corridas:
+        //sin esto el registro arrancaria lleno de TMPs de la sesion anterior
+        _crudos.Clear();
+        _muertos.Clear();
+        _enganchados.Clear();
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    static void Arrancar()
+    {
+        //-= antes de += : asi suscribirse dos veces es imposible aunque este metodo corra de nuevo
+        InputHub.OnDeviceCambio -= AlCambiarDeDevice;
+        InputHub.OnDeviceCambio += AlCambiarDeDevice;
+
+        SceneManager.sceneLoaded -= AlCargarEscena;
+        SceneManager.sceneLoaded += AlCargarEscena;
+
+        EngancharLocalizeStringEvents();
+    }
+
+    static void AlCargarEscena(Scene escena, LoadSceneMode modo)
+    {
+        EngancharLocalizeStringEvents();
+    }
+
+    static void AlCambiarDeDevice()
+    {
+        //barrer de nuevo cubre lo que se instancio despues de cargar la escena; es una
+        //busqueda cara, pero cambiar de device pasa unas pocas veces por partida
+        EngancharLocalizeStringEvents();
+        Refrescar();
+    }
+
+    /// <summary>Reescribe todos los textos vivos con los prompts del device actual.</summary>
+    public static void Refrescar()
+    {
+        _muertos.Clear();
+
+        foreach (var par in _crudos)
+        {
+            TMP_Text destino = par.Key;
+
+            //"fake null" de Unity: el componente fue destruido pero la referencia sigue viva.
+            //Comparar con == null es justamente lo que detecta ese caso
+            if (destino == null)
+            {
+                _muertos.Add(destino);
+                continue;
+            }
+
+            destino.text = InputPromptSystem.Procesar(par.Value);
+        }
+
+        for (int i = 0; i < _muertos.Count; i++)
+        {
+            _crudos.Remove(_muertos[i]);
+        }
+
+        if (_muertos.Count > 0)
+        {
+            Debug.Log($"[LocalizedText] refresco por cambio de device: {_crudos.Count} textos vivos, saque {_muertos.Count} destruidos");
+        }
+        _muertos.Clear();
+    }
+
+    // ------------------------------------------- puente con LocalizeStringEvent
+
+    // Hay un CUARTO camino de texto localizado que no pasa por ninguna corrutina: el
+    // componente LocalizeStringEvent de Unity Localization, cableado en el inspector, que
+    // escribe directo en TMP_Text.set_text via UnityEvent. Asi se muestran el overlay de
+    // main quest ("toca E para continuar"), la pantalla de controles del Flap y los overlays
+    // de derrota/victoria: por eso ninguno se traducia al joystick.
+    //
+    // En vez de tocar esos prefabs uno por uno (y que Diego tenga que cablear algo), los
+    // enganchamos por codigo: se les agrega un listener EXTRA al mismo UnityEvent. Unity
+    // invoca primero las llamadas persistentes (el set_text con el texto crudo) y despues
+    // las agregadas por codigo, asi que la nuestra siempre escribe ultima y gana.
+
+    static void EngancharLocalizeStringEvents()
+    {
+        LocalizeStringEvent[] eventos = Object.FindObjectsOfType<LocalizeStringEvent>(true);
+
+        for (int i = 0; i < eventos.Length; i++)
+        {
+            LocalizeStringEvent evento = eventos[i];
+            if (evento == null || _enganchados.Contains(evento.GetInstanceID()))
+            {
+                continue;
+            }
+
+            TMP_Text destino = BuscarTMPDestino(evento);
+            if (destino == null)
+            {
+                //el LocalizeStringEvent escribe en otra cosa (un Text viejo, un metodo propio):
+                //no es un error, simplemente no tenemos donde registrar el crudo
+                continue;
+            }
+
+            _enganchados.Add(evento.GetInstanceID());
+            evento.OnUpdateString.AddListener(texto => Aplicar(destino, texto));
+
+            //el evento ya pudo haber escrito el texto crudo antes de que lo enganchemos
+            //(OnEnable corre antes que esto): lo forzamos a re-emitir
+            evento.RefreshString();
+        }
+    }
+
+    static TMP_Text BuscarTMPDestino(LocalizeStringEvent evento)
+    {
+        var unityEvent = evento.OnUpdateString;
+        if (unityEvent == null)
+        {
+            return null;
+        }
+
+        int cantidad = unityEvent.GetPersistentEventCount();
+        for (int i = 0; i < cantidad; i++)
+        {
+            TMP_Text tmp = unityEvent.GetPersistentTarget(i) as TMP_Text;
+            if (tmp != null)
+            {
+                return tmp;
+            }
+        }
+
+        return null;
+    }
+}

@@ -18,6 +18,8 @@ public class ShowcaseSlot : InventorySlot
     override public void ClearSlot()
     {
         base.ClearSlot();
+        //ver ClearSlot de InventorySlot: hay que sacarlo del registro de LocalizedText
+        LocalizedText.Limpiar(descriptionTextComponent);
         descriptionTextComponent.text = "";
     }
 

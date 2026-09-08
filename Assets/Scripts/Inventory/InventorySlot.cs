@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
-using UnityEngine.Localization.Settings;
-using UnityEngine.Localization.Tables;
 
 public class InventorySlot : MonoBehaviour
 {
@@ -85,6 +83,9 @@ public class InventorySlot : MonoBehaviour
     {
         currentItem = null;
         itemImageComponent.sprite = InventoryManager.Instance.emptyItemSprite;
+        //fuera del registro de LocalizedText: si no, un cambio de device le devuelve el
+        //nombre del item que acabamos de sacar del slot
+        LocalizedText.Limpiar(nameTextComponent);
         nameTextComponent.text = "";
         amountTextComponent.text = "";
         slotStickerImageComponent.color = Color.white;
@@ -142,36 +143,15 @@ public class InventorySlot : MonoBehaviour
         slotStickerImageComponent.gameObject.SetActive(false);
     }
 
+    //la corrutina se fue a LocalizedText (era una de siete copias identicas). Esta era una de
+    //las que NO pasaban por InputPromptSystem: la descripcion de las botas dice "toca SHIFT
+    //para ir mas rapido" y la de la tijera "CLIC para cortar", y con joystick eran mentira.
     protected IEnumerator SetLocalizedText(string fallbackText, TMPro.TextMeshProUGUI textElement)
     {
-        // Primero asignamos el texto por defecto
-        //textElement.text = fallbackText;
-
-        if (!string.IsNullOrEmpty(fallbackText))
+        return LocalizedText.Escribir(textElement, fallbackText, "ItemTable", new LocalizedText.Opciones
         {
-            // Obtenemos la tabla de localización
-            var tableOperation = LocalizationSettings.StringDatabase.GetTableAsync("ItemTable");
-            yield return tableOperation;
-
-            StringTable stringTable = tableOperation.Result;
-            if (stringTable != null)
-            {
-                // Verificamos si la clave existe en la tabla
-                var entry = stringTable.GetEntry(fallbackText);
-                if (entry != null && !string.IsNullOrEmpty(entry.GetLocalizedString()))
-                {
-                    textElement.text = entry.GetLocalizedString();
-                }
-                else
-                {
-                    textElement.text = fallbackText;
-                }
-            }
-        }
-        else
-        {
-            textElement.text = fallbackText;
-        }
+            origen = "InventorySlot"
+        });
     }
 
 }
