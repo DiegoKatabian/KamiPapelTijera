@@ -40,11 +40,40 @@ Prefab: `Assets/Prefabs/UI/PostIt.prefab` (tiene CanvasGroup; fallback AddCompon
 
 - API: `Show(killTime)` / `Hide()` / `IsVisible`. Fades por CanvasGroup; `Hide()` sobre uno escondido es no-op; el texto se limpia recién al final del fade-out.
 - El GO queda SIEMPRE activo después del primer Show; el "apagado" es alpha 0 (`SetActive(false)` mataría las corrutinas de fade/timer).
-- Flags de dismiss por input (inspector; prendidos por override de escena en Azul(Blanco) y Amarillo):
+- Flags de dismiss por input (inspector; overrides de escena en `Main Canvas.prefab`, no en la
+  escena — son post-its ANIDADOS: la escena solo overridea lo que difiere del prefab de "Main
+  Canvas", así que estos valores viven en las modificaciones de la instancia anidada de PostIt
+  dentro de ESE prefab, no en `Nivel1_KamiPapelTijera.unity` directamente):
   - `_dismissOnAttack` — polling de `Input.GetButtonDown("Fire1")` en Update (cubre clic izq + LCtrl). Es polling porque `Evento.OnPlayerPrimaryClick` existe en el enum pero NADIE lo triggerea (PlayerController llama `Player.OnPrimaryClick()` directo). Respeta el gate `LevelManager.agency`.
   - `_dismissOnInteract` — `Evento.OnPlayerPressedE`.
   - `_dismissOnJump` — `Evento.OnPlayerPressedSpace`.
   - `_showOnEnable` — compat para el 6º post-it "TOOLTIP PAPER SALTO", que `Player.cs` prende/apaga con SetActive directo (`nuevoTooltipPapelSalto`), FUERA del array del manager: se muestra al activarse, sin timer de muerte.
+  - Confirmado por lectura directa de `Main Canvas.prefab` (septiembre 2026): de los 5 colores,
+    solo dos tienen algo prendido. **PostItAmarillo** tiene los 3 flags (`_dismissOnAttack`,
+    `_dismissOnInteract`, `_dismissOnJump`) — se cierra con cualquier acción del player.
+    **PostItBlanco (Ex-Azul)** tiene solo `_dismissOnInteract`. Naranja, Rosa y Verde no tienen
+    ninguno prendido: solo se esconden por `HideTooltip()`/su propio kill time.
+
+### Gotcha: `HideTooltip()` global llamado desde afuera del sistema de tooltips
+
+`TooltipManager.HideTooltip()` (sin color) esconde los 5 post-its de una — lo usa código que
+necesita "limpiar la pantalla" sin saber qué color está mostrando qué en ese momento. Hoy el único
+caller externo es `Player.DestroyPaperPlaneHat()` (sombrero de papel / salto aumentado), pensado
+para dispararse UNA vez al terminarse los saltos aumentados.
+
+**Bug real (issue #41.13, septiembre 2026):** `PlayerModel.UpdateVerticalState()` llamaba a
+`DestroyPaperPlaneHat()` sin chequear `Player.isPaperPlaneHat`, solo `augmentedJumpsLeft == 0` —
+condición que queda `true` PARA SIEMPRE una vez agotado el sombrero por primera vez (nada la vuelve
+a subir salvo agarrar el sombrero de nuevo). Resultado: `DestroyPaperPlaneHat()` (y por lo tanto
+`HideTooltip()`) se disparaba en CADA frame grounded del resto de la sesión, y CUALQUIER tooltip
+que se mostrara después se cerraba casi instantáneamente — el síntoma reportado ("los tooltips se
+abren y se cierran insta") no tenía relación aparente con el sombrero de papel. Fix: guard
+`_player.isPaperPlaneHat &&` antes del chequeo, en `PlayerModel.cs`.
+
+**Si vuelve a aparecer este síntoma** ("ningún tooltip abre", sin importar el color/trigger),
+sospechar primero de algo que esté llamando `HideTooltip()` sin color más seguido de lo pensado
+(un `Update()`/`Tick()` sin guard de estado), no del sistema de tooltips en sí — el propio
+`TooltipManager`/`PostIt` no tienen ningún timer ni loop que pueda causar esto por su cuenta.
 
 ### Triggers (`Assets/Scripts/TriggerS/TriggerScript.cs`)
 

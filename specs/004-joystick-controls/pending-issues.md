@@ -520,15 +520,125 @@ alto de la columna) en ninguna resolución. Ajustar la posición Y a mano si se 
 
 ---
 
+## Ronda 3 (2026-09-08) — dos bugs reportados por Diego jugando, no relacionados entre sí más que por compartir el mismo patrón de root-causing (input compartido sin arbitraje, y un caller que corre más seguido de lo pensado)
+
+### Issue #41.13: Tooltips se abren y se cierran instantáneamente — RESOLVED
+
+**Categoría**: Bug / Sistema de tooltips.
+
+**Reporte de Diego**: *"sigue el issue de los tooltips que se cierran. este issue me tiene
+bastante mal. me parece que el culprit es el tooltip del salto. creo que cuando se cierra
+ese, hace que despues todos los demas no puedan abrirse (bah, se abren y se cierran
+insta)."*
+
+**Causa raíz confirmada**: `PlayerModel.UpdateVerticalState()` llamaba a
+`Player.DestroyPaperPlaneHat()` cada vez que el player estaba grounded, con velocidad
+vertical ≤0, y `augmentedJumpsLeft == 0` — sin chequear si el sombrero de papel seguía
+puesto (`isPaperPlaneHat`). Como nada vuelve a subir `augmentedJumpsLeft` salvo agarrar el
+sombrero de nuevo (solo se resetea en `GetPaperPlaneHat()`), esa condición queda `true`
+PARA SIEMPRE una vez agotados los saltos aumentados por primera vez en la partida. Eso
+dispara `DestroyPaperPlaneHat()` en CADA frame grounded del resto de la sesión — y esa
+función llama `TooltipManager.Instance.HideTooltip()`, un hide GLOBAL de los 5 post-its de
+color, sin ningún guard de "ya lo escondí, no hace falta de nuevo". Resultado: cualquier
+tooltip que se mostrara después de la primera vez que se usó el sombrero se cerraba casi
+al instante, sin relación aparente con el sombrero — el reporte de Diego sobre "el tooltip
+del salto" apuntaba al lugar correcto (el sombrero SÍ tiene su propio tooltip, "TOOLTIP
+PAPER SALTO"), solo que el mecanismo real era indirecto vía este hide global.
+
+**Fix**: `Assets/Scripts/Player/PlayerModel.cs` — se agregó el guard
+`_player.isPaperPlaneHat &&` antes del chequeo de `augmentedJumpsLeft == 0`. Ahora
+`DestroyPaperPlaneHat()` dispara una única vez, en el aterrizaje real que agota el
+sombrero, y no vuelve a dispararse hasta la próxima vez que se lo agarre y se lo vuelva a
+gastar.
+
+**Cómo reproducir (antes del fix)**: agarrar el sombrero de papel (recompensa de origami),
+gastar todos los `augmentedJumpsLeft` saltando, aterrizar. De ahí en más, CUALQUIER
+tooltip (post-its de color, tutorial, etc.) que se muestre se cierra solo casi al
+instante, por el resto de la sesión.
+
+**Verificado**: `python tools/compile-check.py` compila limpio (solo los 2 warnings de
+baseline conocidos).
+
+**Todavía falta**: confirmar jugando — agarrar el sombrero, gastar los saltos, aterrizar,
+y verificar que los tooltips normales (post-its de color) ya no parpadean después.
+
+**Archivos cambiados**: `Assets/Scripts/Player/PlayerModel.cs`.
+
+---
+
+### Issue #41.14: A abre el diálogo de la abuela al cerrar el victory overlay — RESOLVED
+
+**Categoría**: Bug / Input — mismo patrón arquitectónico que #41.2 (dos `Update()` leyendo
+el mismo botón sin coordinarse).
+
+**Reporte de Diego**: *"tocar A para quedarme a explorar (en el victory overlay) me abre
+el dialogo de la abuela. sera que el mismo input de A queda un poco y triggerea las dos
+cosas de una? creo que ya habiamos tenido este problemita."*
+
+**Causa raíz confirmada**: el botón "quedarme a explorar" del victory overlay
+(`OverlayManager.BTN_ContinueGame()`) corre vía el Submit del EventSystem — el mismo eje
+físico que Interact/A — y llama a `Unlock()`, que apaga `isLocked`/`inDialogue`.
+`DialogueManager.ShowDialogue()` sí chequea `OverlayManager.isLocked` y
+`LevelManager.inDialogue` antes de arrancar un diálogo nuevo, pero Unity no garantiza el
+orden de `Update()` entre MonoBehaviours de objetos distintos (no hay
+`ScriptExecutionOrder.asset`, mismo problema de fondo que #41.2): si el `Update()` del
+EventSystem (que procesa el Submit y dispara `Unlock()`) corre ANTES que
+`PlayerController.CheckControls()` en ese mismo frame, `Unlock()` ya bajó esos flags
+cuando `CheckControls()` lee el MISMO apretón de A y dispara `Evento.OnPlayerPressedE` sin
+nada que lo vete (el gate existente, `menuAbierto`, solo cubre el Flap, no los overlays de
+victoria/derrota). Si el player seguía parado en el trigger de un NPC — la abuela, justo
+ahí tras terminar su boss fight — `TriggerDialogue.Interact()` recibe ese mismo evento y
+abre su diálogo: el guard de `ShowDialogue()` ya no frena nada porque los flags que
+chequea ya están en `false` para ese momento.
+
+**Fix**: mismo patrón que `Player._frameSalidaDeEstadoQueBloqueaAtaque` (#41.2).
+`Assets/Scripts/UI/OverlayManager.cs` ahora graba en qué frame corrió `Unlock()`
+(`_frameDesbloqueado`, expuesto como la propiedad `SeDesbloqueoEsteFrame`).
+`Assets/Scripts/Player/PlayerController.cs` — `CheckControls()` veta el disparo de
+`Evento.OnPlayerPressedE` si el overlay se desbloqueó ESE MISMO frame. Así el mismo
+apretón de A nunca puede cerrar el overlay Y ADEMÁS abrir un diálogo del mundo, sin
+importar qué orden de `Update()` elija Unity ese frame en particular.
+
+**Cómo reproducir (antes del fix)**: completar el boss fight de la abuela hasta que
+aparezca el victory overlay, con el player parado de forma que el trigger de diálogo de
+la abuela siga activo, apretar A sobre "quedarme a explorar" — dependiendo del orden de
+`Update()` de ese frame en particular, a veces se abre el diálogo de la abuela
+inmediatamente después de cerrar el overlay.
+
+**Verificado**: `python tools/compile-check.py` compila limpio (solo los 2 warnings de
+baseline conocidos).
+
+**Todavía falta**: confirmar jugando — repetir el boss fight varias veces, apretar A
+sobre "quedarme a explorar" cada vez, confirmar que nunca abre el diálogo de la abuela.
+
+**Archivos cambiados**: `Assets/Scripts/UI/OverlayManager.cs`,
+`Assets/Scripts/Player/PlayerController.cs`.
+
+---
+
 ## Notes for Next Session
 
 1. **All P1s are code-complete, none manually verified with a real gamepad yet.** Before
    anything else: plug in a controller and walk through #41.1 (R1/L1/B in the Flap), #41.2
-   (origami cancel spam then attack), and #41.3 (try to break pause) in the Editor.
+   (origami cancel spam then attack), #41.3 (try to break pause), #41.13 (paper plane hat
+   then any other tooltip), and #41.14 (Abuela boss fight victory overlay, mash A) in the
+   Editor.
 2. **Test with input system changes** — every fix to input or state gates should be tested with both keyboard and gamepad to avoid regressions.
-3. **A button context is fragile** — it's doing a lot (jump, interact, menu submit). Be extra careful not to break any of those flows when modifying the gates.
+3. **A button context is fragile** — it's doing a lot (jump, interact, menu submit, and now
+   also overlay Submit). Be extra careful not to break any of those flows when modifying the
+   gates. #41.2 and #41.14 are the same underlying class of bug (two independent `Update()`s
+   reading one physical button with no arbitration, no `ScriptExecutionOrder.asset` in this
+   project) — if a THIRD instance of this shows up, that's a signal to stop patching it
+   case-by-case and consider a single arbitration point for all gamepad-Submit-adjacent input,
+   not just A-vs-jump.
 4. **Flap menu is a complex surface** — 4 tabs, multiple elements (slots, sliders, buttons). Consider doing a full audit of navigation setup once before coding, or build a small test scene to verify nav works end-to-end.
 5. **Remaining work is #41.7 (cursor auto-hide), #41.8 (Chino "[...]" duplicate), #41.9 (typewriter, P3)** — none are blockers, all can be picked up independently.
+6. **`TooltipManager.HideTooltip()` (no color) is a global hide** — any new caller of it
+   outside the tooltip system itself (today only `Player.DestroyPaperPlaneHat()`) needs its
+   own guard against firing more often than intended; #41.13 was invisible for a while
+   precisely because the symptom (tooltips anywhere in the game closing instantly) looked
+   nothing like its cause (a stale paper-plane-hat check). See the gotcha written up in
+   `docs/claude/origami-y-tooltips.md`.
 6. **Small flagged follow-up**: `InputPromptSystem.RxTeclaEnListaDeControles`'s charset
    (`[EUI]`) doesn't cover "O" (Abrir Controles) in the Controles tab list — should map to
    `(Start)`, same axis as Esc. One-line regex change plus a `PromptDeLetra` case.

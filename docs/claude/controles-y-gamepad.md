@@ -377,6 +377,24 @@ pueden validar jugando.
   Flap. Detalle en "Pausa del Flap", arriba. Pendiente: confirmar jugando (parada sobre un
   pedestal de origami, abrir el Flap, intentar mover/atacar/interactuar — nada debería
   pasar hasta cerrarlo).
+- ~~#41.13 Tooltips se abren y se cierran instantáneamente~~ — **resuelto** (septiembre 2026,
+  reportado por Diego jugando): no era un bug del sistema de tooltips en sí, sino
+  `PlayerModel.UpdateVerticalState()` llamando a `Player.DestroyPaperPlaneHat()` (que hace
+  `TooltipManager.Instance.HideTooltip()`, un hide GLOBAL de los 5 post-its) en CADA frame
+  grounded, para siempre, una vez agotado el sombrero de papel/salto aumentado por primera
+  vez en la partida (faltaba el guard `isPaperPlaneHat`). Detalle completo y el gotcha para
+  no repetirlo en `origami-y-tooltips.md`. Pendiente: confirmar jugando (agarrar el
+  sombrero, gastar los saltos, aterrizar, verificar que los tooltips normales ya no
+  parpadean después).
+- ~~#41.14 A abre el diálogo de la abuela al cerrar el victory overlay~~ — **resuelto**
+  (septiembre 2026, mismo patrón que #41.2, ver punto 6 de los gotchas de A más abajo):
+  el mismo apretón de A que cierra el victory overlay con su botón (Submit del EventSystem)
+  podía además disparar `OnPlayerPressedE` hacia el mundo si `PlayerController.
+  CheckControls()` corría después de `OverlayManager.Unlock()` en el mismo frame — abriendo
+  el diálogo de la abuela si el player seguía parado en su trigger. Fix:
+  `OverlayManager.SeDesbloqueoEsteFrame`. Pendiente: confirmar jugando (repetir el boss
+  fight, apretar A sobre "quedarme a explorar" varias veces, confirmar que nunca abre el
+  diálogo).
 
 **P2 (alta prioridad, UX/polish)**:
 - ~~#41.4 Main menu no navigable con joystick~~ — **resuelto de verdad esta vez** (septiembre 2026, ronda 2). La
@@ -441,6 +459,21 @@ pueden validar jugando.
 4. **`SetActive(false)` en `AbuelaDialogueTrigger`**: fue un bug — si el trigger se desactiva mientras el player está dentro, `OnExitBehaviour` no corre (no entra a `OnTriggerExit`), así que `InteractionContext` queda pensando que hay trigger activo y A sigue interactuando invisible. La fix fue mover la deregistración a `OnDisable`/`OnDestroy` en la base `TriggerScript`. Si vuelves a tocar este código, revisa que todos los caminos donde un trigger puede "desaparecer" (SetActive false, Destroy, scene reload) se limpien en `InteractionContext`.
 
 5. **`_gamepadInteractua` es un flag por frame**: `PlayerController.CheckControls()` lo setea si detects A+hay interacción. Pero si en el mismo frame otro código chequea `Input.GetButtonDown("Jump")` ANTES de que `CheckControls` corra, A contará como salto. La solución es **leer input en un solo lugar** (en `PlayerController`), resolver la acción ahí, y comunicar el resultado a otros sistemas vía eventos (es lo que hace hoy). Si necesitas que otro sistema reaccione a A, no leas `Input` directo — escucha `Evento.OnPlayerPressedE` / `OnPlayerPressedSpace`.
+
+6. **Un overlay que se cierra con A puede filtrar ese mismo apretón hacia el mundo** (issue #41.14,
+   septiembre 2026): `OverlayManager.BTN_ContinueGame()`/`Unlock()` corren vía el Submit del
+   EventSystem (mismo eje físico que A/Interact). Si ese `Update()` corre ANTES que
+   `PlayerController.CheckControls()` en el mismo frame, `Unlock()` ya bajó `isLocked`/`inDialogue`
+   cuando `CheckControls()` lee el MISMO apretón y dispara `Evento.OnPlayerPressedE` sin nada que lo
+   vete (el gate `menuAbierto` existente solo cubre el Flap, no los overlays de victoria/derrota).
+   El guard de `DialogueManager.ShowDialogue()` (chequea `isLocked`/`inDialogue`) no alcanza a
+   frenarlo porque para ese momento esos flags YA están en `false` — así el mismo A que cerraba el
+   victory overlay del boss fight de la abuela le abría además su diálogo, si el player seguía
+   parado en su trigger. Fix con el mismo patrón que #41.2:
+   `OverlayManager.SeDesbloqueoEsteFrame` (graba `Time.frameCount` en `Unlock()`) +
+   `PlayerController.CheckControls()` veta el `OnPlayerPressedE` de mundo en ese mismo frame. Mismo
+   principio de fondo que el punto 5: un input que dispara dos sistemas sin coordinarse necesita un
+   arbitraje explícito, no asumir que el orden de `Update()` va a ser el mismo siempre.
 
 ## Cómo arrancar en la próxima sesión
 
