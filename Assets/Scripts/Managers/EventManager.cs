@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -102,9 +103,38 @@ public class EventManager
 
     public static void Trigger(Evento evento, params object[] parameters)
     {
-        if (_events.ContainsKey(evento) && _events[evento] != null) // Verifica null
+        if (!_events.ContainsKey(evento) || _events[evento] == null)
         {
-            _events[evento](parameters);
+            return;
+        }
+
+        //Invocamos suscriptor por suscriptor en vez de llamar al delegate multicast entero.
+        //Por que: un delegate multicast corta en la PRIMERA excepcion, asi que un suscriptor
+        //roto se lleva puestos a todos los que venian despues Y la excepcion sube hasta quien
+        //disparo el evento. Cuando el que dispara es una corrutina (DialogueManager.WriteText),
+        //la corrutina MUERE: el dialogo queda abierto, inDialogue en true y ningun boton avanza.
+        //Es exactamente el cuelgue que aparecio hablando con el Chino.
+        //Logueamos la excepcion (no se esconde nada) y seguimos con el resto.
+        Delegate[] suscriptores = _events[evento].GetInvocationList();
+
+        for (int i = 0; i < suscriptores.Length; i++)
+        {
+            try
+            {
+                ((EventReceiver)suscriptores[i])(parameters);
+            }
+            catch (Exception e)
+            {
+                object objetivo = suscriptores[i].Target;
+                string quien = objetivo is UnityEngine.Object unityObj && unityObj != null
+                    ? unityObj.name
+                    : (objetivo != null ? objetivo.GetType().Name : "(estatico)");
+
+                Debug.LogError($"[EventManager] el suscriptor '{quien}.{suscriptores[i].Method.Name}' " +
+                               $"tiro una excepcion manejando {evento}. Sigo con el resto de los suscriptores " +
+                               "para no arrastrar al que disparo el evento.");
+                Debug.LogException(e);
+            }
         }
     }
 }

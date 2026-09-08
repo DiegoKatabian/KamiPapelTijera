@@ -90,6 +90,14 @@ public class QuestDialogueTrigger : TriggerDialogue
 
     protected virtual void OnDialogueTextWritten(params object[] parameters)
     {
+        //Este metodo corre por CADA texto de CUALQUIER dialogo del juego (el evento es global),
+        //asi que un NPC de quest a medio configurar (menos de 3 dialogos) reventaba el dialogo
+        //de todos los demas, no solo el suyo
+        if (_dialogues == null || _dialogues.Length < 3)
+        {
+            return;
+        }
+
         //si es el dialogo 2
         if ((DialogueSO)parameters[0] == _dialogues[2])
         {
@@ -109,6 +117,11 @@ public class QuestDialogueTrigger : TriggerDialogue
 
     protected virtual void OnDialogueEnded(params object[] parameters)
     {
+        if (_dialogues == null || _dialogues.Length < 3)
+        {
+            return;
+        }
+
         //si es el dialogo 2
         if ((DialogueSO)parameters[1] == _dialogues[2])
         {

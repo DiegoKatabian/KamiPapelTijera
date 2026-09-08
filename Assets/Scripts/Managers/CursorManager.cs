@@ -29,11 +29,41 @@ public class CursorManager : Singleton<CursorManager>
 
     public void ShowCursor(bool value)
     {
+        //Jugando con joystick el cursor del sistema no pinta nada en pantalla (el origami dibuja
+        //su propio cursor virtual), asi que el device manda sobre isCursorAlwaysVisible. Ese flag
+        //sigue siendo la configuracion del proyecto para teclado/mouse: no lo pisamos, lo tapamos
+        //solo mientras el jugador este con el joystick.
+        if (InputHub.UltimoDeviceFueJoystick)
+        {
+            Cursor.visible = false;
+            return;
+        }
+
         if (isCursorAlwaysVisible)
         {
+            Cursor.visible = true;
             return;
         }
 
         Cursor.visible = value;
+    }
+
+    void Start()
+    {
+        //el jugador puede arrancar la escena ya con el joystick en la mano
+        AplicarVisibilidadSegunDevice();
+        InputHub.OnDeviceCambio += AplicarVisibilidadSegunDevice;
+    }
+
+    void OnDestroy()
+    {
+        //OnDeviceCambio es estatico: sin desuscribirse queda una referencia colgada a este
+        //manager despues de cambiar de escena
+        InputHub.OnDeviceCambio -= AplicarVisibilidadSegunDevice;
+    }
+
+    void AplicarVisibilidadSegunDevice()
+    {
+        Cursor.visible = !InputHub.UltimoDeviceFueJoystick && isCursorAlwaysVisible;
     }
 }

@@ -87,6 +87,10 @@ public class FlapManager : Singleton<FlapManager>
         if (_isOpen)
         {
             Time.timeScale = 0;
+
+            //recien aca el menu esta realmente abierto: es el unico momento en que es seguro
+            //dejar algo seleccionado para que el joystick pueda navegarlo
+            SeleccionarDisplayVisible();
         }
     }
 
@@ -218,10 +222,16 @@ public class FlapManager : Singleton<FlapManager>
         flapDisplay.display.SetActive(true);
         flapDisplay.flapButton.Activate();
 
-        //con joystick hace falta que HAYA algo seleccionado para que el stick pueda navegar el menu.
-        //ojo: OpenQuests/OpenInventory/OpenSettings llaman aca ANTES de ToggleFlap, asi que si el flap
-        //estaba abierto esta seleccion se hace y acto seguido CloseFlap() la limpia. Esta bien asi.
-        UISelector.SeleccionarPrimeroSiJoystick(flapDisplay.display);
+        //Con joystick hace falta que HAYA algo seleccionado para que el stick pueda navegar el menu,
+        //pero SOLO si el menu esta efectivamente abierto. Antes seleccionabamos siempre, y como
+        //OpenQuests/OpenInventory/OpenSettings llaman aca ANTES de ToggleFlap, quedaba un boton
+        //seleccionado con el flap cerrado: el boton A es Submit, asi que el jugador terminaba
+        //apretando botones fantasma del menu mientras jugaba. Cuando el flap se abre desde cero,
+        //la seleccion la hace MoveFlap al terminar de abrirse.
+        if (_isOpen)
+        {
+            UISelector.SeleccionarPrimeroSiJoystick(flapDisplay.display);
+        }
     }
 
     /// <summary>

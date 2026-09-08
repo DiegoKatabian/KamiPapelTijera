@@ -46,6 +46,13 @@ public class PostIt : MonoBehaviour
 
     bool _isVisible;
 
+    //Frame en el que este post-it se hizo visible. Es la clave del bug de los post-its que
+    //aparecian y desaparecian en un solo cuadro (issue #40): el post-it se muestra COMO
+    //CONSECUENCIA de un input (apretas el boton de accion para hablarle a la abuela o para
+    //abrir un origami, y el trigger muestra su tooltip), y ese MISMO input dispara aca el
+    //descarte. El jugador no puede haber descartado algo que todavia no llego a ver.
+    int _frameEnQueSeMostro = -1;
+
     public bool IsVisible
     {
         get { return _isVisible; }
@@ -97,6 +104,7 @@ public class PostIt : MonoBehaviour
 
         Debug.Log($"[PostIt] {gameObject.name}: activado desde afuera (showOnEnable), me muestro sin timer de muerte");
         _isVisible = true;
+        _frameEnQueSeMostro = Time.frameCount; //ver PuedeDescartarse()
         RestartCoroutine(ref _fadeCoroutine, FadeCoroutine(1f, _fadeInDuration, false));
     }
 
@@ -132,7 +140,7 @@ public class PostIt : MonoBehaviour
         //pero nadie lo triggerea (PlayerController llama Player.OnPrimaryClick() directo).
         //Por eso leemos el boton "Fire1" nosotros: en el Input Manager cubre clic izquierdo
         //y Ctrl izquierdo, que es exactamente el input de ataque del juego.
-        if (_dismissOnAttack && _isVisible && InputHub.AtaqueDown)
+        if (_dismissOnAttack && InputHub.AtaqueDown && PuedeDescartarse())
         {
             //respetamos el mismo gate de agency que usa PlayerController para sus eventos
             if (LevelManager.Instance != null && !LevelManager.Instance.agency)
@@ -164,6 +172,7 @@ public class PostIt : MonoBehaviour
         }
 
         _isVisible = true;
+        _frameEnQueSeMostro = Time.frameCount; //ver PuedeDescartarse()
 
         RestartCoroutine(ref _fadeCoroutine, FadeCoroutine(1f, _fadeInDuration, false));
         RestartCoroutine(ref _deathTimerCoroutine, DeathTimerCoroutine(killTime));
@@ -193,20 +202,34 @@ public class PostIt : MonoBehaviour
 
     void OnPlayerInteract(params object[] parameters)
     {
-        if (_dismissOnInteract && _isVisible)
+        if (_dismissOnInteract && PuedeDescartarse())
         {
-            //Debug.Log($"[PostIt] {gameObject.name}: cerrado por input E");
+            //Debug.Log($"[PostIt] {gameObject.name}: cerrado por input de interactuar");
             Hide();
         }
     }
 
     void OnPlayerJump(params object[] parameters)
     {
-        if (_dismissOnJump && _isVisible)
+        if (_dismissOnJump && PuedeDescartarse())
         {
-            //Debug.Log($"[PostIt] {gameObject.name}: cerrado por input de salto (Espacio)");
+            //Debug.Log($"[PostIt] {gameObject.name}: cerrado por input de salto");
             Hide();
         }
+    }
+
+    /// <summary>
+    /// Esta visible Y ya paso el cuadro en el que aparecio.
+    ///
+    /// Lo segundo es lo importante: casi todos los post-its se muestran como consecuencia de
+    /// un input, y ese mismo input llega aca en el MISMO frame a descartarlo. Asi se veia el
+    /// post-it parpadear un cuadro y desaparecer (issue #40): pasaba con la abuela desde
+    /// siempre, y empezo a pasar tambien con los sellos de origami cuando el boton de accion
+    /// del joystick paso a abrir el minijuego. Un frame de gracia alcanza y no se siente.
+    /// </summary>
+    bool PuedeDescartarse()
+    {
+        return _isVisible && Time.frameCount > _frameEnQueSeMostro;
     }
 
     //frena la corrutina anterior (si la hay) y arranca la nueva, guardando la referencia.

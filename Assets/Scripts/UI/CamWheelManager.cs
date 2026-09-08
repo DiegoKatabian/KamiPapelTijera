@@ -102,13 +102,33 @@ public class CamWheelManager : Singleton<CamWheelManager>, IFlap
                 break;
         }
     }
+    //Resalta el boton de la camara activa. NO usa el EventSystem: ver el comentario de
+    //CamWheelButton.Activate(). Antes hacia button.Select() y la rueda se quedaba con el foco
+    //despues de cada cambio de camara, asi que el Submit del joystick la volvia a apretar.
     public void FakeSelectButton(params object[] parameters)
     {
+        if (parameters == null || parameters.Length == 0 || !(parameters[0] is int))
+        {
+            Debug.LogWarning("[CamWheelManager] FakeSelectButton sin indice de camara valido, no resalto nada");
+            return;
+        }
+
+        int activo = (int)parameters[0];
+
         for (int i = 0; i < _buttons.Length; i++)
         {
-            if (i == (int)parameters[0])
+            if (_buttons[i] == null)
             {
-                _buttons[i].button.Select();
+                continue;
+            }
+
+            if (i == activo)
+            {
+                _buttons[i].Activate();
+            }
+            else
+            {
+                _buttons[i].Deactivate();
             }
         }
     }

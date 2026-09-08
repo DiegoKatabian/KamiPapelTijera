@@ -12,7 +12,56 @@ public class DialogueManager : Singleton<DialogueManager>
     bool input = false;
     bool waitingForInput = false;
     [HideInInspector] public bool isShowing = false;
-    public bool lockedByAnimation = false;
+    bool _lockedByAnimation = false;
+
+    [SerializeField, Tooltip("Segundos maximos que el dialogo puede quedar bloqueado por una animacion antes de destrabarse solo")]
+    float _maxSegundosBloqueadoPorAnimacion = 8f;
+
+    Coroutine _watchdogBloqueo;
+
+    /// <summary>
+    /// Mientras esta en true ningun boton avanza el dialogo: lo prende el flujo de recompensa
+    /// de quest y lo apaga el Player cuando termina la animacion.
+    ///
+    /// Tiene watchdog A PROPOSITO: si por lo que sea el Player nunca lo apaga (murio, cambio de
+    /// escena, una excepcion se comio su corrutina), el jugador quedaba con el dialogo abierto y
+    /// SIN NINGUN BOTON que respondiera, o sea el juego colgado. Preferimos destrabar con un
+    /// warning ruidoso antes que dejarlo trabado.
+    /// </summary>
+    public bool lockedByAnimation
+    {
+        get { return _lockedByAnimation; }
+        set
+        {
+            _lockedByAnimation = value;
+
+            if (_watchdogBloqueo != null)
+            {
+                StopCoroutine(_watchdogBloqueo);
+                _watchdogBloqueo = null;
+            }
+
+            if (value && isActiveAndEnabled)
+            {
+                _watchdogBloqueo = StartCoroutine(DestrabarSiNadieDestraba());
+            }
+        }
+    }
+
+    IEnumerator DestrabarSiNadieDestraba()
+    {
+        yield return new WaitForSeconds(_maxSegundosBloqueadoPorAnimacion);
+
+        if (_lockedByAnimation)
+        {
+            Debug.LogWarning($"[DialogueManager] el dialogo quedo bloqueado por animacion mas de " +
+                             $"{_maxSegundosBloqueadoPorAnimacion}s y nadie lo destrabo: lo destrabo yo para que el " +
+                             "jugador no quede colgado. Revisar el flujo de recompensa de la quest que estaba activa.");
+            _lockedByAnimation = false;
+        }
+
+        _watchdogBloqueo = null;
+    }
 
 
     void Start()
@@ -105,6 +154,15 @@ public class DialogueManager : Singleton<DialogueManager>
 
     public void SetNativeSize(Sprite sprite)
     {
+        //un DialogueEvent sin retrato asignado tiraba NullReference aca adentro, y como esto
+        //corre dentro de la corrutina WriteText, la corrutina moria y el dialogo quedaba abierto
+        //para siempre (inDialogue en true, ningun boton avanza)
+        if (sprite == null)
+        {
+            Debug.LogWarning("[DialogueManager] este texto del dialogo no tiene sprite de retrato asignado, dejo el tamano como estaba");
+            return;
+        }
+
         float spriteRatio = sprite.rect.width / sprite.rect.height;
         npcQueTeHablaImage.rectTransform.sizeDelta = new Vector2(npcQueTeHablaImage.rectTransform.sizeDelta.y * spriteRatio, npcQueTeHablaImage.rectTransform.sizeDelta.y);
     }
