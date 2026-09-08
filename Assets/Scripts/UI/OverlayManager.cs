@@ -9,6 +9,17 @@ public class OverlayManager : Singleton<OverlayManager>
     public bool isLocked;
     Vector3? _pendingRespawnOverride; //posicion que el player resolvio al morir (null = respawn comun en la entrada de la pagina)
 
+    //el mismo apreton de A que cierra el overlay (via su boton, procesado por el EventSystem como
+    //Submit) puede ADEMAS llegar a PlayerController.CheckControls() ESTE MISMO frame y disparar
+    //OnPlayerPressedE hacia el mundo: si el jugador quedo parado en el trigger de un NPC (ej. la
+    //abuela, justo despues del victory overlay del boss fight), le abre un dialogo nuevo de arranque
+    //apenas cierra el overlay. Unity no garantiza el orden de Update() entre el EventSystem y
+    //PlayerController (no hay ScriptExecutionOrder.asset), asi que a veces Unlock() ya corrio cuando
+    //CheckControls() lee ese mismo boton: mismo patron y misma solucion que
+    //Player._frameSalidaDeEstadoQueBloqueaAtaque (issue #41.2).
+    int _frameDesbloqueado = -1;
+    public bool SeDesbloqueoEsteFrame => Time.frameCount == _frameDesbloqueado;
+
     [SerializeField] DialogueSO victoryTriggeringDialogue, mainQuestTriggeringDialogue;
 
     protected override void Awake()
@@ -95,6 +106,7 @@ public class OverlayManager : Singleton<OverlayManager>
     public void Unlock()
     {
         //Debug.Log("overlay unlock: set indialogue y islocked false");
+        _frameDesbloqueado = Time.frameCount; //ver SeDesbloqueoEsteFrame
         LevelManager.Instance.inDialogue = false;
         isLocked = false;
         AudioManager.instance.PlayByName("PickupSFX", 0.66f);

@@ -112,7 +112,15 @@ public class PlayerModel
             if (_verticalVelocity <= 0f)
             {
                 _verticalVelocity = 0f;
-                if (_player.augmentedJumpsLeft == 0)
+
+                //ojo: sin el chequeo de isPaperPlaneHat, esto disparaba DestroyPaperPlaneHat()
+                //(que llama TooltipManager.Instance.HideTooltip(), un hide GLOBAL) en CADA frame
+                //grounded para siempre despues de la primera vez que se agotaban los augmentedJumps
+                //(nada vuelve a subir ese contador salvo agarrar el sombrero de nuevo). El resultado:
+                //cualquier tooltip que se mostrara despues se cerraba solo casi al instante, por el
+                //resto de la sesion. El guard hace que solo dispare UNA vez, en el aterrizaje real
+                //que agota el sombrero.
+                if (_player.isPaperPlaneHat && _player.augmentedJumpsLeft == 0)
                     _player.DestroyPaperPlaneHat();
             }
         }

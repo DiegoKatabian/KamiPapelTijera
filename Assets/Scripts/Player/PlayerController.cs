@@ -69,9 +69,16 @@ public class PlayerController
                              && InteractionContext.HayInteraccionDisponible
                              && Time.timeScale > 0f;
 
+        //Si este mismo frame un overlay (victory/defeat/mainquest) se acaba de desbloquear por su
+        //propio boton (Submit del EventSystem, mismo eje que Interact), el E de mundo queda vetado:
+        //sin esto, el mismo apreton de A que cierra el overlay podia ADEMAS abrir el dialogo del NPC
+        //en cuyo trigger quedo parado el player (ej. la abuela justo despues del victory del boss
+        //fight). Ver OverlayManager.SeDesbloqueoEsteFrame.
+        bool overlayRecienCerrado = OverlayManager.Instance != null && OverlayManager.Instance.SeDesbloqueoEsteFrame;
+
         //InteractDown ya incluye al boton A (comparten el eje "Interact", que ademas es el Submit
         //del EventSystem), asi que con esto solo alcanza para los dos devices.
-        if (!menuAbierto && InputHub.InteractDown)
+        if (!menuAbierto && !overlayRecienCerrado && InputHub.InteractDown)
         {
             EventManager.Trigger(Evento.OnPlayerPressedE);
         }
