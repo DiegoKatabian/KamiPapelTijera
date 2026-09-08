@@ -52,14 +52,13 @@ Found during user testing (Diego playing with gamepad controls). These are bugs 
 - B stops responding for attack/interact after completing an origami in Level 1, page 2.
 - Suspected trigger: closing the origami with B (retry/cancel mechanic).
 - Once stuck, B does nothing until... unknown (maybe scene reload?).
-- **Note**: B should NOT work during the origami minigame itself — only cancels/retries the fold. If the bug is that it stops working AFTER closing, that's the issue to fix.
 
 **Expected behavior**:
-- B should work for attack/interact before, during, and after origami.
+- B should work for closing origami only during origami. It should work for attack normally everywhere else. Kami should not be able to attack during the origami.
 - Closing origami with B should not block future B presses.
 
 **How to reproduce**:
-- Enter Level 2.
+- Enter Level 1.
 - Find an origami pedestal.
 - Open origami (A).
 - Press B to cancel/retry at least once.

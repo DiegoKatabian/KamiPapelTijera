@@ -223,3 +223,54 @@ pueden validar jugando.
   además de L2; se sacó a pedido de Diego, queda **sólo L2** (más el click del medio).
 - Quedan bindings de joystick en las entradas `Debug *` de Unity (botones 4, 5, 8, 9),
   pero están detrás de apretar L3+R3 juntos. Pre-existente, no lo tocamos.
+
+## Problemas conocidos y pending issues
+
+**IMPORTANTE**: ver `specs/004-joystick-controls/pending-issues.md` para la lista **completa** de bugs y features faltantes encontrados en testing (2026-09-08).
+
+**P1 (críticos, bloquean gameplay)**:
+- **#41.1 Navegación del Flap rota**: no se navega a botón de cerrar, secciones sin colores distintivos, no hay forma de salir de Tareas/Controles con joystick. Propuesta: R1/L1 para cambiar tabs, B para cerrar.
+- **#41.2 B button "stuck" después de origami**: ataque deja de funcionar tras completar un origami en Level 2. Probablemente relacionado con cerrar origami con B.
+- **#41.3 Input no se bloquea durante pausa**: se puede triggerear origamis, mover/flipear a Kami, etc. mientras el Flap está abierto (`Time.timeScale = 0`). El input debería estar completamente bloqueado.
+
+**P2 (alta prioridad, UX/polish)**:
+- **#41.4 Main menu no navigable con joystick**: botones de idioma y start no responden a stick.
+- **#41.5 Tooltip de origami**: debería decir "Tocá A y arrastrá..." con joystick activo.
+- **#41.6 Controles tab**: tabla de controles debe mostrar mapeo para joystick cuando está activo.
+- **#41.7 Cursor auto-hide**: cursor aparece con mouse pero no desaparece al volver a joystick; falta timeout.
+- **#41.8 Chino dialogue**: texto tiene "[...]" duplicado.
+
+**P3 (nice to have)**:
+- **#41.9 Typewriter effect**: texto debería aparecer secuencialmente (como escribiéndose).
+
+## Gotchas específicos del contexto A-button que ya nos agarraron
+
+1. **El A es el cuello de botella más frágil de todo el sistema.** Es jump + interact + menu submit. Tocar cualquier gate que afecte A potencialmente rompe 3 flujos distintos. **Test exhaustivamente en gameplay, origami y menús después de cada cambio.**
+
+2. **`InteractionContext` vs `LevelManager.inDialogue`**: ambos gatean la lógica de A. `InteractionContext.HayInteraccionDisponible` checkea triggers cercanos + el flag `inDialogue`. Pero durante origami, el flag de `LevelManager.inDialogue` NO está prendido (solo `PlayerState.Casting`). Si modificas la lógica de A, verifica que funcione en TODOS estos contextos: gameplay normal, origami, diálogo abierto, durante pausa (Flap), overlay de derrota.
+
+3. **TriggerScript y `EsInteractuable`**: cualquier trigger nuevo que responda a A debe setear `EsInteractuable => true`. Si no, A salta en vez de interactuar. Grep de "EsInteractuable" antes de agregar triggers.
+
+4. **`SetActive(false)` en `AbuelaDialogueTrigger`**: fue un bug — si el trigger se desactiva mientras el player está dentro, `OnExitBehaviour` no corre (no entra a `OnTriggerExit`), así que `InteractionContext` queda pensando que hay trigger activo y A sigue interactuando invisible. La fix fue mover la deregistración a `OnDisable`/`OnDestroy` en la base `TriggerScript`. Si vuelves a tocar este código, revisa que todos los caminos donde un trigger puede "desaparecer" (SetActive false, Destroy, scene reload) se limpien en `InteractionContext`.
+
+5. **`_gamepadInteractua` es un flag por frame**: `PlayerController.CheckControls()` lo setea si detects A+hay interacción. Pero si en el mismo frame otro código chequea `Input.GetButtonDown("Jump")` ANTES de que `CheckControls` corra, A contará como salto. La solución es **leer input en un solo lugar** (en `PlayerController`), resolver la acción ahí, y comunicar el resultado a otros sistemas vía eventos (es lo que hace hoy). Si necesitas que otro sistema reaccione a A, no leas `Input` directo — escucha `Evento.OnPlayerPressedE` / `OnPlayerPressedSpace`.
+
+## Cómo arrancar en la próxima sesión
+
+**Si tocas input, controles o joystick**:
+
+1. Lee `specs/004-joystick-controls/pending-issues.md` completo (5 min). Es el estado real del feature.
+2. Corre `python tools/compile-check.py` para verificar que no hay warnings nuevos sobre input/controllers.
+3. **Test manual en el editor**:
+   - Gameplay: salta con A, ataca con B, interactúa con A en trigger, corre con L1.
+   - Origami: abre con A, mueve con stick, cancela con B o E, completa la ruta.
+   - Menús: Flap abre con Start, cierra con Esc/Start, navega con arrows/stick, selecciona con A.
+   - Device switching: empieza con teclado (texto dice "E"), enchufa joystick (texto cambia a "(A)"), desenchufa (vuelve a "E").
+4. **Si tocas `InputHub.cs`, `PlayerController.cs`, o `InteractionContext.cs`**: antes de commitear, verifica:
+   - Compilación limpia sin warnings nuevos.
+   - A no "suena" en gameplay normal (no salta/interactúa involuntariamente cuando no debería).
+   - Origami todavía funciona, B cancela, A/stick mueven el cursor.
+   - Menú Flap navega sin quedarse atrapado.
+   - Pausa realmente bloquea todo (no flipflops, no origamis).
+
+5. **Si tocas UI (Flap, Main Menu, overlays)**: después de cambios, verifica que la selección con joystick es clara y ningún elemento queda "atrapado" sin nada navegable.
