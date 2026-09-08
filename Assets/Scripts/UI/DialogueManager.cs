@@ -14,6 +14,16 @@ public class DialogueManager : Singleton<DialogueManager>
     [HideInInspector] public bool isShowing = false;
     bool _lockedByAnimation = false;
 
+    [SerializeField, Tooltip("Velocidad del efecto maquina de escribir del dialogo, en caracteres por segundo")]
+    float _charsPerSecond = 25f;
+
+    //true mientras el typewriter esta revelando la linea actual. Mientras dura, el boton de
+    //avance no pasa de linea: solo completa el texto (convencion estandar en juegos con
+    //typewriter, evita que el primer apriete "se pierda" un texto entero)
+    bool _isTyping = false;
+    TMPro.TextMeshProUGUI _typewriterTarget;
+    int _typewriterTotalCaracteres;
+
     [SerializeField, Tooltip("Segundos maximos que el dialogo puede quedar bloqueado por una animacion antes de destrabarse solo")]
     float _maxSegundosBloqueadoPorAnimacion = 8f;
 
@@ -71,11 +81,22 @@ public class DialogueManager : Singleton<DialogueManager>
 
     public void CheckPlayerInput(params object[] parameter)
     {
-        if (waitingForInput && !lockedByAnimation)
+        if (!waitingForInput || lockedByAnimation)
         {
-            input = true;
-            PlayEToInteractSound();
+            return;
         }
+
+        if (_isTyping)
+        {
+            //primer apriete mientras el typewriter esta corriendo: solo destapa el texto ya
+            //escrito, el avance de linea real queda para el proximo apriete
+            CompletarTypewriter();
+            PlayEToInteractSound();
+            return;
+        }
+
+        input = true;
+        PlayEToInteractSound();
     }
 
     public void BUTTON_NextText()
@@ -121,6 +142,12 @@ public class DialogueManager : Singleton<DialogueManager>
         {
             dialogue.currentText++;
             yield return StartCoroutine(SetLocalizedText(dialogue.events[i].text, dialogueGlobeText));
+
+            //arranca tapado en 0 ANTES del WaitForEndOfFrame: si no, el texto completo queda
+            //con el maxVisibleCharacters de la linea anterior (que ya llego a full) y se
+            //alcanza a renderizar un frame entero antes de que el typewriter lo vuelva a tapar
+            dialogueGlobeText.maxVisibleCharacters = 0;
+
             yield return StartCoroutine(SetLocalizedText(dialogue.events[i].speakerName, dialogueGlobeSpeaker));
             npcQueTeHablaImage.sprite = dialogue.events[i].sprite;
             SetNativeSize(npcQueTeHablaImage.sprite);
@@ -128,6 +155,8 @@ public class DialogueManager : Singleton<DialogueManager>
 
             yield return new WaitForEndOfFrame();
             waitingForInput = true;
+
+            yield return StartCoroutine(EjecutarTypewriter(dialogueGlobeText));
 
             while (!input)
                 yield return null;
@@ -139,9 +168,10 @@ public class DialogueManager : Singleton<DialogueManager>
     }
 
     //la corrutina se fue a LocalizedText (era una de siete copias). El dialogo se resuelve
-    //COMPLETO de una sola vez antes de escribirlo al TMP: si algun dia se agrega maquina de
-    //escribir tiene que correr sobre ESE resultado, nunca sobre el texto crudo (romperia los
-    //tags de TMP y dejaria prompts a medio escribir).
+    //COMPLETO de una sola vez antes de escribirlo al TMP: la maquina de escribir (issue #41.9,
+    //ver EjecutarTypewriter) corre sobre ESE resultado via maxVisibleCharacters, nunca
+    //reconstruyendo el string letra por letra (eso romperia los tags de TMP y dejaria
+    //prompts de InputPromptSystem a medio escribir).
     private IEnumerator SetLocalizedText(string fallbackText, TMPro.TextMeshProUGUI textElement)
     {
         //sin escribirSinTabla: si la tabla no carga, el globo se queda con lo que tenia,
@@ -165,6 +195,67 @@ public class DialogueManager : Singleton<DialogueManager>
 
         float spriteRatio = sprite.rect.width / sprite.rect.height;
         npcQueTeHablaImage.rectTransform.sizeDelta = new Vector2(npcQueTeHablaImage.rectTransform.sizeDelta.y * spriteRatio, npcQueTeHablaImage.rectTransform.sizeDelta.y);
+    }
+
+    /// <summary>
+    /// Efecto maquina de escribir (issue #41.9): el texto YA esta completo y localizado en el
+    /// TMP (ver comentario en SetLocalizedText), asi que solo vamos revelando
+    /// maxVisibleCharacters de a poco -- mas barato que reconstruir el string y TMP ya ignora
+    /// los tags de rich text al contar caracteres visibles, asi que no hace falta parsearlos
+    /// a mano.
+    /// </summary>
+    IEnumerator EjecutarTypewriter(TMPro.TextMeshProUGUI textElement)
+    {
+        //ForceMeshUpdate para poder leer characterCount YA: sin esto TMP recalcula recien en
+        //su propio LateUpdate y characterCount todavia tendria el valor de la linea anterior
+        textElement.ForceMeshUpdate();
+        int totalCaracteres = textElement.textInfo.characterCount;
+
+        if (totalCaracteres <= 0 || _charsPerSecond <= 0f)
+        {
+            textElement.maxVisibleCharacters = totalCaracteres;
+            yield break;
+        }
+
+        _isTyping = true;
+        _typewriterTarget = textElement;
+        _typewriterTotalCaracteres = totalCaracteres;
+
+        float segundosPorCaracter = 1f / _charsPerSecond;
+        float acumulado = 0f;
+        int visibles = 0;
+
+        //el while interno permite "ponerse al dia" si un frame tardo mas de lo normal
+        //(hitch) en vez de mostrar un caracter por frame nada mas
+        while (visibles < totalCaracteres && _isTyping)
+        {
+            acumulado += Time.deltaTime;
+            while (acumulado >= segundosPorCaracter && visibles < totalCaracteres)
+            {
+                visibles++;
+                acumulado -= segundosPorCaracter;
+            }
+            textElement.maxVisibleCharacters = visibles;
+            yield return null;
+        }
+
+        textElement.maxVisibleCharacters = totalCaracteres;
+        _isTyping = false;
+    }
+
+    /// <summary>
+    /// Skip del typewriter: lo llama CheckPlayerInput cuando el jugador aprieta el boton de
+    /// avance MIENTRAS se esta escribiendo. Corta el while de EjecutarTypewriter (via
+    /// _isTyping) y completa el texto ya, sin esperar el frame que tardaria la corrutina en
+    /// despertarse sola.
+    /// </summary>
+    void CompletarTypewriter()
+    {
+        _isTyping = false;
+        if (_typewriterTarget != null)
+        {
+            _typewriterTarget.maxVisibleCharacters = _typewriterTotalCaracteres;
+        }
     }
 
     public void PlayEToInteractSound()

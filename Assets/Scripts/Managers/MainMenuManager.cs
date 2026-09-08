@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class MainMenuManager : MonoBehaviour
         AudioManager.instance.PlayByName("4S_IntroBigChords");
         AudioManager.instance.PlayByName("ForestAtNight");
 
+        Debug.Log($"[MainMenuManager] Start() en el frame {Time.frameCount} " +
+                  $"(HayJoystickConectado={InputHub.HayJoystickConectado})");
         SeleccionarBotonNuevoJuego();
     }
 
@@ -46,7 +49,52 @@ public class MainMenuManager : MonoBehaviour
             return;
         }
 
-        UISelector.SeleccionarPrimeroSiJoystick(botonNuevoJuego);
+        if (UISelector.SeleccionarPrimeroSiJoystick(botonNuevoJuego))
+        {
+            Debug.Log($"[MainMenuManager] '{NOMBRE_BOTON_NUEVO_JUEGO}' seleccionado en el frame {Time.frameCount}");
+        }
+    }
+
+    /// <summary>
+    /// Reintento por frame de la seleccion inicial (issue #41.4, causa raiz real).
+    ///
+    /// El unico intento en Start() no alcanza: Input.GetJoystickNames() (lo que consulta
+    /// InputHub.HayJoystickConectado) puede devolver vacio en los primerisimos frames aunque
+    /// el joystick ya este fisicamente enchufado -- en Windows, sobre todo con XInput, el SO
+    /// tarda unos frames en terminar de enumerar el dispositivo. El menu principal es la
+    /// PRIMERA escena que carga el juego, asi que es justo donde mas chances hay de pisar esa
+    /// ventana. A diferencia del Flap (que reintenta la seleccion cada vez que se abre), nadie
+    /// mas volvia a llamar SeleccionarBotonNuevoJuego() despues de un Start() fallido: la
+    /// seleccion se perdia para siempre en esa sesion. Mismo patron que la fix de
+    /// CursorManager para el issue #41.7: hace falta algo que PREGUNTE cada frame (un Update),
+    /// no alcanza con suscribirse a InputHub.OnDeviceCambio (ese evento solo salta cuando algo
+    /// LEE UltimoDeviceFueJoystick, y aca nada lo estaba leyendo despues del Start).
+    ///
+    /// Para de pollear apenas hay algo seleccionado (ya cumplio su proposito) o apenas arranca
+    /// el dialogo automatico (`_dialogueStarted`), que a proposito limpia la seleccion con
+    /// UISelector.Limpiar() -- reseleccionar despues de eso resucitaria un boton fantasma que
+    /// el B del joystick seguiria "apretando" mientras corre el dialogo.
+    /// </summary>
+    void ReintentarSeleccionSiHaceFalta()
+    {
+        if (_dialogueStarted)
+        {
+            return;
+        }
+
+        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
+        {
+            return; //ya hay seleccion (la de Start() sirvio, o esta reintento ya la logro antes)
+        }
+
+        //si nunca hubo joystick a la vista, no hay nada que reintentar: evita hacer
+        //GameObject.Find() todos los frames durante una sesion pura de teclado/mouse
+        if (!InputHub.HayJoystickConectado && !InputHub.UltimoDeviceFueJoystick)
+        {
+            return;
+        }
+
+        SeleccionarBotonNuevoJuego();
     }
 
     public void OnNewGameButtonDown()
@@ -74,6 +122,8 @@ public class MainMenuManager : MonoBehaviour
         {
             EventManager.Trigger(Evento.OnPlayerPressedE); //como no tengo PlayerController, lo hago aca.
         }
+
+        ReintentarSeleccionSiHaceFalta();
     }
 
     public void ChangeScene(params object[] parameter)

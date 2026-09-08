@@ -14,7 +14,7 @@ public struct FlapDisplay
 public class FlapManager : Singleton<FlapManager>
 {
     [SerializeField] float _posYOpen = 350;
-    [SerializeField] float _flapTransitionDuration = 0.5f; // Tiempo de transición en segundos
+    [SerializeField] float _flapTransitionDuration = 0.5f; // Tiempo de transiciï¿½n en segundos
     [SerializeField] GameObject _seguroOverlay;
     [SerializeField] Slider _sliderBrillo, _sliderContraste, _sliderVolumen;
     [SerializeField] FlapDisplay[] _flapDisplays;
@@ -23,6 +23,14 @@ public class FlapManager : Singleton<FlapManager>
     float _posYClosed = 0;
     bool _isOpen = false;
     float _valueBeforeMute = 1;
+    int _currentDisplayIndex = 0;
+
+    /// <summary>
+    /// El menu esta efectivamente abierto (mismo momento en que Time.timeScale pasa a 0).
+    /// La usa PlayerController (issue #41.3) para no procesar input de gameplay mientras el
+    /// Flap tapa la pantalla, y este mismo script para saber cuando escuchar R1/L1/B.
+    /// </summary>
+    public bool IsMenuOpen => _isOpen;
 
     //flapdisplays:
     //0 es quests
@@ -59,12 +67,71 @@ public class FlapManager : Singleton<FlapManager>
         _tiritaPull.gameObject.SetActive(true);
         _tiritaPush.gameObject.SetActive(false);
 
-        //sin esto queda un boton del menu seleccionado y, como el boton B del joystick es Submit,
+        //sin esto queda un boton del menu seleccionado y, como A es el Submit del EventSystem,
         //el jugador lo seguiria apretando sin querer mientras juega
         UISelector.Limpiar();
 
         StopAllCoroutines();
         StartCoroutine(MoveFlap(_posYClosed));
+    }
+
+    /// <summary>
+    /// Issue #41.1: con el menu abierto, R1/L1 ciclan de tab y B cierra el Flap (contextual,
+    /// mismo patron que "B cancela" en el origami). Ninguno de los tres pasa por
+    /// PlayerController: ese script ya se auto-gatea cuando el menu esta abierto (issue
+    /// #41.3), asi que leerlos directo aca no puede pisarle un ataque o un B de gameplay.
+    /// </summary>
+    private void Update()
+    {
+        if (!_isOpen)
+        {
+            return;
+        }
+
+        //el seguro de "salir del juego" es un dialogo modal ENCIMA del flap: mientras esta
+        //abierto, B tiene que contestarle a EL (como el boton "No"), no cerrar el flap entero
+        //por atras dejando la pregunta sin responder
+        if (_seguroOverlay != null && _seguroOverlay.activeSelf)
+        {
+            if (InputHub.AtaqueGamepadDown)
+            {
+                Debug.Log("[FlapManager] B cierra el seguro de salir (equivalente a 'No')");
+                BTN_No();
+            }
+            return;
+        }
+
+        if (InputHub.AtaqueGamepadDown)
+        {
+            Debug.Log("[FlapManager] B cierra el Flap");
+            CloseFlap();
+            return;
+        }
+
+        if (InputHub.TabSiguienteDown)
+        {
+            CambiarTab(1);
+        }
+        else if (InputHub.TabAnteriorDown)
+        {
+            CambiarTab(-1);
+        }
+    }
+
+    /// <summary>Cicla entre las 4 secciones del Flap (Tareas/Morral/Settings/Controles) con R1/L1.</summary>
+    void CambiarTab(int direccion)
+    {
+        if (_flapDisplays == null || _flapDisplays.Length == 0)
+        {
+            return;
+        }
+
+        //modulo "a mano" porque el % de C# puede devolver negativo con direccion=-1
+        int nuevoIndex = ((_currentDisplayIndex + direccion) % _flapDisplays.Length + _flapDisplays.Length) % _flapDisplays.Length;
+
+        Debug.Log($"[FlapManager] cambio de tab con joystick: {_currentDisplayIndex} -> {nuevoIndex}");
+        AudioManager.instance.PlayByName("PageTurn02", 2.6f, 0.01f);
+        ShowDesiredDisplay(_flapDisplays[nuevoIndex]);
     }
     public IEnumerator MoveFlap(float targetY)
     {
@@ -106,6 +173,18 @@ public class FlapManager : Singleton<FlapManager>
         {
             OpenFlap();
         }
+    }
+
+    /// <summary>
+    /// Issue #41 ronda 2, punto 1: wrapper sin argumentos para el boton de UI de la tirita
+    /// (Assets/Prefabs/UI/FlapManager.prefab, GO "Tirita fondo"). El Editor solo lista, para
+    /// bindear un OnClick de Button, metodos de 0 parametros: ToggleFlap(params object[]) tiene
+    /// 1 parametro en runtime (el array), asi que nunca aparecia como opcion y el OnClick habia
+    /// quedado vacio (con A/click no pasaba nada, aunque la tirita fuera navegable).
+    /// </summary>
+    public void BTN_ToggleFlap()
+    {
+        ToggleFlap();
     }
     public void OpenQuests(params object[] parameters)
     {
@@ -221,6 +300,12 @@ public class FlapManager : Singleton<FlapManager>
         //Debug.Log("show desired display - " + flapDisplay);
         flapDisplay.display.SetActive(true);
         flapDisplay.flapButton.Activate();
+
+        //registrado aca (y no solo en CambiarTab) porque BTN_Settings/Inventory/Quests/Controles
+        //y OpenQuests/Inventory/Settings tambien llegan a este metodo: sin esto, R1/L1 arrancarian
+        //ciclando siempre desde el tab con el que se abrio el Flap la primera vez, no desde el
+        //que el jugador esta viendo ahora
+        _currentDisplayIndex = flapDisplay.number;
 
         //Con joystick hace falta que HAYA algo seleccionado para que el stick pueda navegar el menu,
         //pero SOLO si el menu esta efectivamente abierto. Antes seleccionabamos siempre, y como

@@ -293,22 +293,46 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     {
         if (newState == CurrentState) return;
         PlayerState previous = CurrentState;
+
+        //issue #41.2: si este frame salimos de un estado que bloqueaba el ataque (ej. Casting al
+        //cancelar el origami con B), anoto en que frame paso. MultipleRectCheck.CancelarDown() y
+        //PlayerController.CheckControls() leen el MISMO InputHub.AtaqueGamepadDown de forma
+        //independiente y sin coordinarse (a diferencia del boton A, que si tiene ese arbitraje via
+        //_gamepadInteractua): si el Update() del origami corre antes que el de Player en este frame,
+        //el B que cerro el origami quedaba libre para ADEMAS arrancar un ataque real en el mismo
+        //apreton, dejando _readyToAttack en false hasta que ese ataque "fantasma" terminara solo.
+        if (BloqueaAtaque(previous) && !BloqueaAtaque(newState))
+        {
+            _frameSalidaDeEstadoQueBloqueaAtaque = Time.frameCount;
+        }
+
         CurrentState = newState;
         _view.OnStateChanged(previous, newState);
     }
 
-    bool CanAttack()
+    int _frameSalidaDeEstadoQueBloqueaAtaque = -1;
+
+    static bool BloqueaAtaque(PlayerState state)
     {
-        switch (CurrentState)
+        switch (state)
         {
             case PlayerState.Casting:
             case PlayerState.ReceivingReward:
             case PlayerState.Dead:
             case PlayerState.RidingPage:
-                return false;
-            default:
                 return true;
+            default:
+                return false;
         }
+    }
+
+    bool CanAttack()
+    {
+        //ver el comentario en SetState: el mismo boton que nos saco de un estado que bloqueaba el
+        //ataque no puede ademas iniciar uno en ese mismo frame.
+        if (Time.frameCount == _frameSalidaDeEstadoQueBloqueaAtaque) return false;
+
+        return !BloqueaAtaque(CurrentState);
     }
 
     public void OnPrimaryClick()

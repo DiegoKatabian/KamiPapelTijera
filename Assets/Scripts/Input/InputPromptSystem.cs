@@ -37,7 +37,8 @@ public static class InputPromptSystem
         Correr,
         Camara,
         Menu,
-        Mover
+        Mover,
+        CambiarTab   //L1/R1: ciclar secciones del Flap (issue #41 ronda 2, punto 3). SOLO joystick: estos ejes no tienen binding de teclado (ver InputHub.TabSiguienteDown/TabAnteriorDown), asi que el cartelito que usa este placeholder tiene que estar oculto con teclado (ver SoloConJoystick)
     }
 
     // -------------------------------------------------- tablas de prompts
@@ -55,6 +56,10 @@ public static class InputPromptSystem
             case Accion.Camara: return "Click del medio";
             case Accion.Menu: return "Esc";
             case Accion.Mover: return "WASD";
+            //no hay tecla para esto: cambiar de tab del Flap con teclado se hace con mouse
+            //(click directo en el icono de la seccion), no hay eje dedicado. Nunca deberia
+            //verse: el cartel que usa este placeholder esta gateado a SoloConJoystick.
+            case Accion.CambiarTab: return "";
             default: return "";
         }
     }
@@ -92,6 +97,7 @@ public static class InputPromptSystem
             case Accion.Camara: return "(L2)";
             case Accion.Menu: return "(Start)";
             case Accion.Mover: return "stick";
+            case Accion.CambiarTab: return "L1 / R1";
             default: return "";
         }
     }
@@ -193,6 +199,12 @@ public static class InputPromptSystem
             case "movimiento":
                 return PromptDe(Accion.Mover);
 
+            case "cambiartab":
+            case "cambiarseccion":
+            case "changetab":
+            case "switchtab":
+                return PromptDe(Accion.CambiarTab);
+
             default:
                 //placeholder mal escrito en la tabla: lo dejamos crudo A PROPOSITO, asi se
                 //ve en pantalla y alguien lo arregla. Comerselo en silencio seria peor.
@@ -279,6 +291,22 @@ public static class InputPromptSystem
         @"(?m)^(?<letra>[EUI])(?=\s*[-–—]\s)",
         RegexOptions.Compiled);
 
+    // El tooltip de "arrastrar" del origami (Origami.tooltipMessage, mostrado por
+    // MultipleRectCheck.StartOrigami al arrancar el minijuego -- issue #41.5) no menciona
+    // ninguna tecla: con mouse alcanza con el verbo solo, porque el click que agarra la
+    // flecha y el arrastre son el mismo gesto. Con joystick NO: hay que apretar el boton de
+    // accion SOBRE la flecha antes de poder arrastrarla con el stick (ver
+    // InputHub.AccionGamepadDown en MultipleRectCheck.PunteroDown), y sin avisarlo el
+    // jugador no tiene forma de saber que boton usar.
+    // Anclado al inicio del string, mismo patron que RxTeclaAlInicio. Cubre los 3 idiomas de
+    // la tabla (TooltipTable, clave origami_guide: "Arrastra la flecha..." / "Drag the green
+    // arrow..." / "Arraste a seta...") porque las tres arrancan con el verbo arrastrar/drag.
+    // Tambien cubre el texto hardcodeado (no la clave) que usan hoy la mayoria de los
+    // OrigamiRoute.prefab: arranca igual, asi que el patron los alcanza sin tocar prefabs.
+    static readonly Regex RxArrastrarAlInicio = new Regex(
+        @"^(?<verbo>Arrastrá|Arrastra|Drag|Arraste)\b",
+        RegexOptions.Compiled);
+
     static string TraducirTokensLegacy(string texto)
     {
         //Regex.Replace devuelve el MISMO string cuando no hay match, asi que un texto sin
@@ -297,8 +325,27 @@ public static class InputPromptSystem
         r = RxTeclaConVerbo.Replace(r, ReemplazarTeclaConVerbo);
         r = RxTeclaAlInicio.Replace(r, PromptJoystick(Accion.Interactuar));
         r = RxTeclaEnListaDeControles.Replace(r, ReemplazarTeclaDeLista);
+        r = RxArrastrarAlInicio.Replace(r, ReemplazarArrastrarAlInicio);
 
         return r;
+    }
+
+    // Con joystick anteponemos "Toca (A) y..."/"Press (A) and..."/"Toca (A) e..." al verbo de
+    // arrastrar, en vez de traducir el verbo en si (no hay un boton que "sea" arrastrar: el
+    // arrastre lo sigue haciendo el stick, lo que faltaba explicar es CON QUE boton se agarra).
+    static string ReemplazarArrastrarAlInicio(Match m)
+    {
+        string boton = PromptJoystick(Accion.Interactuar);
+
+        switch (m.Groups["verbo"].Value)
+        {
+            case "Drag":
+                return "Press " + boton + " and drag";
+            case "Arraste":
+                return "Toca " + boton + " e arraste";
+            default: //"Arrastrá" o "Arrastra" (espanol)
+                return "Tocá " + boton + " y arrastrá";
+        }
     }
 
     static string ReemplazarTeclaDeLista(Match m)

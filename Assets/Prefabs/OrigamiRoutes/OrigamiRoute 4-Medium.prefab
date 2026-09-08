@@ -70,8 +70,7 @@ MonoBehaviour:
   - {fileID: 3999566267189717441}
   paperCost: 4
   isReusable: 0
-  tooltipMessage: "Arrastr\xE1 la flecha verde hasta el objetivo y solt\xE1. No te
-    salgas del camino!"
+  tooltipMessage: origami_guide
   postItColor: 1
   currentRouteIndex: 0
   wasUsed: 0

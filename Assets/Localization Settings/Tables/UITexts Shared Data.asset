@@ -107,6 +107,10 @@ MonoBehaviour:
     m_Key: DefeatRocoso
     m_Metadata:
       m_Items: []
+  - m_Id: 244717555555000000
+    m_Key: FlapCambiarSeccion
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -119,6 +119,10 @@ MonoBehaviour:
     m_Localized: "El Rocoso te derrot\xF3!\nToc\xE1 E para reiniciar."
     m_Metadata:
       m_Items: []
+  - m_Id: 244717555555000000
+    m_Localized: "{INPUT:cambiarseccion} para cambiar de secci\xF3n"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

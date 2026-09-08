@@ -54,6 +54,13 @@ public class PlayerController
             return;
         }
 
+        //Issue #41.3: con el Flap abierto (pausa), NINGUN input de gameplay se procesa aca -
+        //solo queda viva la navegacion de UI (que lee los mismos ejes por su cuenta via
+        //EventSystem/UISelector, sin pasar por PlayerController) y R1/L1/B, que FlapManager
+        //escucha directo de InputHub en su propio Update. Esc/I/U siguen funcionando (abren o
+        //cierran el Flap) porque no pasan por este gate.
+        bool menuAbierto = FlapManager.Instance != null && FlapManager.Instance.IsMenuOpen;
+
         //El boton A del joystick es CONTEXTUAL: si hay algo con que interactuar interactua, y si
         //no, salta. Asi un chico usa un solo boton para "hacer" y no tiene que aprender cual es
         //cual. El teclado NO cambia: E siempre interactua y el espacio siempre salta.
@@ -64,14 +71,15 @@ public class PlayerController
 
         //InteractDown ya incluye al boton A (comparten el eje "Interact", que ademas es el Submit
         //del EventSystem), asi que con esto solo alcanza para los dos devices.
-        if (InputHub.InteractDown)
+        if (!menuAbierto && InputHub.InteractDown)
         {
             EventManager.Trigger(Evento.OnPlayerPressedE);
         }
 
         //B ataca siempre, sin contexto. El gate de timeScale evita el tijeretazo por atras con el
-        //menu abierto (donde igual OnPrimaryClick no llegaria a nada util).
-        if (InputHub.AtaqueTecladoDown || (InputHub.AtaqueGamepadDown && Time.timeScale > 0f))
+        //menu abierto (donde igual OnPrimaryClick no llegaria a nada util); menuAbierto cubre
+        //ademas el teclado, que antes no pasaba por ningun gate de pausa.
+        if (!menuAbierto && (InputHub.AtaqueTecladoDown || (InputHub.AtaqueGamepadDown && Time.timeScale > 0f)))
         {
             _player.OnPrimaryClick();
         }
@@ -91,7 +99,7 @@ public class PlayerController
             EventManager.Trigger(Evento.OnPlayerPressedU);
         }
 
-        if (LevelManager.Instance.inDialogue) //en dialogo no se captura movimiento ni salto
+        if (LevelManager.Instance.inDialogue || menuAbierto) //en dialogo o con el Flap abierto no se captura movimiento ni salto
         {
             return;
         }

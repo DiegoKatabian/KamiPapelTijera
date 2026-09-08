@@ -22,6 +22,8 @@ origami) — nunca qué se puede hacer.
 | Inventario / Quests directo | I / U | — (se llega por el menú con Start) |
 | Mutear | M | — |
 | Navegar UI | flechas / mouse | stick izquierdo; **A** = Submit, **Start** = Cancel |
+| Cambiar de tab dentro del Flap (issue #41.1) | — (click en la solapa) | **R1** (botón 5) / **L1** (botón 4) |
+| Cerrar el Flap (issue #41.1) | Esc, O (toggle) | **B** (botón 1), contextual — ver abajo |
 
 ### El botón A es contextual (lo más importante de este diseño)
 
@@ -45,6 +47,23 @@ minijuego** (es la convención de "volver" de cualquier joystick).
 **El teclado NO pasa por esta lógica**: E siempre interactúa, el espacio siempre salta y el
 click siempre ataca, exactamente como antes. Es una regla de oro de este feature — cero
 regresiones en lo que ya funcionaba.
+
+### Pausa del Flap: NINGÚN input de gameplay se procesa (issue #41.3)
+
+Mientras `FlapManager.IsMenuOpen` es `true` (mismo instante en que `Time.timeScale` pasa a
+0 — ver `FlapManager.MoveFlap`), `PlayerController.CheckControls()` calcula
+`menuAbierto = FlapManager.Instance.IsMenuOpen` y lo usa para saltear por completo: el
+interactuar en el mundo (`InputHub.InteractDown` → `OnPlayerPressedE`, que antes disparaba
+origamis/solapas con A/E aunque el menú tapara la pantalla), el ataque (teclado Y gamepad —
+antes el teclado no pasaba por NINGÚN gate de pausa) y el bloque final de movimiento/salto
+(mismo `return` que ya usaba `LevelManager.inDialogue`). Esc/O/I/U siguen andando (no pasan
+por este gate) porque son justamente lo que abre y cierra el propio Flap.
+
+Ojo: el gate se resuelve leyendo `FlapManager.Instance.IsMenuOpen`, NO
+`LevelManager.agency` ni `LevelManager.inDialogue` — ninguno de los dos lo prendía al abrir
+el Flap (se investigó explícitamente, `agency` nunca se setea en código y `inDialogue` es de
+diálogo/overlay/page-turn). `IsMenuOpen` es la fuente de verdad porque es el mismo flag
+(`_isOpen`) que decide cuándo `Time.timeScale` pasa a 0.
 
 ## Arquitectura
 
@@ -168,6 +187,62 @@ limpia al cerrar menús y overlays, y por eso sólo se selecciona cuando hay joy
 - **El color de "seleccionado" tiene que verse.** El de `Button.prefab` era gris 0.9607 sobre
   blanco: invisible. Ahora es ámbar. Y ojo con los overrides por instancia de
   `m_Colors.m_SelectedColor`: hacían que en "¿salir?" quedaran los dos botones pintados.
+  **Esta correción NO se había propagado a todo lo navegable** (issue #41.1, septiembre 2026):
+  `SliderFlap.prefab` e `InventorySlot.prefab` seguían con `m_SelectedColor` en el mismo gris
+  invisible (0.9607 sobre fondo claro) — el ámbar de `Button.prefab` no alcanza porque cada
+  Selectable tiene su PROPIO bloque `m_Colors`. Si agregás un Selectable nuevo (o heredás de
+  uno viejo), revisá su `m_SelectedColor` a mano, no asumas que "ya está arreglado" porque
+  otro prefab lo esté.
+
+### Navegación del Flap: R1/L1 cambian de tab, B cierra (issue #41.1)
+
+`FlapManager` tiene su propio `Update()`, activo SOLO mientras `_isOpen` (osea, solo cuando
+hay algo que navegar) — no interfiere con `PlayerController` porque ese ya se auto-gatea
+cuando el menú está abierto (ver pausa arriba), así que ningún input de gameplay compite por
+el mismo botón:
+
+- **R1/L1** (`InputHub.TabSiguienteDown`/`TabAnteriorDown`, ejes nuevos en
+  `InputManager.asset` — R1 no tenía ningún uso, L1 comparte botón físico con Correr pero es
+  un eje DISTINTO) ciclan `_flapDisplays` con módulo hecho a mano (`CambiarTab`).
+  `ShowDesiredDisplay` guarda `_currentDisplayIndex = flapDisplay.number` en CADA call site
+  (BTN_\*, Open\*, y el propio ciclado), así que R1/L1 siempre arrancan desde el tab que el
+  jugador está viendo, sin importar cómo se llegó ahí.
+- **B** (`InputHub.AtaqueGamepadDown`, mismo eje que ataca en gameplay) cierra el Flap. Es
+  contextual con el seguro de "¿salir del juego?": si `_seguroOverlay` está activo, B le
+  contesta a ESE dialogo (`BTN_No()`) en vez de cerrar el Flap entero por atrás dejando la
+  pregunta sin responder — mismo patrón que "B cancela" en el origami.
+- **Colores por tab**: cada una de las 4 solapas (`FlapDisplayButtonQuests/Settings/
+  Controls/Inventory`, instancias anidadas del mismo prefab base) ya tenía un
+  `m_Colors.m_HighlightedColor` distinto por instancia (override YAML, visible al pasar el
+  mouse) — pero NINGUNA tenía `m_SelectedColor` overrideado, así que las 4 se veían del
+  mismo ámbar del prefab base al navegar con joystick. Fix: se copiaron los mismos valores
+  RGB de `m_HighlightedColor` a `m_Colors.m_SelectedColor` por instancia en
+  `FlapManager.prefab` (cirugía YAML, mismos 4 bloques `PrefabInstance`, sin tocar el prefab
+  base). Con mouse y con joystick ahora resaltan con el mismo color por sección.
+
+**Ronda 2 (mismo issue #41, testing real con gamepad — ver
+`specs/004-joystick-controls/pending-issues.md` #41.10-#41.12 para el detalle completo)**:
+
+- **Botón de la tirita (abrir/cerrar Flap) sin wirear**: el GO "Tirita fondo"
+  (`FlapManager.prefab`) es un `Button` real y navegable, pero su `OnClick` estaba vacío y
+  `m_SelectedColor` era blanco (igual al normal, invisible al enfocar). Fix: nuevo
+  `FlapManager.BTN_ToggleFlap()` (wrapper sin argumentos de `ToggleFlap(params object[])` —
+  el Editor no lista para `OnClick` métodos con `params`, así que hacía falta un wrapper de
+  0 parámetros) cableado al `OnClick`, más `m_SelectedColor` a ámbar como el resto.
+- **Handles de los sliders ("gallinas") sin animar al navegar**: `Chicken Handle.controller`
+  (`Assets/2D/UI/Button Animations/`) tiene un estado "Selected" (el que dispara el
+  `EventSystem` al navegar con joystick, DISTINTO del "Highlighted" de hover de mouse) cuyo
+  clip estaba completamente vacío — un placeholder nunca completado. Fix de una línea: el
+  `AnimatorState` "Selected" ahora apunta al mismo clip que "Pressed" (el que sí tiene la
+  animación real: escala + spritesheet de la gallina caminando, lo que se ve al arrastrar
+  con mouse). Como los 3 sliders comparten este `AnimatorController` por asset, un solo fix
+  alcanza a Brillo/Contraste/Volumen.
+- **Cartel nuevo "L1/R1 para cambiar de sección"**: GO `FlapTabHint` en `FlapManager.prefab`,
+  arriba de la columna de íconos, visible SOLO con joystick vía el componente nuevo
+  `SoloConJoystick.cs` (`Assets/Scripts/UI/`, `OnEnable`/`OnDeviceCambio` togglean
+  `SetActive`, mismo patrón que `TutorialPromptVisual`). Usa el placeholder nuevo
+  `{INPUT:cambiarseccion}` (ver abajo) y la key de localización `FlapCambiarSeccion`
+  (`UITexts`, en es/en/pt).
 
 ## Prompts de botones en los textos
 
@@ -176,8 +251,10 @@ joystick en la mano eso es información falsa. `InputPromptSystem.Procesar(texto
 sobre los textos de tooltips y diálogos:
 
 1. **Placeholders `{INPUT:*}`** (`{INPUT:saltar}`, `{INPUT:accion}`, `{INPUT:correr}`,
-   `{INPUT:camara}`, `{INPUT:menu}`, `{INPUT:mover}`) — el camino limpio para textos nuevos.
-   Funcionan siempre, con cualquier device.
+   `{INPUT:camara}`, `{INPUT:menu}`, `{INPUT:mover}`, `{INPUT:cambiarseccion}` — este último
+   agregado en la ronda 2 del Flap, resuelve a "L1 / R1" con joystick y a `""` con teclado
+   porque ese eje no tiene bind de teclado, ver más abajo) — el camino limpio para textos
+   nuevos. Funcionan siempre, con cualquier device.
 2. **Tokens legacy** (SHIFT, ESPACIO, Click, "Press E"…) — se traducen **sólo si el jugador
    está usando joystick**, para no tener que editar las tablas de localización (que son
    contenido de Diego/Valentino). Con teclado el texto sale idéntico a hoy.
@@ -185,6 +262,33 @@ sobre los textos de tooltips y diálogos:
 Hoy los prompts de joystick son **texto** (`(A)`, `(B)`, `(L1)`…), no íconos: falta el
 atlas de sprites de botones (dependencia de arte). El código está escrito para que pasar a
 `<sprite name=button_A>` de TextMeshPro sea cambiar una sola tabla.
+
+### El tab Controles del Flap YA se traduce solo (issue #41.6)
+
+El contenido de esa solapa es UN solo bloque de texto localizado (tabla `UITexts`, clave
+`controlsText`), formato "TECLA - Acción" por línea ("WASD - Mover", "E - Interactuar"...),
+escrito por un `LocalizeStringEvent` de Unity Localization cableado directo a
+`TMP_Text.set_text` — no por ningún componente propio del juego. Investigado en septiembre
+2026 (issue #41.6) y confirmado que YA funciona sin tocar nada nuevo, por dos piezas que ya
+existían:
+
+1. `LocalizedText.cs` (`Assets/Scripts/UI/LocalizedText.cs`, commit `94a1196`, previo a esta
+   sesión) engancha por código TODOS los `LocalizeStringEvent` de la escena (incluido el de
+   Controles) con un listener extra que re-procesa el texto vía `InputPromptSystem.Procesar`
+   y lo registra para reescribirlo en `InputHub.OnDeviceCambio`. Es la razón por la que el
+   comentario de esa clase menciona textualmente "la pantalla de controles del Flap".
+2. `InputPromptSystem.RxTeclaEnListaDeControles` (ya existía antes de esta sesión, no es
+   parte de los cambios de Tanda 1 en ese archivo) matchea justo el formato "LETRA - Acción"
+   anclado a inicio de línea, y `RxWasd`/`RxEspacio`/`RxEsc`/`RxClickOCtrl`/
+   `RxCamaraMultiPalabra` cubren el resto de los tokens de esa misma lista en los 3 idiomas
+   (verificado leyendo `UITexts_es/en/pt.asset` directo).
+
+**Gap conocido, no arreglado (`InputPromptSystem.cs` está fuera de mi alcance en esta
+sesión, ver `CLAUDE.md` de la tarea)**: `RxTeclaEnListaDeControles` solo reconoce `[EUI]`.
+Las líneas "O - Abrir Controles" y "M - Control de sonido" de esa misma lista NO tienen
+traducción a joystick — quedan mostrando la letra de teclado. "M" no tiene botón de gamepad
+por diseño (no arreglable sin agregar un binding). "O" sí debería mapear a `(Start)` (mismo
+eje "Options" que Esc) — flageado como tarea de background aparte.
 
 ## Cómo verificar sin abrir Unity
 
@@ -221,6 +325,15 @@ pueden validar jugando.
   `Mute` en el botón 1 (que ahora es atacar), e `Inventory`/`Quests` en los clicks de stick
   (8 y 9), que se apretaban sin querer al correr. La cámara tuvo un tiempo R1 (botón 5)
   además de L2; se sacó a pedido de Diego, queda **sólo L2** (más el click del medio).
+- **R1 (botón 5) quedó libre** desde que se le sacó el binding de cámara — issue #41.1 lo
+  reusa para `TabSiguiente` (ciclar tabs del Flap), sin pisar nada. `TabAnterior` (L1, botón
+  4) SÍ comparte botón físico con `Run`, pero son dos EJES distintos en `InputManager.asset`
+  (mismo patrón que "varias entradas comparten `m_Name`", pero al revés: acá son nombres
+  DISTINTOS sobre el mismo botón). `PlayerController` SÍ sigue leyendo `Run` con el Flap
+  abierto (no se gateó a propósito: setear `IsSprinting` no mueve nada con `Time.timeScale`
+  en 0), así que usar L1 para cambiar de tab también prende ese flag — inofensivo, y se
+  autocorrige apenas se suelta el botón (`CorrerUp`), casi siempre todavía con el menú
+  abierto.
 - Quedan bindings de joystick en las entradas `Debug *` de Unity (botones 4, 5, 8, 9),
   pero están detrás de apretar L3+R3 juntos. Pre-existente, no lo tocamos.
 
@@ -229,14 +342,88 @@ pueden validar jugando.
 **IMPORTANTE**: ver `specs/004-joystick-controls/pending-issues.md` para la lista **completa** de bugs y features faltantes encontrados en testing (2026-09-08).
 
 **P1 (críticos, bloquean gameplay)**:
-- **#41.1 Navegación del Flap rota**: no se navega a botón de cerrar, secciones sin colores distintivos, no hay forma de salir de Tareas/Controles con joystick. Propuesta: R1/L1 para cambiar tabs, B para cerrar.
-- **#41.2 B button "stuck" después de origami**: ataque deja de funcionar tras completar un origami en Level 2. Probablemente relacionado con cerrar origami con B.
-- **#41.3 Input no se bloquea durante pausa**: se puede triggerear origamis, mover/flipear a Kami, etc. mientras el Flap está abierto (`Time.timeScale = 0`). El input debería estar completamente bloqueado.
+- ~~#41.1 Navegación del Flap rota~~ — **resuelto** (septiembre 2026): `FlapManager` tiene
+  `Update()` propio (activo solo con el menú abierto) que lee R1/L1 (`InputHub.
+  TabSiguienteDown`/`TabAnteriorDown`, ejes nuevos) para ciclar `_flapDisplays`, y B
+  (`AtaqueGamepadDown`) para cerrar — contextual con el seguro de salir (B le contesta "No"
+  a ESE diálogo si está abierto, no cierra el Flap por atrás). El fallback "sin nada
+  navegable cae en la solapa" (Tareas/Controles) ya existía de una sesión previa
+  (`SeleccionarDentroDe`) y sigue andando. Se encontraron y arreglaron dos gaps reales
+  del "highlight visible" que el doc daba por cerrado: `SliderFlap.prefab` e
+  `InventorySlot.prefab` seguían con `m_SelectedColor` gris invisible (nunca se había
+  propagado desde `Button.prefab`), y las 4 solapas no tenían `m_Colors.m_SelectedColor`
+  overrideado por instancia (sólo `m_HighlightedColor`, visible con mouse pero no con
+  joystick) — ahora las 4 resaltan con su color propio en los dos casos. Detalle en
+  "Navegación del Flap" y en la sección de gotchas de foco, arriba. Pendiente: confirmar
+  jugando con gamepad real.
+- ~~#41.2 B button "stuck" después de origami~~ — **resuelto** (Nivel 1, página 2): causa raíz confirmada,
+  no era un flag colgado sino una carrera entre dos `Update()` sin coordinar. `MultipleRectCheck.CancelarDown()`
+  (B cancela el origami) y `PlayerController.CheckControls()` (B ataca) leen el MISMO
+  `InputHub.AtaqueGamepadDown` sin arbitrarse entre sí — a diferencia de A, que sí tiene ese arbitraje central
+  vía `_gamepadInteractua`. Unity no garantiza el orden de `Update()` entre MonoBehaviours de objetos distintos
+  (no hay `ScriptExecutionOrder.asset` en el proyecto): si el `Update()` del origami corría antes que el de
+  `Player` ese frame, el mismo apretón de B que cerraba el origami (`SetState(Idle)`, sincrónico) alcanzaba a
+  además arrancar un ataque real (`Player.CanAttack()` ya veía Idle cuando `PlayerController` leía ese MISMO
+  B unas líneas después), consumiendo `_readyToAttack` para un ataque fantasma que el jugador nunca pidió.
+  Fix en `Player.cs`: `SetState()` anota en qué frame se sale de un estado que bloquea el ataque
+  (Casting/ReceivingReward/Dead/RidingPage), y `CanAttack()` se niega ese mismo frame — funciona sin importar
+  el orden de `Update()` de ese frame en particular. Pendiente: confirmar jugando (cancelar con B varias veces,
+  cerrar, atacar de una).
+- ~~#41.3 Input no se bloquea durante pausa~~ — **resuelto** (septiembre 2026):
+  `PlayerController.CheckControls()` calcula `menuAbierto = FlapManager.Instance.IsMenuOpen`
+  (propiedad nueva, espeja `_isOpen`) y lo usa para saltear interactuar-en-el-mundo, atacar
+  (teclado Y gamepad — antes el teclado no tenía NINGÚN gate de pausa) y el bloque de
+  movimiento/salto. Esc/O/I/U siguen sin gatear porque son lo que abre/cierra el propio
+  Flap. Detalle en "Pausa del Flap", arriba. Pendiente: confirmar jugando (parada sobre un
+  pedestal de origami, abrir el Flap, intentar mover/atacar/interactuar — nada debería
+  pasar hasta cerrarlo).
 
 **P2 (alta prioridad, UX/polish)**:
-- **#41.4 Main menu no navigable con joystick**: botones de idioma y start no responden a stick.
-- **#41.5 Tooltip de origami**: debería decir "Tocá A y arrastrá..." con joystick activo.
-- **#41.6 Controles tab**: tabla de controles debe mostrar mapeo para joystick cuando está activo.
+- ~~#41.4 Main menu no navigable con joystick~~ — **resuelto de verdad esta vez** (septiembre 2026, ronda 2). La
+  conclusión anterior ("ya resuelto en `e848cc4`") era **incorrecta**: se basaba en lectura estática y Diego
+  confirmó jugando que seguía sin andar. **Causa raíz real**: `MainMenuManager.Start()` intenta seleccionar
+  `NewGameButton` UNA sola vez, gateado por `UISelector.SeleccionarPrimeroSiJoystick` →
+  `InputHub.HayJoystickConectado` (que llama `Input.GetJoystickNames()`). En Windows, sobre todo con mando XInput,
+  ese enumerado puede tardar unos frames en completarse desde que arranca el Player — si el `Start()` del menú
+  (que es la PRIMERISIMA escena que carga el juego, la ventana con más chance de pisar ese delay) corre antes de
+  que termine, `HayJoystickConectado` da `false`, la selección se pierde, y a diferencia del Flap (que reintenta
+  en CADA apertura vía `ShowDesiredDisplay`/`MoveFlap`) nadie más volvía a intentarlo: la sesión entera quedaba
+  sin selección inicial aunque el joystick estuviera físicamente enchufado. Suscribirse a `InputHub.OnDeviceCambio`
+  tampoco alcanza como fix: ese evento solo salta cuando ALGO lee `UltimoDeviceFueJoystick` ese frame, y nada en
+  el Main Menu lo leía después del `Start()` fallido — mismo problema estructural que ya se había resuelto en
+  `CursorManager` para el issue #41.7 (ahí también hacía falta un polling activo, no un suscriptor pasivo).
+  **Fix**: `MainMenuManager.Update()` ahora llama `ReintentarSeleccionSiHaceFalta()` todos los frames — reintenta
+  `SeleccionarBotonNuevoJuego()` mientras no haya nada seleccionado en el `EventSystem` Y haya evidencia de
+  joystick (`HayJoystickConectado || UltimoDeviceFueJoystick`), y para de pollear apenas hay selección o apenas
+  arranca `_dialogueStarted` (que a propósito limpia la selección con `UISelector.Limpiar()` — reseleccionar
+  después de eso dejaría un botón fantasma que el B seguiría "apretando" durante el diálogo). Logs
+  `[MainMenuManager]` nuevos en `Start()` y en cada selección exitosa, con el `Time.frameCount`, para que Diego
+  pueda confirmar en la consola en qué frame se detectó el joystick. El resto de la investigación previa seguía
+  siendo correcto y no se tocó: `Button.prefab` con `Navigation = Automatic` y el `EventSystem` de la escena
+  mapeando Submit/Cancel a A/Start.
+- ~~#41.5 Tooltip de origami~~ — **resuelto**: había DOS tooltips de origami, y solo uno estaba roto.
+  El tooltip de "arranque" (`TriggerOrigami.tooltipTextToShow`, "Mantené E para comenzar") ya
+  traducía bien porque matcheaba `RxTeclaConVerbo`. El roto era el de "arrastre"
+  (`Origami.tooltipMessage`, mostrado por `MultipleRectCheck.StartOrigami` al arrancar el
+  minijuego): "Arrastrá la flecha verde..." no menciona ninguna tecla, así que ningún token legacy
+  lo tocaba con joystick. Fix en `InputPromptSystem.cs`: nuevo `RxArrastrarAlInicio` (mismo patrón
+  que `RxTeclaAlInicio`, ancla el verbo al inicio del string en los 3 idiomas — Arrastrá/Arrastra
+  es, Drag en, Arraste pt) que antepone el prompt de agarrar con joystick: "Tocá (A) y arrastrá...".
+  Con teclado/mouse el texto queda igual que siempre (cero regresión, vía el camino rápido de
+  `Procesar`). De paso se encontró que 9 de los 10 `OrigamiRoute *.prefab` hardcodean el texto en
+  español en vez de usar la clave `origami_guide` de la tabla (solo `1-Easy` la usa bien) — no
+  afecta este fix (el regex cubre el texto hardcodeado igual), pero sí significa que EN/PT ven
+  español en ese tooltip; anotado como deuda técnica aparte, no arreglado acá.
+- ~~#41.6 Controles tab~~ — **ya funcionaba, no hizo falta código nuevo**: investigado en
+  septiembre 2026. El contenido es un `LocalizeStringEvent` (clave `controlsText` de la
+  tabla `UITexts`, formato "TECLA - Acción" por línea), y YA estaba cubierto por
+  `LocalizedText.cs` (engancha cualquier `LocalizeStringEvent` de la escena y lo reprocesa
+  en cada cambio de device) + `InputPromptSystem.RxTeclaEnListaDeControles` (ya existía,
+  matchea ese formato) — ambos de una sesión previa a esta. Gap conocido no arreglado (fuera
+  de mi alcance, `InputPromptSystem.cs` tocado por otro agente en esta misma tanda): las
+  líneas "O - Abrir Controles" y "M - Control de sonido" no traducen (el regex solo cubre
+  `[EUI]`); flageado como tarea aparte. Detalle en "El tab Controles del Flap YA se traduce
+  solo", arriba.
 - **#41.7 Cursor auto-hide**: cursor aparece con mouse pero no desaparece al volver a joystick; falta timeout.
 - **#41.8 Chino dialogue**: texto tiene "[...]" duplicado.
 

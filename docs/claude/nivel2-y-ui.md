@@ -47,7 +47,14 @@ Hoja/EdgeBone → RidingPage) — no se encontraron discrepancias.
 (`QuestSlot[]`), Inventario (`InventorySlot[]`), Settings (sliders de
 brillo/contraste/volumen + confirmación de salida) y Controles. Al abrir del todo
 pausa el juego (`Time.timeScale = 0`) y baja la música a 0.4x; sonido de "vuelta de
-página" al abrir/cerrar.
+página" al abrir/cerrar. Con joystick: R1/L1 ciclan de tab y B cierra (ver
+`controles-y-gamepad.md`); el botón de la "tirita" (imagen `_tiritaPull`/`_tiritaPush`
+que sobresale del costado) tiene `FlapManager.BTN_ToggleFlap()` cableado a su `OnClick` y
+también es navegable/apretable con A. Los 3 sliders de Settings usan un handle animado
+("gallina", `Chicken Handle.controller`) que camina tanto al arrastrar con mouse como al
+enfocar con joystick (mismo clip en los estados Pressed/Selected del Animator). Arriba de
+la columna de íconos de sección hay un cartel (`FlapTabHint`, componente
+`SoloConJoystick`) que dice "L1 / R1 para cambiar de sección", visible solo con joystick.
 
 **CamWheelManager** (implementa `IFlap`, mismo patrón de apertura/cierre que Flap):
 menú radial para elegir `CameraMode` a mano. Botones indexados por el enum de cámara;

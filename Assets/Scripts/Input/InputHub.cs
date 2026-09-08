@@ -24,6 +24,8 @@ public static class InputHub
     const string EJE_ATAQUE_GAMEPAD = "GamepadAttack";//boton B: atacar, siempre
     const string EJE_CAMARA = "CameraToggle";         //click del medio / R1
     const string EJE_CAMARA_TRIGGER = "CameraTrigger";//L2 (gatillo, es un EJE y no un boton)
+    const string EJE_TAB_SIGUIENTE = "TabSiguiente";  //R1 (boton 5): solo para ciclar tabs del Flap
+    const string EJE_TAB_ANTERIOR = "TabAnterior";    //L1 (boton 4, mismo fisico que Correr): idem
     const string EJE_MUTE = "Mute";                   //M (solo teclado: en el joystick no hay boton de sobra)
     const string EJE_OPCIONES = "Options";            //Esc / Start
     const string EJE_INVENTARIO = "Inventory";        //I (solo teclado)
@@ -79,6 +81,20 @@ public static class InputHub
 
     /// <summary>Cambiar de camara: click del medio, R1, o el gatillo L2.</summary>
     public static bool CambiarCamaraDown => GetButtonDownSeguro(EJE_CAMARA) || GatilloIzquierdoDown;
+
+    /// <summary>
+    /// R1 del joystick. Solo lo lee el Flap (menu abierto) para ciclar de tab; R1 no tiene ningun
+    /// otro uso en el proyecto (el toggle de camara le saco el binding a R1 hace tiempo, ver
+    /// controles-y-gamepad.md), asi que no hay conflicto con gameplay.
+    /// </summary>
+    public static bool TabSiguienteDown => GetButtonDownSeguro(EJE_TAB_SIGUIENTE);
+
+    /// <summary>
+    /// L1 del joystick. Comparte el boton fisico con Correr (Run), pero es un eje DISTINTO: el
+    /// Flap solo lo lee mientras el menu esta abierto, y ahi el gameplay ya esta gateado (issue
+    /// #41.3), asi que presionar L1 para cambiar de tab no dispara sprint real.
+    /// </summary>
+    public static bool TabAnteriorDown => GetButtonDownSeguro(EJE_TAB_ANTERIOR);
 
     /// <summary>Movimiento con el smoothing de Unity: para la fisica (aceleracion suave).</summary>
     public static Vector2 Movimiento =>
