@@ -148,6 +148,27 @@ cierra con E, sólo con sus botones) dejaba trabado a un jugador de joystick. Lo
 botón A (que es Submit) lo apretaría mientras el jugador juega. Por eso la selección se
 limpia al cerrar menús y overlays, y por eso sólo se selecciona cuando hay joystick.
 
+### Fugas de foco que ya nos mordieron (no repetirlas)
+
+- **`Selectable.Select()` es `EventSystem.SetSelectedGameObject`.** No es "resaltar", es
+  *dar el foco*. `CamWheelManager.FakeSelectButton` lo usaba para pintar la cámara activa, y
+  como está suscripto a `OnCameraChange`, después de cada cambio de cámara la rueda se
+  quedaba con el foco y el siguiente Submit la volvía a apretar sola. Para resaltar sin dar
+  foco: escala o swap de sprite (ver `CamWheelButton` y `FlapDisplayButton`).
+- **Seleccionar con el menú cerrado.** `FlapManager` seleccionaba en `ShowDesiredDisplay`,
+  que se llama *antes* de abrir el flap: quedaba un botón vivo con el menú cerrado y el
+  jugador lo apretaba sin querer mientras jugaba. Ahora la selección la hace `MoveFlap` recién
+  cuando el menú terminó de abrirse.
+- **Un display sin nada navegable deja trabado.** Tareas no tiene botones (los `QuestSlot` son
+  texto), así que no había nada que seleccionar y el stick no movía nada. El fallback es
+  seleccionar la solapa del propio display, que siempre existe.
+- **Navigation = None gana a nivel instancia.** Los tres sliders de settings tenían el override
+  `m_Navigation.m_Mode: 0` en `FlapManager.prefab`, así que arreglar `SliderFlap.prefab` no
+  alcanzaba. Al tocar navegación, revisar los overrides de las instancias, no sólo el prefab.
+- **El color de "seleccionado" tiene que verse.** El de `Button.prefab` era gris 0.9607 sobre
+  blanco: invisible. Ahora es ámbar. Y ojo con los overrides por instancia de
+  `m_Colors.m_SelectedColor`: hacían que en "¿salir?" quedaran los dos botones pintados.
+
 ## Prompts de botones en los textos
 
 Los textos del juego decían "Press E to talk", "Mantené SHIFT para correr", etc. Con un
