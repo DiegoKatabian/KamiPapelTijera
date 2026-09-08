@@ -230,7 +230,28 @@ public class FlapManager : Singleton<FlapManager>
         //la seleccion la hace MoveFlap al terminar de abrirse.
         if (_isOpen)
         {
-            UISelector.SeleccionarPrimeroSiJoystick(flapDisplay.display);
+            SeleccionarDentroDe(flapDisplay);
+        }
+    }
+
+    /// <summary>
+    /// Deja el foco adentro de ese display; y si el display no tiene NADA navegable (el caso de
+    /// Tareas cuando no hay quests: son slots de texto, no botones), cae en la solapa del propio
+    /// display. Sin ese fallback el jugador entraba a Tareas y quedaba trabado: no habia nada
+    /// seleccionado, asi que el stick no movia nada y no habia forma de volver a las otras solapas.
+    /// </summary>
+    void SeleccionarDentroDe(FlapDisplay flapDisplay)
+    {
+        //avisarSiNoHay en false: que un display no tenga botones es una configuracion valida,
+        //no un error. El fallback de abajo se encarga.
+        if (UISelector.SeleccionarPrimeroSiJoystick(flapDisplay.display, false))
+        {
+            return;
+        }
+
+        if (flapDisplay.flapButton != null)
+        {
+            UISelector.SeleccionarPrimeroSiJoystick(flapDisplay.flapButton.gameObject);
         }
     }
 
@@ -251,7 +272,7 @@ public class FlapManager : Singleton<FlapManager>
         {
             if (d.display != null && d.display.activeInHierarchy)
             {
-                UISelector.SeleccionarPrimeroSiJoystick(d.display);
+                SeleccionarDentroDe(d);
                 return;
             }
         }

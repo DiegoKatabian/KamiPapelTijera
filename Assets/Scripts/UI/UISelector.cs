@@ -24,9 +24,9 @@ public static class UISelector
     static int _generacion = 0;
 
     /// <summary>Selecciona el primer boton navegable que encuentre debajo de 'raiz'.</summary>
-    public static void SeleccionarPrimero(GameObject raiz)
+    public static bool SeleccionarPrimero(GameObject raiz)
     {
-        SeleccionarPrimero(raiz, true);
+        return SeleccionarPrimero(raiz, true);
     }
 
     /// <summary>
@@ -34,25 +34,28 @@ public static class UISelector
     /// Los overlays que se cierran con E/B y no tienen botones (defeat, mainquest) usan
     /// avisarSiNoHay=false: si no, cada muerte del jugador dejaria un warning en la consola.
     /// </summary>
-    public static void SeleccionarPrimero(GameObject raiz, bool avisarSiNoHay)
+    public static bool SeleccionarPrimero(GameObject raiz, bool avisarSiNoHay)
     {
         if (raiz == null)
         {
             Debug.LogWarning("[UISelector] SeleccionarPrimero: me pasaron una raiz null, no selecciono nada");
-            return;
+            return false;
         }
 
         EventSystem eventSystem = EventSystem.current;
         if (eventSystem == null)
         {
-            Debug.LogWarning($"[UISelector] SeleccionarPrimero: no hay EventSystem.current (raiz '{raiz.name}'), no selecciono nada");
-            return;
+            //puede pasar legitimamente en el arranque de una escena: nuestro Start corre antes
+            //de que el EventSystem se registre. No es un error, hay que reintentar el frame que viene
+            Debug.Log($"[UISelector] todavia no hay EventSystem.current (raiz '{raiz.name}'), reintento el proximo frame");
+            ReintentarCuandoHayaEventSystem(raiz, avisarSiNoHay);
+            return false;
         }
 
         if (!raiz.activeInHierarchy)
         {
             Debug.LogWarning($"[UISelector] SeleccionarPrimero: la raiz '{raiz.name}' esta desactivada, no selecciono nada");
-            return;
+            return false;
         }
 
         Selectable elegido = BuscarPrimerNavegable(raiz, true);
@@ -62,7 +65,7 @@ public static class UISelector
             {
                 Debug.LogWarning($"[UISelector] SeleccionarPrimero: no encontre ningun Selectable activo e interactuable debajo de '{raiz.name}', no selecciono nada");
             }
-            return;
+            return false;
         }
 
         Aplicar(eventSystem, elegido.gameObject);
@@ -79,26 +82,49 @@ public static class UISelector
         {
             eventSystem.StartCoroutine(ReintentarSeleccion(raiz, _generacion));
         }
+
+        return true;
+    }
+
+    //Si el EventSystem todavia no existe, esperamos un frame y volvemos a intentar. Sin esto,
+    //un Start que corre antes que el EventSystem (el caso del menu principal) se quedaba sin
+    //seleccion inicial y el joystick no podia navegar nada.
+    static void ReintentarCuandoHayaEventSystem(GameObject raiz, bool avisarSiNoHay)
+    {
+        EventSystem sistema = Object.FindObjectOfType<EventSystem>();
+        if (sistema == null || !sistema.isActiveAndEnabled)
+        {
+            Debug.LogWarning($"[UISelector] no hay ningun EventSystem en la escena: la UI no se va a poder navegar con joystick (raiz '{raiz.name}')");
+            return;
+        }
+
+        sistema.StartCoroutine(SeleccionarElProximoFrame(raiz, avisarSiNoHay));
+    }
+
+    static IEnumerator SeleccionarElProximoFrame(GameObject raiz, bool avisarSiNoHay)
+    {
+        yield return null;
+        SeleccionarPrimeroSiJoystick(raiz, avisarSiNoHay);
     }
 
     /// <summary>
     /// Solo selecciona si el jugador esta usando joystick. Con mouse no queremos robarle
     /// el foco ni dejar botones resaltados que nadie pidio.
     /// </summary>
-    public static void SeleccionarPrimeroSiJoystick(GameObject raiz)
+    public static bool SeleccionarPrimeroSiJoystick(GameObject raiz)
     {
-        SeleccionarPrimeroSiJoystick(raiz, true);
+        return SeleccionarPrimeroSiJoystick(raiz, true);
     }
 
     /// <summary>Variante con el flag de aviso (ver SeleccionarPrimero(raiz, avisarSiNoHay)).</summary>
-    public static void SeleccionarPrimeroSiJoystick(GameObject raiz, bool avisarSiNoHay)
+    public static bool SeleccionarPrimeroSiJoystick(GameObject raiz, bool avisarSiNoHay)
     {
         if (!HayQueSeleccionar())
         {
-            return;
+            return false;
         }
 
-        SeleccionarPrimero(raiz, avisarSiNoHay);
+        return SeleccionarPrimero(raiz, avisarSiNoHay);
     }
 
     /// <summary>Deselecciona lo que haya, para que el joystick no siga "apretando" un boton fantasma.</summary>
