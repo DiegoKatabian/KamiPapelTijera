@@ -41,12 +41,80 @@ public static class InputPromptSystem
         CambiarTab   //L1/R1: ciclar secciones del Flap (issue #41 ronda 2, punto 3). SOLO joystick: estos ejes no tienen binding de teclado (ver InputHub.TabSiguienteDown/TabAnteriorDown), asi que el cartelito que usa este placeholder tiene que estar oculto con teclado (ver SoloConJoystick)
     }
 
+    // -------------------------------------------------- iconos
+
+    /// <summary>
+    /// Kill switch de los iconos. En false, todo el sistema vuelve EXACTAMENTE al
+    /// comportamiento de texto que tenia antes ("(A)", "E", "Shift"...). Esta aca para que
+    /// si los iconos se ven mal en algun texto se pueda apagar todo desde un solo lugar,
+    /// sin revertir codigo.
+    /// </summary>
+    public static bool UsarIconos = true;
+
+    // Los ids se los pasamos a IconosDeBoton, que arma el tag <sprite name="..."> y el atlas.
+    // Si el atlas fallara (shader que no aparece, textura que no se pudo crear), Tag()
+    // devuelve vacio y CAEMOS SOLOS al texto de siempre: por eso cada prompt de abajo
+    // pregunta primero por el icono y despues devuelve su string historico.
+    static string IconoTeclado(Accion accion)
+    {
+        switch (accion)
+        {
+            case Accion.Saltar: return IconosDeBoton.Tag("espacio");
+            case Accion.Interactuar: return IconosDeBoton.Tag("e");
+            case Accion.Atacar: return IconosDeBoton.Tag("mouse_izq");
+            case Accion.Correr: return IconosDeBoton.Tag("shift");
+            case Accion.Camara: return IconosDeBoton.Tag("mouse_medio");
+            case Accion.Menu: return IconosDeBoton.Tag("esc");
+            case Accion.Mover: return IconosDeBoton.Tag("wasd");
+            default: return "";
+        }
+    }
+
+    static string IconoJoystick(Accion accion)
+    {
+        switch (accion)
+        {
+            case Accion.Saltar: return IconosDeBoton.Tag("a");
+            case Accion.Interactuar: return IconosDeBoton.Tag("a");
+            case Accion.Atacar: return IconosDeBoton.Tag("b");
+            case Accion.Correr: return IconosDeBoton.Tag("l1");
+            case Accion.Camara: return IconosDeBoton.Tag("l2");
+            case Accion.Menu: return IconosDeBoton.Tag("start");
+            case Accion.Mover: return IconosDeBoton.Tag("stick");
+
+            //los dos bumpers juntos: es un solo "control" conceptual (ciclar secciones),
+            //asi que se muestran los dos iconos separados por la barra, igual que el texto
+            case Accion.CambiarTab:
+            {
+                string l1 = IconosDeBoton.Tag("l1");
+                string r1 = IconosDeBoton.Tag("r1");
+                if (string.IsNullOrEmpty(l1) || string.IsNullOrEmpty(r1))
+                {
+                    return "";
+                }
+                return l1 + " / " + r1;
+            }
+
+            default: return "";
+        }
+    }
+
     // -------------------------------------------------- tablas de prompts
 
-    // TABLA DE TECLADO. Lo de siempre, y no se toca: si esto cambia, cambia la
-    // experiencia que ya funciona.
+    // TABLA DE TECLADO. El texto de abajo es el historico y sigue siendo la red de
+    // seguridad: con UsarIconos en false, o si el atlas no se pudo construir, el jugador ve
+    // exactamente lo de siempre.
     static string PromptTeclado(Accion accion)
     {
+        if (UsarIconos)
+        {
+            string icono = IconoTeclado(accion);
+            if (!string.IsNullOrEmpty(icono))
+            {
+                return icono;
+            }
+        }
+
         switch (accion)
         {
             case Accion.Saltar: return "Espacio";
@@ -64,23 +132,7 @@ public static class InputPromptSystem
         }
     }
 
-    // TABLA DE JOYSTICK. ESTA es la unica tabla que hay que tocar para pasar a iconos.
-    //
-    // Hoy devuelve TEXTO ("(A)", "(B)"...) y no iconos de TextMeshPro porque TODAVIA NO
-    // EXISTE EL ATLAS DE SPRITES DE BOTONES: es dependencia de arte (Valentino). Cuando
-    // exista, se cambia SOLO este switch por los tags de TMP y todo el resto del sistema
-    // (placeholders, tokens legacy, los dos enganches de UI) sigue igual:
-    //
-    //     case Accion.Saltar:      return "<sprite name=button_A>";
-    //     case Accion.Interactuar: return "<sprite name=button_A>";
-    //     case Accion.Atacar:      return "<sprite name=button_B>";
-    //     case Accion.Correr:      return "<sprite name=button_L1>";
-    //     case Accion.Camara:      return "<sprite name=button_L2>";
-    //     case Accion.Menu:        return "<sprite name=button_Start>";
-    //     case Accion.Mover:       return "<sprite name=stick_left>";
-    //
-    // Ojo cuando llegue ese dia: el sprite asset tiene que estar en el fallback global de
-    // TMP (o en la fuente de cada TMP que muestre prompts), si no se ve el tag crudo.
+    // TABLA DE JOYSTICK.
     //
     // MAPEO VIGENTE (cambio en septiembre 2026, antes era al reves): el boton A es
     // CONTEXTUAL y hace las dos cosas que el teclado separa en E y Espacio -- si hay algo
@@ -88,6 +140,15 @@ public static class InputPromptSystem
     // solo para atacar, que en teclado es el click / CTRL.
     static string PromptJoystick(Accion accion)
     {
+        if (UsarIconos)
+        {
+            string icono = IconoJoystick(accion);
+            if (!string.IsNullOrEmpty(icono))
+            {
+                return icono;
+            }
+        }
+
         switch (accion)
         {
             case Accion.Saltar: return "(A)";
@@ -122,11 +183,17 @@ public static class InputPromptSystem
 
         bool joystick = InputHub.UltimoDeviceFueJoystick;
 
-        // CAMINO RAPIDO. Sin '{' no hay placeholders, y con teclado no hay nada mas que
-        // hacer: se devuelve LA MISMA instancia. Esta linea es tambien la garantia dura de
-        // que con teclado el texto nunca cambia salvo por placeholders explicitos.
+        // CAMINO RAPIDO. Sin '{' no hay placeholders; con teclado Y SIN iconos tampoco hay
+        // nada que hacer, asi que se devuelve LA MISMA instancia.
+        //
+        // OJO, esto cambio en la tanda de iconos (septiembre 2026): ANTES los tokens legacy
+        // corrian solo con joystick, y la regla de oro era "con teclado el texto sale
+        // identico a hoy". Ahora tambien corren con teclado, PORQUE ES EL PUNTO: es lo que
+        // convierte el "E" y el "ESPACIO" escritos a mano en las tablas en iconos de tecla.
+        // La red de seguridad es UsarIconos: en false volvemos exactamente al comportamiento
+        // viejo, teclado incluido.
         bool puedeTenerPlaceholder = texto.IndexOf('{') >= 0;
-        if (!puedeTenerPlaceholder && !joystick)
+        if (!puedeTenerPlaceholder && !joystick && !UsarIconos)
         {
             return texto;
         }
@@ -138,9 +205,9 @@ public static class InputPromptSystem
             resultado = RxPlaceholder.Replace(resultado, ResolverPlaceholder);
         }
 
-        if (joystick)
+        if (joystick || UsarIconos)
         {
-            resultado = TraducirTokensLegacy(resultado);
+            resultado = TraducirTokensLegacy(resultado, joystick);
         }
 
         return resultado;
@@ -287,8 +354,12 @@ public static class InputPromptSystem
     // Ahi la letra sola SI es la tecla, y se reconoce por el guion que viene atras. Va
     // anclada al arranque de RENGLON (Multiline) y con el guion como testigo obligatorio:
     // sin las dos cosas esto se comeria cualquier "e" suelta del castellano.
+    // Se amplio de [EUI] a [EUIOM] en la tanda de iconos (septiembre 2026): las lineas
+    // "O - Abrir Controles" y "M - Control de sonido" eran el gap conocido de esta regex
+    // (estaba anotado en docs/claude/controles-y-gamepad.md) y quedaban mostrando la letra
+    // pelada. Con iconos ahora se dibujan como keycap igual que el resto de la lista.
     static readonly Regex RxTeclaEnListaDeControles = new Regex(
-        @"(?m)^(?<letra>[EUI])(?=\s*[-–—]\s)",
+        @"(?m)^(?<letra>[EUIOM])(?=\s*[-–—]\s)",
         RegexOptions.Compiled);
 
     // El tooltip de "arrastrar" del origami (Origami.tooltipMessage, mostrado por
@@ -307,27 +378,61 @@ public static class InputPromptSystem
         @"^(?<verbo>Arrastrá|Arrastra|Drag|Arraste)\b",
         RegexOptions.Compiled);
 
-    static string TraducirTokensLegacy(string texto)
+    //Que device se esta resolviendo en ESTA pasada. Es un campo y no un parametro porque los
+    //MatchEvaluator de abajo (ReemplazarTeclaDeLista, ReemplazarTeclaConVerbo) tienen firma
+    //fija y necesitan saberlo. Unity corre todo esto en el hilo principal y la pasada es
+    //sincronica de punta a punta, asi que no hay carrera posible.
+    static bool _joystickEnCurso;
+
+    static string TraducirTokensLegacy(string texto, bool joystick)
     {
+        _joystickEnCurso = joystick;
+
         //Regex.Replace devuelve el MISMO string cuando no hay match, asi que un texto sin
         //tokens (la mayoria de los dialogos) no allocan nada aca.
         string r = texto;
 
-        r = RxCamaraMultiPalabra.Replace(r, PromptJoystick(Accion.Camara));
-        r = RxClickOCtrl.Replace(r, PromptJoystick(Accion.Atacar));
-        r = RxClick.Replace(r, PromptJoystick(Accion.Atacar));
-        r = RxCtrl.Replace(r, PromptJoystick(Accion.Atacar));
-        r = RxShift.Replace(r, PromptJoystick(Accion.Correr));
-        r = RxEspacio.Replace(r, PromptJoystick(Accion.Saltar));
-        r = RxEsc.Replace(r, PromptJoystick(Accion.Menu));
-        r = RxWasd.Replace(r, "stick izquierdo");
+        r = RxCamaraMultiPalabra.Replace(r, PromptDe(Accion.Camara));
+        r = RxClickOCtrl.Replace(r, PromptDe(Accion.Atacar));
+        r = RxClick.Replace(r, PromptDe(Accion.Atacar));
+        r = RxCtrl.Replace(r, PromptDe(Accion.Atacar));
+        r = RxShift.Replace(r, PromptDe(Accion.Correr));
+        r = RxEspacio.Replace(r, PromptDe(Accion.Saltar));
+        r = RxEsc.Replace(r, PromptDe(Accion.Menu));
+        //"stick izquierdo" (y no el "stick" pelado de la tabla de prompts) es la redaccion
+        //historica de este reemplazo puntual: se conserva tal cual para cuando no hay iconos.
+        r = RxWasd.Replace(r, joystick
+            ? IconoOTexto(true, Accion.Mover, "stick izquierdo")
+            : IconoOTexto(false, Accion.Mover, "WASD"));
 
         r = RxTeclaConVerbo.Replace(r, ReemplazarTeclaConVerbo);
-        r = RxTeclaAlInicio.Replace(r, PromptJoystick(Accion.Interactuar));
+        r = RxTeclaAlInicio.Replace(r, PromptDe(Accion.Interactuar));
         r = RxTeclaEnListaDeControles.Replace(r, ReemplazarTeclaDeLista);
-        r = RxArrastrarAlInicio.Replace(r, ReemplazarArrastrarAlInicio);
+
+        //ESTA se queda SOLO con joystick, a diferencia de todas las de arriba: no traduce un
+        //boton, agrega la explicacion de que con joystick hay que APRETAR algo antes de poder
+        //arrastrar (con mouse el click y el arrastre son el mismo gesto y la frase original ya
+        //esta bien). Con teclado/mouse meter esto seria empeorar un texto que ya funciona.
+        if (joystick)
+        {
+            r = RxArrastrarAlInicio.Replace(r, ReemplazarArrastrarAlInicio);
+        }
 
         return r;
+    }
+
+    //Para los reemplazos donde el texto de reserva NO es el de la tabla de prompts sino una
+    //redaccion propia de ese reemplazo puntual: si hay icono lo usa, y si no deja la frase
+    //historica intacta.
+    static string IconoOTexto(bool joystick, Accion accion, string textoOriginal)
+    {
+        if (!UsarIconos)
+        {
+            return textoOriginal;
+        }
+
+        string icono = joystick ? IconoJoystick(accion) : IconoTeclado(accion);
+        return string.IsNullOrEmpty(icono) ? textoOriginal : icono;
     }
 
     // Con joystick anteponemos "Toca (A) y..."/"Press (A) and..."/"Toca (A) e..." al verbo de
@@ -362,20 +467,56 @@ public static class InputPromptSystem
 
     static string PromptDeLetra(string letra)
     {
+        //CON TECLADO la letra sigue siendo la letra: no se traduce nada, solo se dibuja como
+        //keycap. Este camino no existia antes de los iconos (los tokens legacy corrian solo
+        //con joystick), y es el que hace que la pantalla de Controles se vea con teclitas.
+        if (!_joystickEnCurso)
+        {
+            switch (letra)
+            {
+                case "E": return TeclaSuelta("e", "E");
+                case "U": return TeclaSuelta("u", "U");
+                case "I": return TeclaSuelta("i", "I");
+                case "O": return TeclaSuelta("o", "O");
+                case "M": return TeclaSuelta("m", "M");
+                default: return letra;
+            }
+        }
+
         switch (letra)
         {
             case "E":
                 return PromptJoystick(Accion.Interactuar);
 
-            // U (Tareas) e I (Morral) no tienen boton propio en el joystick: se llega a las
-            // dos por el menu con Start. Mandar al jugador al menu es lo mas honesto que
-            // podemos decirle.
+            // U (Tareas), I (Morral) y O (Controles) no tienen boton propio en el joystick:
+            // se llega a las tres por el menu con Start. Mandar al jugador al menu es lo mas
+            // honesto que podemos decirle.
             case "U":
             case "I":
+            case "O":
                 return PromptJoystick(Accion.Menu);
+
+            // Mutear NO tiene equivalente en joystick, y es a proposito (no hay binding).
+            // Seguimos mostrando la tecla aunque el jugador este con joystick: es un control
+            // de teclado, y decirle "(Start)" seria mentirle.
+            case "M":
+                return TeclaSuelta("m", "M");
 
             default:
                 return letra;
         }
+    }
+
+    //Una tecla que se muestra como si misma: con iconos sale el keycap dibujado, sin iconos
+    //sale la letra de siempre.
+    static string TeclaSuelta(string idIcono, string textoOriginal)
+    {
+        if (!UsarIconos)
+        {
+            return textoOriginal;
+        }
+
+        string icono = IconosDeBoton.Tag(idIcono);
+        return string.IsNullOrEmpty(icono) ? textoOriginal : icono;
     }
 }

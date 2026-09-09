@@ -255,13 +255,28 @@ sobre los textos de tooltips y diálogos:
    agregado en la ronda 2 del Flap, resuelve a "L1 / R1" con joystick y a `""` con teclado
    porque ese eje no tiene bind de teclado, ver más abajo) — el camino limpio para textos
    nuevos. Funcionan siempre, con cualquier device.
-2. **Tokens legacy** (SHIFT, ESPACIO, Click, "Press E"…) — se traducen **sólo si el jugador
-   está usando joystick**, para no tener que editar las tablas de localización (que son
-   contenido de Diego/Valentino). Con teclado el texto sale idéntico a hoy.
+2. **Tokens legacy** (SHIFT, ESPACIO, Click, "Press E"…) — se traducen sin tocar las tablas
+   de localización (que son contenido de Diego/Valentino).
 
-Hoy los prompts de joystick son **texto** (`(A)`, `(B)`, `(L1)`…), no íconos: falta el
-atlas de sprites de botones (dependencia de arte). El código está escrito para que pasar a
-`<sprite name=button_A>` de TextMeshPro sea cambiar una sola tabla.
+### Los prompts son ÍCONOS (septiembre 2026, spec `specs/005-textos-resaltados-e-iconos/`)
+
+Ya no son texto: `PromptTeclado`/`PromptJoystick` devuelven tags `<sprite name="btn_a_0">` de
+TextMeshPro, y el atlas lo construye **por código** `Assets/Scripts/UI/IconosDeBoton.cs` (no
+hay ningún asset que importar ni prefab que tocar). `AnimadorDeIconos.cs` los hace respirar
+reescribiendo UVs sobre la malla ya generada. Detalle completo en el spec.
+
+**Cambió una regla de oro**: antes los tokens legacy corrían **sólo con joystick** y "con
+teclado el texto sale idéntico a hoy". Ahora corren **con los dos devices**, porque es
+justamente lo que convierte el `E` y el `ESPACIO` escritos a mano en las tablas en teclitas
+dibujadas. La red de seguridad es `InputPromptSystem.UsarIconos = false`: en false vuelve
+exactamente al comportamiento viejo, teclado incluido. Y si el atlas no se pudo construir,
+cada prompt cae solo a su texto histórico (`"(A)"`, `"E"`, `"Shift"`…).
+
+**Ojo al agregar tokens nuevos**: el resaltado de palabras clave
+(`ResaltadorDeConceptos.cs`) corre ANTES sobre el mismo string. Su tabla tiene prohibido
+contener vocabulario de input (E, U, I, O, M, WASD, click, shift, ctrl, esc, space, stick,
+A, B, L1, L2, Start) justamente para no envolver en tags algo que estas regex necesitan
+matchear después.
 
 ### El tab Controles del Flap YA se traduce solo (issue #41.6)
 
@@ -283,12 +298,12 @@ existían:
    `RxCamaraMultiPalabra` cubren el resto de los tokens de esa misma lista en los 3 idiomas
    (verificado leyendo `UITexts_es/en/pt.asset` directo).
 
-**Gap conocido, no arreglado (`InputPromptSystem.cs` está fuera de mi alcance en esta
-sesión, ver `CLAUDE.md` de la tarea)**: `RxTeclaEnListaDeControles` solo reconoce `[EUI]`.
-Las líneas "O - Abrir Controles" y "M - Control de sonido" de esa misma lista NO tienen
-traducción a joystick — quedan mostrando la letra de teclado. "M" no tiene botón de gamepad
-por diseño (no arreglable sin agregar un binding). "O" sí debería mapear a `(Start)` (mismo
-eje "Options" que Esc) — flageado como tarea de background aparte.
+**Gap cerrado (septiembre 2026, tanda de íconos)**: `RxTeclaEnListaDeControles` pasó de
+`[EUI]` a `[EUIOM]`, así que las líneas "O - Abrir Controles" y "M - Control de sonido" ya
+no quedan con la letra pelada. Con joystick, "O" mapea a `(Start)` (mismo eje "Options" que
+Esc); "M" **sigue mostrando la tecla a propósito** — mutear no tiene binding de gamepad por
+diseño, y decirle `(Start)` al jugador sería mentirle. Con teclado las cinco letras se
+dibujan como keycaps.
 
 ## Cómo verificar sin abrir Unity
 
@@ -437,11 +452,10 @@ pueden validar jugando.
   tabla `UITexts`, formato "TECLA - Acción" por línea), y YA estaba cubierto por
   `LocalizedText.cs` (engancha cualquier `LocalizeStringEvent` de la escena y lo reprocesa
   en cada cambio de device) + `InputPromptSystem.RxTeclaEnListaDeControles` (ya existía,
-  matchea ese formato) — ambos de una sesión previa a esta. Gap conocido no arreglado (fuera
-  de mi alcance, `InputPromptSystem.cs` tocado por otro agente en esta misma tanda): las
-  líneas "O - Abrir Controles" y "M - Control de sonido" no traducen (el regex solo cubre
-  `[EUI]`); flageado como tarea aparte. Detalle en "El tab Controles del Flap YA se traduce
-  solo", arriba.
+  matchea ese formato) — ambos de una sesión previa a esta. El gap que quedaba ("O - Abrir
+  Controles" y "M - Control de sonido" sin traducir, porque el regex solo cubría `[EUI]`) se
+  cerró en la tanda de íconos: ahora es `[EUIOM]`. Detalle en "El tab Controles del Flap YA
+  se traduce solo", arriba.
 - **#41.7 Cursor auto-hide**: cursor aparece con mouse pero no desaparece al volver a joystick; falta timeout.
 - **#41.8 Chino dialogue**: texto tiene "[...]" duplicado.
 

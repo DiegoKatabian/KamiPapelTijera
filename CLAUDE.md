@@ -11,7 +11,7 @@ Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spin
 - `Assets/Scripts/TriggerS/` — triggers de zona (base `TriggerScript`, con tooltip por color)
 - `Assets/Scripts/Origami/` — minijuego de origami + `PedestalCanvasDisplay` (costo en pedestal)
 - `Assets/Scripts/Input/` — `InputHub` (fachada única de input), `InteractionContext` (el botón B contextual), `GamepadCursor`, `InputPromptSystem`
-- `Assets/Scripts/UI/` — `TooltipManager`/`PostIt` (tutorial), `FlapManager`/`CamWheelManager` (menú y selector de cámara), `InventorySlot`
+- `Assets/Scripts/UI/` — `TooltipManager`/`PostIt` (tutorial), `FlapManager`/`CamWheelManager` (menú y selector de cámara), `InventorySlot`; `LocalizedText` (embudo ÚNICO de todo el texto localizado), y sobre él `ResaltadorDeConceptos` (palabras clave con color) + `IconosDeBoton`/`AnimadorDeIconos` (íconos animados de input) — ver `specs/005-textos-resaltados-e-iconos/spec.md`
 - `Assets/Scripts/Inventory/` — `InventoryManager`/`InventoryItem` (recursos recolectables)
 - `Assets/Scripts/Quests/` — `QuestManager`/`QuestEffector` + un ScriptableObject `QuestNN_Nombre.asset` por quest
 - `Assets/Scripts/Dialogos/` — un `*DialogueTrigger.cs` por NPC + estados de NPC (`NPC_Abuela`, `NPC_Florista`, etc.)
@@ -31,6 +31,7 @@ Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spin
 Active work branches:
 - `feature/spine-animations` — Spine character animations (Spanish code/comments)
 - `feature/joystick-controls` (issue #41) — gamepad support with animated input prompts (A=jump, B=attack/interact, L1=sprint, L2=camera), target M4 (Oct 15). See `specs/004-joystick-controls/spec.md` (English).
+- `feature/textos-resaltados-e-iconos` — palabras clave resaltadas con código de colores didáctico + íconos animados de input dentro del texto. Sale de `feature/joystick-controls`. Ver `specs/005-textos-resaltados-e-iconos/spec.md` (español).
 
 Roadmap and future feature specs: `specs/` (Spec Kit) and `ROADMAP.md`.
 

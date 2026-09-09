@@ -131,13 +131,74 @@ public static class LocalizedText
             //nada que reprocesar: sacarlo del registro evita que un refresh posterior le
             //resucite el texto que tenia antes de que lo limpiaran
             _crudos.Remove(destino);
+            AnimadorDeIconos.Desregistrar(destino);
             destino.text = crudo;
             return;
         }
 
+        //El resaltado de conceptos se hornea UNA SOLA VEZ, aca, y queda guardado DENTRO del
+        //crudo. No puede ir junto a los prompts (que se recalculan enteros en cada cambio de
+        //device) porque NO es idempotente: los tags <b><color> dejan la palabra intacta en el
+        //medio, asi que volver a pasarle el resaltador a un texto ya resaltado la envolveria
+        //de nuevo, y otra vez, anidando tags en cada cambio de device.
+        crudo = ResaltadorDeConceptos.Resaltar(crudo);
+
         _crudos[destino] = crudo;
-        destino.text = InputPromptSystem.Procesar(crudo);
+        EscribirProcesado(destino, crudo);
     }
+
+    /// <summary>
+    /// El UNICO lugar donde un crudo se convierte en el texto final que ve el jugador. Lo
+    /// usan tanto <see cref="Aplicar"/> como el refresh por cambio de device: si los dos
+    /// caminos no hicieran exactamente lo mismo, agarrar el joystick dejaria textos sin
+    /// sprite asset o sin animar.
+    /// </summary>
+    static void EscribirProcesado(TMP_Text destino, string crudo)
+    {
+        AsegurarSpriteAsset(destino);
+        destino.text = InputPromptSystem.Procesar(crudo);
+        AnimadorDeIconos.Registrar(destino);
+    }
+
+    /// <summary>
+    /// Sin sprite asset asignado, un tag &lt;sprite name="btn_a_0"&gt; se ve como texto crudo
+    /// en pantalla. El atlas de iconos se construye por codigo (no es un asset del proyecto),
+    /// asi que hay que enchufarselo a cada TMP antes de escribirle el texto.
+    /// </summary>
+    static void AsegurarSpriteAsset(TMP_Text destino)
+    {
+        TMP_SpriteAsset iconos = IconosDeBoton.Asset;
+        if (iconos == null)
+        {
+            return;
+        }
+
+        if (destino.spriteAsset == null)
+        {
+            destino.spriteAsset = iconos;
+            return;
+        }
+
+        if (destino.spriteAsset == iconos)
+        {
+            return;
+        }
+
+        //Hoy NINGUN TMP del proyecto trae sprite asset propio (verificado: los 31 estan en
+        //fileID 0), asi que esto no deberia pasar nunca. Si alguna vez pasa, NO se lo pisamos
+        //ni le tocamos su lista de fallbacks -- eso ensuciaria un asset compartido del
+        //proyecto. Avisamos y ese texto se queda sin iconos, que es el mal menor.
+        if (_avisadosSpriteAssetPropio.Add(destino.GetInstanceID()))
+        {
+            Debug.LogWarning($"[LocalizedText] '{destino.name}' ya tiene su propio sprite asset " +
+                             $"('{destino.spriteAsset.name}'), asi que no le pongo el de iconos: " +
+                             "sus prompts van a salir como texto. Si esto es a proposito, sumale " +
+                             "IconosDeBoton.Asset como fallback a mano.");
+        }
+    }
+
+    //Para no repetir el warning de arriba una vez por linea de dialogo.
+    static readonly HashSet<int> _avisadosSpriteAssetPropio = new HashSet<int>();
 
     /// <summary>
     /// Saca un TMP del registro. Hay que llamarla cuando alguien le asigna '.text' A MANO
@@ -150,6 +211,9 @@ public static class LocalizedText
             return;
         }
         _crudos.Remove(destino);
+
+        //si el texto se va a vaciar a mano, tampoco tiene sentido seguir animandole iconos
+        AnimadorDeIconos.Desregistrar(destino);
     }
 
     static string TextoDeFallback(string clave, Opciones opciones)
@@ -186,6 +250,7 @@ public static class LocalizedText
         _crudos.Clear();
         _muertos.Clear();
         _enganchados.Clear();
+        _avisadosSpriteAssetPropio.Clear();
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -197,6 +262,17 @@ public static class LocalizedText
 
         SceneManager.sceneLoaded -= AlCargarEscena;
         SceneManager.sceneLoaded += AlCargarEscena;
+
+        //El atlas de iconos se dibuja por codigo la primera vez que alguien lo pide. Pedirlo
+        //ACA lo saca del medio del primer dialogo: si no, el hitch de generar la textura caeria
+        //justo cuando el jugador abre el primer globo de texto. De paso, si fallo, se entera
+        //al arrancar y no cinco minutos despues viendo tags crudos en pantalla.
+        if (IconosDeBoton.Asset == null)
+        {
+            Debug.LogWarning("[LocalizedText] no se pudo construir el atlas de iconos de botones: " +
+                             "los prompts van a salir como texto ('E', '(A)'...), que es el " +
+                             "comportamiento viejo. Revisar los logs de [IconosDeBoton].");
+        }
 
         EngancharLocalizeStringEvents();
     }
@@ -231,7 +307,7 @@ public static class LocalizedText
                 continue;
             }
 
-            destino.text = InputPromptSystem.Procesar(par.Value);
+            EscribirProcesado(destino, par.Value);
         }
 
         for (int i = 0; i < _muertos.Count; i++)
