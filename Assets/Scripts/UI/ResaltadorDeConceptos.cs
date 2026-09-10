@@ -432,23 +432,35 @@ public static class ResaltadorDeConceptos
     {
         _enabled = true;
 
-        AddWords(BuildStyle(HexColor("D6453D"), true, true, 110f), SplitList(
-            "cortar, cortá, cortás, cortes, corte, corta, tijera, tijeras, cut, scissors, tesoura, tesouras"), "Cut");
+        //plateado: gris metalico, oscurecido para que siga leyendose sobre un post-it amarillo
+        AddWords(BuildStyle(HexColor("7A828C"), true, true, 110f), SplitList(
+            "cortar, cortá, cortás, cortes, corte, corta, tijera, tijeras, cut, scissors, tesoura, tesouras"), "Tijera");
 
-        AddWords(BuildStyle(HexColor("2D7DD2"), true, true, 110f), SplitList(
-            "origami, origamis, doblar, doblada, doblarías, desdoblar, pliegue, fold, folding, unfold, dobrar, desdobrar"), "Origami");
+        //dorado: la palabra "papel" en si NO va aca -- tiene su propio color como recurso, ver
+        //"Recurso - Papel" mas abajo. Esta categoria es el MECANISMO (origami/doblar), no el material.
+        AddWords(BuildStyle(HexColor("A67C00"), true, true, 110f), SplitList(
+            "origami, origamis, doblar, doblada, doblarías, desdoblar, pliegue, fold, folding, unfold, dobrar, desdobrar"), "Papel y Origami");
+
+        AddWords(BuildStyle(HexColor("2D7DD2"), true, false, 110f), SplitList(
+            "agua, água, water, río, rio, river, mojar, mojarte, mojado, mojada, mojarse, molhar, molhado, molhada"), "Rio y Mojar");
+
+        AddWords(BuildStyle(HexColor("D6453D"), true, false, 110f), SplitList(
+            "rocoso, rocosos, piedra, piedras, rocas, rock, rocks, pedra, pedras, rochas, rochosas, " +
+            "muerte, morte, death"), "Rocoso y Muerte");
+
+        //ceniza: gris calido, distinto del plateado de la tijera y del verde de los demas recursos
+        AddWords(BuildStyle(HexColor("8C8577"), true, false, 110f), SplitList(
+            "papel, papeles, papéis, paper, papers"), "Recurso - Papel");
+
+        AddWords(BuildStyle(HexColor("9B3D8F"), true, false, 110f), SplitList(
+            "flor, flores, flower, flowers"), "Recurso - Flores");
 
         AddWords(BuildStyle(HexColor("3E9B4F"), true, false, 110f), SplitList(
-            "papel, papeles, papéis, flor, flores, hongo, hongos, fungo, fungos, botas, paper, papers, " +
-            "flower, flowers, mushroom, mushrooms, boots, shoes"), "Resource");
+            "hongo, hongos, fungo, fungos, botas, mushroom, mushrooms, boots, shoes"), "Recursos varios");
 
-        //ambar OSCURO a proposito: los post-its del tutorial son amarillos, y un ambar claro
-        //sobre amarillo no se lee. El color se eligio contra ese fondo.
-        AddWords(BuildStyle(HexColor("B5651D"), true, false, 110f), SplitList(
-            "agua, água, water, río, rio, river, rocoso, rocosos, piedra, piedras, rocas, rock, rocks, " +
-            "pedra, pedras, rochas, rochosas"), "Danger");
-
-        AddWords(BuildStyle(HexColor("8155BA"), true, false, 110f), SplitList(
+        //teal: antes era violeta, pero el violeta ahora es de las flores -- evita que dos
+        //categorias distintas compartan color
+        AddWords(BuildStyle(HexColor("1E8A78"), true, false, 110f), SplitList(
             "saltar, saltá, salto, mover, caminar, caminando, pular, pule, jump, move, run, walking"), "Movement");
 
         protectedPhrases.Add("Kami Papel y Tijera");

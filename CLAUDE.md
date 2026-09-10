@@ -114,7 +114,8 @@ La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso) decide la anim, el te
 - **New code/comments in ENGLISH** (see the language rule at the top of this file). The Spanish comments below/around are pre-2026-09-09 code and stay as they are.
 - Comments explain the *why*, not the *what*
 - Llaves siempre, incluso en una línea; `switch` con `break` explícito
-- `[SerializeField]` privado + `[Tooltip]` en español para todo valor tuneable
+- `[SerializeField]` privado + `[Tooltip]` para todo valor tuneable (tooltips nuevos en inglés, ver la regla de idioma arriba)
+- **Los valores de diseño (colores, listas de palabras, tuning) van en un asset editable en el inspector**, no hardcodeados en el script — ver `TextHighlightSettings` como referencia del patrón: se carga solo por `Resources.Load`, no hace falta cablear nada, y tiene fallback si el asset falta
 - `Debug.Log($"[NombreClase] ...")` en los puntos de decisión
 - Guard clauses con `Debug.LogWarning` en referencias que pueden faltar
 - **NO corregir los typos del skeleton** (`NoScissortsOverride`, `tiejraBack`): son del asset, no del código
