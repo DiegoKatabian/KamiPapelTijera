@@ -36,8 +36,7 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 2233142460416
     m_Localized: "WASD - Mover\nESPA\xC7O - Pular\nE - Interagir\nClique / CTRL -
-      Cortar\n\nClique do meio - Alternar c\xE2mera\nESC - Op\xE7\xF5es\nU - Abrir
-      tarefas\nI - Abrir mochila\nO - Abrir controles\n\nM - Controle de som\n\n"
+      Cortar\n\nClique do meio - Alternar c\xE2mera\nESC - Menu\n\n"
     m_Metadata:
       m_Items: []
   - m_Id: 10249149464576

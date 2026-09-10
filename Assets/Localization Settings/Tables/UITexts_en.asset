@@ -47,18 +47,7 @@ MonoBehaviour:
 
       Middle Click - Change Camera
 
-      ESC - Settings
-
-      U
-      - Open Quests
-
-      I - Open Inventory
-
-      O - Open Controls
-
-
-      M
-      - Sound On/Off
+      ESC - Pause
 
 '
     m_Metadata:

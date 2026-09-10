@@ -20,14 +20,14 @@ MonoBehaviour:
     enlarge: 1
     sizePercent: 110
     words: "cortar, cort\xE1, cort\xE1s, cortes, corte, corta, tijera, tijeras, cut,
-      scissors, tesoura, tesouras"
+      scissors, tesoura, tesouras, tijeras afiladas, Sharp Scissors, Tesoura Afiada"
   - categoryName: Papel y Origami
     color: {r: 0.6509804, g: 0.4862745, b: 0, a: 1}
     bold: 1
     enlarge: 1
     sizePercent: 110
     words: "origami, origamis, doblar, doblada, doblar\xEDas, desdoblar, pliegue,
-      fold, folding, unfold, dobrar, desdobrar"
+      fold, folding, unfold, dobrar, desdobrar, dobl\xE1s"
   - categoryName: Rio y Mojar
     color: {r: 0.1764706, g: 0.49019608, b: 0.8235294, a: 1}
     bold: 1
@@ -61,18 +61,18 @@ MonoBehaviour:
     sizePercent: 110
     words: hongo, hongos, fungo, fungos, mushroom, mushrooms
   - categoryName: Botas de Ule
-    color: {r: 0.9811321, g: 0.9069537, b: 0.16197933, a: 1}
+    color: {r: 0.1764706, g: 0.49019608, b: 0.8235294, a: 1}
     bold: 1
     enlarge: 0
     sizePercent: 110
-    words: ule, botas
+    words: botas de ule, botas, boots, rubber boots
   - categoryName: Movement
-    color: {r: 0.11764706, g: 0.5411765, b: 0.47058824, a: 1}
+    color: {r: 0.1764706, g: 0.49019608, b: 0.8235294, a: 1}
     bold: 1
     enlarge: 0
     sizePercent: 110
-    words: "saltar, salt\xE1, salto, mover, caminar, caminando, pular, pule, jump,
-      move, run, walking"
+    words: "saltar, salt\xE1, salto, mover, pular, pule, jump, move, run, interactuar,
+      interact, cambiar c\xE1mara, change camera, alternar c\xE2mera, interagir"
   protectedPhrases: Kami Papel y Tijera, Kami Papel Tijera, Kami Paper Scissors,
     Kami Papel e Tesoura
   cinematicSceneKeywords: Cutscene

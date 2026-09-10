@@ -116,12 +116,12 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661576607186944
-    m_Localized: Thanks! Look, the chickens are already crossing the tree. Here, take
-      this as reward.
+    m_Localized: Thanks! Look, the chickens are already crossing the tree. Here,
+      take this as reward.
     m_Metadata:
       m_Items: []
   - m_Id: 661588523204608
-    m_Localized: '[With these water boots, you won''t be afraid of the river anymore!]'
+    m_Localized: '[You can now walk on the water!]'
     m_Metadata:
       m_Items: []
   - m_Id: 661548048171008
@@ -167,7 +167,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 660091592884224
-    m_Localized: Take the SCISSORS with you, they're by the shed.
+    m_Localized: Take the scissors with you, they're by the shed.
     m_Metadata:
       m_Items: []
   - m_Id: 660089567035392
@@ -202,19 +202,18 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 657748046495744
-    m_Localized: 'The KLEMATIS FLOWERS are like the ones right there! Could you please
-      bring 3 of them to me? Pretty please? '
+    m_Localized: 'The flowers are like the ones right there! Could you please bring
+      3 of them to me? Pretty please? '
     m_Metadata:
       m_Items: []
   - m_Id: 657290133356544
     m_Localized: They are purple and quite large, but I can't leave my post to go
-      pick them up! Could you please bring  me 3 of them? Thank you Kami, you're
-      the best!
+      pick them up! Could you please bring  me 3 of them?
     m_Metadata:
       m_Items: []
   - m_Id: 657288740847616
-    m_Localized: There's these very special potions I'm preparing and I need KLEMATIS
-      FLOWERS to make them!
+    m_Localized: There's these very special potions I'm preparing and I need flowers
+      to make them!
     m_Metadata:
       m_Items: []
   - m_Id: 657286689832960
@@ -239,7 +238,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 656879393554432
-    m_Localized: Could you do me a favor and get 100 PAPERS for me? Don't sweat it
+    m_Localized: Could you do me a favor and get 100 papers for me? Don't sweat it
       though, you can come back to this page anytime.
     m_Metadata:
       m_Items: []

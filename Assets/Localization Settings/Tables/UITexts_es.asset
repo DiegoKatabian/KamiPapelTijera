@@ -36,8 +36,7 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 2233142460416
     m_Localized: "WASD - Mover\nSPACE - Saltar\nE - Interactuar\nClick / CTRL - Cortar\n\nClick
-      Central - Cambiar c\xE1mara\nESC - Opciones\nU - Abrir Tareas\nI - Abrir Morral\nO
-      - Abrir Controles\n\nM - Control de sonido\n"
+      Central - Cambiar c\xE1mara\nESC - Pausa\n\n"
     m_Metadata:
       m_Items: []
   - m_Id: 10249149464576

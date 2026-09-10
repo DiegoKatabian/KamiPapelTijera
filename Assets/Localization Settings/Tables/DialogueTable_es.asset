@@ -98,8 +98,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 656053900001280
-    m_Localized: "Ay, no sab\xE9s c\xF3mo me duele la espalda! No me doblar\xEDas
-      y me llev\xE1s en tu morralcito?"
+    m_Localized: "Ay, no sab\xE9s c\xF3mo me duele la espalda! No me dobl\xE1s y
+      me llev\xE1s en tu morralcito?"
     m_Metadata:
       m_Items: []
   - m_Id: 656153699270656
@@ -133,7 +133,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 656879393554432
-    m_Localized: "Pod\xE9s traerme 100 PAPELES? No hace falta que los traigas ahora.
+    m_Localized: "Pod\xE9s traerme 100 papeles? No hace falta que los traigas ahora.
       Pod\xE9s ir y volver entre p\xE1ginas cuando quieras."
     m_Metadata:
       m_Items: []
@@ -158,27 +158,25 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 657288740847616
-    m_Localized: "Estoy haciendo unas pociones especiales pero me qued\xE9 sin FLORES!"
+    m_Localized: "Estoy haciendo unas pociones especiales pero me qued\xE9 sin flores!"
     m_Metadata:
       m_Items: []
   - m_Id: 657290133356544
     m_Localized: "Son grandotas y llamativas, pero no puedo dejar mi puestito para
-      ir a buscarlas! Vos podr\xE1s traerme tres? Gracias Kami, sos lo m\xE1s!"
+      ir a buscarlas! Vos podr\xE1s traerme tres de ellas?"
     m_Metadata:
       m_Items: []
   - m_Id: 657748046495744
-    m_Localized: "Las FLORES VIOLETAS son como \xE9stas que ves ac\xE1. Me traes
-      tres porfa? "
+    m_Localized: "Kami, no podr\xE1s traerme tres flores por favor? "
     m_Metadata:
       m_Items: []
   - m_Id: 657925180342272
-    m_Localized: Gracias por traerme las flores!
+    m_Localized: "Gracias por traerme las flores! Sos lo m\xE1s!"
     m_Metadata:
       m_Items: []
   - m_Id: 657926950338560
     m_Localized: "Por haber sido taan buena conmigo te voy a regalar estos papeles.
-      S\xE9 que sos re talentosa con los origamis, as\xED que seguro que les das
-      buen uso!"
+      S\xE9 que sos re talentosa con los origamis, seguro te sirven para algo!"
     m_Metadata:
       m_Items: []
   - m_Id: 657928351236096
@@ -204,7 +202,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 660091592884224
-    m_Localized: "Agarrate la TIJERA, est\xE1 al lado del quincho."
+    m_Localized: "Agarrate la tijera, est\xE1 al lado del quincho."
     m_Metadata:
       m_Items: []
   - m_Id: 660424608038912
@@ -256,7 +254,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661588523204608
-    m_Localized: "[Con estas botas pod\xE9s caminar sobre el agua!]"
+    m_Localized: "[Ahora pod\xE9s caminar sobre el agua!]"
     m_Metadata:
       m_Items: []
   - m_Id: 661653480390656

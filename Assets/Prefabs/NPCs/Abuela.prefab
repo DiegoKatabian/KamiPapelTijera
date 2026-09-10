@@ -89,7 +89,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 15, y: 15, z: 15}
+  m_Size: {x: 20, y: 20, z: 15}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3649359020304989098
 MonoBehaviour:
@@ -103,7 +103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f071bac88ed0e55488bc3f96cab75db1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerBool: 0
   showTooltip: 1
   tooltipTextToShow: Toca E para charlar
   postItColor: 1
