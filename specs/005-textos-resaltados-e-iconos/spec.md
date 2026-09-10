@@ -114,6 +114,45 @@ original, nunca de su propia salida.
    seguido) y chequea rangos antes de escribir: un tick que agarra la malla en estado intermedio
    no hace nada, nunca tira excepción.
 
+## Inspector-editable settings (2026-09-09, English section)
+
+Colours, vocabulary and emphasis are design values, not code, so they live in
+`Assets/Resources/TextHighlightSettings.asset` (`TextHighlightSettings.cs`). Colour pickers,
+bold/enlarge toggles per category, and the word lists as plain comma-or-newline text.
+
+- **No wiring**: loaded by name via `Resources.Load`, so it works on Play with nothing dragged
+  into any scene. `[CreateAssetMenu]` is there for making more of them.
+- **Cannot break the game**: if the asset is missing or its word table produces an invalid regex,
+  the highlighter logs and falls back to a built-in copy of the same values.
+- **Live editing during Play**: `OnValidate` → `ResaltadorDeConceptos.Invalidate()` →
+  `OnSettingsChanged` → `LocalizedText.Refrescar()`, so text already on screen repaints while a
+  dialogue is open.
+- **Protected phrases are plain text, not regex** — they get escaped, and runs of whitespace
+  become `[\s:,]+`, so a bad edit can't throw.
+
+**This changed how `LocalizedText` stores text.** It now keeps the **pristine** localized string
+and derives both highlighting and prompts from it on every write, instead of baking the
+highlight in once. Deriving always from the original is what makes rewriting safe to repeat: the
+danger was only ever feeding the highlighter its OWN output (the word survives in the middle of
+the tags, so it would get wrapped again on each refresh). This is also what makes live colour
+editing possible at all.
+
+## Cutscenes: sin resaltado (2026-09-09, English section)
+
+Keyword highlighting is switched OFF for any scene whose name contains "Cutscene"
+(`Nivel1_EndCutscene` today, plus any future one — no per-scene wiring to forget). Those
+dialogues are cinematic and colour-coded teaching words break the tone.
+
+Implemented in `ResaltadorDeConceptos` via a `sceneLoaded` hook, using a flag **separate** from
+the manual `Activo` kill switch so the scene rule never silently overwrites a hand-made choice.
+The active scene is evaluated (not the newly loaded one), so an additive load keeps the base
+level's behaviour.
+
+Two things deliberately NOT covered, pending Diego's call:
+- The **MainMenu intro dialogue** is also arguably cinematic, but was not part of the request.
+- **Input icons stay ON** in cutscenes — only the keyword colouring is suppressed. The cutscene
+  advances with the action button, so showing that button seems right; easy to change.
+
 ## Verificación
 
 - `python tools/compile-check.py` — compila limpio (baseline conocido: `JumpFloodOutlineRenderer`

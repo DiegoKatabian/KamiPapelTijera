@@ -1,6 +1,16 @@
 # Kami: Papel y Tijera
 
-Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spine-unity **3.8** vendoreado en `Assets/Spine`) sobre mundo 3D. Código y comentarios en español.
+Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spine-unity **3.8** vendoreado en `Assets/Spine`) sobre mundo 3D.
+
+## LANGUAGE RULE (2026-09-09, set by Diego — overrides everything below)
+
+**Everything you ADD to this project must be in English**: code, comments, script names,
+prefabs, asset names, new docs. **Also always reply to Diego in English**, even when he writes
+in Spanish.
+
+This repo's existing code and docs are in Spanish — that is history, not a convention to
+follow. Do not "match the surrounding language" for new work. Existing Spanish stays as-is
+unless Diego asks for a translation.
 
 ## Dónde está todo
 
@@ -101,7 +111,8 @@ La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso) decide la anim, el te
 
 ## Convenciones de código
 
-- Comentarios en español, explicando el *por qué*
+- **New code/comments in ENGLISH** (see the language rule at the top of this file). The Spanish comments below/around are pre-2026-09-09 code and stay as they are.
+- Comments explain the *why*, not the *what*
 - Llaves siempre, incluso en una línea; `switch` con `break` explícito
 - `[SerializeField]` privado + `[Tooltip]` en español para todo valor tuneable
 - `Debug.Log($"[NombreClase] ...")` en los puntos de decisión

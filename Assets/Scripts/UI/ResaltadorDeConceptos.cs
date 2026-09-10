@@ -3,44 +3,58 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Resalta las PALABRAS DE MECANICA en cualquier texto que le mostremos al jugador, con
-/// negrita + un color por categoria (y escala en las dos categorias mas importantes).
+/// Highlights MECHANIC WORDS in any text shown to the player, with bold + a colour per
+/// category (and a size bump on the most important ones).
 ///
-/// Por que existe: Kami la juegan chicos, y la mayoria de lo que tienen que aprender
-/// ("cortar", "doblar", "papel", "agua") esta escrito en medio de un parrafo, con el mismo
-/// peso visual que el resto. Un codigo de colores CONSTANTE en todo el juego hace que la
-/// mecanica se aprenda leyendo, sin tener que explicarla aparte.
+/// Why it exists: Kami is played by kids, and most of what they need to learn ("cortar",
+/// "doblar", "papel", "agua") is written in the middle of a paragraph with the same visual
+/// weight as everything else. A colour code that is CONSISTENT across the whole game lets the
+/// mechanic be learned by reading, without a separate explanation.
 ///
-/// Es una clase ESTATICA y sin dependencias del proyecto (solo UnityEngine para el Debug),
-/// por el mismo motivo que <see cref="InputPromptSystem"/>: la llama LocalizedText, que es
-/// el unico embudo de texto del juego, y no puede depender de que alguien se acuerde de
-/// poner un GameObject en cada escena.
+/// All the design values — colours, vocabulary, how strong the emphasis is — live in an
+/// inspector-editable asset, <see cref="TextHighlightSettings"/>. This class is only the
+/// engine; it holds a built-in copy of those values purely as a fallback so a missing or
+/// broken asset can never take the game down.
 ///
-/// ORDEN DE EJECUCION (importante): esto corre ANTES que InputPromptSystem, sobre el mismo
-/// string. Ver la seccion "vocabulario prohibido" mas abajo para entender por que eso
-/// condiciona que palabras pueden entrar en la tabla.
+/// EXECUTION ORDER (important): this runs BEFORE InputPromptSystem, on the same string. See
+/// "forbidden vocabulary" in the settings asset tooltips for why that constrains which words
+/// are allowed in the table.
 /// </summary>
 public static class ResaltadorDeConceptos
 {
     // ------------------------------------------------------------------- API
 
     /// <summary>
-    /// Kill switch. Si algo se ve mal en pantalla (una linea que quedo ilegible, un idioma
-    /// nuevo sin revisar), se apaga desde codigo y todo el texto vuelve a salir plano, sin
-    /// tocar tablas ni prefabs.
+    /// Manual kill switch, from code. Kept SEPARATE from the asset's own
+    /// <c>highlightingEnabled</c> and from the cutscene rule, so none of them silently
+    /// overwrite the others.
     /// </summary>
     public static bool Activo { get; set; } = true;
 
     /// <summary>
-    /// Devuelve el texto con las palabras clave envueltas en tags de TMP. Es seguro
-    /// llamarlo con cualquier string: si no hay nada que resaltar devuelve LA MISMA
-    /// instancia, sin allocar (Regex.Replace ya se comporta asi cuando no hay match).
+    /// Raised after the settings are rebuilt, so whatever is already on screen can repaint
+    /// itself. LocalizedText listens to this — same pattern as InputHub.OnDeviceCambio.
+    /// </summary>
+    public static event Action OnSettingsChanged;
+
+    /// <summary>
+    /// Returns the text with keywords wrapped in TMP tags. Safe with any string: when there
+    /// is nothing to highlight it returns THE SAME instance without allocating (Regex.Replace
+    /// already behaves that way when there is no match).
     /// </summary>
     public static string Resaltar(string texto)
     {
-        if (!Activo || string.IsNullOrEmpty(texto))
+        if (!Activo || !_sceneAllowsHighlighting || string.IsNullOrEmpty(texto))
+        {
+            return texto;
+        }
+
+        EnsureBuilt();
+
+        if (!_enabled || _rx == null)
         {
             return texto;
         }
@@ -48,232 +62,267 @@ public static class ResaltadorDeConceptos
         return _rx.Replace(texto, Envolver);
     }
 
-    // -------------------------------------------------------------- categorias
-
     /// <summary>
-    /// El codigo de colores del juego. Es un contrato con el jugador: el mismo concepto
-    /// tiene que salir SIEMPRE del mismo color, en los tres idiomas y en todas las
-    /// pantallas. Por eso el color vive aca y no en cada tabla de localizacion.
+    /// Drops the cached table so it is rebuilt from the asset on the next use, and asks
+    /// everything on screen to repaint. Called by <see cref="TextHighlightSettings"/> on every
+    /// inspector edit, which is what makes tuning colours during Play feel immediate.
     /// </summary>
-    enum Categoria
+    public static void Invalidate()
     {
-        Corte,      //la tijera y todo lo que se corta
-        Origami,    //doblar, plegar, el minijuego
-        Recurso,    //lo que se junta y se gasta (inventario)
-        Peligro,    //lo que mata o hace dano
-        Movimiento  //como se desplaza Kami
-    }
+        _built = false;
 
-    static string ColorDe(Categoria categoria)
-    {
-        switch (categoria)
+        Action handler = OnSettingsChanged;
+        if (handler != null)
         {
-            case Categoria.Corte: return "#D6453D";
-            case Categoria.Origami: return "#2D7DD2";
-            case Categoria.Recurso: return "#3E9B4F";
-
-            //ambar OSCURO a proposito: los post-its del tutorial son amarillos, y un ambar
-            //claro sobre amarillo no se lee. El color se eligio contra ese fondo, no contra
-            //el fondo negro de los dialogos.
-            case Categoria.Peligro: return "#B5651D";
-
-            case Categoria.Movimiento: return "#8155BA";
-            default: return "#FFFFFF";
+            handler();
         }
     }
 
-    /// <summary>
-    /// Solo Corte y Origami crecen. Son las DOS mecanicas que definen el juego (es "Kami:
-    /// Papel y Tijera"): si agrandamos las cinco categorias, agrandar deja de significar
-    /// nada y las frases con muchos sustantivos quedan con los renglones desparejos.
-    /// </summary>
-    static bool CreceDe(Categoria categoria)
+    // ------------------------------------------------------------------ state
+
+    class Style
     {
-        return categoria == Categoria.Corte || categoria == Categoria.Origami;
+        public string open;
+        public string close;
     }
 
-    // ------------------------------------------------------------- vocabulario
+    static readonly Dictionary<string, Style> _byWord = new Dictionary<string, Style>(StringComparer.OrdinalIgnoreCase);
+    static readonly List<string> _cinematicKeywords = new List<string>();
 
-    // DE DONDE SALEN ESTAS PALABRAS: se barrieron las tablas reales de
-    // Assets/Localization Settings/Tables/ en los tres idiomas -- DialogueTable_es/en/pt,
-    // TooltipTable_es/en/pt, UITexts_es/en/pt, ItemTable_es/en/pt y QuestTable_es/en/pt --
-    // y se anotaron SOLO las formas que aparecen escritas de verdad, conjugaciones
-    // incluidas ("cortá" del voseo, "cortás", "corte" del portugues). No hay ninguna
-    // palabra inventada "por las dudas": una palabra que no esta en ninguna tabla no
-    // resalta nada y solo agranda la regex.
-    //
-    // VOCABULARIO PROHIBIDO (esto es una regla, no una preferencia): NINGUNA palabra de
-    // input puede entrar aca -- E, U, I, O, M, WASD, click/clic/clique, shift, ctrl, esc,
-    // espacio/espaço/space, barra, tecla/key, stick, A, B, L1, L2, start -- ni los VERBOS
-    // ni el relleno que InputPromptSystem usa como testigo para reconocerlas
-    // (Tocá/Apretá/Mantené/Usá/Press/Hold/Use/Tap/Pressione/Segure, "la tecla", "para",
-    // "to"), ni los verbos anclados al INICIO del string (Arrastrá/Arrastra/Drag/Arraste,
-    // que RxArrastrarAlInicio matchea con "^"). Motivo: InputPromptSystem corre DESPUES
-    // sobre este mismo string con sus propias regex; si nosotros envolvemos una de esas
-    // palabras en tags primero, su regex deja de matchear y el jugador con joystick vuelve
-    // a leer "Tocá E" con un joystick en la mano. Los anclados a "^" se rompen incluso sin
-    // tocarlos a ellos: alcanza con meter un "<b>" adelante.
-    static readonly Dictionary<string, Categoria> _porPalabra =
-        new Dictionary<string, Categoria>(StringComparer.OrdinalIgnoreCase);
+    static Regex _rx;
+    static bool _built;
+    static bool _enabled = true;
+    static bool _sceneAllowsHighlighting = true;
 
-    static readonly Regex _rx;
+    // -------------------------------------------------------------- building
 
-    static ResaltadorDeConceptos()
+    static void EnsureBuilt()
     {
-        // --- CORTE ------------------------------------------------------------
-        // es: "Cortá 3 flores", "por qué no cortás la represa", "necesito que cortes ese
-        // árbol". pt: "Corte 3 flores roxas", "você não corta a represa". en: "cut".
-        Agregar(Categoria.Corte,
-            "cortar", "cortá", "cortás", "cortes", "corte", "corta",
-            "tijera", "tijeras",
-            "cut", "scissors",
-            "tesoura", "tesouras");
-
-        // --- ORIGAMI ----------------------------------------------------------
-        // "pliegue" sale del contador del minijuego (UITexts, clave del PliegueTextUpdater);
-        // "Fold: " / "Dobrar:" son ese mismo contador en en/pt.
-        Agregar(Categoria.Origami,
-            "origami", "origamis",
-            "doblar", "doblada", "doblarías", "desdoblar", "pliegue",
-            "fold", "folding", "unfold",
-            "dobrar", "desdobrar");
-
-        // --- RECURSO ----------------------------------------------------------
-        // Son los sustantivos del inventario. "flor" en singular es seguro con \b: no
-        // matchea adentro de "Florista" (la 'i' que sigue es caracter de palabra).
-        Agregar(Categoria.Recurso,
-            "papel", "papeles", "papéis",
-            "flor", "flores",
-            "hongo", "hongos", "fungo", "fungos",
-            "botas",
-            "paper", "papers", "flower", "flowers",
-            "mushroom", "mushrooms", "boots", "shoes");
-
-        // --- PELIGRO ----------------------------------------------------------
-        // El Rocoso y el agua son las dos formas de morir del Nivel 1 (ver DeathCause).
-        // "piedra"/"rock"/"pedra" entran porque las tablas las usan para ENSENAR la regla
-        // ("la piedra le gana a las tijeras, pero no a un árbol de papel"), no como decorado.
-        Agregar(Categoria.Peligro,
-            "agua", "água", "water",
-            "río", "rio", "river",
-            "rocoso", "rocosos",
-            "piedra", "piedras", "rocas",
-            "rock", "rocks",
-            "pedra", "pedras", "rochas", "rochosas");
-
-        // --- MOVIMIENTO -------------------------------------------------------
-        // Ojo: "correr" NO esta en la lista porque no aparece en ninguna tabla de hoy --
-        // las botas de sprint se explican como "ir más rápido" / "ir mais rápido". El
-        // unico idioma que tiene el verbo es el ingles ("run faster"). Si algun dia una
-        // tabla dice "correr", se agrega aca y listo.
-        Agregar(Categoria.Movimiento,
-            "saltar", "saltá", "salto",
-            "mover", "caminar", "caminando",
-            "pular", "pule",
-            "jump", "move", "run", "walking");
-
-        _rx = ConstruirRegex();
-
-        //un solo log, en el arranque. NO se loguea por texto procesado: esto corre por cada
-        //linea de dialogo y cada tooltip, y llenaria la consola en dos minutos de juego.
-        Debug.Log($"[ResaltadorDeConceptos] tabla armada con {_porPalabra.Count} palabras en 5 categorias");
-    }
-
-    static void Agregar(Categoria categoria, params string[] palabras)
-    {
-        for (int i = 0; i < palabras.Length; i++)
+        if (_built)
         {
-            string palabra = palabras[i];
+            return;
+        }
 
-            //una palabra en dos categorias seria un color inestable segun el orden en que
-            //se armo la tabla: mejor gritarlo ahora que perseguirlo en pantalla despues
-            if (_porPalabra.ContainsKey(palabra))
+        //set first: if anything below throws, we must not retry the whole build on every
+        //single line of dialogue for the rest of the session
+        _built = true;
+
+        _byWord.Clear();
+        _cinematicKeywords.Clear();
+        _rx = null;
+
+        var protectedPhrases = new List<string>();
+
+        TextHighlightSettings settings = Resources.Load<TextHighlightSettings>(TextHighlightSettings.ResourcesPath);
+
+        if (settings == null)
+        {
+            Debug.LogWarning($"[ResaltadorDeConceptos] no encontre el asset " +
+                             $"'Assets/Resources/{TextHighlightSettings.ResourcesPath}.asset'. " +
+                             "Uso los valores de fallback que estan en este script: el juego anda igual, " +
+                             "pero lo que edites en el inspector no va a tener efecto hasta que el asset exista.");
+            LoadBuiltInDefaults(protectedPhrases);
+        }
+        else
+        {
+            LoadFrom(settings, protectedPhrases);
+        }
+
+        _rx = BuildRegex(protectedPhrases);
+
+        //re-evaluate: the cutscene keyword list may have changed with the settings
+        EvaluateActiveScene(true);
+    }
+
+    static void LoadFrom(TextHighlightSettings settings, List<string> protectedPhrases)
+    {
+        _enabled = settings.highlightingEnabled;
+
+        for (int i = 0; i < settings.categories.Count; i++)
+        {
+            TextHighlightSettings.Category category = settings.categories[i];
+            if (category == null)
             {
-                Debug.LogWarning($"[ResaltadorDeConceptos] '{palabra}' ya estaba en la categoria {_porPalabra[palabra]}, ignoro la de {categoria}");
                 continue;
             }
 
-            _porPalabra.Add(palabra, categoria);
+            Style style = BuildStyle(category.color, category.bold, category.enlarge, category.sizePercent);
+            AddWords(style, SplitList(category.words), category.categoryName);
         }
+
+        protectedPhrases.AddRange(SplitList(settings.protectedPhrases));
+        _cinematicKeywords.AddRange(SplitList(settings.cinematicSceneKeywords));
+
+        Debug.Log($"[ResaltadorDeConceptos] settings cargados del asset: {_byWord.Count} palabras " +
+                  $"en {settings.categories.Count} categorias, {protectedPhrases.Count} frases protegidas");
+    }
+
+    static Style BuildStyle(Color color, bool bold, bool enlarge, float sizePercent)
+    {
+        //tags are precomputed once per category instead of per match: this runs on every line
+        //of dialogue and every tooltip
+        var open = new StringBuilder();
+        var close = new StringBuilder();
+
+        if (bold)
+        {
+            open.Append("<b>");
+            close.Insert(0, "</b>");
+        }
+
+        open.Append("<color=#").Append(ColorUtility.ToHtmlStringRGB(color)).Append('>');
+        close.Insert(0, "</color>");
+
+        if (enlarge)
+        {
+            //the size tag goes INSIDE the colour one: TMP closes tags by nesting, and leaving
+            //it outside makes the size change swallow the whole line
+            open.Append("<size=").Append(Mathf.RoundToInt(sizePercent)).Append("%>");
+            close.Insert(0, "</size>");
+        }
+
+        return new Style { open = open.ToString(), close = close.ToString() };
+    }
+
+    static void AddWords(Style style, IEnumerable<string> words, string categoryName)
+    {
+        foreach (string word in words)
+        {
+            //a word in two categories would be an unstable colour depending on the order the
+            //table was built in: better to shout about it now than chase it on screen later
+            if (_byWord.ContainsKey(word))
+            {
+                Debug.LogWarning($"[ResaltadorDeConceptos] '{word}' esta repetida en mas de una categoria " +
+                                 $"(la de '{categoryName}' se ignora, gana la primera que se cargo)");
+                continue;
+            }
+
+            _byWord.Add(word, style);
+        }
+    }
+
+    /// <summary>Splits a comma- or newline-separated list, trimming and dropping empties.</summary>
+    static List<string> SplitList(string raw)
+    {
+        var result = new List<string>();
+        if (string.IsNullOrEmpty(raw))
+        {
+            return result;
+        }
+
+        string[] pieces = raw.Split(new[] { ',', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 0; i < pieces.Length; i++)
+        {
+            string piece = pieces[i].Trim();
+            if (piece.Length > 0)
+            {
+                result.Add(piece);
+            }
+        }
+
+        return result;
     }
 
     // ------------------------------------------------------------------ regex
 
     /// <summary>
-    /// UNA sola regex para todo, y una sola pasada de Replace. No son N pasadas encadenadas
-    /// (una por categoria) a proposito: con N pasadas, la segunda vuelve a barrer los tags
-    /// que escribio la primera y termina resaltando adentro de un "&lt;color=...&gt;".
+    /// ONE regex for everything, and a single Replace pass. Deliberately not N chained passes
+    /// (one per category): with N passes, the second one sweeps over the tags the first one
+    /// wrote and ends up highlighting inside a "&lt;color=...&gt;".
     ///
-    /// La alternancia tiene DOS ramas y el orden importa, porque el motor prueba las
-    /// alternativas de izquierda a derecha en cada posicion:
+    /// The alternation has TWO branches and the order matters, because the engine tries the
+    /// alternatives left to right at each position:
     ///
-    ///  1) "protegido" -- un placeholder {INPUT:*} o un tag de TMP &lt;...&gt;. Cuando
-    ///     matchea se devuelve TAL CUAL y, sobre todo, se CONSUME entero: asi el contenido
-    ///     de adentro nunca puede ser visto por la rama 2.
+    ///  1) "protegido" — a protected phrase, an {INPUT:*} placeholder or a TMP tag &lt;...&gt;.
+    ///     When it matches it is returned AS IS and, above all, CONSUMED whole, so what is
+    ///     inside can never be seen by branch 2.
     ///
-    ///     Esto no es paranoia: "{INPUT:cortar}" es un alias real de InputPromptSystem. Si
-    ///     resaltaramos ese "cortar", el placeholder quedaria
-    ///     "{INPUT:&lt;b&gt;&lt;color=#D6453D&gt;cortar&lt;/color&gt;&lt;/b&gt;}", InputPromptSystem
-    ///     ya no lo reconoceria y el jugador veria el placeholder crudo en pantalla.
-    ///     Mismo razonamiento para los tags: si una traduccion ya trae "&lt;color=...&gt;"
-    ///     escrito a mano, el contenido del tag no es texto, es sintaxis.
+    ///     This is not paranoia: "{INPUT:cortar}" is a real InputPromptSystem alias. If we
+    ///     highlighted that "cortar", the placeholder would become
+    ///     "{INPUT:&lt;b&gt;&lt;color=#D6453D&gt;cortar&lt;/color&gt;&lt;/b&gt;}",
+    ///     InputPromptSystem would no longer recognise it, and the player would see the raw
+    ///     placeholder on screen. Same reasoning for tags: if a translation already carries a
+    ///     hand-written "&lt;color=...&gt;", what is inside the tag is syntax, not text.
     ///
-    ///  2) "palabra" -- una palabra de la tabla, entre \b...\b.
+    ///  2) "palabra" — a word from the table, between \b...\b.
     /// </summary>
-    /// <summary>
-    /// Frases que NO se resaltan aunque contengan palabras de la tabla, porque son nombres
-    /// propios y no mecanica. Hoy es solo el titulo del juego: "Kami Papel Tijera" tiene
-    /// adentro dos palabras clave ("papel" y "tijera"), y sin esto el titulo del libro sale
-    /// con una palabra verde y otra roja en medio de un dialogo -- se lee como un error, no
-    /// como una ensenanza. Van en la rama "protegido", asi que se consumen enteras.
-    /// El \s+ es porque cada idioma lo escribe distinto ("Papel y Tijera" / "Paper Scissors").
-    /// </summary>
-    static readonly string[] _nombresPropios =
+    static Regex BuildRegex(List<string> protectedPhrases)
     {
-        @"Kami[\s:,]+Papel(?:\s+y)?\s+Tijera",
-        @"Kami[\s:,]+Paper\s+Scissors",
-        @"Kami[\s:,]+Papel(?:\s+e)?\s+Tesoura"
-    };
+        if (_byWord.Count == 0)
+        {
+            return null;
+        }
 
-    static Regex ConstruirRegex()
-    {
-        var palabras = new List<string>(_porPalabra.Keys);
+        var words = new List<string>(_byWord.Keys);
 
-        //mas largas primero. Con \b a los dos lados el orden ya no cambia el resultado
-        //("flor" no puede comerse el principio de "flores"), pero evita el backtracking.
-        palabras.Sort((a, b) => b.Length.CompareTo(a.Length));
+        //longest first. With \b on both sides the order no longer changes the result ("flor"
+        //cannot eat the start of "flores"), but it avoids backtracking.
+        words.Sort((a, b) => b.Length.CompareTo(a.Length));
 
         var sb = new StringBuilder();
+        sb.Append("(?<protegido>");
 
-        // {..} sin cerrar o un "<" suelto no matchean ni consumen nada: el texto sigue
-        // procesandose normal en vez de comerse el resto del string.
-        //
-        // Los nombres propios van PRIMEROS dentro de la rama protegida: si fueran despues de
-        // la rama de palabras, el motor ya habria matcheado "Papel" solo y el titulo quedaria
-        // partido igual.
-        sb.Append(@"(?<protegido>");
-        for (int i = 0; i < _nombresPropios.Length; i++)
+        //protected phrases go FIRST inside the protected branch: after them the engine would
+        //already have matched "Papel" on its own and the title would be split anyway
+        for (int i = 0; i < protectedPhrases.Count; i++)
         {
-            sb.Append(_nombresPropios[i]).Append('|');
+            sb.Append(EscapePhrase(protectedPhrases[i])).Append('|');
         }
+
+        // an unclosed {..} or a stray "<" matches nothing and consumes nothing: the text keeps
+        // being processed normally instead of eating the rest of the string
         sb.Append(@"\{[^}]*\}|<[^>]*>)|\b(?<palabra>");
 
-        for (int i = 0; i < palabras.Count; i++)
+        for (int i = 0; i < words.Count; i++)
         {
             if (i > 0)
             {
                 sb.Append('|');
             }
-            sb.Append(Regex.Escape(palabras[i]));
+            sb.Append(Regex.Escape(words[i]));
         }
 
         sb.Append(@")\b");
 
-        //Compiled porque esto corre por cada linea de dialogo y cada tooltip; IgnoreCase
-        //porque las tablas las escriben personas y la misma palabra aparece con y sin
-        //mayuscula ("FLORES VIOLETAS" y "las flores"). En .NET \b es Unicode-aware, asi que
-        //los acentos del voseo ("cortá") cierran palabra bien sin hacer nada especial.
-        return new Regex(sb.ToString(), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //Compiled because this runs on every line of dialogue and every tooltip; IgnoreCase
+        //because the tables are written by people and the same word shows up with and without
+        //capitals ("FLORES VIOLETAS" and "las flores"). In .NET \b is Unicode-aware, so the
+        //accents of the voseo ("cortá") close the word correctly with nothing special.
+        try
+        {
+            return new Regex(sb.ToString(), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        }
+        catch (ArgumentException e)
+        {
+            //this can only really happen through a bad edit in the asset. Losing the highlight
+            //is annoying; throwing on every line of dialogue would be a broken game.
+            Debug.LogError($"[ResaltadorDeConceptos] la tabla de palabras genero una regex invalida, " +
+                           $"apago el resaltado: {e.Message}");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Turns a plain phrase written by a human into a safe pattern: everything is escaped (so
+    /// it can never be read as a regular expression) and runs of whitespace become \s+, so
+    /// "Kami Papel y Tijera" also matches when a translation spaces or punctuates it slightly
+    /// differently.
+    /// </summary>
+    static string EscapePhrase(string phrase)
+    {
+        string[] tokens = phrase.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+
+        var sb = new StringBuilder();
+        for (int i = 0; i < tokens.Length; i++)
+        {
+            if (i > 0)
+            {
+                sb.Append(@"[\s:,]+");
+            }
+            sb.Append(Regex.Escape(tokens[i]));
+        }
+
+        return sb.ToString();
     }
 
     static string Envolver(Match m)
@@ -285,27 +334,134 @@ public static class ResaltadorDeConceptos
 
         string original = m.Groups["palabra"].Value;
 
-        Categoria categoria;
-        if (!_porPalabra.TryGetValue(original, out categoria))
+        Style style;
+        if (!_byWord.TryGetValue(original, out style))
         {
-            //no deberia pasar nunca (la regex se arma de las MISMAS claves del diccionario),
-            //pero si pasa el texto sale plano en vez de salir con un color inventado
+            //should never happen (the regex is built from the SAME dictionary keys), but if it
+            //does the text comes out plain instead of with an invented colour
             return original;
         }
 
-        // Se re-inserta 'original', NUNCA la forma canonica de la tabla: el jugador tiene
-        // que leer exactamente lo que escribio el traductor, con sus mayusculas y sus
-        // acentos. La tabla sirve para DECIDIR el color, no para reescribir el texto.
-        string abre = "<b><color=" + ColorDe(categoria) + ">";
-        string cierra = "</color></b>";
+        // 'original' is re-inserted, NEVER the canonical form from the table: the player has to
+        // read exactly what the translator wrote, with their capitals and their accents. The
+        // table is there to DECIDE the colour, not to rewrite the text.
+        return style.open + original + style.close;
+    }
 
-        if (CreceDe(categoria))
+    // ------------------------------------------------------- cinematic scenes
+
+    // Cutscenes are cinematic: colour-coded teaching words break the tone there, so highlighting
+    // is switched off for the whole scene. Deliberately SEPARATE from the manual `Activo` kill
+    // switch — the scene rule must not silently overwrite a choice made by hand.
+
+    static bool IsCinematicScene(string sceneName)
+    {
+        if (string.IsNullOrEmpty(sceneName))
         {
-            //el size va ADENTRO del color: TMP cierra los tags por anidado, y dejarlo
-            //afuera hace que el cambio de tamano se coma el renglon entero
-            return abre + "<size=110%>" + original + "</size>" + cierra;
+            return false;
         }
 
-        return abre + original + cierra;
+        for (int i = 0; i < _cinematicKeywords.Count; i++)
+        {
+            if (sceneName.IndexOf(_cinematicKeywords[i], StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    static void HookSceneChanges()
+    {
+        //-= before += so subscribing twice is impossible even if this runs again
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        EnsureBuilt();
+    }
+
+    static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        //We evaluate the ACTIVE scene rather than the one that just loaded: on an additive load
+        //the base level is still the one that sets the tone, and it stays active.
+        EvaluateActiveScene(false);
+    }
+
+    static void EvaluateActiveScene(bool silent)
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        bool cinematic = IsCinematicScene(sceneName);
+        bool allow = !cinematic;
+
+        if (allow == _sceneAllowsHighlighting)
+        {
+            return;
+        }
+
+        _sceneAllowsHighlighting = allow;
+
+        if (cinematic && !silent)
+        {
+            Debug.Log($"[ResaltadorDeConceptos] '{sceneName}' is a cutscene: keyword highlighting off, text stays plain");
+        }
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void Reiniciar()
+    {
+        //with "Enter Play Mode" and no domain reload, statics survive between runs
+        _built = false;
+        _sceneAllowsHighlighting = true;
+        Activo = true;
+        OnSettingsChanged = null;
+    }
+
+    // ------------------------------------------------------- built-in fallback
+
+    // Copia de respaldo de los valores del asset. NO es la fuente de verdad: si el asset existe,
+    // gana el asset. Esto solo evita que borrar o romper el asset deje el juego sin texto util.
+    //
+    // DE DONDE SALEN ESTAS PALABRAS: se barrieron las tablas reales de
+    // Assets/Localization Settings/Tables/ en los tres idiomas -- DialogueTable_es/en/pt,
+    // TooltipTable_es/en/pt, UITexts_es/en/pt, ItemTable_es/en/pt y QuestTable_es/en/pt -- y se
+    // anotaron SOLO las formas que aparecen escritas de verdad, conjugaciones incluidas ("cortá"
+    // del voseo, "cortás", "corte" del portugues).
+    static void LoadBuiltInDefaults(List<string> protectedPhrases)
+    {
+        _enabled = true;
+
+        AddWords(BuildStyle(HexColor("D6453D"), true, true, 110f), SplitList(
+            "cortar, cortá, cortás, cortes, corte, corta, tijera, tijeras, cut, scissors, tesoura, tesouras"), "Cut");
+
+        AddWords(BuildStyle(HexColor("2D7DD2"), true, true, 110f), SplitList(
+            "origami, origamis, doblar, doblada, doblarías, desdoblar, pliegue, fold, folding, unfold, dobrar, desdobrar"), "Origami");
+
+        AddWords(BuildStyle(HexColor("3E9B4F"), true, false, 110f), SplitList(
+            "papel, papeles, papéis, flor, flores, hongo, hongos, fungo, fungos, botas, paper, papers, " +
+            "flower, flowers, mushroom, mushrooms, boots, shoes"), "Resource");
+
+        //ambar OSCURO a proposito: los post-its del tutorial son amarillos, y un ambar claro
+        //sobre amarillo no se lee. El color se eligio contra ese fondo.
+        AddWords(BuildStyle(HexColor("B5651D"), true, false, 110f), SplitList(
+            "agua, água, water, río, rio, river, rocoso, rocosos, piedra, piedras, rocas, rock, rocks, " +
+            "pedra, pedras, rochas, rochosas"), "Danger");
+
+        AddWords(BuildStyle(HexColor("8155BA"), true, false, 110f), SplitList(
+            "saltar, saltá, salto, mover, caminar, caminando, pular, pule, jump, move, run, walking"), "Movement");
+
+        protectedPhrases.Add("Kami Papel y Tijera");
+        protectedPhrases.Add("Kami Papel Tijera");
+        protectedPhrases.Add("Kami Paper Scissors");
+        protectedPhrases.Add("Kami Papel e Tesoura");
+
+        _cinematicKeywords.Add("Cutscene");
+    }
+
+    static Color HexColor(string rrggbb)
+    {
+        Color color;
+        return ColorUtility.TryParseHtmlString("#" + rrggbb, out color) ? color : Color.white;
     }
 }

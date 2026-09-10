@@ -136,13 +136,8 @@ public static class LocalizedText
             return;
         }
 
-        //El resaltado de conceptos se hornea UNA SOLA VEZ, aca, y queda guardado DENTRO del
-        //crudo. No puede ir junto a los prompts (que se recalculan enteros en cada cambio de
-        //device) porque NO es idempotente: los tags <b><color> dejan la palabra intacta en el
-        //medio, asi que volver a pasarle el resaltador a un texto ya resaltado la envolveria
-        //de nuevo, y otra vez, anidando tags en cada cambio de device.
-        crudo = ResaltadorDeConceptos.Resaltar(crudo);
-
+        //Lo que se guarda es el crudo PRISTINO: localizado, con sufijo, y SIN resaltado ni
+        //prompts resueltos. Todo lo demas se deriva de el cada vez que hace falta reescribir.
         _crudos[destino] = crudo;
         EscribirProcesado(destino, crudo);
     }
@@ -156,7 +151,17 @@ public static class LocalizedText
     static void EscribirProcesado(TMP_Text destino, string crudo)
     {
         AsegurarSpriteAsset(destino);
-        destino.text = InputPromptSystem.Procesar(crudo);
+
+        //Los DOS pasos salen siempre del crudo pristino, nunca de su propia salida anterior.
+        //Eso es lo que los hace repetibles: si le pasaramos el resaltador a un texto YA
+        //resaltado, la palabra sigue estando en el medio de los tags y la envolveria otra vez,
+        //anidando tags en cada refresco hasta ensuciar todo. Derivando siempre del original,
+        //reescribir es seguro tantas veces como haga falta -- y es justo lo que permite que
+        //editar los colores en el inspector repinte lo que ya esta en pantalla.
+        //El resaltado va PRIMERO: si fuera al reves, las regex de InputPromptSystem tendrian
+        //que matchear sobre texto ya lleno de tags.
+        destino.text = InputPromptSystem.Procesar(ResaltadorDeConceptos.Resaltar(crudo));
+
         AnimadorDeIconos.Registrar(destino);
     }
 
@@ -262,6 +267,11 @@ public static class LocalizedText
 
         SceneManager.sceneLoaded -= AlCargarEscena;
         SceneManager.sceneLoaded += AlCargarEscena;
+
+        //Editar los colores o el vocabulario en el inspector repinta lo que YA esta en pantalla,
+        //sin cerrar el dialogo ni volver a entrar al trigger. Mismo patron que OnDeviceCambio.
+        ResaltadorDeConceptos.OnSettingsChanged -= Refrescar;
+        ResaltadorDeConceptos.OnSettingsChanged += Refrescar;
 
         //El atlas de iconos se dibuja por codigo la primera vez que alguien lo pide. Pedirlo
         //ACA lo saca del medio del primer dialogo: si no, el hitch de generar la textura caeria

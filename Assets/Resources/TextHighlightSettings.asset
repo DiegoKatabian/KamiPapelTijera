@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e77e515da0774e03850df45134cff8ab, type: 3}
+  m_Name: TextHighlightSettings
+  m_EditorClassIdentifier:
+  highlightingEnabled: 1
+  categories:
+  - categoryName: Cut
+    color: {r: 0.8392157, g: 0.27058825, b: 0.23921569, a: 1}
+    bold: 1
+    enlarge: 1
+    sizePercent: 110
+    words: cortar, cortá, cortás, cortes, corte, corta, tijera, tijeras, cut, scissors,
+      tesoura, tesouras
+  - categoryName: Origami
+    color: {r: 0.1764706, g: 0.49019608, b: 0.8235294, a: 1}
+    bold: 1
+    enlarge: 1
+    sizePercent: 110
+    words: origami, origamis, doblar, doblada, doblarías, desdoblar, pliegue, fold,
+      folding, unfold, dobrar, desdobrar
+  - categoryName: Resource
+    color: {r: 0.24313726, g: 0.60784316, b: 0.30980393, a: 1}
+    bold: 1
+    enlarge: 0
+    sizePercent: 110
+    words: papel, papeles, papéis, flor, flores, hongo, hongos, fungo, fungos, botas,
+      paper, papers, flower, flowers, mushroom, mushrooms, boots, shoes
+  - categoryName: Danger
+    color: {r: 0.70980394, g: 0.39607844, b: 0.11372549, a: 1}
+    bold: 1
+    enlarge: 0
+    sizePercent: 110
+    words: agua, água, water, río, rio, river, rocoso, rocosos, piedra, piedras, rocas,
+      rock, rocks, pedra, pedras, rochas, rochosas
+  - categoryName: Movement
+    color: {r: 0.5058824, g: 0.33333334, b: 0.7294118, a: 1}
+    bold: 1
+    enlarge: 0
+    sizePercent: 110
+    words: saltar, saltá, salto, mover, caminar, caminando, pular, pule, jump, move,
+      run, walking
+  protectedPhrases: Kami Papel y Tijera, Kami Papel Tijera, Kami Paper Scissors, Kami
+    Papel e Tesoura
+  cinematicSceneKeywords: Cutscene
