@@ -90,6 +90,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     bool _readyToAttack = true;
     float _hitStunEndTime; //hasta cuando duran los bloqueos configurados en hitFeedback
     Coroutine _flashCoroutine;
+    Coroutine _tijeraRoutine; //el swing en curso, para poder abortarlo desde CancelAttack
     Vector3 _lastSafePosition;
     DeathCause _lastDeathCause = DeathCause.Generic;
 
@@ -353,6 +354,11 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     public void PlayPullSolapa(bool closing = false)
     {
+        //PullSolapas takes over TRACK_ATTACK, wiping any Attack still playing on it -- and with it
+        //the pending HandleAttack that hands the scissors back. Resolve the attack BEFORE the
+        //takeover, never after: see CancelAttack.
+        CancelAttack();
+
         float duration = _view.PlayPullSolapa(closing);
         _pullSolapaLockEndTime = Time.time + duration;
     }
@@ -440,8 +446,17 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     }
 
     public void StartPasoSFX(int step) => _view.StartPasoSFX(step);
-    public void StartTijeraCoroutine() => StartCoroutine(TijeraCoroutine());
-    public void StartTijeraCoroutineDelayed() => StartCoroutine(TijeraDelayedCoroutine());
+    public void StartTijeraCoroutine() => RestartTijeraRoutine(TijeraCoroutine());
+    public void StartTijeraCoroutineDelayed() => RestartTijeraRoutine(TijeraDelayedCoroutine());
+
+    //Holding the handle is what lets CancelAttack abort a swing that is still in flight. Without
+    //it, a cancelled swing's coroutine would stay alive and would later disable the hitbox of the
+    //NEXT swing halfway through it.
+    void RestartTijeraRoutine(IEnumerator routine)
+    {
+        if (_tijeraRoutine != null) StopCoroutine(_tijeraRoutine);
+        _tijeraRoutine = StartCoroutine(routine);
+    }
 
     IEnumerator TijeraDelayedCoroutine()
     {
@@ -459,9 +474,42 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         _model.DisableTijeraHitbox();
 
         yield return new WaitForSeconds(weaponCooldown);
+        _tijeraRoutine = null;
         _readyToAttack = true;
         isAttacking = false;
         _view.EndAttack();
+    }
+
+    /// <summary>
+    /// Aborts an attack that is still in flight and hands the scissors back to the player.
+    /// </summary>
+    /// <remarks>
+    /// The attack is unlatched by the Spine "HandleAttack" event fired from inside the Attack /
+    /// AttackMOVE clips, and spine-csharp 3.8 never fires the pending events of an interrupted
+    /// entry (TrackEntry.EventThreshold defaults to 0). So anything that takes over TRACK_ATTACK
+    /// before that event -- opening a solapa is the case that bit us -- used to leave
+    /// _readyToAttack false for the rest of the session, with the scissors dead. Whoever claims
+    /// that track has to resolve the attack state first.
+    /// </remarks>
+    public void CancelAttack()
+    {
+        if (_readyToAttack && !isAttacking) return;
+
+        if (_tijeraRoutine != null)
+        {
+            StopCoroutine(_tijeraRoutine);
+            _tijeraRoutine = null;
+        }
+
+        //if the hitbox was already live, disabling it counts as a miss -- same as any swing that
+        //connects with nothing (see TijeraHitbox.OnDisable). A no-op if it never got enabled.
+        _model.DisableTijeraHitbox();
+        _view.EndAttack();
+
+        isAttacking = false;
+        _readyToAttack = true;
+
+        Debug.Log("[Player] attack cancelled: the scissors are available again");
     }
 
     public void StartTijeraParticles() => tijeraManager.EnableTijeraParticles();

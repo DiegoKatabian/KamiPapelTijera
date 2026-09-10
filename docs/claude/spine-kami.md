@@ -48,3 +48,30 @@ Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del
 ## Solapas (PUBMechanics)
 
 `TriggerSolapa.Interact()` captura `solapaAfectada.IsOpen` ANTES de `CambiarEstado()` y llama `player.PlayPullSolapa(estabaAbierta)`: `false` = abrir (PullSolapas), `true` = cerrar (PullSolapasReverse). Mientras dura la anim, `Player.IsPullingSolapa` bloquea movimiento y salto. La solapa en sí es un Animator de Unity (bool `isOpen`) + partículas `BrillitosSolapa` one-shot + sonido PaperFold01.
+
+### Gotcha: quien se apropia del track 3 tiene que resolver el ataque primero
+
+`PullSolapas` y `Attack`/`AttackMOVE` comparten el **track 3**, y el ataque se "desengancha"
+(`Player._readyToAttack` vuelve a `true`) SOLO desde el evento Spine `HandleAttack` que vive
+adentro del clip (t=0.333s en `Attack`, 0.467s en `AttackMOVE`; el fallback por timer está
+apagado, `attackMoveHitboxDelay = -1`).
+
+En spine-csharp 3.8 una entry interrumpida **nunca dispara sus eventos pendientes**:
+`AnimationState.cs` hace `var eventBuffer = mix < from.eventThreshold ? this.events : null;` y
+`eventThreshold` arranca en 0, o sea la condición nunca da true. Entonces atacar y abrir una
+solapa dentro de esos ~0.33s mataba el `HandleAttack` pendiente: `TijeraCoroutine` no corría
+nunca, `_readyToAttack` quedaba en `false` **para el resto de la sesión** y la tijera no
+servía más (bug reportado por Diego jugando, septiembre 2026). Nada gatea el interact
+durante un ataque, así que la ventana es alcanzable con el teclado (Ctrl y E son dos teclas
+distintas, se aprietan una atrás de la otra).
+
+Fix: `Player.CancelAttack()` aborta el swing en vuelo (para la corrutina guardada en
+`_tijeraRoutine`, apaga la hitbox, corta partículas y devuelve los flags), y
+`Player.PlayPullSolapa()` lo llama **antes** de que el view se apropie del track. Guardar el
+handle de la corrutina importa: sin eso, el swing cancelado seguía vivo y después apagaba la
+hitbox del swing SIGUIENTE a mitad de camino.
+
+**Si agregás cualquier animación nueva sobre el track 3** (otra solapa, una cutscene, un gesto),
+llamá `CancelAttack()` primero. Es el mismo principio de fondo que los issues #41.2 y #41.14: dos
+sistemas que tocan un recurso compartido necesitan un arbitraje explícito, no asumir que el
+timing va a salir bien.

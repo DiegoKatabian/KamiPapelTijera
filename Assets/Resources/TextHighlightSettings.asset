@@ -11,62 +11,68 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e77e515da0774e03850df45134cff8ab, type: 3}
   m_Name: TextHighlightSettings
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   highlightingEnabled: 1
   categories:
   - categoryName: Tijera
-    color: {r: 0.4784314, g: 0.5098039, b: 0.5490196, a: 1}
+    color: {r: 0.34901962, g: 0.33333334, b: 0.30588236, a: 1}
     bold: 1
     enlarge: 1
     sizePercent: 110
-    words: cortar, cortá, cortás, cortes, corte, corta, tijera, tijeras, cut, scissors,
-      tesoura, tesouras
+    words: "cortar, cort\xE1, cort\xE1s, cortes, corte, corta, tijera, tijeras, cut,
+      scissors, tesoura, tesouras"
   - categoryName: Papel y Origami
     color: {r: 0.6509804, g: 0.4862745, b: 0, a: 1}
     bold: 1
     enlarge: 1
     sizePercent: 110
-    words: origami, origamis, doblar, doblada, doblarías, desdoblar, pliegue, fold,
-      folding, unfold, dobrar, desdobrar
+    words: "origami, origamis, doblar, doblada, doblar\xEDas, desdoblar, pliegue,
+      fold, folding, unfold, dobrar, desdobrar"
   - categoryName: Rio y Mojar
     color: {r: 0.1764706, g: 0.49019608, b: 0.8235294, a: 1}
     bold: 1
     enlarge: 0
-    sizePercent: 110
-    words: agua, água, water, río, rio, river, mojar, mojarte, mojado, mojada, mojarse,
-      molhar, molhado, molhada
+    sizePercent: 105
+    words: "agua, \xE1gua, water, r\xEDo, rio, river, mojar, mojarte, mojado, mojada,
+      mojarse, molhar, molhado, molhada"
   - categoryName: Rocoso y Muerte
     color: {r: 0.8392157, g: 0.27058825, b: 0.23921569, a: 1}
     bold: 1
     enlarge: 0
-    sizePercent: 110
+    sizePercent: 105
     words: rocoso, rocosos, piedra, piedras, rocas, rock, rocks, pedra, pedras, rochas,
       rochosas, muerte, morte, death
   - categoryName: Recurso - Papel
     color: {r: 0.5490196, g: 0.52156866, b: 0.46666667, a: 1}
     bold: 1
     enlarge: 0
-    sizePercent: 110
-    words: papel, papeles, papéis, paper, papers
+    sizePercent: 105
+    words: "papel, papeles, pap\xE9is, paper, papers"
   - categoryName: Recurso - Flores
     color: {r: 0.60784316, g: 0.23921569, b: 0.56078434, a: 1}
     bold: 1
     enlarge: 0
     sizePercent: 110
-    words: flor, flores, flower, flowers
+    words: flor, flores, flower, flowers, violeta, violet, purple
   - categoryName: Recursos varios
     color: {r: 0.24313726, g: 0.60784316, b: 0.30980393, a: 1}
     bold: 1
     enlarge: 0
     sizePercent: 110
-    words: hongo, hongos, fungo, fungos, botas, mushroom, mushrooms, boots, shoes
+    words: hongo, hongos, fungo, fungos, mushroom, mushrooms
+  - categoryName: Botas de Ule
+    color: {r: 0.9811321, g: 0.9069537, b: 0.16197933, a: 1}
+    bold: 1
+    enlarge: 0
+    sizePercent: 110
+    words: ule, botas
   - categoryName: Movement
     color: {r: 0.11764706, g: 0.5411765, b: 0.47058824, a: 1}
     bold: 1
     enlarge: 0
     sizePercent: 110
-    words: saltar, saltá, salto, mover, caminar, caminando, pular, pule, jump, move,
-      run, walking
-  protectedPhrases: Kami Papel y Tijera, Kami Papel Tijera, Kami Paper Scissors, Kami
-    Papel e Tesoura
+    words: "saltar, salt\xE1, salto, mover, caminar, caminando, pular, pule, jump,
+      move, run, walking"
+  protectedPhrases: Kami Papel y Tijera, Kami Papel Tijera, Kami Paper Scissors,
+    Kami Papel e Tesoura
   cinematicSceneKeywords: Cutscene
