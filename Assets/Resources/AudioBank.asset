@@ -1,0 +1,778 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d18cf53a27a841578141f44a21c39aca, type: 3}
+  m_Name: AudioBank
+  m_EditorClassIdentifier: 
+  entries:
+  - id: 4S_IntroBigChords
+    clips:
+    - {fileID: 8300000, guid: 83655422d10d1c849a4b2164cb39b42a, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 0
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: MemoFloraMainLoop01
+    clips:
+    - {fileID: 8300000, guid: 0119eecc77d1ff94f9f0989ec1b6e3bc, type: 3}
+    volume: 0.3
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 0
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: QuestCompleted
+    clips:
+    - {fileID: 8300000, guid: ee4629f9fba8bb34aae6c99b575accd9, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: GameOverOrchestral
+    clips:
+    - {fileID: 8300000, guid: ab7a7541182170549abdb364acb00d31, type: 3}
+    volume: 0.25
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 0
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PageTurn01
+    clips:
+    - {fileID: 8300000, guid: 6f69728f5cd8a3d4ea967d0a68d17518, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 2
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PageTurn02
+    clips:
+    - {fileID: 8300000, guid: 47c99f14e2785064aa979999a1d1cd2c, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 2
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: TijeraHit01
+    clips:
+    - {fileID: 8300000, guid: 6d69eac966988d444ad3df983134ff55, type: 3}
+    volume: 0.6
+    pitch: 0.9
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: TijeraHit02
+    clips:
+    - {fileID: 8300000, guid: f4c9cdd0eb65d594b84d6b0962b1f4c4, type: 3}
+    volume: 0.6
+    pitch: 0.9
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: TijeraMiss
+    clips:
+    - {fileID: 8300000, guid: 526ffe066717a6d44ba05026118d494d, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PaperCut01
+    clips:
+    - {fileID: 8300000, guid: c7a69cf7cbb920448a03132b9deffd1b, type: 3}
+    volume: 0.3
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PaperCut02
+    clips:
+    - {fileID: 8300000, guid: a98068e4f9395bf4da6963d19fd59e9e, type: 3}
+    volume: 0.3
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: MagicChannelingLoop02
+    clips:
+    - {fileID: 8300000, guid: 9298f28055a98b04a96e61535eabc129, type: 3}
+    volume: 0.15
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: MagicChannelingLoop01
+    clips:
+    - {fileID: 8300000, guid: a01ea5b4d8912ae48ac12e8f12bc1646, type: 3}
+    volume: 0.15
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: MagicSuccess
+    clips:
+    - {fileID: 8300000, guid: 136f8e657d8a096488b73ffa859e900a, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: MagicFail
+    clips:
+    - {fileID: 8300000, guid: 6afc3e1614751f843b49f708a80b613f, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PaperFold01
+    clips:
+    - {fileID: 8300000, guid: 65236dcb8b4cad64fa2e1ee2c15bab55, type: 3}
+    volume: 0.3
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PaperFold02
+    clips:
+    - {fileID: 8300000, guid: 2134304ff51945348ba80263bd471f4b, type: 3}
+    volume: 0.3
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PaperFoldLoop
+    clips:
+    - {fileID: 8300000, guid: 3fa73e7434f83944e9f7a69a53ef57ef, type: 3}
+    volume: 0.15
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: BridgeCompleted
+    clips:
+    - {fileID: 8300000, guid: d785aa68d9291e54cb01434d4fcf8ae1, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: ShipSpawn
+    clips:
+    - {fileID: 8300000, guid: 8d681e10a3e1cb84297a1167db0cb5e0, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PickupSFX
+    clips:
+    - {fileID: 8300000, guid: 1d6b822b9b3dbeb40a1cc75130ccb69a, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 2
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: MemoFloraBattleLoop01
+    clips:
+    - {fileID: 8300000, guid: 397a577d8347d8a4797c9289aa710d5e, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 0
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: MemoFloraPostBattle01
+    clips:
+    - {fileID: 8300000, guid: b7a01152dfdc9e04681a561d7eeb335a, type: 3}
+    volume: 0.3
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 0
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Death
+    clips:
+    - {fileID: 8300000, guid: d49c563a95f8eb24e847973765f73f82, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: QuestCompleted02
+    clips:
+    - {fileID: 8300000, guid: 7e3174b338a97df459f38e5440a04d7a, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PickupReversedSFX
+    clips:
+    - {fileID: 8300000, guid: 519c2522239a5254287959c82f993a9f, type: 3}
+    volume: 0.6
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 2
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: IntroStoryboardLoop
+    clips:
+    - {fileID: 8300000, guid: f2589158e679b5842b1437914d871351, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 0
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: BigWaterSplash
+    clips:
+    - {fileID: 8300000, guid: 4d83ed3a5fa75c847ac2f0b607cb2339, type: 3}
+    volume: 0.1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: RockSmash
+    clips:
+    - {fileID: 8300000, guid: 2f2d3d4b85e02bf43a7dba7059797912, type: 3}
+    volume: 0.6
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: AxeHit
+    clips:
+    - {fileID: 8300000, guid: aad8373981fef5e45a904ce639cbb390, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: TreeFall
+    clips:
+    - {fileID: 8300000, guid: 5dee52d3cbf54594aa06558c0017f4b4, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: BootsOff
+    clips:
+    - {fileID: 8300000, guid: e5753cb450e31ee49a668953e0b3b176, type: 3}
+    volume: 0.1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: BootsOn
+    clips:
+    - {fileID: 8300000, guid: 62fb53fb6b179794b80395f0f09e5e23, type: 3}
+    volume: 0.1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: JumpStart
+    clips:
+    - {fileID: 8300000, guid: 3b70c96489b435a49a3ffac7596309cb, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: JumpLand
+    clips:
+    - {fileID: 8300000, guid: 236fe351768dc6f44b3094207d0bdb29, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PickupSpecial
+    clips:
+    - {fileID: 8300000, guid: 7551d73a646c7bd4f8d0dcb6bd93de37, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: HurtPaper
+    clips:
+    - {fileID: 8300000, guid: 1d09748127bf47844ab60ca89c1d68ed, type: 3}
+    volume: 0.7
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Tijera_Miss_Roca
+    clips:
+    - {fileID: 8300000, guid: b9a46561dd3d5084ba0ad679db8afe85, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: ActionWind
+    clips:
+    - {fileID: 8300000, guid: 1a7b33ca8967feb4fb64d352ef6e3d4c, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: RocosoHeadbutt
+    clips:
+    - {fileID: 8300000, guid: 69f11efda5c3c1a468ac72286048d9f7, type: 3}
+    volume: 0.3
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: RocosoMojado
+    clips:
+    - {fileID: 8300000, guid: e5594fe2aef3f574e8d26f821d96efe1, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: RocosoPaso
+    clips:
+    - {fileID: 8300000, guid: 35302a47600b03543af293e4671f6c11, type: 3}
+    volume: 0.3
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: RocosoWakeUp
+    clips:
+    - {fileID: 8300000, guid: bdc548a394227734d974a0fbca7dce25, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: RepresaFall
+    clips:
+    - {fileID: 8300000, guid: d80d3d3f0fa1e7142b00b755e63ea403, type: 3}
+    volume: 0.7
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_Kami_01
+    clips:
+    - {fileID: 8300000, guid: 44992993c48758d459325faf694c4610, type: 3}
+    volume: 0.03
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_Kami_02
+    clips:
+    - {fileID: 8300000, guid: e3a3956824c297a438b55d97fd25001c, type: 3}
+    volume: 0.03
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_Kami_03
+    clips:
+    - {fileID: 8300000, guid: fc9dccabd10c72e46bfd007ffd3586a0, type: 3}
+    volume: 0.03
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_Kami_04
+    clips:
+    - {fileID: 8300000, guid: 094f94850b79a7a4fb890c4a601fb958, type: 3}
+    volume: 0.03
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Origami_Fail_Crumble
+    clips:
+    - {fileID: 8300000, guid: b639f0ac59f93e546b23afb5d63aab56, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Receive_Reward
+    clips:
+    - {fileID: 8300000, guid: f8ae727add1b99f4780e9d74c8ce93bb, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Jump_Paperplane
+    clips:
+    - {fileID: 8300000, guid: f36d33a5c30a1104b873fdefc888b2d1, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Action_Hover
+    clips:
+    - {fileID: 8300000, guid: 553d5225776bc7648836d6dc10e17bab, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 2
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_KamiMojados_01
+    clips:
+    - {fileID: 8300000, guid: 1820e29fe95bbf640a3cd5ec42990b57, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_KamiMojados_02
+    clips:
+    - {fileID: 8300000, guid: 520b2f9dc0342e34396c98913f0516d8, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_KamiMojados_03
+    clips:
+    - {fileID: 8300000, guid: 64ccb309ee8ca604aa89e78a2f71f769, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_KamiMojados_04
+    clips:
+    - {fileID: 8300000, guid: 52e300cf7cae24b4cb190cf6b3a63024, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: ForestAtDay
+    clips:
+    - {fileID: 8300000, guid: a4e950327790c8440b61d6779c659a6c, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 3
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: ForestAtNight
+    clips:
+    - {fileID: 8300000, guid: 7ef0cc8aeaeef69408c8f3368ff05ad9, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 3
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Gallina_Evade_VolumeTest
+    clips:
+    - {fileID: 8300000, guid: c3de0e4e52c548a4d86a25a8dd355dbe, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: EstampesPagodes_Battle_Intro
+    clips:
+    - {fileID: 8300000, guid: 39090915ed8cbfb4bb30a801a045fd97, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 0
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: BohrenDestroyingAngels
+    clips:
+    - {fileID: 8300000, guid: 8e5ab12689b88834da8b27318ffdd246, type: 3}
+    volume: 0.03
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 0
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Dialogue_PencilWrite
+    clips:
+    - {fileID: 8300000, guid: 65236dcb8b4cad64fa2e1ee2c15bab55, type: 3}
+    - {fileID: 8300000, guid: 2134304ff51945348ba80263bd471f4b, type: 3}
+    volume: 0.35
+    pitch: 1.6
+    pitchVariation: 0.15
+    loop: 1
+    bus: 2
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Dialogue_Sigh
+    clips: []
+    volume: 0.35
+    pitch: 1.6
+    pitchVariation: 0.15
+    loop: 1
+    bus: 2
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  musicGroup: {fileID: 9197432607514441226, guid: 1e1b55ab68c5e16499c7e1b105afabc6,
+    type: 2}
+  sfxGroup: {fileID: 5805384339254084397, guid: 1e1b55ab68c5e16499c7e1b105afabc6,
+    type: 2}
+  uiGroup: {fileID: 3668528284413233218, guid: 1e1b55ab68c5e16499c7e1b105afabc6, type: 2}
+  ambienceGroup: {fileID: -4589067984341305039, guid: 1e1b55ab68c5e16499c7e1b105afabc6,
+    type: 2}

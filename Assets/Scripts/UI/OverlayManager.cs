@@ -155,7 +155,7 @@ public class OverlayManager : Singleton<OverlayManager>
     public void InitializeCutscene()
     {
         //Debug.Log("arranca la cutscene");
-        LevelManager.Instance.GoToScene("Nivel1_EndCutscene");
+        LevelManager.Instance.GoToScene(GameScene.Level1EndCutscene);
     }
 
     void OnDestroy()

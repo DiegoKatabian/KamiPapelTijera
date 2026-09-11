@@ -10,7 +10,8 @@ public class StoryboardCutsceneManager : MonoBehaviour
 
 
     [SerializeField] AutoDialogue _autoDialogo;
-    [SerializeField] string _sceneToLoadOnDialogueEnd;
+    [SerializeField, Tooltip("Scene to load when the dialogue ends.")]
+    GameScene _sceneToLoadOnDialogueEnd = GameScene.MainMenu;
     [SerializeField] GameObject _endingSplash; //aparece cuando termina el dialogo
 
     bool _waitingForInput;

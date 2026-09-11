@@ -10,7 +10,8 @@ public class MainMenuManager : MonoBehaviour
     bool _isNewGameButtonDown = false;
     bool _dialogueStarted = false;
 
-    [SerializeField] string sceneToLoadOnDialogueEnd;
+    [SerializeField, Tooltip("Scene to load when the intro dialogue ends.")]
+    GameScene sceneToLoadOnDialogueEnd = GameScene.Level1;
 
     public GameObject LoadingAnimationCanvas;
 

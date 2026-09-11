@@ -26,21 +26,6 @@ using System.Text.RegularExpressions;
 /// </summary>
 public static class InputPromptSystem
 {
-    // ------------------------------------------------------------- acciones
-
-    /// <summary>Las acciones que tienen prompt. Es el vocabulario de {INPUT:*}.</summary>
-    enum Accion
-    {
-        Saltar,
-        Interactuar, //hablar, agarrar, pasar de pagina, avanzar el dialogo
-        Atacar,      //cortar con la tijera
-        Correr,
-        Camara,
-        Menu,
-        Mover,
-        CambiarTab   //L1/R1: ciclar secciones del Flap (issue #41 ronda 2, punto 3). SOLO joystick: estos ejes no tienen binding de teclado (ver InputHub.TabSiguienteDown/TabAnteriorDown), asi que el cartelito que usa este placeholder tiene que estar oculto con teclado (ver SoloConJoystick)
-    }
-
     // -------------------------------------------------- iconos
 
     /// <summary>

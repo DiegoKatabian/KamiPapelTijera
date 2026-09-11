@@ -22,9 +22,6 @@ public enum ResourceType
 
 public class LevelManager : Singleton<LevelManager>
 {
-    public string Level1SceneName = "Nivel1_KamiPapelTijera";
-    public string Level2SceneName = "Level2_Newspaper";
-
     public bool agency;
     public bool inDialogue;
 
@@ -55,7 +52,7 @@ public class LevelManager : Singleton<LevelManager>
 
     private void Start()
     {
-        if (gameObject.scene.name == Level1SceneName)
+        if (gameObject.scene.name == SceneCatalog.NameOf(GameScene.Level1))
         {
             AudioManager.instance.StopByName("IntroStoryboardLoop");
 
@@ -63,7 +60,7 @@ public class LevelManager : Singleton<LevelManager>
             AudioManager.instance.PlayByName("ForestAtDay");
         }
 
-        if (gameObject.scene.name == Level2SceneName)
+        if (gameObject.scene.name == SceneCatalog.NameOf(GameScene.Level2))
         {
             AudioManager.instance.StopByName("IntroStoryboardLoop");
             AudioManager.instance.StopByName("MemoFloraMainLoop01");
@@ -93,17 +90,17 @@ public class LevelManager : Singleton<LevelManager>
             
             if (Input.GetKeyDown(KeyCode.F12))
             {
-                GoToScene("MainMenu");
+                GoToScene(GameScene.MainMenu);
             }
 
             if (Input.GetKeyDown(KeyCode.F1))
             {
-                GoToScene("Nivel1_KamiPapelTijera");
+                GoToScene(GameScene.Level1);
             }
 
             if (Input.GetKeyDown(KeyCode.F2))
             {
-                GoToScene("Level2_Newspaper");
+                GoToScene(GameScene.Level2);
             }
         }
     }
@@ -129,8 +126,21 @@ public class LevelManager : Singleton<LevelManager>
         player.GetTijeraMejorada();
         AddResource(ResourceType.tijeraMejorada, 1);
     }
-    public void GoToScene(string sceneName)
+    /// <summary>
+    /// The only way to change scenes. Takes an identity, not a name: the name comes from the
+    /// SceneCatalog asset, so a renamed scene keeps working and a missing one errors loudly
+    /// instead of loading nothing.
+    /// </summary>
+    public void GoToScene(GameScene scene)
     {
+        string sceneName = SceneCatalog.NameOf(scene);
+        if (string.IsNullOrEmpty(sceneName))
+        {
+            Debug.LogError($"[LevelManager] cannot load '{scene}': not in the catalog.");
+            return;
+        }
+
+        Debug.Log($"[LevelManager] loading scene '{sceneName}' ({scene})");
         SceneManager.LoadScene(sceneName);
     }
 
