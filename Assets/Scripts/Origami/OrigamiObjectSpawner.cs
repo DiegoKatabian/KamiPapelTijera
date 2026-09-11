@@ -12,7 +12,7 @@ public class OrigamiObjectSpawner : Origami
     {
         base.Apply();
         objetoParaSpawnear.SetActive(true);
-        AudioManager.instance.PlayByName("BridgeCompleted");
+        AudioManager.instance.Play(AudioId.BridgeCompleted);
         //soniditos y particulas de puente spawneado
     }
 }

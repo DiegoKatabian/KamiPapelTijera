@@ -83,7 +83,7 @@ public class QuestDialogueTrigger : TriggerDialogue
     {
         //Debug.Log("dalia: quest entregada!");
         QuestManager.Instance.RemoveQuest(_quest);
-        AudioManager.instance.PlayByName("QuestCompleted02");
+        AudioManager.instance.Play(AudioId.QuestCompleted02);
         currentDialogue = 2;
         _questDelivered = true;
     }

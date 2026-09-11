@@ -54,20 +54,20 @@ public class LevelManager : Singleton<LevelManager>
     {
         if (gameObject.scene.name == SceneCatalog.NameOf(GameScene.Level1))
         {
-            AudioManager.instance.StopByName("IntroStoryboardLoop");
+            AudioManager.instance.StopById(AudioId.IntroStoryboardLoop);
 
-            AudioManager.instance.PlayByName("MemoFloraMainLoop01");
-            AudioManager.instance.PlayByName("ForestAtDay");
+            AudioManager.instance.Play(AudioId.MemoFloraMainLoop01);
+            AudioManager.instance.Play(AudioId.ForestAtDay);
         }
 
         if (gameObject.scene.name == SceneCatalog.NameOf(GameScene.Level2))
         {
-            AudioManager.instance.StopByName("IntroStoryboardLoop");
-            AudioManager.instance.StopByName("MemoFloraMainLoop01");
-            AudioManager.instance.StopByName("MemoFloraPostBattle01");
-            AudioManager.instance.StopByName("MemoFloraBattleLoop01");
+            AudioManager.instance.StopById(AudioId.IntroStoryboardLoop);
+            AudioManager.instance.StopById(AudioId.MemoFloraMainLoop01);
+            AudioManager.instance.StopById(AudioId.MemoFloraPostBattle01);
+            AudioManager.instance.StopById(AudioId.MemoFloraBattleLoop01);
 
-            AudioManager.instance.PlayByName("BohrenDestroyingAngels");
+            AudioManager.instance.Play(AudioId.BohrenDestroyingAngels);
             //AudioManager.instance.PlayByName("ForestAtDay");
         }
     }

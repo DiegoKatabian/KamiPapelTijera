@@ -65,7 +65,7 @@ public class AbuelaDialogueTrigger : TriggerDialogue
         EnableOrigamiSeal(foldOrigamiSeal, false);
         LevelManager.Instance.AddResource(ResourceType.abuela, 1);
         abuela.GetFolded();
-        AudioManager.instance.PlayByName("MagicSuccess", 1.6f);
+        AudioManager.instance.Play(AudioId.MagicSuccess, 1.6f);
         abuela.PlaceAbuelaAtUnfoldPoint();
         PageScrollerManager.Instance.esferaNext.gameObject.SetActive(true);
         PageScrollerManager.Instance.esferaPrev.gameObject.SetActive(true);
@@ -78,7 +78,7 @@ public class AbuelaDialogueTrigger : TriggerDialogue
         EnableOrigamiSeal(unfoldOrigamiSeal, false);
         LevelManager.Instance.AddResource(ResourceType.abuela, -1);
         abuela.GetUnfolded();
-        AudioManager.instance.PlayByName("MagicSuccess", 1.06f);
+        AudioManager.instance.Play(AudioId.MagicSuccess, 1.06f);
         Unlock();
     }
 
@@ -146,7 +146,7 @@ public class AbuelaDialogueTrigger : TriggerDialogue
         //Debug.Log("on first dialogue ended");
 
         firstTime = false;
-        AudioManager.instance.PlayByName("MagicSuccess", 2f);
+        AudioManager.instance.Play(AudioId.MagicSuccess, 2f);
         Lock();
         PasarAlSiguienteDialogo(); //despues de hablarle x primera vez a la awela, pasa al dialogo 2
     }

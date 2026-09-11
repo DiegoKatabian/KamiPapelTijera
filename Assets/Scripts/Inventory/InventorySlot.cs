@@ -93,12 +93,12 @@ public class InventorySlot : MonoBehaviour
 
     public virtual void BUTTON_OnHover()
     {
-        AudioManager.instance.PlayByName("Action_Hover", 1);
+        AudioManager.instance.Play(AudioId.Action_Hover, 1);
     }
 
     public virtual void BUTTON_OnPress()
     {
-        AudioManager.instance.PlayByName("PaperFold01", 3f, 0.05f);
+        AudioManager.instance.Play(AudioId.PaperFold01, 3f, 0.05f);
         if (currentItem != null)
         {
             InventoryManager.Instance.ShowcaseItem(currentItem);

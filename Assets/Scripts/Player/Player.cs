@@ -581,7 +581,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         _model.InvalidateSafeCandidate();
         Debug.Log($"[Player] Die: causa {cause}");
         SetState(PlayerState.Dead);
-        AudioManager.instance.PlayByName("GameOverOrchestral");
+        AudioManager.instance.Play(AudioId.GameOverOrchestral);
         EventManager.Trigger(Evento.OnPlayerDie, cause);
         StartCoroutine(DeathSequence(cause));
     }
@@ -684,7 +684,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         jumpForce = augmentedJumpForce;
         augmentedJumpsLeft = augmentedJumpsMax;
         myPaperPlaneHat.SetActive(true);
-        AudioManager.instance.PlayByName("ShipSpawn", 2f);
+        AudioManager.instance.Play(AudioId.ShipSpawn, 2f);
         nuevoTooltipPapelSalto.SetActive(true);
         _view.RefreshOverrides();
     }

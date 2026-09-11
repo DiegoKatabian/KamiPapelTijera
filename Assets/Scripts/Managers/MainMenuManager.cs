@@ -23,8 +23,8 @@ public class MainMenuManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         EventManager.Subscribe(Evento.OnDialogueEnd, ChangeScene);
         AudioManager.instance.StopAll();
-        AudioManager.instance.PlayByName("4S_IntroBigChords");
-        AudioManager.instance.PlayByName("ForestAtNight");
+        AudioManager.instance.Play(AudioId._4S_IntroBigChords);
+        AudioManager.instance.Play(AudioId.ForestAtNight);
 
         Debug.Log($"[MainMenuManager] Start() en el frame {Time.frameCount} " +
                   $"(HayJoystickConectado={InputHub.HayJoystickConectado})");
@@ -104,10 +104,10 @@ public class MainMenuManager : MonoBehaviour
         if (_isNewGameButtonDown && !_dialogueStarted)
         {
             _autoDialogo.StartDialogue();
-            AudioManager.instance.StopByName("4S_IntroBigChords");
-            AudioManager.instance.StopByName("ForestAtNight");
+            AudioManager.instance.StopById(AudioId._4S_IntroBigChords);
+            AudioManager.instance.StopById(AudioId.ForestAtNight);
 
-            AudioManager.instance.PlayByName("IntroStoryboardLoop");
+            AudioManager.instance.Play(AudioId.IntroStoryboardLoop);
 
             //arranco el dialogo: ya no hay menu que navegar y el dialogo avanza con E / boton B.
             //sin esto el boton quedaria seleccionado y cada B tambien seguiria "apretandolo".

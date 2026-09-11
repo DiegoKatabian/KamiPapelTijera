@@ -67,4 +67,12 @@ public static class AudioId
     public const string BohrenDestroyingAngels = "BohrenDestroyingAngels";
     public const string Dialogue_PencilWrite = "Dialogue_PencilWrite";
     public const string Dialogue_Sigh = "Dialogue_Sigh";
+    public const string TijeraHit = "TijeraHit";
+    public const string PaperCut = "PaperCut";
+    public const string PaperFold = "PaperFold";
+    public const string Pasos_Kami_A = "Pasos_Kami_A";
+    public const string Pasos_Kami_B = "Pasos_Kami_B";
+    public const string Pasos_Kami = "Pasos_Kami";
+    public const string Pasos_KamiMojados_A = "Pasos_KamiMojados_A";
+    public const string Pasos_KamiMojados_B = "Pasos_KamiMojados_B";
 }

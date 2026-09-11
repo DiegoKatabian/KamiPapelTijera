@@ -34,7 +34,7 @@ public class CofreCortable : MonoBehaviour/*, ICortable*/
         anim.SetBool("isOpen", true);
         isOpening = true;
         shouldStayOpen = true;
-        AudioManager.instance.PlayByName("MagicSuccess", 1.4f);
+        AudioManager.instance.Play(AudioId.MagicSuccess, 1.4f);
         //lanzar particulas
         particulitasDePapel.SetActive(true);
 

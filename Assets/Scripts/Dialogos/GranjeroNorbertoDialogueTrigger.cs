@@ -86,7 +86,7 @@ public class GranjeroNorbertoDialogueTrigger : QuestDialogueTrigger
     {
         //Debug.Log("tio norberto: quest entregada!");
         QuestManager.Instance.RemoveQuest(_quest);
-        AudioManager.instance.PlayByName("QuestCompleted02", 1.1f);
+        AudioManager.instance.Play(AudioId.QuestCompleted02, 1.1f);
         currentDialogue = 2;
         _questDelivered = true;
     }

@@ -109,7 +109,7 @@ public class OverlayManager : Singleton<OverlayManager>
         _frameDesbloqueado = Time.frameCount; //ver SeDesbloqueoEsteFrame
         LevelManager.Instance.inDialogue = false;
         isLocked = false;
-        AudioManager.instance.PlayByName("PickupSFX", 0.66f);
+        AudioManager.instance.Play(AudioId.PickupSFX, 0.66f);
 
         //se vuelve al juego: no puede quedar un boton seleccionado, o el B del joystick (Submit)
         //lo apretaria mientras el jugador juega

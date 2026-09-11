@@ -36,7 +36,7 @@ public class TriggerTijeraPickup : TriggerScript
     public void PickupTijera()
     {
         EventManager.Trigger(Evento.OnPlayerGetTijera);
-        AudioManager.instance.PlayByName("PickupSpecial", 1f);
+        AudioManager.instance.Play(AudioId.PickupSpecial, 1f);
         //CameraManager.Instance.SetCamera(CameraMode.General);
 
         OnExitBehaviour();

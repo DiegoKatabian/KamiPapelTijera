@@ -769,6 +769,112 @@ MonoBehaviour:
     spatialBlend: 0
     priority: 128
     interruptSelf: 0
+  - id: TijeraHit
+    clips:
+    - {fileID: 8300000, guid: 6d69eac966988d444ad3df983134ff55, type: 3}
+    - {fileID: 8300000, guid: f4c9cdd0eb65d594b84d6b0962b1f4c4, type: 3}
+    volume: 0.6
+    pitch: 0.9
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PaperCut
+    clips:
+    - {fileID: 8300000, guid: c7a69cf7cbb920448a03132b9deffd1b, type: 3}
+    - {fileID: 8300000, guid: a98068e4f9395bf4da6963d19fd59e9e, type: 3}
+    volume: 0.3
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PaperFold
+    clips:
+    - {fileID: 8300000, guid: 65236dcb8b4cad64fa2e1ee2c15bab55, type: 3}
+    - {fileID: 8300000, guid: 2134304ff51945348ba80263bd471f4b, type: 3}
+    volume: 0.3
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_Kami_A
+    clips:
+    - {fileID: 8300000, guid: 44992993c48758d459325faf694c4610, type: 3}
+    - {fileID: 8300000, guid: fc9dccabd10c72e46bfd007ffd3586a0, type: 3}
+    volume: 0.03
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_Kami_B
+    clips:
+    - {fileID: 8300000, guid: e3a3956824c297a438b55d97fd25001c, type: 3}
+    - {fileID: 8300000, guid: 094f94850b79a7a4fb890c4a601fb958, type: 3}
+    volume: 0.03
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_Kami
+    clips:
+    - {fileID: 8300000, guid: 44992993c48758d459325faf694c4610, type: 3}
+    - {fileID: 8300000, guid: e3a3956824c297a438b55d97fd25001c, type: 3}
+    - {fileID: 8300000, guid: fc9dccabd10c72e46bfd007ffd3586a0, type: 3}
+    - {fileID: 8300000, guid: 094f94850b79a7a4fb890c4a601fb958, type: 3}
+    volume: 0.03
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_KamiMojados_A
+    clips:
+    - {fileID: 8300000, guid: 1820e29fe95bbf640a3cd5ec42990b57, type: 3}
+    - {fileID: 8300000, guid: 64ccb309ee8ca604aa89e78a2f71f769, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Pasos_KamiMojados_B
+    clips:
+    - {fileID: 8300000, guid: 520b2f9dc0342e34396c98913f0516d8, type: 3}
+    - {fileID: 8300000, guid: 52e300cf7cae24b4cb190cf6b3a63024, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
   musicGroup: {fileID: 9197432607514441226, guid: 1e1b55ab68c5e16499c7e1b105afabc6,
     type: 2}
   sfxGroup: {fileID: 5805384339254084397, guid: 1e1b55ab68c5e16499c7e1b105afabc6,

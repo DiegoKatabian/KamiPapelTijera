@@ -37,7 +37,7 @@ public class RocosoCortable : MonoBehaviour, ICortable
         }
 
         Debug.Log($"[RocosoCortable] {gameObject.name}: corte de {receivedDamage} aceptado, recibe daño");
-        AudioManager.instance.PlayRandom("TijeraHit01", "TijeraHit02");
+        AudioManager.instance.Play(AudioId.TijeraHit);
         _thisRocoso.TakeDamage(receivedDamage);
     }
 }

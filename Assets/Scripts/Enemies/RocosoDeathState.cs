@@ -23,7 +23,7 @@ public class RocosoDeathState : IState
         {
             cryPitch = 0.75f;
         }
-        AudioManager.instance.PlayByName("RocosoWakeUp", cryPitch, 0.05f);
+        AudioManager.instance.Play(AudioId.RocosoWakeUp, cryPitch, 0.05f);
     }
 
     public void OnUpdate()

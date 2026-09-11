@@ -34,7 +34,7 @@ public abstract class Enemy : Entity
             EventManager.Trigger(Evento.OnEncounterEnd, CameraMode.Normal);
             pitch = 0.6f;
         }
-        AudioManager.instance.PlayByName("Death", pitch, 0.1f);
+        AudioManager.instance.Play(AudioId.Death, pitch, 0.1f);
         base.Die();
     }
 }

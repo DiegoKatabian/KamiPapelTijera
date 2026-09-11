@@ -125,7 +125,7 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
     void StartChangePageFX()
     {
         StartCoroutine(ChangePageCameraSequence());
-        AudioManager.instance.PlayByName("MagicSuccess", 0.5f, 0.01f);
+        AudioManager.instance.Play(AudioId.MagicSuccess, 0.5f, 0.01f);
         StartCoroutine(PostProcessManager.Instance.LerpBloomIntensity());
         PlayGlitter();
     }
@@ -245,11 +245,11 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
     {
         if (_isNext)
         {
-            AudioManager.instance.PlayByName("PageTurn01", 1f, 0.03f);
+            AudioManager.instance.Play(AudioId.PageTurn01, 1f, 0.03f);
         }
         else
         {
-            AudioManager.instance.PlayByName("PageTurn02", 1f, 0.03f);
+            AudioManager.instance.Play(AudioId.PageTurn02, 1f, 0.03f);
         }
     }
     public void PlayGlitter()
