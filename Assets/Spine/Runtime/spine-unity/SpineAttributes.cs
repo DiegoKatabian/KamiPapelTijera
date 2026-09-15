@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,18 +27,19 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using UnityEngine;
 using System;
 using System.Collections;
+using UnityEngine;
 
 namespace Spine.Unity {
 
-	[AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
 	public abstract class SpineAttributeBase : PropertyAttribute {
 		public string dataField = "";
 		public string startsWith = "";
 		public bool includeNone = true;
 		public bool fallbackToTextField = false;
+		public bool avoidGenericMenu = false;
 	}
 
 	public class SpineBone : SpineAttributeBase {
@@ -64,7 +65,7 @@ namespace Spine.Unity {
 		}
 
 		public static Spine.BoneData GetBoneData (string boneName, SkeletonDataAsset skeletonDataAsset) {
-			var data = skeletonDataAsset.GetSkeletonData(true);
+			SkeletonData data = skeletonDataAsset.GetSkeletonData(true);
 			return data.FindBone(boneName);
 		}
 	}
@@ -103,11 +104,14 @@ namespace Spine.Unity {
 		/// Valid types are SkeletonDataAsset and SkeletonRenderer (and derivatives)
 		/// If left empty and the script the attribute is applied to is derived from Component, GetComponent<SkeletonRenderer>() will be called as a fallback.
 		/// </param>
-		public SpineAnimation (string startsWith = "", string dataField = "", bool includeNone = true, bool fallbackToTextField = false) {
+		public SpineAnimation (string startsWith = "", string dataField = "",
+			bool includeNone = true, bool fallbackToTextField = false, bool avoidGenericMenu = false) {
+
 			this.startsWith = startsWith;
 			this.dataField = dataField;
 			this.includeNone = includeNone;
 			this.fallbackToTextField = fallbackToTextField;
+			this.avoidGenericMenu = avoidGenericMenu;
 		}
 	}
 
@@ -205,12 +209,15 @@ namespace Spine.Unity {
 
 		public bool defaultAsEmptyString = false;
 
-		public SpineSkin (string startsWith = "", string dataField = "", bool includeNone = true, bool fallbackToTextField = false, bool defaultAsEmptyString = false) {
+		public SpineSkin (string startsWith = "", string dataField = "", bool includeNone = false,
+			bool fallbackToTextField = false, bool defaultAsEmptyString = false, bool avoidGenericMenu = false) {
+
 			this.startsWith = startsWith;
 			this.dataField = dataField;
 			this.includeNone = includeNone;
 			this.fallbackToTextField = fallbackToTextField;
 			this.defaultAsEmptyString = defaultAsEmptyString;
+			this.avoidGenericMenu = avoidGenericMenu;
 		}
 	}
 
@@ -251,8 +258,12 @@ namespace Spine.Unity {
 		}
 
 		public static Spine.Attachment GetAttachment (string attachmentPath, Spine.SkeletonData skeletonData) {
-			var hierarchy = SpineAttachment.GetHierarchy(attachmentPath);
-			return string.IsNullOrEmpty(hierarchy.name) ? null : skeletonData.FindSkin(hierarchy.skin).GetAttachment(skeletonData.FindSlotIndex(hierarchy.slot), hierarchy.name);
+			SpineAttachment.Hierarchy hierarchy = SpineAttachment.GetHierarchy(attachmentPath);
+			if (string.IsNullOrEmpty(hierarchy.name)) return null;
+
+			SlotData slot = skeletonData.FindSlot(hierarchy.slot);
+			if (slot == null) return null;
+			return skeletonData.FindSkin(hierarchy.skin).GetAttachment(slot.Index, hierarchy.name);
 		}
 
 		public static Spine.Attachment GetAttachment (string attachmentPath, SkeletonDataAsset skeletonDataAsset) {
@@ -267,14 +278,13 @@ namespace Spine.Unity {
 			public string name;
 
 			public Hierarchy (string fullPath) {
-				string[] chunks = fullPath.Split(new char[]{'/'}, System.StringSplitOptions.RemoveEmptyEntries);
+				string[] chunks = fullPath.Split(new char[] { '/' }, System.StringSplitOptions.RemoveEmptyEntries);
 				if (chunks.Length == 0) {
 					skin = "";
 					slot = "";
 					name = "";
 					return;
-				}
-				else if (chunks.Length < 2) {
+				} else if (chunks.Length < 2) {
 					throw new System.Exception("Cannot generate Attachment Hierarchy from string! Not enough components! [" + fullPath + "]");
 				}
 				skin = chunks[0];

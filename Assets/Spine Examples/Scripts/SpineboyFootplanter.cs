@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,18 +27,17 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+using Spine;
+using Spine.Unity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-using Spine;
-using Spine.Unity;
 
 namespace Spine.Unity.Examples {
 	public class SpineboyFootplanter : MonoBehaviour {
 
 		public float timeScale = 0.5f;
-		[SpineBone]	public string nearBoneName, farBoneName;
+		[SpineBone] public string nearBoneName, farBoneName;
 
 		[Header("Settings")]
 		public Vector2 footSize;
@@ -109,7 +108,7 @@ namespace Spine.Unity.Examples {
 				float strideSign = Mathf.Sign(strideSignedSize);
 				float strideSize = (Mathf.Abs(strideSignedSize));
 
-				var movement = strideSign > 0 ? forwardMovement : backwardMovement;
+				FootMovement movement = strideSign > 0 ? forwardMovement : backwardMovement;
 
 				worldPos.x = Mathf.Lerp(worldPosPrev.x, worldPosNext.x, movement.xMoveCurve.Evaluate(lerp));
 				float groundLevel = Mathf.Lerp(worldPosPrev.y, worldPosNext.y, lerp);
@@ -127,7 +126,7 @@ namespace Spine.Unity.Examples {
 			}
 
 			public static float GetNewDisplacement (float otherLegDisplacementFromCenter, float comfyDistance, float minimumFootDistanceX, float maxNewStepDisplacement, FootMovement forwardMovement, FootMovement backwardMovement) {
-				var movement = Mathf.Sign(otherLegDisplacementFromCenter) < 0 ? forwardMovement : backwardMovement;
+				FootMovement movement = Mathf.Sign(otherLegDisplacementFromCenter) < 0 ? forwardMovement : backwardMovement;
 				float randomCompensate = Random.Range(movement.minDistanceCompensate, movement.maxDistanceCompensate);
 
 				float newDisplacement = (otherLegDisplacementFromCenter * randomCompensate);
@@ -143,18 +142,18 @@ namespace Spine.Unity.Examples {
 
 		void Start () {
 			Time.timeScale = timeScale;
-			var tpos = transform.position;
+			Vector3 tpos = transform.position;
 
 			// Default starting positions.
 			nearFoot.worldPos = tpos;
-			nearFoot.worldPos .x -= comfyDistance;
+			nearFoot.worldPos.x -= comfyDistance;
 			nearFoot.worldPosPrev = nearFoot.worldPosNext = nearFoot.worldPos;
 
 			farFoot.worldPos = tpos;
 			farFoot.worldPos.x += comfyDistance;
 			farFoot.worldPosPrev = farFoot.worldPosNext = farFoot.worldPos;
 
-			var skeletonAnimation = GetComponent<SkeletonAnimation>();
+			SkeletonAnimation skeletonAnimation = GetComponent<SkeletonAnimation>();
 			skeleton = skeletonAnimation.Skeleton;
 
 			skeletonAnimation.UpdateLocal += UpdateLocal;

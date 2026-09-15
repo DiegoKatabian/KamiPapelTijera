@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,16 +27,24 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using UnityEngine;
-using System.Collections;
+#if UNITY_2023_1_OR_NEWER
+#define USE_COLLIDER_COMPOSITE_OPERATION
+#endif
+
+#if UNITY_6000_0_OR_NEWER
+#define RIGIDBODY2D_USES_LINEAR_VELOCITY
+#endif
+
 using Spine.Unity;
+using System.Collections;
+using UnityEngine;
 
 namespace Spine.Unity.Examples {
 	public class RaggedySpineboy : MonoBehaviour {
 
 		public LayerMask groundMask;
 		public float restoreDuration = 0.5f;
-		public Vector2 launchVelocity = new Vector2(50,100);
+		public Vector2 launchVelocity = new Vector2(50, 100);
 
 		Spine.Unity.Examples.SkeletonRagdoll2D ragdoll;
 		Collider2D naturalCollider;
@@ -47,7 +55,7 @@ namespace Spine.Unity.Examples {
 		}
 
 		void AddRigidbody () {
-			var rb = gameObject.AddComponent<Rigidbody2D>();
+			Rigidbody2D rb = gameObject.AddComponent<Rigidbody2D>();
 			rb.freezeRotation = true;
 			naturalCollider.enabled = true;
 		}
@@ -65,7 +73,12 @@ namespace Spine.Unity.Examples {
 		void Launch () {
 			RemoveRigidbody();
 			ragdoll.Apply();
-			ragdoll.RootRigidbody.velocity = new Vector2(Random.Range(-launchVelocity.x, launchVelocity.x), launchVelocity.y);
+			Vector2 velocity = new Vector2(Random.Range(-launchVelocity.x, launchVelocity.x), launchVelocity.y);
+#if RIGIDBODY2D_USES_LINEAR_VELOCITY
+			ragdoll.RootRigidbody.linearVelocity = velocity;
+#else
+			ragdoll.RootRigidbody.velocity = velocity;
+#endif
 			StartCoroutine(WaitUntilStopped());
 		}
 
@@ -78,7 +91,11 @@ namespace Spine.Unity.Examples {
 			if (hit.collider != null)
 				skeletonPoint = hit.point;
 
+#if USE_COLLIDER_COMPOSITE_OPERATION
+			ragdoll.RootRigidbody.bodyType = RigidbodyType2D.Kinematic;
+#else
 			ragdoll.RootRigidbody.isKinematic = true;
+#endif
 			ragdoll.SetSkeletonPosition(skeletonPoint);
 
 			yield return ragdoll.SmoothMix(0, restoreDuration);
@@ -92,7 +109,11 @@ namespace Spine.Unity.Examples {
 
 			float t = 0;
 			while (t < 0.5f) {
+#if RIGIDBODY2D_USES_LINEAR_VELOCITY
+				t = (ragdoll.RootRigidbody.linearVelocity.magnitude > 0.09f) ? 0 : t + Time.deltaTime;
+#else
 				t = (ragdoll.RootRigidbody.velocity.magnitude > 0.09f) ? 0 : t + Time.deltaTime;
+#endif
 				yield return null;
 			}
 

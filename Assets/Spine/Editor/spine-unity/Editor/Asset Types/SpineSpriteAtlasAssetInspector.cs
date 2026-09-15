@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,12 +27,12 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+using Spine;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using Spine;
 
 namespace Spine.Unity.Editor {
 	using Event = UnityEngine.Event;
@@ -96,7 +96,7 @@ namespace Spine.Unity.Editor {
 
 			for (int i = 0; i < materials.arraySize; i++) {
 				SerializedProperty prop = materials.GetArrayElementAtIndex(i);
-				var material = (Material)prop.objectReferenceValue;
+				Material material = (Material)prop.objectReferenceValue;
 				if (material == null) {
 					EditorGUILayout.HelpBox("Materials cannot be null.", MessageType.Error);
 					return;
@@ -106,7 +106,7 @@ namespace Spine.Unity.Editor {
 			if (atlasFile.objectReferenceValue != null) {
 				int baseIndent = EditorGUI.indentLevel;
 
-				var regions = SpineSpriteAtlasAssetInspector.GetRegions(atlasAsset.GetAtlas());
+				List<AtlasRegion> regions = SpineSpriteAtlasAssetInspector.GetRegions(atlasAsset.GetAtlas());
 				int regionsCount = regions.Count;
 				using (new EditorGUILayout.HorizontalScope()) {
 					EditorGUILayout.LabelField("Atlas Regions", EditorStyles.boldLabel);

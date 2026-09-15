@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,9 +27,9 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using UnityEngine;
 using Spine;
 using Spine.Unity;
+using UnityEngine;
 
 namespace Spine.Unity.Examples {
 	public class Spineboy : MonoBehaviour {
@@ -37,12 +37,12 @@ namespace Spine.Unity.Examples {
 
 		public void Start () {
 			skeletonAnimation = GetComponent<SkeletonAnimation>(); // Get the SkeletonAnimation component for the GameObject this script is attached to.
-			var animationState = skeletonAnimation.AnimationState;
+			AnimationState animationState = skeletonAnimation.AnimationState;
 
-			animationState.Event += HandleEvent;; // Call our method any time an animation fires an event.
+			animationState.Event += HandleEvent; ; // Call our method any time an animation fires an event.
 			animationState.End += (entry) => Debug.Log("start: " + entry.TrackIndex); // A lambda can be used for the callback instead of a method.
 
-			animationState.AddAnimation(0, "jump", false, 2);	// Queue jump to be played on track 0 two seconds after the starting animation.
+			animationState.AddAnimation(0, "jump", false, 2);   // Queue jump to be played on track 0 two seconds after the starting animation.
 			animationState.AddAnimation(0, "run", true, 0); // Queue walk to be looped on track 0 after the jump animation.
 		}
 

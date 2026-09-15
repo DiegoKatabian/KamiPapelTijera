@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,10 +27,10 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System.Collections.Generic;
-using UnityEngine;
 using Spine;
 using Spine.Unity;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Spine.Unity.Prototyping {
 	/// <summary>
@@ -46,32 +46,32 @@ namespace Spine.Unity.Prototyping {
 			public Color color = Color.white;
 		}
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		void OnValidate () {
-			var skeletonComponent = GetComponent<ISkeletonComponent>();
+			ISkeletonComponent skeletonComponent = GetComponent<ISkeletonComponent>();
 			if (skeletonComponent != null) {
 				skeletonComponent.Skeleton.SetSlotsToSetupPose();
-				var animationStateComponent = GetComponent<IAnimationStateComponent>();
+				IAnimationStateComponent animationStateComponent = GetComponent<IAnimationStateComponent>();
 				if (animationStateComponent != null && animationStateComponent.AnimationState != null) {
 					animationStateComponent.AnimationState.Apply(skeletonComponent.Skeleton);
 				}
 			}
 			ApplySettings();
 		}
-		#endif
+#endif
 
 		void Start () {
 			ApplySettings();
 		}
 
 		void ApplySettings () {
-			var skeletonComponent = GetComponent<ISkeletonComponent>();
+			ISkeletonComponent skeletonComponent = GetComponent<ISkeletonComponent>();
 			if (skeletonComponent != null) {
-				var skeleton = skeletonComponent.Skeleton;
+				Skeleton skeleton = skeletonComponent.Skeleton;
 				skeleton.SetColor(skeletonColor);
 
-				foreach (var s in slotSettings) {
-					var slot = skeleton.FindSlot(s.slot);
+				foreach (SlotSettings s in slotSettings) {
+					Slot slot = skeleton.FindSlot(s.slot);
 					if (slot != null) slot.SetColor(s.color);
 				}
 

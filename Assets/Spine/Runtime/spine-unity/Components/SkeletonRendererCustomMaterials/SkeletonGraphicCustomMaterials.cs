@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -36,11 +36,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Spine.Unity {
-	#if NEW_PREFAB_SYSTEM
+#if NEW_PREFAB_SYSTEM
 	[ExecuteAlways]
-	#else
+#else
 	[ExecuteInEditMode]
-	#endif
+#endif
 	[HelpURL("http://esotericsoftware.com/spine-unity#SkeletonGraphicCustomMaterials")]
 	public class SkeletonGraphicCustomMaterials : MonoBehaviour {
 
@@ -49,18 +49,18 @@ namespace Spine.Unity {
 		[SerializeField] protected List<AtlasMaterialOverride> customMaterialOverrides = new List<AtlasMaterialOverride>();
 		[SerializeField] protected List<AtlasTextureOverride> customTextureOverrides = new List<AtlasTextureOverride>();
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		void Reset () {
 			skeletonGraphic = GetComponent<SkeletonGraphic>();
 
 			// Populate material list
 			if (skeletonGraphic != null && skeletonGraphic.skeletonDataAsset != null) {
-				var atlasAssets = skeletonGraphic.skeletonDataAsset.atlasAssets;
+				AtlasAssetBase[] atlasAssets = skeletonGraphic.skeletonDataAsset.atlasAssets;
 
-				var initialAtlasMaterialOverrides = new List<AtlasMaterialOverride>();
+				List<AtlasMaterialOverride> initialAtlasMaterialOverrides = new List<AtlasMaterialOverride>();
 				foreach (AtlasAssetBase atlasAsset in atlasAssets) {
 					foreach (Material atlasMaterial in atlasAsset.Materials) {
-						var atlasMaterialOverride = new AtlasMaterialOverride {
+						AtlasMaterialOverride atlasMaterialOverride = new AtlasMaterialOverride {
 							overrideEnabled = false,
 							originalTexture = atlasMaterial.mainTexture
 						};
@@ -73,12 +73,12 @@ namespace Spine.Unity {
 
 			// Populate texture list
 			if (skeletonGraphic != null && skeletonGraphic.skeletonDataAsset != null) {
-				var atlasAssets = skeletonGraphic.skeletonDataAsset.atlasAssets;
+				AtlasAssetBase[] atlasAssets = skeletonGraphic.skeletonDataAsset.atlasAssets;
 
-				var initialAtlasTextureOverrides = new List<AtlasTextureOverride>();
+				List<AtlasTextureOverride> initialAtlasTextureOverrides = new List<AtlasTextureOverride>();
 				foreach (AtlasAssetBase atlasAsset in atlasAssets) {
 					foreach (Material atlasMaterial in atlasAsset.Materials) {
-						var atlasTextureOverride = new AtlasTextureOverride {
+						AtlasTextureOverride atlasTextureOverride = new AtlasTextureOverride {
 							overrideEnabled = false,
 							originalTexture = atlasMaterial.mainTexture
 						};
@@ -89,7 +89,7 @@ namespace Spine.Unity {
 				customTextureOverrides = initialAtlasTextureOverrides;
 			}
 		}
-		#endif
+#endif
 		#endregion
 
 		void SetCustomMaterialOverrides () {

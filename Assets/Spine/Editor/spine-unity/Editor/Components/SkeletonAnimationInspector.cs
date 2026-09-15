@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,26 +27,30 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+using Spine;
 using UnityEditor;
 using UnityEngine;
-using Spine;
 
 namespace Spine.Unity.Editor {
 
 	[CustomEditor(typeof(SkeletonAnimation))]
 	[CanEditMultipleObjects]
 	public class SkeletonAnimationInspector : SkeletonRendererInspector {
-		protected SerializedProperty animationName, loop, timeScale, autoReset;
+		protected SerializedProperty animationName, loop, timeScale, unscaledTime, autoReset;
 		protected bool wasAnimationParameterChanged = false;
-		protected bool requireRepaint;
 		readonly GUIContent LoopLabel = new GUIContent("Loop", "Whether or not .AnimationName should loop. This only applies to the initial animation specified in the inspector, or any subsequent Animations played through .AnimationName. Animations set through state.SetAnimation are unaffected.");
 		readonly GUIContent TimeScaleLabel = new GUIContent("Time Scale", "The rate at which animations progress over time. 1 means normal speed. 0.5 means 50% speed.");
+		readonly GUIContent UnscaledTimeLabel = new GUIContent("Unscaled Time",
+			"If enabled, AnimationState uses unscaled game time (Time.unscaledDeltaTime), " +
+				"running animations independent of e.g. game pause (Time.timeScale). " +
+				"Instance SkeletonAnimation.timeScale will still be applied.");
 
 		protected override void OnEnable () {
 			base.OnEnable();
 			animationName = serializedObject.FindProperty("_animationName");
 			loop = serializedObject.FindProperty("loop");
 			timeScale = serializedObject.FindProperty("timeScale");
+			unscaledTime = serializedObject.FindProperty("unscaledTime");
 		}
 
 		protected override void DrawInspectorGUI (bool multi) {
@@ -54,7 +58,7 @@ namespace Spine.Unity.Editor {
 			if (!TargetIsValid) return;
 			bool sameData = SpineInspectorUtility.TargetsUseSameData(serializedObject);
 
-			foreach (var o in targets)
+			foreach (UnityEngine.Object o in targets)
 				TrySetAnimation(o as SkeletonAnimation);
 
 			EditorGUILayout.Space();
@@ -70,22 +74,16 @@ namespace Spine.Unity.Editor {
 			EditorGUILayout.PropertyField(loop, LoopLabel);
 			wasAnimationParameterChanged |= EditorGUI.EndChangeCheck(); // Value used in the next update.
 			EditorGUILayout.PropertyField(timeScale, TimeScaleLabel);
-			foreach (var o in targets) {
-				var component = o as SkeletonAnimation;
+			foreach (UnityEngine.Object o in targets) {
+				SkeletonAnimation component = o as SkeletonAnimation;
 				component.timeScale = Mathf.Max(component.timeScale, 0);
 			}
+			EditorGUILayout.PropertyField(unscaledTime, UnscaledTimeLabel);
 
 			EditorGUILayout.Space();
 			SkeletonRootMotionParameter();
 
 			serializedObject.ApplyModifiedProperties();
-
-			if (!isInspectingPrefab) {
-				if (requireRepaint) {
-					UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
-					requireRepaint = false;
-				}
-			}
 		}
 
 		protected void TrySetAnimation (SkeletonAnimation skeletonAnimation) {
@@ -101,8 +99,8 @@ namespace Spine.Unity.Editor {
 					((activeAnimation != animationName.stringValue) || (activeLoop != loop.boolValue));
 				if (animationParameterChanged) {
 					this.wasAnimationParameterChanged = false;
-					var skeleton = skeletonAnimation.Skeleton;
-					var state = skeletonAnimation.AnimationState;
+					Skeleton skeleton = skeletonAnimation.Skeleton;
+					AnimationState state = skeletonAnimation.AnimationState;
 
 					if (!Application.isPlaying) {
 						if (state != null) state.ClearTrack(0);

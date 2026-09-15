@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,8 +27,8 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 namespace Spine.Unity.Examples {
 	[SelectionBase]
@@ -46,7 +46,7 @@ namespace Spine.Unity.Examples {
 		#endregion
 
 		float lastShootTime;
-		public event System.Action ShootEvent;	// Lets other scripts know when Spineboy is shooting. Check C# Documentation to learn more about events and delegates.
+		public event System.Action ShootEvent;  // Lets other scripts know when Spineboy is shooting. Check C# Documentation to learn more about events and delegates.
 		public event System.Action StartAimEvent;   // Lets other scripts know when Spineboy is aiming.
 		public event System.Action StopAimEvent;   // Lets other scripts know when Spineboy is no longer aiming.
 
@@ -60,7 +60,7 @@ namespace Spine.Unity.Examples {
 
 			if (currentTime - lastShootTime > shootInterval) {
 				lastShootTime = currentTime;
-				if (ShootEvent != null) ShootEvent();	// Fire the "ShootEvent" event.
+				if (ShootEvent != null) ShootEvent();   // Fire the "ShootEvent" event.
 			}
 		}
 
@@ -88,13 +88,13 @@ namespace Spine.Unity.Examples {
 		#endregion
 
 		IEnumerator JumpRoutine () {
-			if (state == SpineBeginnerBodyState.Jumping) yield break;	// Don't jump when already jumping.
+			if (state == SpineBeginnerBodyState.Jumping) yield break;   // Don't jump when already jumping.
 
 			state = SpineBeginnerBodyState.Jumping;
 
 			// Fake jumping.
 			{
-				var pos = transform.localPosition;
+				Vector3 pos = transform.localPosition;
 				const float jumpTime = 1.2f;
 				const float half = jumpTime * 0.5f;
 				const float jumpPower = 20f;

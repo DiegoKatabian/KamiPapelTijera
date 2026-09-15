@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,7 +27,8 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System.Collections;
+#define SPINE_OPTIONAL_ON_DEMAND_LOADING
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,6 +40,44 @@ namespace Spine.Unity {
 
 		public abstract bool IsLoaded { get; }
 		public abstract void Clear ();
-		public abstract Atlas GetAtlas ();
+		public abstract Atlas GetAtlas (bool onlyMetaData = false);
+
+#if SPINE_OPTIONAL_ON_DEMAND_LOADING
+		public enum LoadingMode {
+			Normal = 0,
+			OnDemand
+		}
+		public virtual LoadingMode TextureLoadingMode {
+			get { return textureLoadingMode; }
+			set { textureLoadingMode = value; }
+		}
+		public OnDemandTextureLoader OnDemandTextureLoader {
+			get { return onDemandTextureLoader; }
+			set { onDemandTextureLoader = value; }
+		}
+
+		public virtual void BeginCustomTextureLoading () {
+			if (onDemandTextureLoader)
+				onDemandTextureLoader.BeginCustomTextureLoading();
+		}
+
+		public virtual void EndCustomTextureLoading () {
+			if (onDemandTextureLoader)
+				onDemandTextureLoader.EndCustomTextureLoading();
+		}
+
+		public virtual void RequireTexturesLoaded (Material material, ref Material overrideMaterial) {
+			if (onDemandTextureLoader)
+				onDemandTextureLoader.RequestLoadMaterialTextures(material, ref overrideMaterial);
+		}
+
+		public virtual void RequireTextureLoaded (Texture placeholderTexture, ref Texture replacementTexture, System.Action<Texture> onTextureLoaded) {
+			if (onDemandTextureLoader)
+				onDemandTextureLoader.RequestLoadTexture(placeholderTexture, ref replacementTexture, onTextureLoaded);
+		}
+
+		[SerializeField] protected LoadingMode textureLoadingMode = LoadingMode.Normal;
+		[SerializeField] protected OnDemandTextureLoader onDemandTextureLoader = null;
+#endif
 	}
 }

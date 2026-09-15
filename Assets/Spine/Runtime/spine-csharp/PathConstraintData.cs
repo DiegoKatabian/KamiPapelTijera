@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -37,7 +37,7 @@ namespace Spine {
 		internal SpacingMode spacingMode;
 		internal RotateMode rotateMode;
 		internal float offsetRotation;
-		internal float position, spacing, rotateMix, translateMix;
+		internal float position, spacing, mixRotate, mixX, mixY;
 
 		public PathConstraintData (string name) : base(name) {
 		}
@@ -50,8 +50,12 @@ namespace Spine {
 		public float OffsetRotation { get { return offsetRotation; } set { offsetRotation = value; } }
 		public float Position { get { return position; } set { position = value; } }
 		public float Spacing { get { return spacing; } set { spacing = value; } }
-		public float RotateMix { get { return rotateMix; } set { rotateMix = value; } }
-		public float TranslateMix { get { return translateMix; } set { translateMix = value; } }
+		/// <summary> A percentage (0-1) that controls the mix between the constrained and unconstrained rotation.</summary>
+		public float RotateMix { get { return mixRotate; } set { mixRotate = value; } }
+		/// <summary> A percentage (0-1) that controls the mix between the constrained and unconstrained translation X.</summary>
+		public float MixX { get { return mixX; } set { mixX = value; } }
+		/// <summary> A percentage (0-1) that controls the mix between the constrained and unconstrained translation Y.</summary>
+		public float MixY { get { return mixY; } set { mixY = value; } }
 	}
 
 	public enum PositionMode {
@@ -59,7 +63,7 @@ namespace Spine {
 	}
 
 	public enum SpacingMode {
-		Length, Fixed, Percent
+		Length, Fixed, Percent, Proportional
 	}
 
 	public enum RotateMode {

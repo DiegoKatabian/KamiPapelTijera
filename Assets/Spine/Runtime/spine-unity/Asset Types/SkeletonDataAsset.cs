@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,26 +27,51 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+//#define SPINE_ALLOW_UNSAFE // note: this define can be set via Edit - Preferences - Spine.
+
+#if UNITY_2021_2_OR_NEWER
+#define TEXT_ASSET_HAS_GET_DATA_BYTES
+#endif
+
+#if SPINE_ALLOW_UNSAFE && TEXT_ASSET_HAS_GET_DATA_BYTES
+#define UNSAFE_DIRECT_ACCESS_TEXT_ASSET_DATA
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.IO;
+#if UNSAFE_DIRECT_ACCESS_TEXT_ASSET_DATA
+using Unity.Collections;
+#endif
 using UnityEngine;
-
 using CompatibilityProblemInfo = Spine.Unity.SkeletonDataCompatibility.CompatibilityProblemInfo;
 
 namespace Spine.Unity {
+#if UNSAFE_DIRECT_ACCESS_TEXT_ASSET_DATA
+	public static class TextAssetExtensions {
+		public static Stream GetStreamUnsafe (this TextAsset textAsset) {
+			NativeArray<byte> dataNativeArray = textAsset.GetData<byte>();
+			return dataNativeArray.GetUnmanagedMemoryStream();
+		}
+
+		public static unsafe UnmanagedMemoryStream GetUnmanagedMemoryStream<T> (this NativeArray<T> nativeArray) where T : struct {
+			return new UnmanagedMemoryStream((byte*)global::Unity.Collections.LowLevel.Unsafe.
+				NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(nativeArray), nativeArray.Length);
+		}
+	}
+#endif
 
 	[CreateAssetMenu(fileName = "New SkeletonDataAsset", menuName = "Spine/SkeletonData Asset")]
 	public class SkeletonDataAsset : ScriptableObject {
 		#region Inspector
 		public AtlasAssetBase[] atlasAssets = new AtlasAssetBase[0];
 
-		#if SPINE_TK2D
+#if SPINE_TK2D
 		public tk2dSpriteCollectionData spriteCollection;
 		public float scale = 1f;
-		#else
+#else
 		public float scale = 0.01f;
-		#endif
+#endif
 		public TextAsset skeletonJSON;
 
 		public bool isUpgradingBlendModeMaterials = false;
@@ -63,6 +88,10 @@ namespace Spine.Unity {
 		public float defaultMix;
 		public RuntimeAnimatorController controller;
 
+#if UNITY_EDITOR
+		public static bool errorIfSkeletonFileNullGlobal = true;
+#endif
+
 		public bool IsLoaded { get { return this.skeletonData != null; } }
 
 		void Reset () {
@@ -77,11 +106,12 @@ namespace Spine.Unity {
 		/// <summary>
 		/// Creates a runtime SkeletonDataAsset.</summary>
 		public static SkeletonDataAsset CreateRuntimeInstance (TextAsset skeletonDataFile, AtlasAssetBase atlasAsset, bool initialize, float scale = 0.01f) {
-			return CreateRuntimeInstance(skeletonDataFile, new [] {atlasAsset}, initialize, scale);
+			return CreateRuntimeInstance(skeletonDataFile, new[] { atlasAsset }, initialize, scale);
 		}
 
 		/// <summary>
-		/// Creates a runtime SkeletonDataAsset.</summary>
+		/// Creates a runtime SkeletonDataAsset.
+		/// If you require blend mode materials, call <see cref="SetupRuntimeBlendModeMaterials"/> afterwards.</summary>
 		public static SkeletonDataAsset CreateRuntimeInstance (TextAsset skeletonDataFile, AtlasAssetBase[] atlasAssets, bool initialize, float scale = 0.01f) {
 			SkeletonDataAsset skeletonDataAsset = ScriptableObject.CreateInstance<SkeletonDataAsset>();
 			skeletonDataAsset.Clear();
@@ -93,6 +123,19 @@ namespace Spine.Unity {
 				skeletonDataAsset.GetSkeletonData(true);
 
 			return skeletonDataAsset;
+		}
+
+		/// <summary>If this SkeletonDataAsset has been created via <see cref="CreateRuntimeInstance"/>,
+		/// this method sets up blend mode materials for it.</summary>
+		public void SetupRuntimeBlendModeMaterials (bool applyAdditiveMaterial,
+			BlendModeMaterials.TemplateMaterials templateMaterials) {
+			blendModeMaterials.applyAdditiveMaterial = applyAdditiveMaterial;
+			blendModeMaterials.UpdateBlendmodeMaterialsRequiredState(GetSkeletonData(true));
+			bool anyMaterialsChanged = false;
+			BlendModeMaterials.CreateAndAssignMaterials(this, templateMaterials, ref anyMaterialsChanged);
+
+			Clear();
+			GetSkeletonData(true);
 		}
 		#endregion
 
@@ -109,9 +152,13 @@ namespace Spine.Unity {
 			return stateData;
 		}
 
-		/// <summary>Loads, caches and returns the SkeletonData from the skeleton data file. Returns the cached SkeletonData after the first time it is called. Pass false to prevent direct errors from being logged.</summary>
+		/// <summary>Loads, caches and returns the SkeletonData from the skeleton data file. Returns the cached SkeletonData after the first time it is called.</summary>
+		/// <param name="quiet">Pass true to prevent direct errors from being logged.</param>
 		public SkeletonData GetSkeletonData (bool quiet) {
 			if (skeletonJSON == null) {
+#if UNITY_EDITOR
+				if (!errorIfSkeletonFileNullGlobal) quiet = true;
+#endif
 				if (!quiet)
 					Debug.LogError("Skeleton JSON file not set for SkeletonData asset: " + name, this);
 				Clear();
@@ -145,10 +192,10 @@ namespace Spine.Unity {
 			float skeletonDataScale;
 			Atlas[] atlasArray = this.GetAtlasArray();
 
-			#if !SPINE_TK2D
+#if !SPINE_TK2D
 			attachmentLoader = (atlasArray.Length == 0) ? (AttachmentLoader)new RegionlessAttachmentLoader() : (AttachmentLoader)new AtlasAttachmentLoader(atlasArray);
 			skeletonDataScale = scale;
-			#else
+#else
 			if (spriteCollection != null) {
 				attachmentLoader = new Spine.Unity.TK2D.SpriteCollectionAttachmentLoader(spriteCollection);
 				skeletonDataScale = (1.0f / (spriteCollection.invOrthoSize * spriteCollection.halfTargetHeight) * scale);
@@ -161,22 +208,28 @@ namespace Spine.Unity {
 				attachmentLoader = new AtlasAttachmentLoader(atlasArray);
 				skeletonDataScale = scale;
 			}
-			#endif
+#endif
 
 			bool hasBinaryExtension = skeletonJSON.name.ToLower().Contains(".skel");
 			SkeletonData loadedSkeletonData = null;
 
 			try {
-				if (hasBinaryExtension)
+				if (hasBinaryExtension) {
+#if UNSAFE_DIRECT_ACCESS_TEXT_ASSET_DATA
+					using (Stream stream = skeletonJSON.GetStreamUnsafe()) {
+						loadedSkeletonData = SkeletonDataAsset.ReadSkeletonData(stream, attachmentLoader, skeletonDataScale);
+					}
+#else
 					loadedSkeletonData = SkeletonDataAsset.ReadSkeletonData(skeletonJSON.bytes, attachmentLoader, skeletonDataScale);
-				else
+#endif
+				} else
 					loadedSkeletonData = SkeletonDataAsset.ReadSkeletonData(skeletonJSON.text, attachmentLoader, skeletonDataScale);
 			} catch (Exception ex) {
 				if (!quiet)
 					Debug.LogError("Error reading skeleton JSON file for SkeletonData asset: " + name + "\n" + ex.Message + "\n" + ex.StackTrace, skeletonJSON);
 			}
 
-			#if UNITY_EDITOR
+#if UNITY_EDITOR
 			if (loadedSkeletonData == null && !quiet && skeletonJSON != null) {
 				string problemDescription = null;
 				bool isSpineSkeletonData;
@@ -192,12 +245,12 @@ namespace Spine.Unity {
 					return null;
 				}
 			}
-			#endif
+#endif
 			if (loadedSkeletonData == null)
 				return null;
 
 			if (skeletonDataModifiers != null) {
-				foreach (var modifier in skeletonDataModifiers) {
+				foreach (SkeletonDataModifierAsset modifier in skeletonDataModifiers) {
 					if (modifier != null && !(isUpgradingBlendModeMaterials && modifier is BlendModeMaterialsAsset)) {
 						modifier.Apply(loadedSkeletonData);
 					}
@@ -217,24 +270,40 @@ namespace Spine.Unity {
 			FillStateData();
 		}
 
-		public void FillStateData () {
+		public void FillStateData (bool quiet = false) {
 			if (stateData != null) {
-				stateData.defaultMix = defaultMix;
+				stateData.DefaultMix = defaultMix;
 
 				for (int i = 0, n = fromAnimation.Length; i < n; i++) {
-					if (fromAnimation[i].Length == 0 || toAnimation[i].Length == 0)
+					string fromAnimationName = fromAnimation[i];
+					string toAnimationName = toAnimation[i];
+					if (fromAnimationName.Length == 0 || toAnimationName.Length == 0)
 						continue;
-					stateData.SetMix(fromAnimation[i], toAnimation[i], duration[i]);
+#if UNITY_EDITOR
+					if (skeletonData.FindAnimation(fromAnimationName) == null) {
+						if (!quiet) Debug.LogError(
+							string.Format("Custom Mix Durations: Animation '{0}' not found, was it renamed?",
+								fromAnimationName), this);
+						continue;
+					}
+					if (skeletonData.FindAnimation(toAnimationName) == null) {
+						if (!quiet) Debug.LogError(
+							string.Format("Custom Mix Durations: Animation '{0}' not found, was it renamed?",
+								toAnimationName), this);
+						continue;
+					}
+#endif
+					stateData.SetMix(fromAnimationName, toAnimationName, duration[i]);
 				}
 			}
 		}
 
 		internal Atlas[] GetAtlasArray () {
-			var returnList = new System.Collections.Generic.List<Atlas>(atlasAssets.Length);
+			List<Atlas> returnList = new System.Collections.Generic.List<Atlas>(atlasAssets.Length);
 			for (int i = 0; i < atlasAssets.Length; i++) {
-				var aa = atlasAssets[i];
+				AtlasAssetBase aa = atlasAssets[i];
 				if (aa == null) continue;
-				var a = aa.GetAtlas();
+				Atlas a = aa.GetAtlas();
 				if (a == null) continue;
 				returnList.Add(a);
 			}
@@ -242,17 +311,24 @@ namespace Spine.Unity {
 		}
 
 		internal static SkeletonData ReadSkeletonData (byte[] bytes, AttachmentLoader attachmentLoader, float scale) {
-			using (var input = new MemoryStream(bytes)) {
-				var binary = new SkeletonBinary(attachmentLoader) {
+			using (MemoryStream input = new MemoryStream(bytes)) {
+				SkeletonBinary binary = new SkeletonBinary(attachmentLoader) {
 					Scale = scale
 				};
 				return binary.ReadSkeletonData(input);
 			}
 		}
 
+		internal static SkeletonData ReadSkeletonData (Stream assetStream, AttachmentLoader attachmentLoader, float scale) {
+			SkeletonBinary binary = new SkeletonBinary(attachmentLoader) {
+				Scale = scale
+			};
+			return binary.ReadSkeletonData(assetStream);
+		}
+
 		internal static SkeletonData ReadSkeletonData (string text, AttachmentLoader attachmentLoader, float scale) {
-			var input = new StringReader(text);
-			var json = new SkeletonJson(attachmentLoader) {
+			StringReader input = new StringReader(text);
+			SkeletonJson json = new SkeletonJson(attachmentLoader) {
 				Scale = scale
 			};
 			return json.ReadSkeletonData(input);

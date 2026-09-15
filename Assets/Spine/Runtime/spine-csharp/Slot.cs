@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -32,7 +32,7 @@ using System;
 namespace Spine {
 
 	/// <summary>
-	/// Stores a slot's current pose. Slots organize attachments for {@link Skeleton#drawOrder} purposes and provide a place to store
+	/// Stores a slot's current pose. Slots organize attachments for <see cref="Skeleton.DrawOrder"/> purposes and provide a place to store
 	/// state for an attachment.State cannot be stored in an attachment itself because attachments are stateless and may be shared
 	/// across multiple skeletons.
 	/// </summary>
@@ -43,7 +43,7 @@ namespace Spine {
 		internal float r2, g2, b2;
 		internal bool hasSecondColor;
 		internal Attachment attachment;
-		internal float attachmentTime;
+		internal int sequenceIndex;
 		internal ExposedList<float> deform = new ExposedList<float>();
 		internal int attachmentState;
 
@@ -62,7 +62,7 @@ namespace Spine {
 		}
 
 		/// <summary>Copy constructor.</summary>
-		public Slot(Slot slot, Bone bone) {
+		public Slot (Slot slot, Bone bone) {
 			if (slot == null) throw new ArgumentNullException("slot", "slot cannot be null.");
 			if (bone == null) throw new ArgumentNullException("bone", "bone cannot be null.");
 			data = slot.data;
@@ -83,7 +83,7 @@ namespace Spine {
 			hasSecondColor = slot.hasSecondColor;
 
 			attachment = slot.attachment;
-			attachmentTime = slot.attachmentTime;
+			sequenceIndex = slot.sequenceIndex;
 			deform.AddRange(slot.deform);
 		}
 
@@ -106,7 +106,7 @@ namespace Spine {
 		/// color tinting.</summary>
 		public float A { get { return a; } set { a = value; } }
 
-		public void ClampColor() {
+		public void ClampColor () {
 			r = MathUtils.Clamp(r, 0, 1);
 			g = MathUtils.Clamp(g, 0, 1);
 			b = MathUtils.Clamp(b, 0, 1);
@@ -131,27 +131,35 @@ namespace Spine {
 			b2 = MathUtils.Clamp(b2, 0, 1);
 		}
 
+		/// <summary>
+		/// The current attachment for the slot, or null if the slot has no attachment.
+		/// If the attachment is changed, resets <see cref="SequenceIndex"/> and clears the <see cref="Deform"/>.
+		/// The deform is not cleared if the old attachment has the same <see cref="VertexAttachment.TimelineAttachment"/> as the
+		/// specified attachment.</summary>
 		public Attachment Attachment {
 			/// <summary>The current attachment for the slot, or null if the slot has no attachment.</summary>
 			get { return attachment; }
 			/// <summary>
-			/// Sets the slot's attachment and, if the attachment changed, resets <see cref="AttachmentTime"/> and clears
-			/// <see cref="Deform">.</summary>
+			/// Sets the slot's attachment and, if the attachment changed, resets <see cref="SequenceIndex"/> and clears the <see cref="Deform"/>.
+			/// The deform is not cleared if the old attachment has the same <see cref="VertexAttachment.TimelineAttachment"/> as the
+			/// specified attachment.</summary>
 			/// <param name="value">May be null.</param>
 			set {
 				if (attachment == value) return;
-				attachment = value;
-				attachmentTime = bone.skeleton.time;
-				deform.Clear(false);
+				if (!(value is VertexAttachment) || !(this.attachment is VertexAttachment)
+					|| ((VertexAttachment)value).TimelineAttachment != ((VertexAttachment)this.attachment).TimelineAttachment) {
+					deform.Clear();
+				}
+				this.attachment = value;
+				sequenceIndex = -1;
 			}
 		}
 
-		/// <summary> The time that has elapsed since the last time the attachment was set or cleared. Relies on Skeleton
-		/// <see cref="Skeleton.Time"/></summary>
-		public float AttachmentTime {
-			get { return bone.skeleton.time - attachmentTime; }
-			set { attachmentTime = bone.skeleton.time - value; }
-		}
+		/// <summary>
+		/// The index of the texture region to display when the slot's attachment has a <see cref="Sequence"/>. -1 represents the
+		/// <see cref="Sequence.SetupIndex"/>.
+		/// </summary>
+		public int SequenceIndex { get { return sequenceIndex; } set { sequenceIndex = value; } }
 
 		/// <summary> Vertices to deform the slot's attachment. For an unweighted mesh, the entries are local positions for each vertex. For a
 		/// weighted mesh, the entries are an offset for each vertex which will be added to the mesh's local vertex positions.

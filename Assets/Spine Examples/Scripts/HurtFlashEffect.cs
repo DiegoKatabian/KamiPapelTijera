@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -37,8 +37,8 @@ public class HurtFlashEffect : MonoBehaviour {
 
 	public int flashCount = DefaultFlashCount;
 	public Color flashColor = Color.white;
-	[Range(1f/120f, 1f/15f)]
-	public float interval = 1f/60f;
+	[Range(1f / 120f, 1f / 15f)]
+	public float interval = 1f / 60f;
 	public string fillPhaseProperty = "_FillPhase";
 	public string fillColorProperty = "_FillColor";
 
@@ -58,7 +58,7 @@ public class HurtFlashEffect : MonoBehaviour {
 		int fillPhase = Shader.PropertyToID(fillPhaseProperty);
 		int fillColor = Shader.PropertyToID(fillColorProperty);
 
-		var wait = new WaitForSeconds(interval);
+		WaitForSeconds wait = new WaitForSeconds(interval);
 
 		for (int i = 0; i < flashCount; i++) {
 			mpb.SetColor(fillColor, flashColor);

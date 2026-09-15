@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -29,9 +29,9 @@
 
 // Contributed by: Mitch Thompson
 
-using UnityEngine;
-using System.Collections;
 using Spine.Unity;
+using System.Collections;
+using UnityEngine;
 
 namespace Spine.Unity.Examples {
 	public class FootSoldierExample : MonoBehaviour {
@@ -81,7 +81,7 @@ namespace Spine.Unity.Examples {
 					skeletonAnimation.AnimationName = moveAnimation;
 					skeletonAnimation.Skeleton.ScaleX = 1;
 					transform.Translate(moveSpeed * Time.deltaTime, 0, 0);
-				} else if(Input.GetKey(leftKey)) {
+				} else if (Input.GetKey(leftKey)) {
 					skeletonAnimation.AnimationName = moveAnimation;
 					skeletonAnimation.Skeleton.ScaleX = -1;
 					transform.Translate(-moveSpeed * Time.deltaTime, 0, 0);
@@ -91,7 +91,7 @@ namespace Spine.Unity.Examples {
 			}
 		}
 
-		IEnumerator Blink() {
+		IEnumerator Blink () {
 			while (true) {
 				yield return new WaitForSeconds(Random.Range(0.25f, 3f));
 				skeletonAnimation.Skeleton.SetAttachment(eyesSlot, blinkAttachment);

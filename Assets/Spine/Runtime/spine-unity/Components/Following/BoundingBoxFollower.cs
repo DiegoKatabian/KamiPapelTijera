@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -31,16 +31,20 @@
 #define NEW_PREFAB_SYSTEM
 #endif
 
-using UnityEngine;
+#if UNITY_2023_1_OR_NEWER
+#define USE_COLLIDER_COMPOSITE_OPERATION
+#endif
+
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Spine.Unity {
 
-	#if NEW_PREFAB_SYSTEM
+#if NEW_PREFAB_SYSTEM
 	[ExecuteAlways]
-	#else
+#else
 	[ExecuteInEditMode]
-	#endif
+#endif
 	[HelpURL("http://esotericsoftware.com/spine-unity#BoundingBoxFollower")]
 	public class BoundingBoxFollower : MonoBehaviour {
 		internal static bool DebugMessages = true;
@@ -49,7 +53,7 @@ namespace Spine.Unity {
 		public SkeletonRenderer skeletonRenderer;
 		[SpineSlot(dataField: "skeletonRenderer", containsBoundingBoxes: true)]
 		public string slotName;
-		public bool isTrigger;
+		public bool isTrigger, usedByEffector, usedByComposite;
 		public bool clearStateOnDisable = true;
 		#endregion
 
@@ -57,7 +61,7 @@ namespace Spine.Unity {
 		BoundingBoxAttachment currentAttachment;
 		string currentAttachmentName;
 		PolygonCollider2D currentCollider;
-
+		bool skinBoneEnabled = true;
 		public readonly Dictionary<BoundingBoxAttachment, PolygonCollider2D> colliderTable = new Dictionary<BoundingBoxAttachment, PolygonCollider2D>();
 		public readonly Dictionary<BoundingBoxAttachment, string> nameTable = new Dictionary<BoundingBoxAttachment, string>();
 
@@ -97,13 +101,10 @@ namespace Spine.Unity {
 				return;
 
 			// Don't reinitialize if the setup did not change.
-			if (!overwrite
-				&&
-				colliderTable.Count > 0 && slot != null			// Slot is set and colliders already populated.
-				&&
-				skeletonRenderer.skeleton == slot.Skeleton		// Skeleton object did not change.
-				&&
-				slotName == slot.data.name						// Slot object did not change.
+			if (!overwrite &&
+				colliderTable.Count > 0 && slot != null &&    // Slot is set and colliders already populated.
+				skeletonRenderer.skeleton == slot.Skeleton && // Skeleton object did not change.
+				slotName == slot.Data.Name                    // Slot object did not change.
 			)
 				return;
 
@@ -114,28 +115,28 @@ namespace Spine.Unity {
 			colliderTable.Clear();
 			nameTable.Clear();
 
-			var skeleton = skeletonRenderer.skeleton;
+			Skeleton skeleton = skeletonRenderer.skeleton;
 			if (skeleton == null)
 				return;
 			slot = skeleton.FindSlot(slotName);
-			int slotIndex = skeleton.FindSlotIndex(slotName);
-
 			if (slot == null) {
 				if (BoundingBoxFollower.DebugMessages)
 					Debug.LogWarning(string.Format("Slot '{0}' not found for BoundingBoxFollower on '{1}'. (Previous colliders were disposed.)", slotName, this.gameObject.name));
 				return;
 			}
+			int slotIndex = slot.Data.Index;
 
 			int requiredCollidersCount = 0;
-			var colliders = GetComponents<PolygonCollider2D>();
+			PolygonCollider2D[] colliders = GetComponents<PolygonCollider2D>();
 			if (this.gameObject.activeInHierarchy) {
-				foreach (var skin in skeleton.Data.Skins)
+				foreach (Skin skin in skeleton.Data.Skins)
 					AddCollidersForSkin(skin, slotIndex, colliders, ref requiredCollidersCount);
 
-				if (skeleton.skin != null)
-					AddCollidersForSkin(skeleton.skin, slotIndex, colliders, ref requiredCollidersCount);
+				if (skeleton.Skin != null)
+					AddCollidersForSkin(skeleton.Skin, slotIndex, colliders, ref requiredCollidersCount);
 			}
 			DisposeExcessCollidersAfter(requiredCollidersCount);
+			skinBoneEnabled = slot.Bone.Active;
 
 			if (BoundingBoxFollower.DebugMessages) {
 				bool valid = colliderTable.Count != 0;
@@ -150,26 +151,32 @@ namespace Spine.Unity {
 
 		void AddCollidersForSkin (Skin skin, int slotIndex, PolygonCollider2D[] previousColliders, ref int collidersCount) {
 			if (skin == null) return;
-			var skinEntries = new List<Skin.SkinEntry>();
+			List<Skin.SkinEntry> skinEntries = new List<Skin.SkinEntry>();
 			skin.GetAttachments(slotIndex, skinEntries);
 
-			foreach (var entry in skinEntries) {
-				var attachment = skin.GetAttachment(slotIndex, entry.Name);
-				var boundingBoxAttachment = attachment as BoundingBoxAttachment;
+			foreach (Skin.SkinEntry entry in skinEntries) {
+				Attachment attachment = skin.GetAttachment(slotIndex, entry.Name);
+				BoundingBoxAttachment boundingBoxAttachment = attachment as BoundingBoxAttachment;
 
 				if (BoundingBoxFollower.DebugMessages && attachment != null && boundingBoxAttachment == null)
 					Debug.Log("BoundingBoxFollower tried to follow a slot that contains non-boundingbox attachments: " + slotName);
 
 				if (boundingBoxAttachment != null) {
 					if (!colliderTable.ContainsKey(boundingBoxAttachment)) {
-						var bbCollider = collidersCount < previousColliders.Length ?
+						PolygonCollider2D bbCollider = collidersCount < previousColliders.Length ?
 							previousColliders[collidersCount] : gameObject.AddComponent<PolygonCollider2D>();
 						++collidersCount;
 						SkeletonUtility.SetColliderPointsLocal(bbCollider, slot, boundingBoxAttachment);
 						bbCollider.isTrigger = isTrigger;
+						bbCollider.usedByEffector = usedByEffector;
+#if USE_COLLIDER_COMPOSITE_OPERATION
+						bbCollider.compositeOperation = usedByComposite ?
+							Collider2D.CompositeOperation.Merge : Collider2D.CompositeOperation.None;
+#else
+						bbCollider.usedByComposite = usedByComposite;
+#endif
 						bbCollider.enabled = false;
 						bbCollider.hideFlags = HideFlags.NotEditable;
-						bbCollider.isTrigger = IsTrigger;
 						colliderTable.Add(boundingBoxAttachment, bbCollider);
 						nameTable.Add(boundingBoxAttachment, entry.Name);
 					}
@@ -187,7 +194,7 @@ namespace Spine.Unity {
 
 		public void ClearState () {
 			if (colliderTable != null)
-				foreach (var col in colliderTable.Values)
+				foreach (PolygonCollider2D col in colliderTable.Values)
 					col.enabled = false;
 
 			currentAttachment = null;
@@ -196,31 +203,33 @@ namespace Spine.Unity {
 		}
 
 		void DisposeExcessCollidersAfter (int requiredCount) {
-			var colliders = GetComponents<PolygonCollider2D>();
+			PolygonCollider2D[] colliders = GetComponents<PolygonCollider2D>();
 			if (colliders.Length == 0) return;
 
 			for (int i = requiredCount; i < colliders.Length; ++i) {
-				var collider = colliders[i];
+				PolygonCollider2D collider = colliders[i];
 				if (collider != null) {
 #if UNITY_EDITOR
 					if (Application.isEditor && !Application.isPlaying)
 						DestroyImmediate(collider);
 					else
 #endif
-						Destroy(collider);
+					Destroy(collider);
 				}
 			}
 		}
 
 		void LateUpdate () {
-			if (slot != null && slot.Attachment != currentAttachment)
+			if (slot != null && (slot.Attachment != currentAttachment || skinBoneEnabled != slot.Bone.Active)) {
+				skinBoneEnabled = slot.Bone.Active;
 				MatchAttachment(slot.Attachment);
+			}
 		}
 
 		/// <summary>Sets the current collider to match attachment.</summary>
 		/// <param name="attachment">If the attachment is not a bounding box, it will be treated as null.</param>
 		void MatchAttachment (Attachment attachment) {
-			var bbAttachment = attachment as BoundingBoxAttachment;
+			BoundingBoxAttachment bbAttachment = attachment as BoundingBoxAttachment;
 
 			if (BoundingBoxFollower.DebugMessages && attachment != null && bbAttachment == null)
 				Debug.LogWarning("BoundingBoxFollower tried to match a non-boundingbox attachment. It will treat it as null.");
@@ -228,7 +237,7 @@ namespace Spine.Unity {
 			if (currentCollider != null)
 				currentCollider.enabled = false;
 
-			if (bbAttachment == null) {
+			if (bbAttachment == null || !skinBoneEnabled) {
 				currentCollider = null;
 				currentAttachment = null;
 				currentAttachmentName = null;

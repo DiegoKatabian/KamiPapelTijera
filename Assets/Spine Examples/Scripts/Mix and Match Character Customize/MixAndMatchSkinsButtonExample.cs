@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,8 +27,8 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using UnityEngine;
 using Spine.Unity;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Spine.Unity.Examples {
@@ -37,11 +37,11 @@ namespace Spine.Unity.Examples {
 		public SkeletonDataAsset skeletonDataAsset;
 		public MixAndMatchSkinsExample skinsSystem;
 
-		[SpineSkin(dataField:"skeletonDataAsset")] public string itemSkin;
+		[SpineSkin(dataField: "skeletonDataAsset")] public string itemSkin;
 		public MixAndMatchSkinsExample.ItemType itemType;
 
 		void Start () {
-			var button = GetComponent<Button>();
+			Button button = GetComponent<Button>();
 			button.onClick.AddListener(
 				delegate { skinsSystem.Equip(itemSkin, itemType); }
 			);

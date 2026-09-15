@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -37,21 +37,27 @@ namespace Spine.Unity.Editor {
 		protected SerializedProperty rootMotionBoneName;
 		protected SerializedProperty transformPositionX;
 		protected SerializedProperty transformPositionY;
+		protected SerializedProperty transformRotation;
 		protected SerializedProperty rootMotionScaleX;
 		protected SerializedProperty rootMotionScaleY;
+		protected SerializedProperty rootMotionScaleRotation;
 		protected SerializedProperty rootMotionTranslateXPerY;
 		protected SerializedProperty rootMotionTranslateYPerX;
 		protected SerializedProperty rigidBody2D;
+		protected SerializedProperty applyRigidbody2DGravity;
 		protected SerializedProperty rigidBody;
 
 		protected GUIContent rootMotionBoneNameLabel;
 		protected GUIContent transformPositionXLabel;
 		protected GUIContent transformPositionYLabel;
+		protected GUIContent transformRotationLabel;
 		protected GUIContent rootMotionScaleXLabel;
 		protected GUIContent rootMotionScaleYLabel;
+		protected GUIContent rootMotionScaleRotationLabel;
 		protected GUIContent rootMotionTranslateXPerYLabel;
 		protected GUIContent rootMotionTranslateYPerXLabel;
 		protected GUIContent rigidBody2DLabel;
+		protected GUIContent applyRigidbody2DGravityLabel;
 		protected GUIContent rigidBodyLabel;
 
 		protected virtual void OnEnable () {
@@ -59,18 +65,23 @@ namespace Spine.Unity.Editor {
 			rootMotionBoneName = serializedObject.FindProperty("rootMotionBoneName");
 			transformPositionX = serializedObject.FindProperty("transformPositionX");
 			transformPositionY = serializedObject.FindProperty("transformPositionY");
+			transformRotation = serializedObject.FindProperty("transformRotation");
 			rootMotionScaleX = serializedObject.FindProperty("rootMotionScaleX");
 			rootMotionScaleY = serializedObject.FindProperty("rootMotionScaleY");
+			rootMotionScaleRotation = serializedObject.FindProperty("rootMotionScaleRotation");
 			rootMotionTranslateXPerY = serializedObject.FindProperty("rootMotionTranslateXPerY");
 			rootMotionTranslateYPerX = serializedObject.FindProperty("rootMotionTranslateYPerX");
 			rigidBody2D = serializedObject.FindProperty("rigidBody2D");
+			applyRigidbody2DGravity = serializedObject.FindProperty("applyRigidbody2DGravity");
 			rigidBody = serializedObject.FindProperty("rigidBody");
 
 			rootMotionBoneNameLabel = new UnityEngine.GUIContent("Root Motion Bone", "The bone to take the motion from.");
 			transformPositionXLabel = new UnityEngine.GUIContent("X", "Root transform position (X)");
 			transformPositionYLabel = new UnityEngine.GUIContent("Y", "Use the Y-movement of the bone.");
+			transformRotationLabel = new UnityEngine.GUIContent("Rotation", "Use the rotation of the bone.");
 			rootMotionScaleXLabel = new UnityEngine.GUIContent("Root Motion Scale (X)", "Scale applied to the horizontal root motion delta. Can be used for delta compensation to e.g. stretch a jump to the desired distance.");
 			rootMotionScaleYLabel = new UnityEngine.GUIContent("Root Motion Scale (Y)", "Scale applied to the vertical root motion delta. Can be used for delta compensation to e.g. stretch a jump to the desired distance.");
+			rootMotionScaleRotationLabel = new UnityEngine.GUIContent("Root Motion Scale (Rotation)", "Scale applied to the rotational root motion delta. Can be used for delta compensation to e.g. adjust an angled jump landing to the desired platform angle.");
 			rootMotionTranslateXPerYLabel = new UnityEngine.GUIContent("Root Motion Translate (X)", "Added X translation per root motion Y delta. Can be used for delta compensation when scaling is not enough, to e.g. offset a horizontal jump to a vertically different goal.");
 			rootMotionTranslateYPerXLabel = new UnityEngine.GUIContent("Root Motion Translate (Y)", "Added Y translation per root motion X delta. Can be used for delta compensation when scaling is not enough, to e.g. offset a horizontal jump to a vertically different goal.");
 			rigidBody2DLabel = new UnityEngine.GUIContent("Rigidbody2D",
@@ -79,6 +90,8 @@ namespace Spine.Unity.Editor {
 				"\n\n" +
 				"Note that animation and physics updates are not always in sync." +
 				"Some jitter may result at certain framerates.");
+			applyRigidbody2DGravityLabel = new UnityEngine.GUIContent("Apply Gravity",
+				"Apply Rigidbody2D Gravity");
 			rigidBodyLabel = new UnityEngine.GUIContent("Rigidbody",
 				"Optional Rigidbody: Assign a Rigidbody here if you want " +
 				" to apply the root motion to the rigidbody instead of the Transform." +
@@ -97,9 +110,11 @@ namespace Spine.Unity.Editor {
 			EditorGUILayout.PropertyField(rootMotionBoneName, rootMotionBoneNameLabel);
 			EditorGUILayout.PropertyField(transformPositionX, transformPositionXLabel);
 			EditorGUILayout.PropertyField(transformPositionY, transformPositionYLabel);
+			EditorGUILayout.PropertyField(transformRotation, transformRotationLabel);
 
 			EditorGUILayout.PropertyField(rootMotionScaleX, rootMotionScaleXLabel);
 			EditorGUILayout.PropertyField(rootMotionScaleY, rootMotionScaleYLabel);
+			EditorGUILayout.PropertyField(rootMotionScaleRotation, rootMotionScaleRotationLabel);
 
 			EditorGUILayout.PropertyField(rootMotionTranslateXPerY, rootMotionTranslateXPerYLabel);
 			EditorGUILayout.PropertyField(rootMotionTranslateYPerX, rootMotionTranslateYPerXLabel);
@@ -107,7 +122,27 @@ namespace Spine.Unity.Editor {
 
 		protected virtual void OptionalPropertyFields () {
 			EditorGUILayout.PropertyField(rigidBody2D, rigidBody2DLabel);
+
+			if (rigidBody2D.objectReferenceValue != null || rigidBody2D.hasMultipleDifferentValues) {
+				using (new SpineInspectorUtility.IndentScope())
+					EditorGUILayout.PropertyField(applyRigidbody2DGravity, applyRigidbody2DGravityLabel);
+			}
+
 			EditorGUILayout.PropertyField(rigidBody, rigidBodyLabel);
+			DisplayWarnings();
+		}
+
+		protected void DisplayWarnings () {
+			bool usesRigidbodyPhysics = rigidBody.objectReferenceValue != null || rigidBody2D.objectReferenceValue != null;
+			if (usesRigidbodyPhysics) {
+				SkeletonRootMotionBase rootMotionComponent = (SkeletonRootMotionBase)serializedObject.targetObject;
+				ISkeletonAnimation skeletonComponent = rootMotionComponent ? rootMotionComponent.TargetSkeletonAnimationComponent : null;
+				if (skeletonComponent != null && skeletonComponent.UpdateTiming == UpdateTiming.InUpdate) {
+					string warningMessage = "Skeleton component uses 'Advanced - Animation Update' mode 'In Update'.\n" +
+						"When using a Rigidbody, 'In FixedUpdate' is recommended instead.";
+					EditorGUILayout.HelpBox(warningMessage, MessageType.Warning, true);
+				}
+			}
 		}
 	}
 }

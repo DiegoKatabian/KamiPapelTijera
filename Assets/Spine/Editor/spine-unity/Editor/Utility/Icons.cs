@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -31,14 +31,14 @@
 
 #define SPINE_SKELETONMECANIM
 
-using UnityEngine;
-using UnityEditor;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Linq;
 using System.Reflection;
-using System.Globalization;
+using System.Text;
+using UnityEditor;
+using UnityEngine;
 
 namespace Spine.Unity.Editor {
 	public partial class SpineEditorUtilities {
@@ -70,6 +70,7 @@ namespace Spine.Unity.Editor {
 			public static Texture2D constraintTransform;
 			public static Texture2D constraintPath;
 			public static Texture2D constraintIK;
+			public static Texture2D constraintPhysics;
 			public static Texture2D warning;
 			public static Texture2D skeletonUtility;
 			public static Texture2D hingeChain;
@@ -113,6 +114,7 @@ namespace Spine.Unity.Editor {
 				constraintTransform = LoadIcon("icon-constraintTransform.png");
 				constraintPath = LoadIcon("icon-constraintPath.png");
 				constraintIK = LoadIcon("icon-constraintIK.png");
+				constraintPhysics = LoadIcon("icon-constraintPhysics.png");
 
 				warning = LoadIcon("icon-warning.png");
 				skeletonUtility = LoadIcon("icon-skeletonUtility.png");

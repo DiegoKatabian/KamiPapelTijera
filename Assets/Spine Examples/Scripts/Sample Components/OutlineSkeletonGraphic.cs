@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,8 +27,8 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using UnityEngine;
 using Spine.Unity;
+using UnityEngine;
 
 namespace Spine.Unity.Examples {
 
@@ -38,20 +38,20 @@ namespace Spine.Unity.Examples {
 		public Material materialWithoutOutline;
 		public Material materialWithOutline;
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		void Reset () {
 			skeletonGraphic = GetComponent<SkeletonGraphic>();
 
 			// Add normal material as default
 			if (skeletonGraphic != null && skeletonGraphic.skeletonDataAsset != null) {
-				var atlasAssets = skeletonGraphic.skeletonDataAsset.atlasAssets;
+				AtlasAssetBase[] atlasAssets = skeletonGraphic.skeletonDataAsset.atlasAssets;
 
 				if (atlasAssets.Length > 0 && atlasAssets[0].PrimaryMaterial) {
 					materialWithoutOutline = atlasAssets[0].PrimaryMaterial;
 				}
 			}
 		}
-		#endif
+#endif
 
 		void OnEnable () {
 			if (skeletonGraphic == null)
@@ -62,7 +62,7 @@ namespace Spine.Unity.Examples {
 			skeletonGraphic.material = materialWithOutline;
 		}
 
-		public void  DisableOutlineRendering () {
+		public void DisableOutlineRendering () {
 			skeletonGraphic.material = materialWithoutOutline;
 		}
 	}

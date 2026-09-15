@@ -2,6 +2,7 @@
 #define SKELETON_LIT_COMMON_INCLUDED
 
 #include "UnityCG.cginc"
+#include "CGIncludes/Spine-Common.cginc"
 
 // ES2.0/WebGL/3DS can not do loops with non-constant-expression iteration counts :(
 #if defined(SHADER_API_GLES)
@@ -64,6 +65,10 @@ struct appdata {
 	float3 normal : NORMAL;
 	half4 color : COLOR;
 	float2 uv0 : TEXCOORD0;
+#if defined(_TINT_BLACK_ON)
+	float2 tintBlackRG : TEXCOORD1;
+	float2 tintBlackB : TEXCOORD2;
+#endif
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -79,10 +84,12 @@ VertexOutput vert (appdata v) {
 	UNITY_SETUP_INSTANCE_ID(v);
 	UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-	half4 color = v.color;
+	half4 color = PMAGammaToTargetSpace(v.color);
 	float3 eyePos = UnityObjectToViewPos(float4(v.pos, 1)).xyz; //mul(UNITY_MATRIX_MV, float4(v.pos,1)).xyz;
 	half3 fixedNormal = half3(0,0,-1);
 	half3 eyeNormal = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, fixedNormal));
+	o.uv0 = v.uv0;
+	o.pos = UnityObjectToClipPos(v.pos);
 
 #ifdef _DOUBLE_SIDED_LIGHTING
 	// unfortunately we have to compute the sign here in the vertex shader
@@ -90,6 +97,14 @@ VertexOutput vert (appdata v) {
 	half faceSign = sign(eyeNormal.z);
 	eyeNormal *= faceSign;
 #endif
+
+	half3 shadowedColor;
+#if !defined(_LIGHT_AFFECTS_ADDITIVE)
+	if (color.a == 0) {
+		o.color = color;
+		return o;
+	}
+#endif // !defined(_LIGHT_AFFECTS_ADDITIVE)
 
 	// Lights
 	half3 lcolor = half4(0,0,0,1).rgb + color.rgb * glstate_lightmodel_ambient.rgb;
@@ -99,8 +114,6 @@ VertexOutput vert (appdata v) {
 
 	color.rgb = lcolor.rgb;
 	o.color = saturate(color);
-	o.uv0 = v.uv0;
-	o.pos = UnityObjectToClipPos(v.pos);
 	return o;
 }
 

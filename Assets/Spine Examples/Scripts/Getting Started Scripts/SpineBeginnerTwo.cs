@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,9 +27,9 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using UnityEngine;
-using System.Collections;
 using Spine.Unity;
+using System.Collections;
+using UnityEngine;
 
 namespace Spine.Unity.Examples {
 	public class SpineBeginnerTwo : MonoBehaviour {
@@ -92,7 +92,7 @@ namespace Spine.Unity.Examples {
 				spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 				yield return new WaitForSeconds(1f);
 
-				skeleton.ScaleX = -1;		// skeleton allows you to flip the skeleton.
+				skeleton.ScaleX = -1;       // skeleton allows you to flip the skeleton.
 				spineAnimationState.SetAnimation(0, idleTurnAnimationName, false);
 				spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 				yield return new WaitForSeconds(0.5f);

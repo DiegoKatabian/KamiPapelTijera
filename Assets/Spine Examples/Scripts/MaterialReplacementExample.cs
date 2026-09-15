@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -47,6 +47,13 @@ namespace Spine.Unity.Examples {
 		MaterialPropertyBlock mpb;
 
 		void Start () {
+			// Use the code below to programmatically query the original material.
+			// Note: using MeshRenderer.material will fail since it creates an instance copy of the Material,
+			// MeshRenderer.sharedMaterial might also fail when called too early or when no Attachments
+			// are visible in the initial first frame.
+			if (originalMaterial == null)
+				originalMaterial = skeletonAnimation.SkeletonDataAsset.atlasAssets[0].PrimaryMaterial;
+
 			previousEnabled = replacementEnabled;
 			SetReplacementEnabled(replacementEnabled);
 			mpb = new MaterialPropertyBlock();

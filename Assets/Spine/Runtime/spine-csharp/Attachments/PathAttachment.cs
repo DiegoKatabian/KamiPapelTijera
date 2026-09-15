@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -37,21 +37,29 @@ namespace Spine {
 
 		/// <summary>The length in the setup pose from the start of the path to the end of each curve.</summary>
 		public float[] Lengths { get { return lengths; } set { lengths = value; } }
+		/// <summary>If true, the start and end knots are connected.</summary>
 		public bool Closed { get { return closed; } set { closed = value; } }
+		/// <summary>If true, additional calculations are performed to make computing positions along the path more accurate and movement along
+		/// the path have a constant speed.</summary>
 		public bool ConstantSpeed { get { return constantSpeed; } set { constantSpeed = value; } }
 
 		public PathAttachment (String name)
 			: base(name) {
 		}
 
+		/// <summary>Copy constructor.</summary>
+		protected PathAttachment (PathAttachment other)
+			: base(other) {
+
+			lengths = new float[other.lengths.Length];
+			Array.Copy(other.lengths, 0, lengths, 0, lengths.Length);
+
+			closed = other.closed;
+			constantSpeed = other.constantSpeed;
+		}
+
 		public override Attachment Copy () {
-			PathAttachment copy = new PathAttachment(this.Name);
-			CopyTo(copy);
-			copy.lengths = new float[lengths.Length];
-			Array.Copy(lengths, 0, copy.lengths, 0, lengths.Length);
-			copy.closed = closed;
-			copy.constantSpeed = constantSpeed;
-			return copy;
+			return new PathAttachment(this);
 		}
 	}
 }

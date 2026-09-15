@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -40,6 +40,9 @@ namespace Spine {
 		internal string attachmentName;
 		internal BlendMode blendMode;
 
+		// Nonessential.
+		// bool visible = true;
+
 		/// <summary>The index of the slot in <see cref="Skeleton.Slots"/>.</summary>
 		public int Index { get { return index; } }
 		/// <summary>The name of the slot, which is unique across all slots in the skeleton.</summary>
@@ -62,7 +65,7 @@ namespace Spine {
 		public BlendMode BlendMode { get { return blendMode; } set { blendMode = value; } }
 
 		public SlotData (int index, String name, BoneData boneData) {
-			if (index < 0) throw new ArgumentException ("index must be >= 0.", "index");
+			if (index < 0) throw new ArgumentException("index must be >= 0.", "index");
 			if (name == null) throw new ArgumentNullException("name", "name cannot be null.");
 			if (boneData == null) throw new ArgumentNullException("boneData", "boneData cannot be null.");
 			this.index = index;

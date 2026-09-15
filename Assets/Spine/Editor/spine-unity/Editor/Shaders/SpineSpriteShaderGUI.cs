@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,10 +27,9 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using UnityEngine;
-using UnityEditor;
 using Spine.Unity;
-
+using UnityEditor;
+using UnityEngine;
 using SpineInspectorUtility = Spine.Unity.Editor.SpineInspectorUtility;
 
 public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
@@ -51,6 +50,7 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 
 	private enum eBlendMode {
 		PreMultipliedAlpha,
+		PreMultipliedVertexAlpha,
 		StandardAlpha,
 		Opaque,
 		Additive,
@@ -88,7 +88,7 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 		OldHard = 2,
 		OldSoft = 3,
 
-		DefaultRampMode = OldHard
+		DefaultRampMode = FullRangeHard
 	};
 
 	MaterialProperty _mainTexture = null;
@@ -129,6 +129,10 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 	MaterialProperty _smoothness = null;
 	MaterialProperty _smoothnessScale = null;
 
+	MaterialProperty _lightAffectsAdditive = null;
+	MaterialProperty _tintBlack = null;
+	MaterialProperty _darkColor = null;
+
 	static GUIContent _albedoText = new GUIContent("Albedo", "Albedo (RGB) and Transparency (A)");
 	static GUIContent _maskText = new GUIContent("Light Mask", "Light mask texture (secondary Sprite texture)");
 	static GUIContent _altAlbedoText = new GUIContent("Secondary Albedo", "When a secondary albedo texture is set the albedo will be a blended mix of the two textures based on the blend value.");
@@ -159,7 +163,8 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 	};
 	static GUIContent _blendModeText = new GUIContent("Blend Mode", "Blend Mode");
 	static GUIContent[] _blendModeOptions = {
-		new GUIContent("Pre-Multiplied Alpha"),
+		new GUIContent("PMA Vertex, PMA Texture"),
+		new GUIContent("PMA Vertex, Straight Texture"),
 		new GUIContent("Standard Alpha"),
 		new GUIContent("Opaque"),
 		new GUIContent("Additive"),
@@ -188,6 +193,9 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 	static GUIContent _meshRequiresNormalsText = new GUIContent("Note: Material requires a mesh with normals.");
 	static GUIContent _meshRequiresNormalsAndTangentsText = new GUIContent("Note: Material requires a mesh with Normals and Tangents.");
 	static GUIContent[] _fixedDiffuseRampModeOptions = { new GUIContent("Hard"), new GUIContent("Soft"), new GUIContent("Old Hard"), new GUIContent("Old Soft") };
+	static GUIContent _lightAffectsAdditiveText = new GUIContent("Light Affects Additive", "For PMA Additive Slots: When enabled, additive Slots are lit normally before the additive color is written to the target buffer. When disabled, the additive color is directly written with intensity 1.");
+	static GUIContent _tintBlackText = new GUIContent("Tint Black", "Enable Tint Black functionality.");
+	static GUIContent _darkColorText = new GUIContent("Dark Color", "Tint-black dark color.");
 
 	const string _primaryMapsText = "Main Maps";
 	const string _depthLabelText = "Depth";
@@ -260,14 +268,10 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 		_metallicGlossMap = FindProperty("_MetallicGlossMap", props, false);
 		_smoothness = FindProperty("_Glossiness", props, false);
 		_smoothnessScale = FindProperty("_GlossMapScale", props, false);
-	}
 
-	static bool BoldToggleField (GUIContent label, bool value) {
-		FontStyle origFontStyle = EditorStyles.label.fontStyle;
-		EditorStyles.label.fontStyle = FontStyle.Bold;
-		value = EditorGUILayout.Toggle(label, value, EditorStyles.toggle);
-		EditorStyles.label.fontStyle = origFontStyle;
-		return value;
+		_lightAffectsAdditive = FindProperty("_LightAffectsAdditive", props, false);
+		_tintBlack = FindProperty("_TintBlack", props, false);
+		_darkColor = FindProperty("_Black", props, false);
 	}
 
 	protected virtual void ShaderPropertiesGUI () {
@@ -428,7 +432,7 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 		}
 
 		EditorGUI.BeginChangeCheck();
-		var culling = (eCulling)Mathf.RoundToInt(_culling.floatValue);
+		eCulling culling = (eCulling)Mathf.RoundToInt(_culling.floatValue);
 		EditorGUI.showMixedValue = _culling.hasMixedValue;
 		culling = (eCulling)EditorGUILayout.Popup(_cullingModeText, (int)culling, _cullingModeOptions);
 		if (EditorGUI.EndChangeCheck()) {
@@ -521,17 +525,15 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 					eBlendMode blendMode = GetMaterialBlendMode(material);
 
 					switch (blendMode) {
-					case eBlendMode.Opaque:
-						{
-							SetRenderType(material, "Opaque", useCustomRenderType);
-						}
-						break;
-					default:
-						{
-							bool zWrite = HasZWriteEnabled(material);
-							SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderType);
-						}
-						break;
+					case eBlendMode.Opaque: {
+						SetRenderType(material, "Opaque", useCustomRenderType);
+					}
+					break;
+					default: {
+						bool zWrite = HasZWriteEnabled(material);
+						SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderType);
+					}
+					break;
 					}
 				}
 			}
@@ -643,7 +645,7 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 
 		if (EditorGUI.EndChangeCheck()) {
 			if (rampMode == eDiffuseRampMode.NoRampSpecified)
-				rampMode = eDiffuseRampMode.DefaultRampMode;
+				rampMode = eDiffuseRampMode.OldHard;
 
 			SetDiffuseRampMode(_materialEditor, rampMode);
 			mixedRampMode = false;
@@ -842,6 +844,20 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 			dataChanged |= EditorGUI.EndChangeCheck();
 		}
 
+		if (_lightAffectsAdditive != null) {
+			EditorGUI.BeginChangeCheck();
+			_materialEditor.ShaderProperty(_lightAffectsAdditive, _lightAffectsAdditiveText);
+			dataChanged |= EditorGUI.EndChangeCheck();
+		}
+
+		if (_tintBlack != null) {
+			EditorGUI.BeginChangeCheck();
+			_materialEditor.ShaderProperty(_tintBlack, _tintBlackText);
+			dataChanged |= EditorGUI.EndChangeCheck();
+
+			if (_darkColor != null && (_tintBlack.floatValue != 0 || _tintBlack.hasMixedValue))
+				_materialEditor.ShaderProperty(_darkColor, _darkColorText);
+		}
 		return dataChanged;
 	}
 
@@ -876,7 +892,7 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 	#region Private Functions
 
 	void RenderMeshInfoBox () {
-		var material = (Material)_materialEditor.target;
+		Material material = (Material)_materialEditor.target;
 		bool requiresNormals = _fixedNormal != null && GetMaterialNormalsMode(material) == eNormalsMode.MeshNormals;
 		bool requiresTangents = material.HasProperty("_BumpMap") && material.GetTexture("_BumpMap") != null;
 
@@ -895,7 +911,7 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 		//Disable emission by default (is set on by default in standard shader)
 		SetKeyword(material, "_EMISSION", false);
 		//Start with preMultiply alpha by default
-		SetBlendMode(material, eBlendMode.PreMultipliedAlpha);
+		SetBlendMode(material, eBlendMode.PreMultipliedVertexAlpha);
 		SetDiffuseRampMode(material, eDiffuseRampMode.DefaultRampMode);
 		//Start with mesh normals by default
 		SetNormalsMode(material, eNormalsMode.MeshNormals, false);
@@ -930,14 +946,13 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 			case eNormalsMode.FixedNormalsModelSpace:
 				renderType = "SpriteModelSpaceFixedNormal";
 				break;
-			case eNormalsMode.MeshNormals:
-				{
-					//If sprite doesn't write to depth assign custom render type so we can write its depth with soft edges
-					if (!zWrite) {
-						renderType = "Sprite";
-					}
+			case eNormalsMode.MeshNormals: {
+				//If sprite doesn't write to depth assign custom render type so we can write its depth with soft edges
+				if (!zWrite) {
+					renderType = "Sprite";
 				}
-				break;
+			}
+			break;
 			}
 		}
 
@@ -1002,8 +1017,7 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 		foreach (Material material in editor.targets) {
 			if (material.shader.name == shaderType) {
 				isAnyTargetTypeShader = true;
-			}
-			else if (isAnyTargetTypeShader) {
+			} else if (isAnyTargetTypeShader) {
 				mixedValue = true;
 			}
 		}
@@ -1028,21 +1042,16 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 		if (material.shader.name == kShaderPixelLit ||
 			material.shader.name == kShaderPixelLitOutline) {
 			return eLightMode.PixelLit;
-		}
-		else if (material.shader.name == kShaderUnlit ||
-				material.shader.name == kShaderUnlitOutline) {
+		} else if (material.shader.name == kShaderUnlit ||
+				  material.shader.name == kShaderUnlitOutline) {
 			return eLightMode.Unlit;
-		}
-		else if (material.shader.name == kShaderLitLW) {
+		} else if (material.shader.name == kShaderLitLW) {
 			return eLightMode.LitLightweight;
-		}
-		else if (material.shader.name == kShaderLitURP) {
+		} else if (material.shader.name == kShaderLitURP) {
 			return eLightMode.LitUniversal;
-		}
-		else if (material.shader.name == kShaderLitURP2D) {
+		} else if (material.shader.name == kShaderLitURP2D) {
 			return eLightMode.LitUniversal2D;
-		}
-		else { // if (material.shader.name == kShaderVertexLit || kShaderVertexLitOutline)
+		} else { // if (material.shader.name == kShaderVertexLit || kShaderVertexLitOutline)
 			return eLightMode.VertexLit;
 		}
 	}
@@ -1052,6 +1061,8 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 			return eBlendMode.StandardAlpha;
 		if (material.IsKeywordEnabled("_ALPHAPREMULTIPLY_ON"))
 			return eBlendMode.PreMultipliedAlpha;
+		if (material.IsKeywordEnabled("_ALPHAPREMULTIPLY_VERTEX_ONLY"))
+			return eBlendMode.PreMultipliedVertexAlpha;
 		if (material.IsKeywordEnabled("_MULTIPLYBLEND"))
 			return eBlendMode.Multiply;
 		if (material.IsKeywordEnabled("_MULTIPLYBLEND_X2"))
@@ -1067,6 +1078,7 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 	static void SetBlendMode (Material material, eBlendMode blendMode) {
 		SetKeyword(material, "_ALPHABLEND_ON", blendMode == eBlendMode.StandardAlpha);
 		SetKeyword(material, "_ALPHAPREMULTIPLY_ON", blendMode == eBlendMode.PreMultipliedAlpha);
+		SetKeyword(material, "_ALPHAPREMULTIPLY_VERTEX_ONLY", blendMode == eBlendMode.PreMultipliedVertexAlpha);
 		SetKeyword(material, "_MULTIPLYBLEND", blendMode == eBlendMode.Multiply);
 		SetKeyword(material, "_MULTIPLYBLEND_X2", blendMode == eBlendMode.Multiplyx2);
 		SetKeyword(material, "_ADDITIVEBLEND", blendMode == eBlendMode.Additive);
@@ -1076,59 +1088,53 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 		bool useCustomRenderQueue = material.GetFloat("_CustomRenderQueue") > 0.0f;
 
 		switch (blendMode) {
-		case eBlendMode.Opaque:
-			{
-				material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-				material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-				SetRenderType(material, "Opaque", useCustomRenderQueue);
-				renderQueue = kSolidQueue;
-			}
-			break;
-		case eBlendMode.Additive:
-			{
-				material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-				material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.One);
-				bool zWrite = HasZWriteEnabled(material);
-				SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderQueue);
-				renderQueue = zWrite ? kAlphaTestQueue : kTransparentQueue;
-			}
-			break;
-		case eBlendMode.SoftAdditive:
-			{
-				material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-				material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcColor);
-				bool zWrite = HasZWriteEnabled(material);
-				SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderQueue);
-				renderQueue = zWrite ? kAlphaTestQueue : kTransparentQueue;
-			}
-			break;
-		case eBlendMode.Multiply:
-			{
-				material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-				material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.SrcColor);
-				bool zWrite = HasZWriteEnabled(material);
-				SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderQueue);
-				renderQueue = zWrite ? kAlphaTestQueue : kTransparentQueue;
-			}
-			break;
-		case eBlendMode.Multiplyx2:
-			{
-				material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.DstColor);
-				material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.SrcColor);
-				bool zWrite = HasZWriteEnabled(material);
-				SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderQueue);
-				renderQueue = zWrite ? kAlphaTestQueue : kTransparentQueue;
-			}
-			break;
-		default:
-			{
-				material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-				material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-				bool zWrite = HasZWriteEnabled(material);
-				SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderQueue);
-				renderQueue = zWrite ? kAlphaTestQueue : kTransparentQueue;
-			}
-			break;
+		case eBlendMode.Opaque: {
+			material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+			material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+			SetRenderType(material, "Opaque", useCustomRenderQueue);
+			renderQueue = kSolidQueue;
+		}
+		break;
+		case eBlendMode.Additive: {
+			material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+			material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.One);
+			bool zWrite = HasZWriteEnabled(material);
+			SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderQueue);
+			renderQueue = zWrite ? kAlphaTestQueue : kTransparentQueue;
+		}
+		break;
+		case eBlendMode.SoftAdditive: {
+			material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+			material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcColor);
+			bool zWrite = HasZWriteEnabled(material);
+			SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderQueue);
+			renderQueue = zWrite ? kAlphaTestQueue : kTransparentQueue;
+		}
+		break;
+		case eBlendMode.Multiply: {
+			material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+			material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.SrcColor);
+			bool zWrite = HasZWriteEnabled(material);
+			SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderQueue);
+			renderQueue = zWrite ? kAlphaTestQueue : kTransparentQueue;
+		}
+		break;
+		case eBlendMode.Multiplyx2: {
+			material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.DstColor);
+			material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.SrcColor);
+			bool zWrite = HasZWriteEnabled(material);
+			SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderQueue);
+			renderQueue = zWrite ? kAlphaTestQueue : kTransparentQueue;
+		}
+		break;
+		default: {
+			material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+			material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+			bool zWrite = HasZWriteEnabled(material);
+			SetRenderType(material, zWrite ? "TransparentCutout" : "Transparent", useCustomRenderQueue);
+			renderQueue = zWrite ? kAlphaTestQueue : kTransparentQueue;
+		}
+		break;
 		}
 
 		material.renderQueue = renderQueue + material.GetInt("_RenderQueue");
@@ -1194,8 +1200,7 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 	static bool HasZWriteEnabled (Material material) {
 		if (material.HasProperty("_ZWrite")) {
 			return material.GetFloat("_ZWrite") > 0.0f;
-		}
-		else return true; // Pixel Lit shader always has _ZWrite enabled.
+		} else return true; // Pixel Lit shader always has _ZWrite enabled.
 	}
 	#endregion
 }

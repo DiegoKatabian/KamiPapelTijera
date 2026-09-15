@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,9 +27,9 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using UnityEngine;
-using System.Collections;
 using Spine.Unity;
+using System.Collections;
+using UnityEngine;
 
 namespace Spine.Unity.Examples {
 	public class SpineboyBeginnerView : MonoBehaviour {
@@ -70,12 +70,12 @@ namespace Spine.Unity.Examples {
 			if (skeletonAnimation == null) return;
 			if (model == null) return;
 
-			if ((skeletonAnimation.skeleton.ScaleX < 0) != model.facingLeft) {	// Detect changes in model.facingLeft
+			if ((skeletonAnimation.skeleton.ScaleX < 0) != model.facingLeft) {  // Detect changes in model.facingLeft
 				Turn(model.facingLeft);
 			}
 
 			// Detect changes in model.state
-			var currentModelState = model.state;
+			SpineBeginnerBodyState currentModelState = model.state;
 
 			if (previousViewState != currentModelState) {
 				PlayNewStableAnimation();
@@ -85,7 +85,7 @@ namespace Spine.Unity.Examples {
 		}
 
 		void PlayNewStableAnimation () {
-			var newModelState = model.state;
+			SpineBeginnerBodyState newModelState = model.state;
 			Animation nextAnimation;
 
 			// Add conditionals to not interrupt transient animations.
@@ -115,7 +115,7 @@ namespace Spine.Unity.Examples {
 
 		[ContextMenu("Check Tracks")]
 		void CheckTracks () {
-			var state = skeletonAnimation.AnimationState;
+			AnimationState state = skeletonAnimation.AnimationState;
 			Debug.Log(state.GetCurrent(0));
 			Debug.Log(state.GetCurrent(1));
 		}
@@ -123,18 +123,16 @@ namespace Spine.Unity.Examples {
 		#region Transient Actions
 		public void PlayShoot () {
 			// Play the shoot animation on track 1.
-			var shootTrack = skeletonAnimation.AnimationState.SetAnimation(1, shoot, false);
-			shootTrack.AttachmentThreshold = 1f;
-			shootTrack.MixDuration = 0f;
-			var empty1 = skeletonAnimation.state.AddEmptyAnimation(1, 0.5f, 0.1f);
-			empty1.AttachmentThreshold = 1f;
+			TrackEntry shootTrack = skeletonAnimation.AnimationState.SetAnimation(1, shoot, false);
+			shootTrack.MixAttachmentThreshold = 1f;
+			shootTrack.SetMixDuration(0f, 0f);
+			skeletonAnimation.state.AddEmptyAnimation(1, 0.5f, 0.1f);
 
 			// Play the aim animation on track 2 to aim at the mouse target.
-			var aimTrack = skeletonAnimation.AnimationState.SetAnimation(2, aim, false);
-			aimTrack.AttachmentThreshold = 1f;
-			aimTrack.MixDuration = 0f;
-			var empty2 = skeletonAnimation.state.AddEmptyAnimation(2, 0.5f, 0.1f);
-			empty2.AttachmentThreshold = 1f;
+			TrackEntry aimTrack = skeletonAnimation.AnimationState.SetAnimation(2, aim, false);
+			aimTrack.MixAttachmentThreshold = 1f;
+			aimTrack.SetMixDuration(0f, 0f);
+			skeletonAnimation.state.AddEmptyAnimation(2, 0.5f, 0.1f);
 
 			gunSource.pitch = GetRandomPitch(gunsoundPitchOffset);
 			gunSource.Play();
@@ -144,14 +142,13 @@ namespace Spine.Unity.Examples {
 
 		public void StartPlayingAim () {
 			// Play the aim animation on track 2 to aim at the mouse target.
-			var aimTrack = skeletonAnimation.AnimationState.SetAnimation(2, aim, true);
-			aimTrack.AttachmentThreshold = 1f;
-			aimTrack.MixDuration = 0f;
+			TrackEntry aimTrack = skeletonAnimation.AnimationState.SetAnimation(2, aim, true);
+			aimTrack.MixAttachmentThreshold = 1f;
+			aimTrack.SetMixDuration(0f, 0f); // use SetMixDuration(mixDuration, delay) to update delay correctly
 		}
 
 		public void StopPlayingAim () {
-			var empty2 = skeletonAnimation.state.AddEmptyAnimation(2, 0.5f, 0.1f);
-			empty2.AttachmentThreshold = 1f;
+			skeletonAnimation.state.AddEmptyAnimation(2, 0.5f, 0.1f);
 		}
 
 		public void Turn (bool facingLeft) {

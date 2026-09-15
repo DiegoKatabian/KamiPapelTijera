@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,11 +27,10 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using UnityEngine;
-using System.Collections;
 using Spine.Unity;
-
 using Spine.Unity.Examples;
+using System.Collections;
+using UnityEngine;
 
 namespace Spine.Unity.Examples {
 	public class SpineboyPole : MonoBehaviour {
@@ -48,7 +47,7 @@ namespace Spine.Unity.Examples {
 		const float RunTimeScale = 1.5f;
 
 		IEnumerator Start () {
-			var state = skeletonAnimation.state;
+			AnimationState state = skeletonAnimation.state;
 
 			while (true) {
 				// Run phase
@@ -65,14 +64,14 @@ namespace Spine.Unity.Examples {
 				// Hit phase
 				SetXPosition(endX);
 				separator.enabled = true; // Enable Separator when hit
-				var poleTrack = state.SetAnimation(0, pole, false);
+				TrackEntry poleTrack = state.SetAnimation(0, pole, false);
 				yield return new WaitForSpineAnimationComplete(poleTrack);
 				yield return new WaitForSeconds(1f);
 			}
 		}
 
 		void SetXPosition (float x) {
-			var tp = transform.localPosition;
+			Vector3 tp = transform.localPosition;
 			tp.x = x;
 			transform.localPosition = tp;
 		}

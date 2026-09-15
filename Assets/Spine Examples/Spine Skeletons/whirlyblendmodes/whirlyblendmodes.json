@@ -1,7 +1,7 @@
 {
 "skeleton": {
-	"hash": "si5Eo3i8lRP0iYQ+AdTaCXbL1Gg",
-	"spine": "3.8.33-beta",
+	"hash": "tfwPbA2MCzE",
+	"spine": "4.2.22",
 	"x": -252.71,
 	"y": -232.55,
 	"width": 456.71,
@@ -28,9 +28,9 @@
 		"name": "rotation",
 		"bones": [ "additive", "multiply", "normal", "screen" ],
 		"target": "_rotation",
-		"translateMix": 0,
-		"scaleMix": 0,
-		"shearMix": 0
+		"mixX": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
 	}
 ],
 "skins": [
@@ -58,9 +58,9 @@
 			"_rotation": {
 				"rotate": [
 					{},
-					{ "time": 0.3333, "angle": -120 },
-					{ "time": 0.6667, "angle": 120 },
-					{ "time": 1 }
+					{ "time": 0.3333, "value": -120 },
+					{ "time": 0.6667, "value": -240 },
+					{ "time": 1, "value": -360 }
 				]
 			}
 		}

@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,9 +27,9 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using UnityEngine;
 using Spine;
 using Spine.Unity;
+using UnityEngine;
 
 namespace Spine.Unity.Examples {
 	public class BoneLocalOverride : MonoBehaviour {
@@ -50,22 +50,22 @@ namespace Spine.Unity.Examples {
 		ISkeletonAnimation spineComponent;
 		Bone bone;
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		void OnValidate () {
 			if (Application.isPlaying) return;
-			spineComponent = spineComponent ?? GetComponent<ISkeletonAnimation>();
-			if (spineComponent == null) return;
+			if (spineComponent == null) spineComponent = GetComponent<ISkeletonAnimation>();
+			if (spineComponent.IsNullOrDestroyed()) return;
 			if (bone != null) bone.SetToSetupPose();
 			OverrideLocal(spineComponent);
 		}
-		#endif
+#endif
 
 		void Awake () {
 			spineComponent = GetComponent<ISkeletonAnimation>();
 			if (spineComponent == null) { this.enabled = false; return; }
 			spineComponent.UpdateLocal += OverrideLocal;
 
-			if (bone == null) {	this.enabled = false; return; }
+			if (bone == null) { this.enabled = false; return; }
 		}
 
 		void OverrideLocal (ISkeletonAnimation animated) {

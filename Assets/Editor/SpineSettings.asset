@@ -17,16 +17,27 @@ MonoBehaviour:
   defaultShader: Spine/Skeleton
   defaultZSpacing: 0
   defaultInstantiateLoop: 1
+  defaultPhysicsPositionInheritance: {x: 1, y: 1}
+  defaultPhysicsRotationInheritance: 1
   showHierarchyIcons: 1
+  reloadAfterPlayMode: 1
   setTextureImporterSettings: 1
-  textureSettingsReference: 
-  blendModeMaterialMultiply: {fileID: 0}
-  blendModeMaterialScreen: {fileID: 0}
-  blendModeMaterialAdditive: {fileID: 0}
+  textureSettingsReference: Assets/Spine/Editor/spine-unity/Editor/ImporterPresets/StraightAlphaPreset.preset
+  fixPrefabOverrideViaMeshFilter: 0
+  removePrefabPreviewMeshes: 0
+  applyAdditiveMaterial: 0
+  blendModeMaterialMultiply: {fileID: 2100000, guid: 053fed1e18e65064ca564f05c4027e1e,
+    type: 2}
+  blendModeMaterialScreen: {fileID: 2100000, guid: 1a66c2d7ee7642a459bd3831abeb30af,
+    type: 2}
+  blendModeMaterialAdditive: {fileID: 2100000, guid: 517c2df5a5dc5d44a8b3820eca503d13,
+    type: 2}
   atlasTxtImportWarning: 1
   textureImporterWarning: 1
   componentMaterialWarning: 1
+  skeletonDataAssetNoFileError: 1
   autoReloadSceneSkeletons: 1
   handleScale: 1
   mecanimEventIncludeFolderName: 1
+  timelineDefaultMixDuration: 0
   timelineUseBlendDuration: 1

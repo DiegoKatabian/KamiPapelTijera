@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,6 +27,8 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+using System;
+
 namespace Spine {
 	/// <summary>
 	/// An attachment which is a single point and a rotation. This can be used to spawn projectiles, particles, etc. A bone can be
@@ -45,23 +47,27 @@ namespace Spine {
 			: base(name) {
 		}
 
+		/// <summary>Copy constructor.</summary>
+		protected PointAttachment (PointAttachment other)
+			: base(other) {
+			x = other.x;
+			y = other.y;
+			rotation = other.rotation;
+		}
+
 		public void ComputeWorldPosition (Bone bone, out float ox, out float oy) {
 			bone.LocalToWorld(this.x, this.y, out ox, out oy);
 		}
 
 		public float ComputeWorldRotation (Bone bone) {
-			float cos = MathUtils.CosDeg(rotation), sin = MathUtils.SinDeg(rotation);
-			float ix = cos * bone.a + sin * bone.b;
-			float iy = cos * bone.c + sin * bone.d;
-			return MathUtils.Atan2(iy, ix) * MathUtils.RadDeg;
+			float r = rotation * MathUtils.DegRad, cos = (float)Math.Cos(r), sin = (float)Math.Sin(r);
+			float x = cos * bone.a + sin * bone.b;
+			float y = cos * bone.c + sin * bone.d;
+			return MathUtils.Atan2Deg(y, x);
 		}
 
 		public override Attachment Copy () {
-			PointAttachment copy = new PointAttachment(this.Name);
-			copy.x = x;
-			copy.y = y;
-			copy.rotation = rotation;
-			return copy;
+			return new PointAttachment(this);
 		}
 	}
 }

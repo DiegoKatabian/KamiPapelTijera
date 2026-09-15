@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -43,14 +43,14 @@
 #define NEWHIERARCHYWINDOWCALLBACKS
 #endif
 
-using UnityEngine;
-using UnityEditor;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Linq;
 using System.Reflection;
-using System.Globalization;
+using System.Text;
+using UnityEditor;
+using UnityEngine;
 
 namespace Spine.Unity.Editor {
 	public partial class SpineEditorUtilities {
@@ -82,8 +82,9 @@ namespace Spine.Unity.Editor {
 		}
 	}
 
-	public static class SpineBuildEnvUtility
-	{
+	public static class SpineBuildEnvUtility {
+		public const string SPINE_ALLOW_UNSAFE_CODE = "SPINE_ALLOW_UNSAFE";
+
 		static bool IsInvalidGroup (BuildTargetGroup group) {
 			int gi = (int)group;
 			return
@@ -100,23 +101,25 @@ namespace Spine.Unity.Editor {
 				if (IsInvalidGroup(group))
 					continue;
 
-				string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
-				if (!defines.Contains(define)) {
-					wasDefineAdded = true;
-					if (defines.EndsWith(";", System.StringComparison.Ordinal))
-						defines += define;
-					else
-						defines += ";" + define;
+				try {
+					string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
+					if (!defines.Contains(define)) {
+						wasDefineAdded = true;
+						if (defines.EndsWith(";", System.StringComparison.Ordinal))
+							defines += define;
+						else
+							defines += ";" + define;
 
-					PlayerSettings.SetScriptingDefineSymbolsForGroup(group, defines);
+						PlayerSettings.SetScriptingDefineSymbolsForGroup(group, defines);
+					}
+				} catch (System.Exception) {
 				}
 			}
 			Debug.LogWarning("Please ignore errors \"PlayerSettings Validation: Requested build target group doesn't exist\" above");
 
 			if (wasDefineAdded) {
 				Debug.LogWarning("Setting Scripting Define Symbol " + define);
-			}
-			else {
+			} else {
 				Debug.LogWarning("Already Set Scripting Define Symbol " + define);
 			}
 			return wasDefineAdded;
@@ -129,22 +132,24 @@ namespace Spine.Unity.Editor {
 				if (IsInvalidGroup(group))
 					continue;
 
-				string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
-				if (defines.Contains(define)) {
-					wasDefineRemoved = true;
-					if (defines.Contains(define + ";"))
-						defines = defines.Replace(define + ";", "");
-					else
-						defines = defines.Replace(define, "");
+				try {
+					string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
+					if (defines.Contains(define)) {
+						wasDefineRemoved = true;
+						if (defines.Contains(define + ";"))
+							defines = defines.Replace(define + ";", "");
+						else
+							defines = defines.Replace(define, "");
 
-					PlayerSettings.SetScriptingDefineSymbolsForGroup(group, defines);
+						PlayerSettings.SetScriptingDefineSymbolsForGroup(group, defines);
+					}
+				} catch (System.Exception) {
 				}
 			}
 
 			if (wasDefineRemoved) {
 				Debug.LogWarning("Removing Scripting Define Symbol " + define);
-			}
-			else {
+			} else {
 				Debug.LogWarning("Already Removed Scripting Define Symbol " + define);
 			}
 			return wasDefineRemoved;

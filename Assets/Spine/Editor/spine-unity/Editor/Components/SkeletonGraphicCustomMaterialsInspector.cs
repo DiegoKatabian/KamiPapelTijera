@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,13 +27,13 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+using Spine.Unity.Examples;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using Spine.Unity.Examples;
 
 namespace Spine.Unity.Editor {
 
@@ -50,14 +50,14 @@ namespace Spine.Unity.Editor {
 		#region SkeletonGraphic context menu
 		[MenuItem("CONTEXT/SkeletonGraphic/Add Basic Serialized Custom Materials")]
 		static void AddSkeletonGraphicCustomMaterials (MenuCommand menuCommand) {
-			var skeletonGraphic = (SkeletonGraphic)menuCommand.context;
-			var newComponent = skeletonGraphic.gameObject.AddComponent<SkeletonGraphicCustomMaterials>();
+			SkeletonGraphic skeletonGraphic = (SkeletonGraphic)menuCommand.context;
+			SkeletonGraphicCustomMaterials newComponent = skeletonGraphic.gameObject.AddComponent<SkeletonGraphicCustomMaterials>();
 			Undo.RegisterCreatedObjectUndo(newComponent, "Add Basic Serialized Custom Materials");
 		}
 
 		[MenuItem("CONTEXT/SkeletonGraphic/Add Basic Serialized Custom Materials", true)]
 		static bool AddSkeletonGraphicCustomMaterials_Validate (MenuCommand menuCommand) {
-			var skeletonGraphic = (SkeletonGraphic)menuCommand.context;
+			SkeletonGraphic skeletonGraphic = (SkeletonGraphic)menuCommand.context;
 			return (skeletonGraphic.GetComponent<SkeletonGraphicCustomMaterials>() == null);
 		}
 		#endregion
@@ -72,7 +72,7 @@ namespace Spine.Unity.Editor {
 
 		public override void OnInspectorGUI () {
 			component = (SkeletonGraphicCustomMaterials)target;
-			var skeletonGraphic = component.skeletonGraphic;
+			SkeletonGraphic skeletonGraphic = component.skeletonGraphic;
 
 			// Draw the default inspector
 			DrawDefaultInspector();

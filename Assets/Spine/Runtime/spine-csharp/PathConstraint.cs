@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated January 1, 2020. Replaces all prior versions.
+ * Last updated April 5, 2025. Replaces all prior versions.
  *
- * Copyright (c) 2013-2020, Esoteric Software LLC
+ * Copyright (c) 2013-2025, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -30,11 +30,12 @@
 using System;
 
 namespace Spine {
+	using Physics = Skeleton.Physics;
 
 	/// <summary>
 	/// <para>
 	/// Stores the current pose for a path constraint. A path constraint adjusts the rotation, translation, and scale of the
-	/// constrained bones so they follow a {@link PathAttachment}.</para>
+	/// constrained bones so they follow a <see cref="PathAttachment"/>.</para>
 	/// <para>
 	/// See <a href="http://esotericsoftware.com/spine-path-constraints">Path constraints</a> in the Spine User Guide.</para>
 	/// </summary>
@@ -42,101 +43,132 @@ namespace Spine {
 		const int NONE = -1, BEFORE = -2, AFTER = -3;
 		const float Epsilon = 0.00001f;
 
-		internal PathConstraintData data;
-		internal ExposedList<Bone> bones;
+		internal readonly PathConstraintData data;
+		internal readonly ExposedList<Bone> bones;
 		internal Slot target;
-		internal float position, spacing, rotateMix, translateMix;
+		internal float position, spacing, mixRotate, mixX, mixY;
 
 		internal bool active;
 
-		internal ExposedList<float> spaces = new ExposedList<float>(), positions = new ExposedList<float>();
-		internal ExposedList<float> world = new ExposedList<float>(), curves = new ExposedList<float>(), lengths = new ExposedList<float>();
-		internal float[] segments = new float[10];
+		internal readonly ExposedList<float> spaces = new ExposedList<float>(), positions = new ExposedList<float>();
+		internal readonly ExposedList<float> world = new ExposedList<float>(), curves = new ExposedList<float>(), lengths = new ExposedList<float>();
+		internal readonly float[] segments = new float[10];
 
 		public PathConstraint (PathConstraintData data, Skeleton skeleton) {
 			if (data == null) throw new ArgumentNullException("data", "data cannot be null.");
 			if (skeleton == null) throw new ArgumentNullException("skeleton", "skeleton cannot be null.");
 			this.data = data;
+
 			bones = new ExposedList<Bone>(data.Bones.Count);
 			foreach (BoneData boneData in data.bones)
-				bones.Add(skeleton.FindBone(boneData.name));
-			target = skeleton.FindSlot(data.target.name);
+				bones.Add(skeleton.bones.Items[boneData.index]);
+
+			target = skeleton.slots.Items[data.target.index];
+
 			position = data.position;
 			spacing = data.spacing;
-			rotateMix = data.rotateMix;
-			translateMix = data.translateMix;
+			mixRotate = data.mixRotate;
+			mixX = data.mixX;
+			mixY = data.mixY;
 		}
 
 		/// <summary>Copy constructor.</summary>
-		public PathConstraint (PathConstraint constraint, Skeleton skeleton) {
-			if (constraint == null) throw new ArgumentNullException("constraint cannot be null.");
-			if (skeleton == null) throw new ArgumentNullException("skeleton cannot be null.");
-			data = constraint.data;
-			bones = new ExposedList<Bone>(constraint.Bones.Count);
-			foreach (Bone bone in constraint.Bones)
-				bones.Add(skeleton.Bones.Items[bone.data.index]);
-			target = skeleton.slots.Items[constraint.target.data.index];
+		public PathConstraint (PathConstraint constraint, Skeleton skeleton)
+			: this(constraint.data, skeleton) {
+
 			position = constraint.position;
 			spacing = constraint.spacing;
-			rotateMix = constraint.rotateMix;
-			translateMix = constraint.translateMix;
+			mixRotate = constraint.mixRotate;
+			mixX = constraint.mixX;
+			mixY = constraint.mixY;
 		}
 
-		/// <summary>Applies the constraint to the constrained bones.</summary>
-		public void Apply () {
-			Update();
+		public static void ArraysFill (float[] a, int fromIndex, int toIndex, float val) {
+			for (int i = fromIndex; i < toIndex; i++)
+				a[i] = val;
 		}
 
-		public void Update () {
+		public void SetToSetupPose () {
+			PathConstraintData data = this.data;
+			position = data.position;
+			spacing = data.spacing;
+			mixRotate = data.mixRotate;
+			mixX = data.mixX;
+			mixY = data.mixY;
+		}
+
+		public void Update (Physics physics) {
 			PathAttachment attachment = target.Attachment as PathAttachment;
 			if (attachment == null) return;
 
-			float rotateMix = this.rotateMix, translateMix = this.translateMix;
-			bool translate = translateMix > 0, rotate = rotateMix > 0;
-			if (!translate && !rotate) return;
+			float mixRotate = this.mixRotate, mixX = this.mixX, mixY = this.mixY;
+			if (mixRotate == 0 && mixX == 0 && mixY == 0) return;
 
 			PathConstraintData data = this.data;
-			bool percentSpacing = data.spacingMode == SpacingMode.Percent;
-			RotateMode rotateMode = data.rotateMode;
-			bool tangents = rotateMode == RotateMode.Tangent, scale = rotateMode == RotateMode.ChainScale;
+			bool tangents = data.rotateMode == RotateMode.Tangent, scale = data.rotateMode == RotateMode.ChainScale;
 			int boneCount = this.bones.Count, spacesCount = tangents ? boneCount : boneCount + 1;
 			Bone[] bonesItems = this.bones.Items;
-			ExposedList<float> spaces = this.spaces.Resize(spacesCount), lengths = null;
+			float[] spaces = this.spaces.Resize(spacesCount).Items, lengths = scale ? this.lengths.Resize(boneCount).Items : null;
 			float spacing = this.spacing;
-			if (scale || !percentSpacing) {
-				if (scale) lengths = this.lengths.Resize(boneCount);
+			switch (data.spacingMode) {
+			case SpacingMode.Percent:
+				if (scale) {
+					for (int i = 0, n = spacesCount - 1; i < n; i++) {
+						Bone bone = bonesItems[i];
+						float setupLength = bone.data.length;
+						float x = setupLength * bone.a, y = setupLength * bone.c;
+						lengths[i] = (float)Math.Sqrt(x * x + y * y);
+					}
+				}
+				ArraysFill(spaces, 1, spacesCount, spacing);
+				break;
+			case SpacingMode.Proportional: {
+				float sum = 0;
+				for (int i = 0, n = spacesCount - 1; i < n;) {
+					Bone bone = bonesItems[i];
+					float setupLength = bone.data.length;
+					if (setupLength < PathConstraint.Epsilon) {
+						if (scale) lengths[i] = 0;
+						spaces[++i] = spacing;
+					} else {
+						float x = setupLength * bone.a, y = setupLength * bone.c;
+						float length = (float)Math.Sqrt(x * x + y * y);
+						if (scale) lengths[i] = length;
+						spaces[++i] = length;
+						sum += length;
+					}
+				}
+				if (sum > 0) {
+					sum = spacesCount / sum * spacing;
+					for (int i = 1; i < spacesCount; i++)
+						spaces[i] *= sum;
+				}
+				break;
+			}
+			default: {
 				bool lengthSpacing = data.spacingMode == SpacingMode.Length;
 				for (int i = 0, n = spacesCount - 1; i < n;) {
 					Bone bone = bonesItems[i];
 					float setupLength = bone.data.length;
 					if (setupLength < PathConstraint.Epsilon) {
-						if (scale) lengths.Items[i] = 0;
-						spaces.Items[++i] = 0;
-					} else if (percentSpacing) {
-						if (scale) {
-							float x = setupLength * bone.a, y = setupLength * bone.c;
-							float length = (float)Math.Sqrt(x * x + y * y);
-							lengths.Items[i] = length;
-						}
-						spaces.Items[++i] = spacing;
+						if (scale) lengths[i] = 0;
+						spaces[++i] = spacing;
 					} else {
 						float x = setupLength * bone.a, y = setupLength * bone.c;
 						float length = (float)Math.Sqrt(x * x + y * y);
-						if (scale) lengths.Items[i] = length;
-						spaces.Items[++i] = (lengthSpacing ? setupLength + spacing : spacing) * length / setupLength;
+						if (scale) lengths[i] = length;
+						spaces[++i] = (lengthSpacing ? setupLength + spacing : spacing) * length / setupLength;
 					}
 				}
-			} else {
-				for (int i = 1; i < spacesCount; i++)
-					spaces.Items[i] = spacing;
+				break;
+			}
 			}
 
-			float[] positions = ComputeWorldPositions(attachment, spacesCount, tangents,
-				data.positionMode == PositionMode.Percent, percentSpacing);
+			float[] positions = ComputeWorldPositions(attachment, spacesCount, tangents);
 			float boneX = positions[0], boneY = positions[1], offsetRotation = data.offsetRotation;
 			bool tip;
 			if (offsetRotation == 0) {
-				tip = rotateMode == RotateMode.Chain;
+				tip = data.rotateMode == RotateMode.Chain;
 			} else {
 				tip = false;
 				Bone p = target.bone;
@@ -144,24 +176,24 @@ namespace Spine {
 			}
 			for (int i = 0, p = 3; i < boneCount; i++, p += 3) {
 				Bone bone = bonesItems[i];
-				bone.worldX += (boneX - bone.worldX) * translateMix;
-				bone.worldY += (boneY - bone.worldY) * translateMix;
+				bone.worldX += (boneX - bone.worldX) * mixX;
+				bone.worldY += (boneY - bone.worldY) * mixY;
 				float x = positions[p], y = positions[p + 1], dx = x - boneX, dy = y - boneY;
 				if (scale) {
-					float length = lengths.Items[i];
+					float length = lengths[i];
 					if (length >= PathConstraint.Epsilon) {
-						float s = ((float)Math.Sqrt(dx * dx + dy * dy) / length - 1) * rotateMix + 1;
+						float s = ((float)Math.Sqrt(dx * dx + dy * dy) / length - 1) * mixRotate + 1;
 						bone.a *= s;
 						bone.c *= s;
 					}
 				}
 				boneX = x;
 				boneY = y;
-				if (rotate) {
+				if (mixRotate > 0) {
 					float a = bone.a, b = bone.b, c = bone.c, d = bone.d, r, cos, sin;
 					if (tangents)
 						r = positions[p - 1];
-					else if (spaces.Items[i + 1] < PathConstraint.Epsilon)
+					else if (spaces[i + 1] < PathConstraint.Epsilon)
 						r = positions[p + 2];
 					else
 						r = MathUtils.Atan2(dy, dx);
@@ -170,15 +202,15 @@ namespace Spine {
 						cos = MathUtils.Cos(r);
 						sin = MathUtils.Sin(r);
 						float length = bone.data.length;
-						boneX += (length * (cos * a - sin * c) - dx) * rotateMix;
-						boneY += (length * (sin * a + cos * c) - dy) * rotateMix;
+						boneX += (length * (cos * a - sin * c) - dx) * mixRotate;
+						boneY += (length * (sin * a + cos * c) - dy) * mixRotate;
 					} else
 						r += offsetRotation;
 					if (r > MathUtils.PI)
 						r -= MathUtils.PI2;
 					else if (r < -MathUtils.PI) //
 						r += MathUtils.PI2;
-					r *= rotateMix;
+					r *= mixRotate;
 					cos = MathUtils.Cos(r);
 					sin = MathUtils.Sin(r);
 					bone.a = cos * a - sin * c;
@@ -186,32 +218,40 @@ namespace Spine {
 					bone.c = sin * a + cos * c;
 					bone.d = sin * b + cos * d;
 				}
-				bone.appliedValid = false;
+				bone.UpdateAppliedTransform();
 			}
 		}
 
-		float[] ComputeWorldPositions (PathAttachment path, int spacesCount, bool tangents, bool percentPosition,
-			bool percentSpacing) {
-
+		float[] ComputeWorldPositions (PathAttachment path, int spacesCount, bool tangents) {
 			Slot target = this.target;
 			float position = this.position;
-			float[] spacesItems = this.spaces.Items, output = this.positions.Resize(spacesCount * 3 + 2).Items, world;
+			float[] spaces = this.spaces.Items, output = this.positions.Resize(spacesCount * 3 + 2).Items, world;
 			bool closed = path.Closed;
 			int verticesLength = path.WorldVerticesLength, curveCount = verticesLength / 6, prevCurve = NONE;
-			float pathLength = 0;
 
+			float pathLength, multiplier;
 			if (!path.ConstantSpeed) {
 				float[] lengths = path.Lengths;
 				curveCount -= closed ? 1 : 2;
 				pathLength = lengths[curveCount];
-				if (percentPosition) position *= pathLength;
-				if (percentSpacing) {
-					for (int i = 1; i < spacesCount; i++)
-						spacesItems[i] *= pathLength;
+
+				if (data.positionMode == PositionMode.Percent) position *= pathLength;
+
+				switch (data.spacingMode) {
+				case SpacingMode.Percent:
+					multiplier = pathLength;
+					break;
+				case SpacingMode.Proportional:
+					multiplier = pathLength / spacesCount;
+					break;
+				default:
+					multiplier = 1;
+					break;
 				}
+
 				world = this.world.Resize(8).Items;
 				for (int i = 0, o = 0, curve = 0; i < spacesCount; i++, o += 3) {
-					float space = spacesItems[i];
+					float space = spaces[i] * multiplier;
 					position += space;
 					float p = position;
 
@@ -236,7 +276,7 @@ namespace Spine {
 					}
 
 					// Determine curve containing position.
-					for (;; curve++) {
+					for (; ; curve++) {
 						float length = lengths[curve];
 						if (p > length) continue;
 						if (curve == 0)
@@ -312,20 +352,25 @@ namespace Spine {
 				x1 = x2;
 				y1 = y2;
 			}
-			if (percentPosition)
-				position *= pathLength;
-			else
-				position *= pathLength / path.lengths[curveCount - 1];
 
-			if (percentSpacing) {
-				for (int i = 1; i < spacesCount; i++)
-					spacesItems[i] *= pathLength;
+			if (data.positionMode == PositionMode.Percent) position *= pathLength;
+
+			switch (data.spacingMode) {
+			case SpacingMode.Percent:
+				multiplier = pathLength;
+				break;
+			case SpacingMode.Proportional:
+				multiplier = pathLength / spacesCount;
+				break;
+			default:
+				multiplier = 1;
+				break;
 			}
 
 			float[] segments = this.segments;
 			float curveLength = 0;
 			for (int i = 0, o = 0, curve = 0, segment = 0; i < spacesCount; i++, o += 3) {
-				float space = spacesItems[i];
+				float space = spaces[i] * multiplier;
 				position += space;
 				float p = position;
 
@@ -342,7 +387,7 @@ namespace Spine {
 				}
 
 				// Determine curve containing position.
-				for (;; curve++) {
+				for (; ; curve++) {
 					float length = curves[curve];
 					if (p > length) continue;
 					if (curve == 0)
@@ -397,7 +442,7 @@ namespace Spine {
 
 				// Weight by segment length.
 				p *= curveLength;
-				for (;; segment++) {
+				for (; ; segment++) {
 					float length = segments[segment];
 					if (p > length) continue;
 					if (segment == 0)
@@ -453,9 +498,11 @@ namespace Spine {
 		/// <summary>The spacing between bones.</summary>
 		public float Spacing { get { return spacing; } set { spacing = value; } }
 		/// <summary>A percentage (0-1) that controls the mix between the constrained and unconstrained rotations.</summary>
-		public float RotateMix { get { return rotateMix; } set { rotateMix = value; } }
-		/// <summary>A percentage (0-1) that controls the mix between the constrained and unconstrained translations.</summary>
-		public float TranslateMix { get { return translateMix; } set { translateMix = value; } }
+		public float MixRotate { get { return mixRotate; } set { mixRotate = value; } }
+		/// <summary>A percentage (0-1) that controls the mix between the constrained and unconstrained translation X.</summary>
+		public float MixX { get { return mixX; } set { mixX = value; } }
+		/// <summary>A percentage (0-1) that controls the mix between the constrained and unconstrained translation Y.</summary>
+		public float MixY { get { return mixY; } set { mixY = value; } }
 		/// <summary>The bones that will be modified by this path constraint.</summary>
 		public ExposedList<Bone> Bones { get { return bones; } }
 		/// <summary>The slot whose path attachment will be used to constrained the bones.</summary>
@@ -463,5 +510,9 @@ namespace Spine {
 		public bool Active { get { return active; } }
 		/// <summary>The path constraint's setup pose data.</summary>
 		public PathConstraintData Data { get { return data; } }
+
+		override public string ToString () {
+			return data.name;
+		}
 	}
 }
