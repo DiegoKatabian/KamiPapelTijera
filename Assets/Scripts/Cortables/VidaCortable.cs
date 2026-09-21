@@ -10,6 +10,6 @@ public class VidaCortable : PickupCortable
     {
         base.ApplyCut();
         LevelManager.Instance.AddHealth(curacionAmount);
-        AudioManager.instance.PlayByName("MagicSuccess", 2.1f);
+        AudioManager.instance.Play(AudioId.MagicSuccess, 2.1f);
     }
 }

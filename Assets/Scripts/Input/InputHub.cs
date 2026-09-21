@@ -96,6 +96,24 @@ public static class InputHub
     /// </summary>
     public static bool TabAnteriorDown => GetButtonDownSeguro(EJE_TAB_ANTERIOR);
 
+    // ---------------------------------------------------------------- held state
+    // The controls diagram needs "is this control held RIGHT NOW", which the rest of the game never
+    // needed (gameplay reads edges). Read-only and additive: no existing property changes behaviour.
+    // All of these go through the *Seguro wrappers, so an axis missing from InputManager.asset warns
+    // once and reads as "not pressed" instead of throwing every frame.
+
+    public static bool SaltoHeld => GetButtonSeguro(EJE_JUMP) || AccionGamepadHeld;
+    public static bool InteractHeld => GetButtonSeguro(EJE_INTERACT) || AccionGamepadHeld;
+    public static bool AtaqueHeld => GetButtonSeguro(EJE_FIRE1) || GetButtonSeguro(EJE_ATAQUE_GAMEPAD);
+    public static bool CorrerHeld => GetButtonSeguro(EJE_RUN);
+    public static bool CamaraHeld => GetButtonSeguro(EJE_CAMARA) || GatilloIzquierdoHeld;
+    public static bool MenuHeld => GetButtonSeguro(EJE_OPCIONES);
+    public static bool TabSiguienteHeld => GetButtonSeguro(EJE_TAB_SIGUIENTE);
+    public static bool TabAnteriorHeld => GetButtonSeguro(EJE_TAB_ANTERIOR);
+
+    /// <summary>Raw movement for the diagram's move hotspot. Same axes as MovimientoRaw.</summary>
+    public static Vector2 MoveAxisRaw => MovimientoRaw;
+
     /// <summary>Movimiento con el smoothing de Unity: para la fisica (aceleracion suave).</summary>
     public static Vector2 Movimiento =>
         new Vector2(GetAxisSeguro(EJE_HORIZONTAL), GetAxisSeguro(EJE_VERTICAL));
@@ -152,6 +170,11 @@ public static class InputHub
             return _gatilloDownEsteFrame;
         }
     }
+
+    // Held state for the trigger doesn't need the edge cache above: it's just "is it past the
+    // release threshold right now", so it reuses the existing axis constant and threshold instead
+    // of adding a third one.
+    static bool GatilloIzquierdoHeld => Mathf.Abs(GetAxisRawSeguro(EJE_CAMARA_TRIGGER)) > UMBRAL_GATILLO_SUELTO;
 
     // ------------------------------------------------------ deteccion de device
 

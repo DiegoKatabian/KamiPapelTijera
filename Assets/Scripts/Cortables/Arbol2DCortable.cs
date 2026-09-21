@@ -22,8 +22,8 @@ public class Arbol2DCortable : ObjetoCortable
         _anim.SetTrigger("FallDown");
         StartCoroutine(AplastadorHitboxCoroutine());
 
-        AudioManager.instance.PlayByName("AxeHit", 1f, 0.05f);
-        AudioManager.instance.PlayByName("TreeFall");
+        AudioManager.instance.Play(AudioId.AxeHit, 1f, 0.05f);
+        AudioManager.instance.Play(AudioId.TreeFall);
         _particulasHojas.SetActive(true);
     }
 
@@ -48,7 +48,7 @@ public class Arbol2DCortable : ObjetoCortable
         _hitbox.SetActive(false);
 
         //disparar evento para quest tiburcio (gallinas caminan a rancho + cambian anim)
-        AudioManager.instance.PlayByName("QuestCompleted02");
+        AudioManager.instance.Play(AudioId.QuestCompleted02);
         EventManager.Trigger(Evento.OnTreeCutForChickens);
     }
 

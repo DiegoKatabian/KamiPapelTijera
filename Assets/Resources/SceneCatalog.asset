@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26f9585a6dde4be1a7b3a0ebeb70354b, type: 3}
+  m_Name: SceneCatalog
+  m_EditorClassIdentifier: 
+  entries:
+  - scene: 0
+    sceneAsset: {fileID: 102900000, guid: 55454ebd98a4d6d45ad66dbb2ddbddd2, type: 3}
+    scenePath: Assets/Scenes/MainMenu.unity
+    sceneName: MainMenu
+    isCinematic: 1
+  - scene: 1
+    sceneAsset: {fileID: 102900000, guid: c940433f8aeb80345815e9204a6791fe, type: 3}
+    scenePath: Assets/Scenes/Nivel1_KamiPapelTijera.unity
+    sceneName: Nivel1_KamiPapelTijera
+    isCinematic: 0
+  - scene: 2
+    sceneAsset: {fileID: 102900000, guid: a91efb5a4eb769c40a002802af9658df, type: 3}
+    scenePath: Assets/Scenes/Nivel1_EndCutscene.unity
+    sceneName: Nivel1_EndCutscene
+    isCinematic: 1
+  - scene: 3
+    sceneAsset: {fileID: 102900000, guid: 5533ceefded01c2478537ca7ab42f920, type: 3}
+    scenePath: Assets/Scenes/Level2_Newspaper.unity
+    sceneName: Level2_Newspaper
+    isCinematic: 0

@@ -130,7 +130,7 @@ public class CameraManager : Singleton<CameraManager>
 
     public void PlaySetCameraSound()
     {
-        AudioManager.instance.PlayByName("PickupSFX", 1.8f - (currentCamera / 100f));
+        AudioManager.instance.Play(AudioId.PickupSFX, 1.8f - (currentCamera / 100f));
     }
     private void OnDestroy()
     {

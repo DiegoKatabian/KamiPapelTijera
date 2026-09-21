@@ -20,7 +20,7 @@ public class TriggerSound : TriggerScript
         }
         else
         {
-            AudioManager.instance.PlayByName(soundName);
+            AudioManager.instance.Play(soundName);
         }
 
         Destroy(gameObject);

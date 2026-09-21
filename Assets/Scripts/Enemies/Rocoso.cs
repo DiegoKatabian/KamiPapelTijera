@@ -161,11 +161,11 @@ public class Rocoso : Enemy
     }
     protected void PlayHeadbuttSound() //se dispara por la animacion
     {
-        AudioManager.instance.PlayByName("RocosoHeadbutt", 1f, 0.02f);
+        AudioManager.instance.Play(AudioId.RocosoHeadbutt, 1f, 0.02f);
     }
     protected void PlayPasoSound()
     {
-        AudioManager.instance.PlayByName("RocosoPaso", 1f, 0.05f);
+        AudioManager.instance.Play(AudioId.RocosoPaso, 1f, 0.05f);
     }
     protected IEnumerator HeadbuttCoroutine() //esto se dispara en el momento correcto de la animacion de cabezazo
     {
@@ -203,7 +203,7 @@ public class Rocoso : Enemy
         //Debug.Log("rocoso se moja");
 
         _particulasSplash.SetActive(true);
-        AudioManager.instance.PlayByName("RocosoMojado");
+        AudioManager.instance.Play(AudioId.RocosoMojado);
 
         isDrowning = true;
         StartCoroutine(DrowningCoroutine(wetDamage));
@@ -224,7 +224,7 @@ public class Rocoso : Enemy
     //dmg and death
     public override void TakeDamage(float dmg)
     {
-        AudioManager.instance.PlayByName("PaperCut01", 0.8f);
+        AudioManager.instance.Play(AudioId.PaperCut01, 0.8f);
         _hp -= dmg;
         if (_hp <= 0)
         {

@@ -101,12 +101,12 @@ public class PlayerView
             // proxima corrida normal si no lo refrescamos con el facing actual.
             SyncSprintParticlesFlipToFacing();
             SetSprintParticlesState(true);
-            AudioManager.instance.PlayByName("BootsOn", 2f, 0.01f);
+            AudioManager.instance.Play(AudioId.BootsOn, 2f, 0.01f);
         }
         else if (previous == PlayerState.Running)
         {
             SetSprintParticlesState(false);
-            AudioManager.instance.PlayByName("BootsOff", 2f, 0.01f);
+            AudioManager.instance.Play(AudioId.BootsOff, 2f, 0.01f);
         }
     }
 
@@ -144,8 +144,8 @@ public class PlayerView
             case PlayerState.Jumping:
             {
                 if (_player.isPaperPlaneHat)
-                    AudioManager.instance.PlayByName("Jump_Paperplane", 1f, 0.02f);
-                AudioManager.instance.PlayByName("JumpStart", 1f, 0.02f);
+                    AudioManager.instance.Play(AudioId.Jump_Paperplane, 1f, 0.02f);
+                AudioManager.instance.Play(AudioId.JumpStart, 1f, 0.02f);
                 ShootFootAnchorParticles(PARTICLE_JUMP);
                 Spine.TrackEntry jumpEntry = SetBodyAnimation(ANIMATION_JUMP, false);
                 if (jumpEntry != null)
@@ -163,7 +163,7 @@ public class PlayerView
             case PlayerState.Landing:
                 if (previous == PlayerState.Falling)
                 {
-                    AudioManager.instance.PlayByName("JumpLand", 1f, 0.02f);
+                    AudioManager.instance.Play(AudioId.JumpLand, 1f, 0.02f);
                     ShootFootAnchorParticles(PARTICLE_JUMP);
                 }
                 if (_affectedByWind)
@@ -193,7 +193,7 @@ public class PlayerView
                 break;
 
             case PlayerState.ReceivingReward:
-                AudioManager.instance.PlayByName("Receive_Reward");
+                AudioManager.instance.Play(AudioId.Receive_Reward);
                 CameraManager.Instance.SetCamera(CameraMode.ReceiveReward);
                 _player.particleShooter.Enable(PARTICLE_REWARD, true);
                 SetBodyAnimation(ANIMATION_RECEIVE_REWARD, false);
@@ -384,7 +384,7 @@ public class PlayerView
 
     public void StartAttack()
     {
-        AudioManager.instance.PlayByName("ActionWind", 1f, 0.01f);
+        AudioManager.instance.Play(AudioId.ActionWind, 1f, 0.01f);
 
         bool moving = _player.CurrentState != PlayerState.Idle;
         string attackAnim = moving ? ANIMATION_ATTACK_MOVE : ANIMATION_ATTACK;
@@ -441,13 +441,13 @@ public class PlayerView
 
     public void StartGetWetAnimation()
     {
-        AudioManager.instance.PlayByName("BigWaterSplash", 1.2f);
+        AudioManager.instance.Play(AudioId.BigWaterSplash, 1.2f);
         _player.particleShooter.Shoot(PARTICLE_SPLASH, 0);
     }
 
     public void StartGetGolpeadoAnimation()
     {
-        AudioManager.instance.PlayByName("HurtPaper", 1.2f);
+        AudioManager.instance.Play(AudioId.HurtPaper, 1.2f);
     }
 
     // Método para activar/desactivar partículas de sprint (usado internamente y desde Player)
@@ -464,12 +464,14 @@ public class PlayerView
             return;
         }
 
+        //the _A / _B bank entries keep the original pairing (clips 1+3 and 2+4) rather than one
+        //four-clip entry, so the odds of each clip are exactly what they were before the refactor
         if (_player.isGettingWet)
         {
             switch (step)
             {
-                case 0: AudioManager.instance.PlayRandom("Pasos_KamiMojados_01", "Pasos_KamiMojados_03"); break;
-                case 1: AudioManager.instance.PlayRandom("Pasos_KamiMojados_02", "Pasos_KamiMojados_04"); break;
+                case 0: AudioManager.instance.Play(AudioId.Pasos_KamiMojados_A); break;
+                case 1: AudioManager.instance.Play(AudioId.Pasos_KamiMojados_B); break;
                 default: break;
             }
             _player.particleShooter.Shoot(PARTICLE_SPLASH, 0);
@@ -478,9 +480,9 @@ public class PlayerView
         {
             switch (step)
             {
-                case 0: AudioManager.instance.PlayRandom("Pasos_Kami_01", "Pasos_Kami_03"); break;
-                case 1: AudioManager.instance.PlayRandom("Pasos_Kami_02", "Pasos_Kami_04"); break;
-                default: AudioManager.instance.PlayRandom("Pasos_Kami_01", "Pasos_Kami_02", "Pasos_Kami_03", "Pasos_Kami_04"); break;
+                case 0: AudioManager.instance.Play(AudioId.Pasos_Kami_A); break;
+                case 1: AudioManager.instance.Play(AudioId.Pasos_Kami_B); break;
+                default: AudioManager.instance.Play(AudioId.Pasos_Kami); break;
             }
             ShootFootAnchorParticles(PARTICLE_FOOTSTEP);
         }

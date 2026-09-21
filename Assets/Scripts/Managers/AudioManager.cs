@@ -1,23 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
+/// <summary>
+/// Pooled, data-driven audio. Configuration lives in Resources/AudioBank.asset (one row per
+/// sound); playback goes through a fixed pool of AudioSources instead of ~60 always-alive ones.
+///
+/// The public surface kept the shape of the old string-keyed manager so the migration could
+/// happen one folder at a time behind Obsolete shims. Those shims are gone: every call site now
+/// uses Play/StopById with an AudioId constant, and the project compiling without them is the
+/// proof that none was missed.
+/// </summary>
 public class AudioManager : MonoBehaviour
 {
-    //todo lo pertinente a sonidos y sus metodos
-    //por diego katabian
-
-    //todo el chistecito del bgm no va. pero otro dia lo saco. hoy no.
-
     public static AudioManager instance;
+
+    [SerializeField, Tooltip("How many AudioSources the pool creates. Raise it if the pool " +
+                             "warns about stealing sources.")]
+    int _poolSize = 24;
+
+    AudioPool _pool;
+    float _globalVolume = 1f;
     bool _soundOn = true;
+    readonly Dictionary<AudioBus, float> _busVolumes = new Dictionary<AudioBus, float>();
+    readonly HashSet<string> _unknownIdsReported = new HashSet<string>();
 
     public bool SoundOn
     {
-        get
-        {
-            return _soundOn;
-        }
+        get { return _soundOn; }
         set
         {
             _soundOn = value;
@@ -32,194 +43,260 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    AudioSource[] _allSounds;
-    Dictionary<KeyValuePair<string, AudioSource>, float> originalVolumes = new Dictionary<KeyValuePair<string, AudioSource>, float>();
-
-    [HideInInspector] public Dictionary<string, AudioSource> soundDict = new Dictionary<string, AudioSource>();
-
-    float globalVolume = 1;
-    List<AudioSource> bgms = new List<AudioSource>();
     void Awake()
     {
-        if (instance) 
+        if (instance != null && instance != this)
         {
             Destroy(gameObject);
+            return;
         }
-        else
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        _pool = new AudioPool(transform, _poolSize);
+
+        foreach (AudioBus bus in System.Enum.GetValues(typeof(AudioBus)))
         {
-            instance = this;
+            _busVolumes[bus] = 1f;
         }
-        DontDestroyOnLoad(this);
 
-        _allSounds = GetComponentsInChildren<AudioSource>(); //construyo mi array con todos los audiosource
-
-        for (int i = 0; i < _allSounds.Length; i++) //lleno el diccionario de pares string-audiosource
+        if (AudioBank.Instance == null)
         {
-            //print("agregue el key " + s + " con value " + allSounds[i]+ " al diccionario");
-            string s = _allSounds[i].ToString(); //convierto a string
-            s = s.Substring(0, s.Length - 26); //formateo para borrar el "UnityEngine.AudioSource" de cada nombre
-            soundDict.Add(s, _allSounds[i]);
-            originalVolumes[new KeyValuePair<string, AudioSource>(s, _allSounds[i])] = _allSounds[i].volume;
+            Debug.LogError("[AudioManager] started with no AudioBank: nothing will play.");
         }
-
-        bgms.Add(soundDict["MemoFloraMainLoop01"]);
-        bgms.Add(soundDict["MemoFloraBattleLoop01"]);
-        bgms.Add(soundDict["MemoFloraPostBattle01"]);
     }
 
-    public void PlayByName(string clipName) //el mas groso. le das el string y te da play a ese audio. muy global y sencillo.
+    void Update()
     {
-        AudioSource sound;
-        sound = this.soundDict[clipName];
-        sound.Play();
-    }
-    public void PlayByName(string clipName, float pitch) //ahora con cambio de pitch.
-    {
-        AudioSource sound;
-        sound = this.soundDict[clipName]; //establezco que voy a estar laburando con el audio cuyo nombre es clipname
-        float originalPitch = sound.pitch; //pido el pitch original y lo guardo
-        sound.pitch = pitch; //cambio al pitch deseado
-        sound.Play(); //doy play
-        StartCoroutine(SetPitchToOriginal(sound, originalPitch)); //le vuelvo a poner el pitch que tenia antes
-    }
-    public void PlayByName(string clipName, float centralPitch, float pitchVariation) //ahora con variacion random de pitch.
-    {
-        AudioSource sound;
-        sound = this.soundDict[clipName];
-        float originalPitch = sound.pitch; 
-        sound.pitch = Random.Range(centralPitch - pitchVariation, centralPitch + pitchVariation);
-        sound.Play();
-        StartCoroutine(SetPitchToOriginal(sound, originalPitch));
-    }
-    public void PlayRandom(params string[] clipNames)
-    {
-        int randomNumber = Random.Range(0, clipNames.Length);
-        PlayByName(clipNames[randomNumber]);
-    }//elige al azar entre varios sonidos
-    public void StopByName(string clipName)
-    {
-        AudioSource sound;
-        sound = this.soundDict[clipName];
-        sound.Stop();
-    }//pone stop a un sonido
-    public void StopByName(params string[] clipNames)
-    {
-        for (int i = 0; i < clipNames.Length; i++)
+        //a duplicate instance destroys itself in Awake, but Destroy only takes effect at the end
+        //of the frame -- so this Update can still run once on a manager that never built a pool.
+        //Every scene instances AudioManager.prefab, so a duplicate happens on every scene load.
+        if (_pool == null)
         {
-            AudioSource sound;
-            sound = this.soundDict[clipNames[i]];
-            sound.Stop();
-        }
-    } //lo mismo pero a muchos
-    public void PlayOnEnd(string soundToEndName, string soundToPlayName)
-    {
-        StartCoroutine(PlayOnOtherSoundEnd(soundToEndName, soundToPlayName));
-    } //termina uno y luego pone play al otro
-
-    //Corrutinas Auxiliares
-    public IEnumerator PlayOnOtherSoundEnd(string soundToEndName, string soundToPlayName)
-    {
-        AudioSource soundToEnd = this.soundDict[soundToEndName];
-
-        soundToEnd.loop = false;
-
-        while (soundToEnd.isPlaying)
-        {
-            yield return null;
+            return;
         }
 
-        StopByName(soundToEndName);
-        soundToEnd.loop = true;
-
-        PlayByName(soundToPlayName);
-    }
-    public IEnumerator SetPitchToOriginal(AudioSource sound, float originalPitch)
-    {
-        while (sound.isPlaying)
-        {
-            yield return null;
-        }
-
-        sound.pitch = originalPitch; 
-    }
-    public IEnumerator SetVolumeToOriginal(AudioSource sound, float originalVolume)
-    {
-        while (sound.isPlaying)
-        {
-            yield return null;
-        }
-
-        sound.volume = originalVolume;
+        //returns finished one-shots to the pool. See AudioPool.ReclaimFinished for why this is a
+        //poll and not a coroutine per sound.
+        _pool.ReclaimFinished();
     }
 
-    //Metodos de Settings
+    // ------------------------------------------------------------------ play
+
+    public SoundHandle Play(string id)
+    {
+        return PlayInternal(id, null, null, false, Vector3.zero);
+    }
+
+    public SoundHandle Play(string id, float pitch)
+    {
+        return PlayInternal(id, pitch, null, false, Vector3.zero);
+    }
+
+    public SoundHandle Play(string id, float centralPitch, float pitchVariation)
+    {
+        return PlayInternal(id, centralPitch, pitchVariation, false, Vector3.zero);
+    }
+
+    /// <summary>Positional one-shot. Used by the chickens; the rest of the game is 2D.</summary>
+    public SoundHandle PlayAt(string id, Vector3 position)
+    {
+        return PlayInternal(id, null, null, true, position);
+    }
+
+    SoundHandle PlayInternal(string id, float? pitchOverride, float? variationOverride,
+                             bool positional, Vector3 position)
+    {
+        if (!TryGetEntry(id, out SoundEntry entry))
+        {
+            return SoundHandle.None;
+        }
+
+        AudioClip clip = entry.PickClip();
+        if (clip == null)
+        {
+            //a bank row with no clip is a legitimate "not recorded yet" state (Dialogue_Sigh
+            //ships that way), so warn once per id and stay silent instead of erroring
+            if (_unknownIdsReported.Add($"noclip:{id}"))
+            {
+                Debug.LogWarning($"[AudioManager] '{id}' has no clips in the bank: staying silent.");
+            }
+            return SoundHandle.None;
+        }
+
+        if (entry.maxSimultaneous > 0 && _pool.CountPlaying(id) >= entry.maxSimultaneous)
+        {
+            if (!entry.interruptSelf)
+            {
+                return SoundHandle.None; //at the cap: drop this play, by design
+            }
+            AudioSource oldest = _pool.OldestOf(id);
+            if (oldest != null)
+            {
+                _pool.StopSource(oldest);
+            }
+        }
+
+        float basePitch = pitchOverride ?? entry.pitch;
+        float variation = variationOverride ?? entry.pitchVariation;
+        float finalPitch = variation > 0f
+            ? Random.Range(basePitch - variation, basePitch + variation)
+            : basePitch;
+
+        double expectedEnd = AudioSettings.dspTime +
+                             (clip.length / Mathf.Max(0.01f, Mathf.Abs(finalPitch)));
+
+        if (!_pool.TryAcquire(id, entry.loop, entry.volume, expectedEnd,
+                              out AudioSource source, out int generation))
+        {
+            return SoundHandle.None;
+        }
+
+        source.clip = clip;
+        source.loop = entry.loop;
+        source.pitch = finalPitch;
+        source.priority = entry.priority;
+        source.spatialBlend = positional ? Mathf.Max(entry.spatialBlend, 1f) : entry.spatialBlend;
+        source.volume = entry.volume * _globalVolume * BusVolume(entry.bus);
+        source.mute = !_soundOn;
+        source.transform.position = positional ? position : Vector3.zero;
+
+        AudioMixerGroup group = AudioBank.Instance != null ? AudioBank.Instance.GroupFor(entry.bus) : null;
+        source.outputAudioMixerGroup = group; //null until the mixer exists: volume stays code-side
+
+        source.Play();
+        return new SoundHandle(source, generation);
+    }
+
+    bool TryGetEntry(string id, out SoundEntry entry)
+    {
+        entry = null;
+        if (AudioBank.Instance == null)
+        {
+            return false;
+        }
+        if (!AudioBank.Instance.TryGet(id, out entry))
+        {
+            //the old manager threw KeyNotFoundException here, which is how TriggerSound's call for
+            //the nonexistent "4S_MarimbaLoop" could take down a whole coroutine. Warn once instead.
+            if (_unknownIdsReported.Add(id))
+            {
+                Debug.LogWarning($"[AudioManager] no sound '{id}' in the bank. " +
+                                 "Check Resources/AudioBank.asset. (Warned once per id.)");
+            }
+            return false;
+        }
+        return true;
+    }
+
+    // ------------------------------------------------------------------ stop
+
+    public void Stop(SoundHandle handle)
+    {
+        if (!handle.IsValid || !_pool.IsCurrent(handle.source, handle.generation))
+        {
+            return; //stale handle: the source now plays something else. Never stop it.
+        }
+        _pool.StopSource(handle.source);
+    }
+
+    public void StopById(string id)
+    {
+        _pool.StopId(id);
+    }
+
     public void StopAll()
     {
-        for (int i = 0; i < _allSounds.Length; i++)
-        {
-            _allSounds[i].Stop();
-        }
+        _pool.StopEverything();
     }
+
+    public bool IsPlaying(string id)
+    {
+        return _pool.IsPlayingId(id);
+    }
+
+    // ------------------------------------------------------------------ volume
+
     public void MuteAll()
     {
-        for (int i = 0; i < _allSounds.Length; i++)
-        {
-            _allSounds[i].mute = true;
-        }
+        _pool.SetMuted(true);
     }
+
     public void UnmuteAll()
     {
-        for (int i = 0; i < _allSounds.Length; i++)
-        {
-            _allSounds[i].mute = false;
-        }
+        _pool.SetMuted(false);
     }
 
     public void SetGlobalVolume(float volume)
     {
-        globalVolume = volume;
-
-        foreach (KeyValuePair<KeyValuePair<string, AudioSource>, float> kvp in originalVolumes)
-        {
-            AudioSource sound = kvp.Key.Value;
-            float originalVolume = kvp.Value;
-
-            sound.volume = originalVolume * globalVolume;
-        }
+        _globalVolume = volume;
+        _pool.ApplyGlobalVolume(_globalVolume);
         OnGlobalVolumeChanged();
-
-
     }
 
-    public void OnGlobalVolumeChanged()
+    public void SetBusVolume(AudioBus bus, float volume)
     {
-        if (!soundDict["Gallina_Evade_VolumeTest"].isPlaying)
+        _busVolumes[bus] = volume;
+        //code-side volume: re-apply to whatever of this bus is currently playing. Task 23 moves
+        //this onto the mixer exposed parameters now that the four groups exist.
+        if (AudioBank.Instance == null)
+        {
+            return;
+        }
+        foreach (SoundEntry entry in AudioBank.Instance.Entries)
+        {
+            if (entry.bus == bus)
+            {
+                _pool.ApplyVolumeToId(entry.id, _globalVolume * volume);
+            }
+        }
+    }
+
+    float BusVolume(AudioBus bus)
+    {
+        return _busVolumes.TryGetValue(bus, out float volume) ? volume : 1f;
+    }
+
+    /// <summary>Menu ducking. Same signature as before; now one bus instead of a hardcoded list.</summary>
+    public void SetBGMVolumes(float volume)
+    {
+        SetBusVolume(AudioBus.Music, volume);
+    }
+
+    public void ResetBGMVolumes()
+    {
+        SetBusVolume(AudioBus.Music, 1f);
+    }
+
+    void OnGlobalVolumeChanged()
+    {
+        if (!IsPlaying(AudioId.Gallina_Evade_VolumeTest))
         {
             PlayGallinaSound();
         }
     }
 
-
+    /// <summary>Audition sound when the volume slider moves. Behaviour preserved from before.</summary>
     public void PlayGallinaSound()
     {
-        Debug.Log("play gallina sound");
-        PlayByName("Gallina_Evade_VolumeTest");
+        Play(AudioId.Gallina_Evade_VolumeTest);
     }
 
-    public void SetBGMVolumes(float volume)
+    // ------------------------------------------------------------------ sequencing
+
+    public void PlayOnEnd(string idToEnd, string idToPlay)
     {
-        foreach (AudioSource bgm in bgms)
-        {
-            bgm.volume = originalVolumes[new KeyValuePair<string, AudioSource>(bgm.name, bgm)] * volume;
-        }
+        StartCoroutine(PlayOnOtherSoundEnd(idToEnd, idToPlay));
     }
 
-    public void ResetBGMVolumes()
+    public IEnumerator PlayOnOtherSoundEnd(string idToEnd, string idToPlay)
     {
-        foreach (AudioSource bgm in bgms)
+        while (IsPlaying(idToEnd))
         {
-            bgm.volume = originalVolumes[new KeyValuePair<string, AudioSource>(bgm.name, bgm)];
+            yield return null;
         }
+        StopById(idToEnd);
+        Play(idToPlay);
     }
-
 }

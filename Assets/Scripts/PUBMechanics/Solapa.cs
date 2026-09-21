@@ -45,6 +45,6 @@ public class Solapa : MonoBehaviour
             Debug.LogWarning("[Solapa] No hay ParticleSystem de brillitos asignado, se omite el feedback visual");
         }
 
-        AudioManager.instance.PlayByName("PaperFold01", 1.5f, 0.1f);
+        AudioManager.instance.Play(AudioId.PaperFold01, 1.5f, 0.1f);
     }
 }

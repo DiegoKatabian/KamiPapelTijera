@@ -29,7 +29,7 @@ public class CamWheelManager : Singleton<CamWheelManager>, IFlap
     public void OpenFlap()
     {
         //Debug.Log("open");
-        AudioManager.instance.PlayByName("PageTurn02", 2.6f, 0.01f);
+        AudioManager.instance.Play(AudioId.PageTurn02, 2.6f, 0.01f);
         StopAllCoroutines();
         StartCoroutine(MoveFlap(_posXOpen, _posYOpen, _transitionDuration));
         _isOpen = true;
@@ -37,7 +37,7 @@ public class CamWheelManager : Singleton<CamWheelManager>, IFlap
     public void CloseFlap()
     {
         //Debug.Log("close");
-        AudioManager.instance.PlayByName("PageTurn01", 2.6f, 0.01f);
+        AudioManager.instance.Play(AudioId.PageTurn01, 2.6f, 0.01f);
         StopAllCoroutines();
         StartCoroutine(MoveFlap(_posXClosed, _posYClosed, _transitionDuration));
         _isOpen = false;

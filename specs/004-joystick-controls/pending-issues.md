@@ -642,3 +642,94 @@ sobre "quedarme a explorar" cada vez, confirmar que nunca abre el diálogo de la
 6. **Small flagged follow-up**: `InputPromptSystem.RxTeclaEnListaDeControles`'s charset
    (`[EUI]`) doesn't cover "O" (Abrir Controles) in the Controles tab list — should map to
    `(Start)`, same axis as Esc. One-line regex change plus a `PromptDeLetra` case.
+
+---
+
+## Round 4 (2026-09-10) — new feature requested by Diego, deferred after scoping its real cost
+
+*(New content in this file is in English from here on, per the 2026-09-09 language rule. The
+Spanish above is history, not a convention to match.)*
+
+### Issue #41.15: Edit / rebind controls from the Controls menu — DEFERRED (not started)
+
+**Category**: Feature / Input · **Priority**: P3 (nice to have, nothing is blocked on it) ·
+**Estimate**: large — this is a feature, not an issue. Breakdown at the bottom.
+
+**What Diego asked for** (2026-09-10, while designing
+`docs/superpowers/specs/2026-09-10-audio-controls-refactor-design.md`): in the controls menu, let a
+player change a binding. The interaction he pictured: hold down the button you want to change for a
+few seconds (with clock/filling-circle feedback), that slot goes blank/transparent, and it is
+replaced by **the first new button you press**. If that new button was already assigned to another
+action, the old assignment **is left empty**.
+
+**Why it was deferred**: scoping it showed this is not an addition to the diagram but a subsystem of
+its own, sitting on top of a platform constraint. Diego decided to keep the controls menu
+display-only in this batch and record this for later.
+
+**THE hard constraint (the most important part of this note)**: the project uses the **legacy Input
+Manager** — `ProjectSettings/ProjectSettings.asset` has `activeInputHandler: 0` and
+`com.unity.inputsystem` is not installed (verified in `Packages/manifest.json` and
+`packages-lock.json`). The legacy Input Manager **cannot be rebound at runtime**:
+`InputManager.asset` is baked into the build and there is no API to change a binding while the game
+is running. So rebinding forces `InputHub` to stop reading named axes for rebindable actions and
+read a runtime bindings table instead.
+
+That is not a tragedy: `InputHub` was written precisely as "the ONLY file that knows the axis
+names", so it is exactly the seam this needs. But it is a change in the heart of the input system,
+not an addition to the UI.
+
+**Findings worth keeping for whoever picks this up** (all verified, none assumed):
+
+1. **One binding type covers almost everything.** `Input.GetKey(KeyCode)` covers keyboard keys,
+   mouse buttons (`KeyCode.Mouse0/1/2`) AND gamepad buttons (`KeyCode.JoystickButton0..19` —
+   `InputHub` already sweeps those for device detection). So the rebindable binding is just a
+   `KeyCode`. Only the genuinely analog inputs (the sticks and the L2 trigger, which is the 9th
+   axis) need to stay in "axis + threshold" form, as non-rebindable defaults.
+2. **The action set already exists**: the `Accion` enum in `InputPromptSystem`
+   (`Saltar, Interactuar, Atacar, Correr, Camara, Menu, Mover, CambiarTab`) is exactly the
+   rebindable set. No new taxonomy needed.
+3. **UI Submit/Cancel would NOT follow the rebind.** They are handled by the `EventSystem`'s
+   `StandaloneInputModule`, which reads `m_SubmitButton: Interact` / `m_CancelButton: Options`
+   **straight from `InputManager.asset`**, never going through `InputHub` (confirmed: that is how
+   all 5 scenes are set up). Making them follow a rebind means giving the `EventSystem` a custom
+   `BaseInput` that routes through `InputHub` — feasible, but it touches navigation across the
+   WHOLE UI, which our own issues (#41.1, #41.10, #41.14) show is the most fragile system in the
+   project. **Recommendation**: keep A=Submit and Start=Cancel FIXED and mark them non-editable on
+   the diagram. Besides being what the legacy Input Manager allows without inventing anything, it
+   is a safety net: the player cannot rebind their way out of the pause menu.
+4. **The defaults share buttons ON PURPOSE**, so a "one button, one action" rule would make the
+   game's own defaults illegal: A is on both Saltar and Interactuar (the contextual button, see
+   `controles-y-gamepad.md`), and L1 is on both Correr and CambiarTab. If this is picked up, it
+   needs declared "shared groups" where sharing is legal, applying the steal rule (previous owner
+   left empty) only outside the group.
+5. **Hold-to-edit collides with Flap navigation.** B closes the Flap, L1/R1 change tab, Start
+   closes, Esc/O toggle: holding any of those to rebind it fires navigation before the hold
+   completes. It needs an explicit **edit mode** that gates Flap navigation while it lasts, and
+   that also swallows the *release* so the button which finished a rebind does not leak an action
+   that frame. This is exactly the arbitration pattern of #41.2 and #41.14
+   (`_gamepadInteractua`, `SeDesbloqueoEsteFrame`): two systems on the same input need explicit
+   arbitration, not trust in `Update()` ordering.
+6. **If bindings change, every prompt in the game lies.** `InputPromptSystem` resolves prompts with
+   a hardcoded `switch` (`PromptTeclado`/`PromptJoystick`, lines ~62-90), so a rebind would leave
+   "press E to talk" stale everywhere. Prompts would have to resolve from the current binding, and
+   `IconosDeBoton` would need to draw a generic keycap with any short label (today it has a fixed
+   icon set).
+7. **Persistence**: JSON in `PlayerPrefs` with a schema version, invalid entries falling back to
+   defaults, and a mandatory "restore defaults" button — that is the emergency exit if someone
+   leaves actions unassigned, which is a legal state by design given the steal rule Diego asked
+   for.
+8. **The leak surface is small**: nearly all game input already goes through `InputHub`. The only
+   direct `Input` readers are `CursorManager` and `GamepadCursor` (`mousePosition`, not
+   rebindable), `MultipleRectCheck` (origami mouse), `MainMenuManager` (`GetJoystickNames`), and
+   `LevelManager`'s editor cheats (F1/F2/F12/P, dev-only, never player-facing).
+
+**Rough breakdown if picked up**, in the order it has to happen: bindings layer in `InputHub`
+(action → list of bindings, read via `KeyCode` plus analog axes as today) → persistence, defaults
+and reset → edit mode in `ControlsDiagram` (hold with clock feedback, capture, steal rule,
+cancellation timeout) → gating Flap navigation during edit mode → prompts resolved from bindings
+plus a generic keycap in `IconosDeBoton` → new localization strings (es/en/pt) for "hold to
+change", "press a new button", "unassigned", "restore defaults".
+
+**Where the display-only controls menu design lives** (what actually got built in this batch, and
+what this would be built on top of): §4 of
+`docs/superpowers/specs/2026-09-10-audio-controls-refactor-design.md`.

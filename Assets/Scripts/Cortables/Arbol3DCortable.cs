@@ -17,8 +17,8 @@ public class Arbol3DCortable : MonoBehaviour, ICortable
         if (!wasCut)
         {
             print("me cortaron");
-            AudioManager.instance.PlayRandom("TijeraHit01", "TijeraHit02");
-            AudioManager.instance.PlayByName("MagicSuccess");
+            AudioManager.instance.Play(AudioId.TijeraHit);
+            AudioManager.instance.Play(AudioId.MagicSuccess);
             transform.Rotate(rotationVector);
             transform.localPosition = newPosition;
             wasCut = true;

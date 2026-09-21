@@ -260,7 +260,7 @@ public class DialogueManager : Singleton<DialogueManager>
 
     public void PlayEToInteractSound()
     {
-        AudioManager.instance.PlayByName("PickupSFX", 0.5f);
+        AudioManager.instance.Play(AudioId.PickupSFX, 0.5f);
     }
 
     private void OnDestroy()

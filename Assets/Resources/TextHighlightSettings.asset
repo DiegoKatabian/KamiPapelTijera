@@ -71,8 +71,8 @@ MonoBehaviour:
     bold: 1
     enlarge: 0
     sizePercent: 110
-    words: "saltar, salt\xE1, salto, mover, pular, pule, jump, move, run, interactuar,
-      interact, cambiar c\xE1mara, change camera, alternar c\xE2mera, interagir"
+    words: "saltar, salt\xE1, salto, pular, pule, jump, run, interactuar, interact,
+      interagir"
   protectedPhrases: Kami Papel y Tijera, Kami Papel Tijera, Kami Paper Scissors,
     Kami Papel e Tesoura
   cinematicSceneKeywords: Cutscene

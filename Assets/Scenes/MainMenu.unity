@@ -5416,7 +5416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _autoDialogo: {fileID: 920302444}
-  sceneToLoadOnDialogueEnd: Nivel1_KamiPapelTijera
+  sceneToLoadOnDialogueEnd: 1
   LoadingAnimationCanvas: {fileID: 1677121774}
 --- !u!1001 &936256367
 PrefabInstance:

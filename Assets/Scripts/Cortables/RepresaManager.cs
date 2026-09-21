@@ -32,8 +32,8 @@ public class RepresaManager : MonoBehaviour
         represasCortadas++;
         if (represasCortadas >= represasCortables.Count)
         {
-            AudioManager.instance.PlayByName("RepresaFall", 1f);
-            AudioManager.instance.PlayByName("MagicSuccess", 0.9f);
+            AudioManager.instance.Play(AudioId.RepresaFall, 1f);
+            AudioManager.instance.Play(AudioId.MagicSuccess, 0.9f);
             CameraManager.Instance.SetCamera(CameraMode.BookCenter);
             particulasSplash.SetActive(true);
             StartCoroutine(ActivarRiosCoroutine());

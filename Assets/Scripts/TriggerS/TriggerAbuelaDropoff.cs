@@ -12,7 +12,7 @@ public class TriggerAbuelaDropoff : TriggerScript
         if (abuela.isFollowing)
         {
             EventManager.Trigger(Evento.OnAbuelaDropoff, dropOffPoint);
-            AudioManager.instance.PlayByName("MagicSuccess", 0.6f);
+            AudioManager.instance.Play(AudioId.MagicSuccess, 0.6f);
             base.OnEnterBehaviour(other);
         }
     }

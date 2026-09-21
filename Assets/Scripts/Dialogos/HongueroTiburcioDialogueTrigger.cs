@@ -51,7 +51,7 @@ public class HongueroTiburcioDialogueTrigger : TriggerDialogue
                 if (currentDialogue <= 1)
                 {
                     currentDialogue = 2; //dialogo: "gracias por el arbol!"
-                    AudioManager.instance.PlayByName("QuestCompleted02");
+                    AudioManager.instance.Play(AudioId.QuestCompleted02);
                 }
                 else if (currentDialogue == 2)
                 {

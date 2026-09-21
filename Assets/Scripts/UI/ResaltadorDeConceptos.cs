@@ -361,6 +361,14 @@ public static class ResaltadorDeConceptos
             return false;
         }
 
+        //the catalog is authoritative for shipped scenes
+        if (SceneCatalog.TryResolve(sceneName, out GameScene scene))
+        {
+            return SceneCatalog.IsCinematic(scene);
+        }
+
+        //not in the catalog: test scenes and Spine sample scenes still get the old keyword guess
+        Debug.Log($"[ResaltadorDeConceptos] '{sceneName}' is not in the catalog, falling back to keywords.");
         for (int i = 0; i < _cinematicKeywords.Count; i++)
         {
             if (sceneName.IndexOf(_cinematicKeywords[i], StringComparison.OrdinalIgnoreCase) >= 0)

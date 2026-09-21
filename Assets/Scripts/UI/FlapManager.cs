@@ -51,7 +51,7 @@ public class FlapManager : Singleton<FlapManager>
     public void OpenFlap()
     {
         //Debug.Log("FlapManager: open flap");
-        AudioManager.instance.PlayByName("PageTurn02", 1.6f, 0.01f);
+        AudioManager.instance.Play(AudioId.PageTurn02, 1.6f, 0.01f);
         AudioManager.instance.SetBGMVolumes(0.4f);
         _tiritaPull.gameObject.SetActive(false);
         _tiritaPush.gameObject.SetActive(true);
@@ -62,7 +62,7 @@ public class FlapManager : Singleton<FlapManager>
     public void CloseFlap()
     {
         //Debug.Log("FlapManager: close flap");
-        AudioManager.instance.PlayByName("PageTurn01", 1.6f, 0.01f);
+        AudioManager.instance.Play(AudioId.PageTurn01, 1.6f, 0.01f);
         AudioManager.instance.ResetBGMVolumes();
         _tiritaPull.gameObject.SetActive(true);
         _tiritaPush.gameObject.SetActive(false);
@@ -130,7 +130,7 @@ public class FlapManager : Singleton<FlapManager>
         int nuevoIndex = ((_currentDisplayIndex + direccion) % _flapDisplays.Length + _flapDisplays.Length) % _flapDisplays.Length;
 
         Debug.Log($"[FlapManager] cambio de tab con joystick: {_currentDisplayIndex} -> {nuevoIndex}");
-        AudioManager.instance.PlayByName("PageTurn02", 2.6f, 0.01f);
+        AudioManager.instance.Play(AudioId.PageTurn02, 2.6f, 0.01f);
         ShowDesiredDisplay(_flapDisplays[nuevoIndex]);
     }
     public IEnumerator MoveFlap(float targetY)
@@ -209,7 +209,7 @@ public class FlapManager : Singleton<FlapManager>
     {
         _seguroOverlay.SetActive(true);
         Debug.Log("prendo el overlay");
-        AudioManager.instance.PlayByName("PickupSFX", 1.25f);
+        AudioManager.instance.Play(AudioId.PickupSFX, 1.25f);
 
         //el seguro es un dialogo modal (Si/No) encima del menu: si no seleccionamos uno de sus
         //botones, con joystick no habria forma de contestarle. UISelector avisa si _seguroOverlay
@@ -220,37 +220,37 @@ public class FlapManager : Singleton<FlapManager>
     {
         ShowDesiredDisplay(_flapDisplays[0]);
         //Debug.Log("prendo el overlay");
-        AudioManager.instance.PlayByName("PageTurn02", 2.6f, 0.01f);
+        AudioManager.instance.Play(AudioId.PageTurn02, 2.6f, 0.01f);
     }
     public void BTN_Inventory()
     {
         ShowDesiredDisplay(_flapDisplays[1]);
         //Debug.Log("muestro el inventario");
-        AudioManager.instance.PlayByName("PageTurn02", 2.6f, 0.01f);
+        AudioManager.instance.Play(AudioId.PageTurn02, 2.6f, 0.01f);
     }
     public void BTN_Quests()
     {
         ShowDesiredDisplay(_flapDisplays[2]);
         //Debug.Log("muestro las quests");
-        AudioManager.instance.PlayByName("PageTurn02", 2.6f, 0.01f);
+        AudioManager.instance.Play(AudioId.PageTurn02, 2.6f, 0.01f);
     }
     public void BTN_Controles()
     {
         ShowDesiredDisplay(_flapDisplays[3]);
         //Debug.Log("muestro las quests");
-        AudioManager.instance.PlayByName("PageTurn02", 2.6f, 0.01f);
+        AudioManager.instance.Play(AudioId.PageTurn02, 2.6f, 0.01f);
     }
     public void BTN_Si()
     {
         Debug.Log("chau :(");
-        AudioManager.instance.PlayByName("PickupSFX", 1.25f);
+        AudioManager.instance.Play(AudioId.PickupSFX, 1.25f);
 
         Application.Quit();
     }
     public void BTN_No()
     {
         _seguroOverlay.SetActive(false);
-        AudioManager.instance.PlayByName("PickupReversedSFX", 2.5f);
+        AudioManager.instance.Play(AudioId.PickupReversedSFX, 2.5f);
 
         Debug.Log("apago el overlay");
 

@@ -20,7 +20,7 @@ public class RocosoStartState : IState
         EventManager.Trigger(Evento.OnRocosoWokeUp, _rocoso.endsEncounter);
         if (_rocoso.endsEncounter)
         {
-            AudioManager.instance.PlayByName("RocosoWakeUp");
+            AudioManager.instance.Play(AudioId.RocosoWakeUp);
         }
 
     }

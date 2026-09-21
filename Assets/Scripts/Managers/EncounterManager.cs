@@ -33,7 +33,7 @@ public class EncounterManager : MonoBehaviour
             (DialogueSO)parameters[1] == _triggeringDialogue)
         {
             _encounter.SetActive(true);
-            AudioManager.instance.StopByName("MemoFloraMainLoop01");
+            AudioManager.instance.StopById(AudioId.MemoFloraMainLoop01);
 
             EventManager.Trigger(Evento.OnEncounterStart, CameraMode.General);
 
@@ -66,7 +66,7 @@ public class EncounterManager : MonoBehaviour
             return;
         }
 
-        AudioManager.instance.PlayByName("MemoFloraBattleLoop01");
+        AudioManager.instance.Play(AudioId.MemoFloraBattleLoop01);
         AngryParticlesGameObject.SetActive(true);   
         //AudioManager.instance.PlayOnEnd("EstampesPagodes_Battle_Intro", "MemoFloraBattleLoop01");
         firstTime = false;
@@ -74,11 +74,14 @@ public class EncounterManager : MonoBehaviour
 
     private void EndEncounter(params object[] parameters)
     {
+        //cancels any pending PlayOnEnd chain before starting a new one. Safe with the pooled
+        //AudioManager: the pool reclaims sources from Update, not from a coroutine, so an
+        //outside StopAllCoroutines cannot strand a source it already handed out.
         AudioManager.instance.StopAllCoroutines();
-        AudioManager.instance.StopByName("MemoFloraBattleLoop01");
+        AudioManager.instance.StopById(AudioId.MemoFloraBattleLoop01);
         //AudioManager.instance.StopByName("EstampesPagodes_Battle_Intro");
-        AudioManager.instance.PlayByName("MemoFloraPostBattle01");
-        AudioManager.instance.PlayByName("QuestCompleted02", 2f);
+        AudioManager.instance.Play(AudioId.MemoFloraPostBattle01);
+        AudioManager.instance.Play(AudioId.QuestCompleted02, 2f);
         AudioManager.instance.PlayOnEnd("MemoFloraPostBattle01", "MemoFloraMainLoop01");
         AngryParticlesGameObject.SetActive(false);
 

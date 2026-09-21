@@ -14,7 +14,7 @@ public class OrigamiShip : Origami
     {
         base.Apply();
         barquito.SetActive(true);
-        AudioManager.instance.PlayByName("ShipSpawn");
+        AudioManager.instance.Play(AudioId.ShipSpawn);
         //particulas
     }
 }
