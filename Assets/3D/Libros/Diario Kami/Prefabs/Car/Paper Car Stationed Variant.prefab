@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 1555447444100609135, guid: ae6559409876db1468b6411435e25fda,
         type: 3}
       propertyPath: m_Name
-      value: Paper Car Stationed
+      value: Paper Car Stationed Variant
       objectReference: {fileID: 0}
     - target: {fileID: 1603000877251619961, guid: ae6559409876db1468b6411435e25fda,
         type: 3}
@@ -21,6 +21,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504344648060732770, guid: ae6559409876db1468b6411435e25fda,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.015
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504344648060732770, guid: ae6559409876db1468b6411435e25fda,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.015
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504344648060732770, guid: ae6559409876db1468b6411435e25fda,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.015
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504344648060732770, guid: ae6559409876db1468b6411435e25fda,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5392135626279722538, guid: ae6559409876db1468b6411435e25fda,
         type: 3}
