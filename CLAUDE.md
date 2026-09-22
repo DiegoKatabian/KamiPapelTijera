@@ -42,6 +42,8 @@ Active work branches:
 - `feature/spine-animations` — Spine character animations (Spanish code/comments)
 - `feature/joystick-controls` (issue #41) — gamepad support with animated input prompts (A=jump, B=attack/interact, L1=sprint, L2=camera), target M4 (Oct 15). See `specs/004-joystick-controls/spec.md` (English).
 - `feature/textos-resaltados-e-iconos` — palabras clave resaltadas con código de colores didáctico + íconos animados de input dentro del texto. Sale de `feature/joystick-controls`. Ver `specs/005-textos-resaltados-e-iconos/spec.md` (español).
+- `pages-blocking` — blocking for Level 2's 5 pages (`Level2_Newspaper.unity`), in progress. Branches from `Level2_Newspaper`.
+- `006-nivel2-detective-natalia` (design work started 2026-09-22) — Level 2's new mechanics: Natalia's detective story across the 5 pages (companion NPC, 3 chained quests, ambient traffic, a police vision cone, new Origami routes, a catapult level ending). Branches from `pages-blocking` (carries its in-progress blocking). See `specs/006-nivel2-detective-natalia/spec.md` and `tasks.md` for the phased breakdown meant for parallel work.
 
 Roadmap and future feature specs: `specs/` (Spec Kit) and `ROADMAP.md`.
 

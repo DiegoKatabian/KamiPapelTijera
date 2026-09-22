@@ -2,14 +2,21 @@
 
 ## Estado de Nivel 2 (relevado agosto/septiembre 2026)
 
-`Assets/Scenes/Level2_Newspaper.unity`. Geometría base, decoración, edificio izquierdo
-(con animator propio, `d5a027d`) y varias páginas del diario están integradas y
-estables. **La página del museo está recién arrancada** (`2178e4a`, "pagina gallinas
-remake + pag 2 museo start"): el modelo `KamiMuseo.fbx` ya está importado pero sin
-evidencia todavía de quest/NPC/triggers wireados en esa página — es la pieza
-claramente "en progreso" del nivel ahora mismo. Sistemas transversales (page-turn,
-inventario, quests, cámara, Flap UI) están production-ready y no bloquean el trabajo
-del museo.
+`Assets/Scenes/Level2_Newspaper.unity`. Base geometry, decoration, the left building
+(with its own animator, `d5a027d`), and several newspaper pages are integrated and
+stable. Blocking for all 5 pages is in progress on the `pages-blocking` branch (pages
+3 and 4 in progress as of 2026-09-22).
+
+**The full 5-page narrative is now defined** (Diego, 2026-09-22): Kami meets Natalia,
+they investigate a stolen painting (the Pelusa), get framed by Ariel, end up
+arrested, escape with the Grandmother's help, and clear their name at the museum
+(`KamiMuseo.fbx`, page 5) before catapulting back to their book. Full spec + phased
+breakdown (what current code already covers, what's 100% new) in
+`specs/006-nivel2-detective-natalia/spec.md` and `tasks.md`. This replaces the old
+"museum page just started" description — the real scope is much larger than that one
+page (ambient traffic, a police vision cone, new Origami routes, the Natalia NPC,
+etc., all 100% new). Cross-cutting systems (page-turn, inventory, quests, camera,
+Flap UI) are production-ready and get reused as the base.
 
 **Pendiente conocido**: feedback visual de las botas de agua (TODO en
 `LevelManager.cs`, línea ~121) — falta el skin de Spine correspondiente.

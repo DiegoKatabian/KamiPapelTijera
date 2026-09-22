@@ -4,7 +4,11 @@
 
 **Created**: 2026-09-04
 
-**Status**: Draft
+**Status**: Superseded by [`006-nivel2-detective-natalia`](../006-nivel2-detective-natalia/spec.md)
+(2026-09-22) — Natalia is no longer a simple quest NPC (the Abuela/Dalia/Tiburcio/
+Norberto mold); she's now a companion who travels with Kami across a full 5-page arc
+(a detective story, 3 chained quests). This file stays as historical reference for
+the original plan; do not use it to plan new implementation work.
 
 **Input**: Idea del equipo (Diego): "spine-animar a Natalia, NPC de nivel 2".
 Investigado contra el código actual antes de escribir esta spec — ver

@@ -78,16 +78,19 @@ reportarse un bug ahí.
 `NPC.cs` es la base común de estado (junto con `NPC_FollowPlayerState`/
 `NPC_IdleState`, reusados por Abuela y pensados para reusarse por más NPCs).
 
-## Natalia (NPC de Nivel 2) — no existe todavía
+## Natalia (Level 2 NPC) — 5-page detective story, see spec 006
 
-Grep exhaustivo sobre scripts, assets de quest/diálogo, escenas `.unity` y tablas de
-localización: **cero resultados**. Es una feature 100% nueva, sin ningún wiring previo
-a reusar. Siguiendo el patrón del roster de arriba, agregarla implica: un
-`NataliaDialogueTrigger` (heredando `QuestDialogueTrigger` si es una quest Resource
-estándar, o custom si es Event-based como Tiburcio), opcionalmente una `QuestSO`
-nueva, entradas nuevas en las 3 tablas de localización (es/en/pt), y si tiene
-movimiento propio, un estado en el patrón `NPC`/`NPC_IdleState`/
-`NPC_FollowPlayerState`. Ver spec en `specs/` para el detalle de esta feature.
+Exhaustive grep over scripts, quest/dialogue assets, `.unity` scenes, and
+localization tables: **zero results** (just a "Natalia's building" GameObject in the
+scene, no component). Natalia is NOT a simple quest NPC like the 4 above — she's a
+companion who travels with Kami across Level 2's 5 pages in a detective arc (a
+painting theft, Ariel's trap, an arrest, a police-station escape with the
+Grandmother, resolution at the museum). Implemented on top of the generic
+`NPC`/`NPC_IdleState`/`NPC_FollowPlayerState` FSM (NOT the duplicated `NPC_Abuela`
+mold), with 3 chained `QuestSO` instead of one. Full detail, phased breakdown, and
+what current code already covers: `specs/006-nivel2-detective-natalia/spec.md` and
+`tasks.md` in that same folder. The old spec (`specs/003-natalia-npc-nivel2/`) is now
+superseded — it didn't reflect this scope.
 
 ## Eventos de diálogo/quest relevantes (subconjunto de `Evento`)
 
