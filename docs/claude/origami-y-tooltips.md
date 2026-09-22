@@ -1,5 +1,42 @@
 # Origami (canvas de costo) y tooltips/post-its
 
+## What an "Origami route" actually is (clarified 2026-09-22, spec 006 task 0.A)
+
+Not a ScriptableObject — a **prefab**. `Origami` (abstract `MonoBehaviour`) sits on the
+root of a UI prefab and holds an ordered array of `OrigamiRoute` components, each one a
+single drag-path (start/route/end `RectTransform`s). `MultipleRectCheck` plays them
+forward from index 0; when the last one completes, `Apply()` runs. Different
+on-completion behaviors are different `Origami` subclasses (`OrigamiEventTriggerer`
+fires an `Evento`, `OrigamiObjectSpawner`/`OrigamiShip` activate a GameObject) — never a
+change to the shared base. There is **no "play a route backwards" concept** — folding
+and unfolding the same object (e.g. Abuela) are two separate prefabs
+(`OrigamiRoute AbuelaFold.prefab` / `OrigamiRoute AbuelaUnfold.prefab`), only one active
+in the scene at a time, toggled via `QuestEffector`/`GameObjectActivator`.
+
+**New**: `OrigamiTextReveal` (`Assets/Scripts/Origami/OrigamiTextReveal.cs`) — a subclass
+of `OrigamiEventTriggerer` that also shows localized text on completion, for the Level 2
+café wrapper (`OrigamiRoute_Cafe_Fold`/`OrigamiRoute_Cafe_Unfold`) and trap letter
+(`OrigamiRoute_Letter`) — see `specs/006-nivel2-detective-natalia/spec.md` FR-005.
+`OrigamiTextRevealDisplay` (sibling to `PedestalCanvasDisplay`, same CanvasGroup-fade
+pattern) is the panel it drives, routed through `LocalizedText.Escribir` for
+joystick/keyboard prompts and concept-highlighting. `Origami.cs`/`MultipleRectCheck.cs`/
+`PedestalCanvasDisplay.cs` themselves were not touched — purely additive.
+
+**Reading flow (Diego's design call, 2026-09-22)**: the text appears on the LAST fold, and
+the panel does **not** close on its own. Input is ignored for `_readDelay` seconds (default
+2), then a close prompt appears (`OrigamiReadClose` in `UITexts`, written as
+`{INPUT:accion} to close` so the icon matches the active device) and Interact dismisses it
+— the same read-then-continue rhythm as a dialogue line. The delay exists for a concrete
+reason: the button that completes the fold is the same button that dismisses, so without it
+the player's own last press would eat the text they just earned (the same class of
+same-frame input collision as issues #41.2/#41.14).
+
+**Still open** (flagged for Diego before pages 1/3/5 wire this up): the 3 new route
+prefabs still point at Abuela's placeholder flipbook art (`OSU-Abuela.prefab`) —
+Valentino needs new `OSU-Cafe`/`OSU-Letter` sprite/Animator template prefabs before this
+ships for real. `_textDisplay` on both text-reveal prefabs is unassigned by design
+(scene-specific placement).
+
 ## Canvas de costo en pedestales de origami
 
 `PedestalCanvasDisplay` (`Assets/Scripts/Origami/PedestalCanvasDisplay.cs`) va montado en el GO "Canvas" hijo de `Assets/Prefabs/OrigamiRoutes/PedestalParent.prefab`. Muestra costo de papel + ícono cuando el player pisa el trigger del sello.

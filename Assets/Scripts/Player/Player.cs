@@ -671,6 +671,23 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     public void GetTijeraMejorada(params object[] parameters) => SetTijeraEquipment(TijeraEquipment.Mejorada);
 
+    //Symmetrical to GetTijera(): confiscates the scissors (e.g. jail-cell scene start). Mirrors
+    //every side effect GetTijera() has, in reverse, so the view/inventory don't drift out of sync.
+    public void LoseTijera(params object[] parameters)
+    {
+        if (!hasTijera)
+        {
+            Debug.LogWarning("[Player] LoseTijera: already had no tijera, ignoring");
+            return;
+        }
+
+        hasTijera = false;
+        LevelManager.Instance.AddResource(ResourceType.tijera, -1);
+        _view.RefreshBodyAnimation();
+        _view.RefreshOverrides();
+        Debug.Log("[Player] LoseTijera: scissors confiscated");
+    }
+
     public void StartOrigamiCast(params object[] parameters) => SetState(PlayerState.Casting);
     public void EndOrigamiCast(params object[] parameters)
     {

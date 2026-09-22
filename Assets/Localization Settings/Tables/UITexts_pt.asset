@@ -120,8 +120,16 @@ MonoBehaviour:
       o jogo continua: pressione E para reiniciar."
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000001
+    m_Localized: "Voc\xEA foi pego!\nPressione E para reiniciar."
+    m_Metadata:
+      m_Items: []
   - m_Id: 244717555555000000
     m_Localized: "{INPUT:cambiarseccion} para trocar de se\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000002
+    m_Localized: '{INPUT:accion} para fechar'
     m_Metadata:
       m_Items: []
   references:

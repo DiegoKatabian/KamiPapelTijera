@@ -83,6 +83,39 @@ MonoBehaviour:
     m_Localized: Tijeras Afiladas
     m_Metadata:
       m_Items: []
+  - m_Id: 1000000000001
+    m_Localized: Objeto Enganchado
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000002
+    m_Localized: "Algo qued\xF3 enganchado en la reja de una alcantarilla, cerca
+      de la escena del robo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000003
+    m_Localized: Reloj de Pulsera Roto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000004
+    m_Localized: Sus agujas se detuvieron justo en el horario del robo.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000005
+    m_Localized: Bufanda de Ariel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000006
+    m_Localized: Combina con los colores del objeto encontrado en la escena del robo.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000007
+    m_Localized: La Pelusa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000008
+    m_Localized: El cuadro robado, por fin recuperado.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -14,7 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TableCollectionName: Level2_Dialogues
   m_TableCollectionNameGuidString: 7ea07188430e5524f9f8e0358c0ba55d
-  m_Entries: []
+  m_Entries:
+  - m_Id: 5000000000001
+    m_Key: OrigamiRoute_Letter_Text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5000000000002
+    m_Key: OrigamiRoute_CafeTicket_Text
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

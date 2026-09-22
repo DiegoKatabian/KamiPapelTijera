@@ -17,7 +17,16 @@ MonoBehaviour:
   m_SharedData: {fileID: 11400000, guid: 7ea07188430e5524f9f8e0358c0ba55d, type: 2}
   m_Metadata:
     m_Items: []
-  m_TableData: []
+  m_TableData:
+  - m_Id: 5000000000001
+    m_Localized: "[PLACEHOLDER] O assalto foi um sucesso... esta \xE9 a sua parte."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5000000000002
+    m_Localized: "[PLACEHOLDER] Caf\xE9 de la Esquina - recibo, o hor\xE1rio da compra\
+      \ coincide com o hor\xE1rio do roubo. Kami nunca esteve perto do museu."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -7,6 +7,44 @@
 stable. Blocking for all 5 pages is in progress on the `pages-blocking` branch (pages
 3 and 4 in progress as of 2026-09-22).
 
+**Phase 0 of the implementation (spec 006) landed 2026-09-22** — see
+`specs/006-nivel2-detective-natalia/tasks.md` for the full phase breakdown. What exists
+now, ready for pages 1-5 to wire up:
+
+- **Ambient traffic** (`Assets/Scripts/Traffic/`: `TrafficObstacle`, `TrafficObstacleSet`
+  ScriptableObject, `TrafficSpawner`; prefabs in `Assets/Prefabs/Traffic/`) — a spawner
+  moves instances in a straight line between two points, then despawns them. Wraps the
+  existing `Paper Car Prefab aniamted.prefab` art without modifying it. Only a car
+  variant exists today — a pedestrian variant is just a new prefab wrapping different art
+  plus the same `TrafficObstacle` component, no new code. To use: drag
+  `TrafficSpawner.prefab` into a scene, reposition its `SpawnPoint`/`DespawnPoint`
+  children, assign a `TrafficObstacleSet` asset.
+
+  **Tuning is travel duration (seconds to cross), never speed** — that's the fix for the
+  first playtest bug (2026-09-22): a default of 2-4 units/second meant cars needed 20-40s
+  to cross an 80-unit street while spawning every 5-10s, so they piled up at the spawn
+  point and looked like they never despawned. Units/second is meaningless without knowing
+  the segment length; duration reads the same on any street, and the spawner derives the
+  per-instance speed from the real distance. Two safety nets back it up: `maxAlive` (a
+  spawn is skipped while at the cap, so obstacles physically cannot stack) and
+  `maxLifetime` (a hard despawn that fires even if arrival somehow never happens).
+- **New cuttables** (`Assets/Prefabs/Cortables/`): `CuttablePoster.prefab`,
+  `CuttablePoliceTape.prefab`, `CuttableRibbon.prefab`, `CuttableRope.prefab` — all built
+  on the same bush pattern as `Arbusto 1.prefab` (`ObjetoCortable`: whole sprite off →
+  base + top on → top thrown in an arc and shrunk). The poster uses **stock
+  `ObjetoCortable`** with no new script. The other three use `CuttableTwoPieces`
+  (`Assets/Scripts/Cortables/`), a subclass for strips that split sideways into two halves
+  that BOTH fly out, reusing the inherited slots as whole/left/right and adding a
+  `UnityEvent onCut` for the ribbon (gift box) and rope (catapult). Each prefab root has a
+  trigger `BoxCollider` **plus a kinematic `Rigidbody`** — two triggers only report a hit
+  if one side carries a Rigidbody, so without it the scissors would silently never cut
+  them. Sprites are bush stand-ins until Valentino draws the real art.
+- **Evidence items**: 4 new `ResourceType` values (`caughtBelonging`, `brokenWatch`,
+  `arielScarfCap`, `pelusaPainting`) + matching `InventoryItem` assets in
+  `Assets/Scripts/Inventory/` (sprites left empty, no art yet). **Not yet wired** into any
+  scene's `InventoryManager._allItems` array — whichever task places the actual pickups
+  (2.A/2.C/3.A) needs to add them there in the Editor.
+
 **The full 5-page narrative is now defined** (Diego, 2026-09-22): Kami meets Natalia,
 they investigate a stolen painting (the Pelusa), get framed by Ariel, end up
 arrested, escape with the Grandmother's help, and clear their name at the museum

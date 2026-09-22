@@ -95,21 +95,22 @@ Kami tiene dos tipos de tijera con skins diferentes en Spine (Atlas 11):
 - `Player.cs:SetTijeraEquipment()` — cambia skin + lógica de daño en TijeraManager
 - `Player.currentTijera` — enum que trackea equipo actual
 - Al completar quest del chino, `LevelManager` llama `Player.GetTijeraMejorada()` que usa `SetTijeraEquipment()`
+- `Player.LoseTijera()` (added 2026-09-22, spec 006 task 0.E) — the symmetrical counterpart to `GetTijera()`: sets `hasTijera = false`, decrements `ResourceType.tijera` by 1, and refreshes `PlayerView` the same way `GetTijera()` does. Guarded against double-calling when already unequipped. Built for Level 2 page 4's jail-cell confiscation — nothing calls it yet (that wiring is task 4.C, which also has to zero and later restore `ResourceType.papel`: Kami loses scissors **and** paper when imprisoned, recovers both from a pickup inside the station, and loses them again every time a police officer catches her, which re-arms that pickup).
 
 **Futuro (comentado en código para Spine 4.x):**
 Cuando actualicemos a Spine 4.0, agregar multi-slot (botas, guantes, etc) usando `CurrentEquipment` struct y composición de skins. Hoy es simple porque solo maneja tijeras.
 
 ## Muerte con causa (río, rocoso) — Agosto 2026
 
-La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso) decide la anim, el texto del overlay y el respawn:
+La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso/**Caught**) decide la anim, el texto del overlay y el respawn:
 
 1. **Río**: `Rio.cs` espera `activationDelay` (tuneable) con el IMojable adentro — si sale antes, cancela y no pasa nada. Cumplido el delay llama `GetWet()`: para Kami eso es feedback (anim mojarse + sonido) y `Die(DeathCause.Drowning)` de una; otros IMojable siguen con damage normal. Rio NO conoce a Player, trata todo por IMojable.
 2. **Rocoso**: `GetGolpeado()` → `TakeDamage(dmg, DeathCause.Rocoso)` (overload que enhebra la causa hasta `Die`).
 3. **Anim**: `PlayerView.SetDeathAnimation(cause)` elige "Drowning" o "Death".
-4. **Overlay**: `Player.DeathSequence` resuelve la posición de respawn (dueño de la política) y llama `ShowDefeatOverlay(cause, respawnOverride)`. `DefeatOverlay` (hereda `Overlay`) muestra la causa localizada — keys en tabla `UITexts`: `DefeatDrowning`, `DefeatRocoso`, `DefeatGeneric`.
-5. **Respawn** al cerrar con E: drowning usa `Player.drowningRespawnMode` (`LastSafePosition` = snapshot generoso con doble buffer en PlayerModel, antigüedad 1-2× `safeSnapshotInterval`; o `LevelSpawnPoint` = entrada de página). Las demás muertes siempre respawn común (`lastUsedSpawn` del `PlayerPageSpawnManager`).
+4. **Overlay**: `Player.DeathSequence` resuelve la posición de respawn (dueño de la política) y llama `ShowDefeatOverlay(cause, respawnOverride)`. `DefeatOverlay` (hereda `Overlay`) muestra la causa localizada — keys en tabla `UITexts`: `DefeatDrowning`, `DefeatRocoso`, `DefeatGeneric`, **`DefeatCaught`** (added 2026-09-22, spec 006 task 0.F, for Level 2's police-station capture — see `specs/006-nivel2-detective-natalia/`). `PlayerView.SetDeathAnimation` routes `Caught` to the generic `Death` anim (same as `Generic`/`Rocoso`) — no dedicated animation, just the new overlay text.
+5. **Respawn** al cerrar con E: drowning usa `Player.drowningRespawnMode` (`LastSafePosition` = snapshot generoso con doble buffer en PlayerModel, antigüedad 1-2× `safeSnapshotInterval`; o `LevelSpawnPoint` = entrada de página). Las demás muertes (incluida `Caught`, por ahora) siempre respawn común (`lastUsedSpawn` del `PlayerPageSpawnManager`) — `Caught` todavía no tiene un respawn point fijo a la celda de la comisaría porque esa escena no existe todavía (spec 006 task 4.B).
 
-**Setup de escena pendiente**: el GO del defeat overlay necesita el componente `DefeatOverlay` (reemplaza a `Overlay`), con `causeText` (TMP) asignado, y reasignar la ref en `OverlayManager`. Las 3 keys hay que crearlas en los localization sheets.
+**Setup de escena pendiente**: el GO del defeat overlay necesita el componente `DefeatOverlay` (reemplaza a `Overlay`), con `causeText` (TMP) asignado, y reasignar la ref en `OverlayManager`. **Verificado 2026-09-22**: `Assets/Prefabs/UI/Overlays Parent.prefab` ya tiene esto bien armado, y `Level2_Newspaper.unity` instancia ese prefab — para Nivel 2 este setup parece ya resuelto. `Nivel1_KamiPapelTijera.unity` NO referencia ese prefab — para Nivel 1 el gap de issue #20 sigue en pie. Confirmar en el Editor antes de cerrar esa issue.
 
 ## Convenciones de código
 

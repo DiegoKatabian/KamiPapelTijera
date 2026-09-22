@@ -154,8 +154,18 @@ MonoBehaviour:
       Press E to try again.'
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000001
+    m_Localized: 'You were caught!
+
+      Press E to try again.'
+    m_Metadata:
+      m_Items: []
   - m_Id: 244717555555000000
     m_Localized: '{INPUT:cambiarseccion} to switch section'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000002
+    m_Localized: '{INPUT:accion} to close'
     m_Metadata:
       m_Items: []
   references:

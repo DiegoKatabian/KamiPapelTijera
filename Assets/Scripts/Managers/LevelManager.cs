@@ -14,7 +14,11 @@ public enum ResourceType
     tijera,
     tijeraMejorada,
     abuela,
-    Count 
+    caughtBelonging,   // Level 2: belonging Natalia finds caught on a manhole cover
+    brokenWatch,       // Level 2: broken wristwatch, evidence of the robbery time
+    arielScarfCap,     // Level 2: Ariel's matching scarf/cap, compared against caughtBelonging
+    pelusaPainting,    // Level 2: the stolen Pelusa painting itself
+    Count
 }
 
 //por ahi los resourcetype deberian estar en el resourcemanager

@@ -4,5 +4,6 @@ public enum DeathCause
 {
 	Generic,   // fallback: cualquier daño sin causa especifica
 	Drowning,  // rio: anim Drowning + respawn en lugar seguro
-	Rocoso     // headbutt del rocoso: anim Death + respawn normal
+	Rocoso,    // headbutt del rocoso: anim Death + respawn normal
+	Caught     // spotted by a vision-based enemy (e.g. PoliceOfficer, Level 2): reuses anim Death, normal respawn
 }

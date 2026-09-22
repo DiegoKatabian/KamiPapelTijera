@@ -84,6 +84,38 @@ MonoBehaviour:
     m_Localized: Tesoura Afiada
     m_Metadata:
       m_Items: []
+  - m_Id: 1000000000001
+    m_Localized: Objeto Preso
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000002
+    m_Localized: Algo ficou preso na grade de um bueiro, perto da cena do roubo.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000003
+    m_Localized: "Rel\xF3gio de Pulso Quebrado"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000004
+    m_Localized: Os ponteiros pararam bem na hora do roubo.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000005
+    m_Localized: Cachecol do Ariel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000006
+    m_Localized: Combina com as cores do objeto encontrado na cena do roubo.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000007
+    m_Localized: A Pelusa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000008
+    m_Localized: O quadro roubado, finalmente recuperado.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

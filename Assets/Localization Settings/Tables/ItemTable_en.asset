@@ -83,6 +83,38 @@ MonoBehaviour:
     m_Localized: These scissors crafted by Gino can cut through rock and stone!
     m_Metadata:
       m_Items: []
+  - m_Id: 1000000000001
+    m_Localized: Caught Belonging
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000002
+    m_Localized: Something snagged on a manhole cover grate near the crime scene.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000003
+    m_Localized: Broken Wristwatch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000004
+    m_Localized: Its hands stopped right at the time of the robbery.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000005
+    m_Localized: "Ariel's Scarf"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000006
+    m_Localized: Matches the color of the belonging found at the crime scene.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000007
+    m_Localized: The Pelusa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000008
+    m_Localized: The stolen painting, finally recovered.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

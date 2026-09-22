@@ -72,7 +72,12 @@ public enum Evento //LOS EVENTOS SE AGREGAN AL FINAL. NO EN EL MEDIO, PORQUE ARR
     OnOrigamiCameraChange,
     OnPageZoneEnter, //el player entro a una esfera de cambio de pagina
     OnPageZoneExit,
-    OnTreeCutForChickens //arbol cortado para quest de tiburcio
+    OnTreeCutForChickens, //arbol cortado para quest de tiburcio
+
+    //spec 006 (Natalia, Level 2): fold/unfold completion for the OrigamiTextReveal-driven routes
+    OnCafeWrapperFolded, //cafe wrapper folded, page 1
+    OnTrapLetterUnfolded, //trap letter unfolded + read, page 3
+    OnCafeTicketUnfolded //cafe ticket unfolded (same object as the page 1 wrapper), page 5
 }
 
 public class EventManager

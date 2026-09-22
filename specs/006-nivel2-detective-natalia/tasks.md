@@ -19,47 +19,93 @@ catapult, the capture/defeat text).
 
 ## Phase 0 — Shared infrastructure (blocks pages 1-5, highly parallelizable)
 
+**Status: DONE (2026-09-22), revised the same day after Diego's first playtest.** All 6
+tracks implemented by parallel agents; combined compile-check clean. See issues
+#86-#91 (sub-issues of epic #24); this section records outcomes, not just plans.
+
+**What the playtest caught (and the lesson):** compile-checking and file-structure
+review verified everything that is checkable without running the game, and both of the
+bugs that mattered slipped straight through it:
+1. **Traffic never despawned** — cars crossed an 80-unit street at a default speed of
+   2-4 units/second, so they took 20-40s each while spawning every 5-10s, and piled up.
+   The root cause was the *knob*, not the loop: "speed in units/second" is meaningless
+   without knowing the world scale. Fixed by authoring **travel duration in seconds**
+   instead (scale-independent), plus a max-alive cap and a max-lifetime safety despawn.
+2. **Seven `.meta` files had the wrong importer** — `tools/make-meta.py` always writes
+   `MonoImporter` (it is built for `.cs`), but prefabs need `PrefabImporter` and
+   ScriptableObject `.asset` files need `NativeFormatImporter`. Any future hand-made
+   `.meta` for a non-script asset must be corrected after running that tool.
+
 None of this is page-specific; build it once, reuse it several times. Each track is
 a separate agent — no file overlap between them.
 
-- **0.A** `[P]` **Café/letter/ticket Origami routes**. *Corrected scope*: the
-  underlying system (Origami/sello, `Origami.cs`/`MultipleRectCheck.cs`/
-  `PedestalCanvasDisplay.cs`) is DONE and reused as-is — no new interaction system.
-  What's actually needed: (1) author new `OrigamiRoute` assets (e.g.
-  `OrigamiRoute_Cafe` for the café wrapper/ticket, `OrigamiRoute_Letter` for the trap
-  letter) using the existing route/pedestal authoring pattern; (2) confirm whether
-  the current route system can represent "unfold an already-folded route to reveal
-  text" — if not, add a small, targeted extension (e.g. a reveal-text field/callback
-  on the route asset) rather than building a parallel system. No dependencies.
+- **0.A** `[P]` **Café/letter/ticket Origami routes** — ✅ Done. Built
+  `OrigamiTextReveal`/`OrigamiTextRevealDisplay` (new, additive, subclass of
+  `OrigamiEventTriggerer`) plus 3 new route prefabs: `OrigamiRoute_Cafe_Fold`,
+  `OrigamiRoute_Cafe_Unfold`, `OrigamiRoute_Letter` (all in
+  `Assets/Prefabs/OrigamiRoutes/`). **Correction to this doc's own earlier framing**:
+  `OrigamiRoute` is a prefab pattern (an `Origami` MonoBehaviour + an array of
+  `OrigamiRoute` drag-path components), not a ScriptableObject — see
+  `docs/claude/origami-y-tooltips.md` for the corrected explanation. No "play a route
+  backwards" capability exists or was added — fold and unfold are two separate
+  prefabs (mirrors the existing Abuela fold/unfold precedent), toggled by
+  `QuestEffector`. **Open before 1.D/3.B/5.B**: the 3 new prefabs still use Abuela's
+  placeholder art (`OSU-Abuela.prefab`); needs real `OSU-Cafe`/`OSU-Letter` template
+  prefabs from Valentino before it ships for real; localized text is placeholder
+  copy, not final narrative text.
 
-- **0.B** `[P]` **Ambient traffic** (cars/pedestrians appear, move, despawn). MISSING
-  (the art already exists: `Paper Car Prefab aniamted.prefab`, placed 4× in
-  `Level2_Newspaper.unity`, no script). New spawner prefab + obstacle-set
-  ScriptableObject (prefab variants, speed range, spawn interval), reusing
-  `Barquito/BarquitoBehaviour.cs` steering as a base if it fits. No dependencies.
+- **0.B** `[P]` **Ambient traffic** — ✅ Done, **fixed after playtest**.
+  `TrafficObstacle`/`TrafficObstacleSet`/`TrafficSpawner` in `Assets/Scripts/Traffic/`,
+  plus `TrafficObstacle_Car.prefab`, `TrafficSpawner.prefab`,
+  `TrafficObstacleSet_StreetCars.asset` in `Assets/Prefabs/Traffic/`. Wraps the
+  existing `Paper Car Prefab aniamted.prefab` art without modifying it; a pedestrian
+  variant is just a new prefab + the same component, no new code.
+  Timing is authored as **travel duration (seconds to cross the segment)**, never raw
+  speed — the spawner derives per-instance speed from the real spawn→despawn distance,
+  so the same asset reads correctly on a 5-unit alley and an 80-unit avenue. Also has
+  `maxAlive` (skips spawns at the cap, so obstacles can't stack) and `maxLifetime` (a
+  hard despawn that fires even if arrival never happens). Collision is the car's
+  existing non-trigger `MeshCollider` — blocks the player's `CharacterController` but
+  doesn't shove it (no `Rigidbody`); fine for ambient decoration, a deliberate
+  non-goal.
 
-- **0.C** `[P]` **New cuttable prefabs**: poster, police tape, ribbon, catapult rope.
-  The base system (`ICortable`) is DONE; only the 4 new components are needed,
-  following the `PuertaCortable`/`ObjetoCortable` pattern. No dependencies — can be
-  one agent for all 4 (they're nearly identical) or split if preferred.
+- **0.C** `[P]` **New cuttable prefabs** — ✅ Done, **rebuilt after playtest**.
+  The first pass was four `PuertaCortable`-style scripts (sound + `Destroy`) with no
+  prefabs, which was both wrong behaviour and an unnecessary hand-off. Replaced with
+  the real bush pattern (`ObjetoCortable`: whole sprite off → base + top on → top
+  thrown in an arc and shrunk):
+  - `CuttablePoster.prefab` uses **stock `ObjetoCortable`** — no new script needed.
+  - `CuttableTwoPieces.cs` (one new class) extends `ObjetoCortable` for things that
+    split sideways into two halves that BOTH fly out: `CuttablePoliceTape.prefab`,
+    `CuttableRibbon.prefab`, `CuttableRope.prefab`. Inherited slots are reused as
+    whole/left/right, and it adds a `UnityEvent onCut` for the ribbon (gift box) and
+    rope (catapult launch), whose targets are later tasks.
+  All four prefabs are built, with a trigger `BoxCollider` + kinematic `Rigidbody`
+  (required: two triggers only report a hit if one side has a Rigidbody) and the bush
+  sprites as stand-in art for Valentino to swap.
 
-- **0.D** `[P]` **Evidence data**: new `ResourceType` entries (caught belonging,
-  broken watch, Ariel's scarf/cap, the Pelusa) + `InventoryItem` assets, same mold as
-  `abuela`. Data/ScriptableObject work, no new logic. No dependencies.
+- **0.D** `[P]` **Evidence data** — ✅ Done. 4 new `ResourceType` values
+  (`caughtBelonging`, `brokenWatch`, `arielScarfCap`, `pelusaPainting`) in
+  `LevelManager.cs` + matching `InventoryItem` assets in `Assets/Scripts/Inventory/`
+  (sprites left empty, no art yet), with real es/en/pt localization copy. **Open**:
+  not yet added to any scene's `InventoryManager._allItems` array — whichever task
+  places the actual pickups (2.A/2.C/3.A) needs to do that in the Editor.
 
-- **0.E** `[P]` **`Player.LoseTijera()`**: method symmetrical to `GetTijera()`
-  (`Player.cs:662-669`) that sets `hasTijera = false` and refreshes the
-  view/equipment. Trivial, no dependencies — but a prerequisite for Phase 4 (cell
-  confiscation).
+- **0.E** `[P]` **`Player.LoseTijera()`** — ✅ Done. Mirrors `GetTijera()`: sets
+  `hasTijera = false`, decrements `ResourceType.tijera` by 1, refreshes `PlayerView`.
+  Guarded against double-calling when already unequipped. Nothing calls it yet (that's
+  4.C).
 
-- **0.F** `[P]` **`DeathCause.Caught` + defeat overlay text**. *Corrected — resolved,
-  not an open design question anymore*: add a new `DeathCause` value, a new
-  localized overlay text key (same pattern as `DefeatDrowning`/`DefeatRocoso`/
-  `DefeatGeneric`, e.g. `DefeatCaught` → "You were caught") in the 3 localization
-  tables, and wire a fixed cell-entry respawn point for that cause (same shape as the
-  Drowning override, but a fixed point instead of a last-safe-position snapshot).
-  Small, self-contained — a prerequisite for 4.B, but no longer a design decision to
-  make first.
+- **0.F** `[P]` **`DeathCause.Caught` + defeat overlay text** — ✅ Done. Added
+  `DeathCause.Caught` + `DefeatCaught` localized key (es/en/pt), wired into
+  `DefeatOverlay.GetKeyForCause()`. Falls back to the generic `Death` animation (as
+  intended — no dedicated anim) and the normal page-entry respawn (a fixed
+  cell-respawn point doesn't exist yet — no jail scene to point it at). **Bonus
+  finding**: investigated issue #20 (incomplete `DefeatOverlay` scene setup) —
+  `Assets/Prefabs/UI/Overlays Parent.prefab` already has it correctly wired, and
+  `Level2_Newspaper.unity` uses that prefab, so Level 2 looks already fixed;
+  `Nivel1_KamiPapelTijera.unity` does NOT reference it, so the issue still stands for
+  Level 1 specifically — worth confirming in-Editor before closing #20.
 
 ---
 
@@ -138,9 +184,15 @@ share the scene, not code:
   only the code is missing. The largest chunk of the phase; if it needs further
   splitting, divide into: detection (cone + raycast) vs. patrol/waypoints (trivial,
   already given by `PatrollingAgent`) vs. the capture response (uses 0.F).
+  On capture, besides the defeat overlay + cell respawn, it must re-trigger the
+  confiscation and reset of 4.C — Kami loses her gear again every time she's caught.
 
-- **4.C** `[P]` **Confiscated scissors/paper zone**: a pickup that calls
-  `Player.GetTijera()` (uses 0.E for the cell's initial "no scissors" state).
+- **4.C** `[P]` **Confiscated gear + recovery pickup** *(scope confirmed by Diego
+  2026-09-22)*: on imprisonment Kami loses **both scissors and paper** — `LoseTijera()`
+  (0.E) plus zeroing `ResourceType.papel` while remembering how much was taken. A
+  pickup in the police station restores both. Getting caught (4.B) re-confiscates and
+  **re-arms the pickup**, so the escape is repeatable from the cell forever. Needs a
+  small stateful component to hold the confiscated amounts across capture cycles.
 
 - **4.D** `[P]` **Cuttable paper stacks / "wanted" posters** (uses 0.C, same
   `PickupCortable`-style pattern for granting `ResourceType.papel`).

@@ -212,18 +212,21 @@ without it being a real game-over).
 
 **Acceptance Scenarios**:
 
-1. **Given** the page's start, **When** the scene loads, **Then** Kami has no
-   scissors (`hasTijera = false`) and is locked up, and Abuela's entrance triggers
-   automatically or via a trigger (fall on Kami → disable nearby walls + play
-   feedback).
+1. **Given** the page's start, **When** the scene loads, **Then** Kami has been
+   stripped of **both her scissors and her paper** (`hasTijera = false`,
+   `ResourceType.papel` zeroed with the confiscated amount remembered) and is locked
+   up, and Abuela's entrance triggers automatically or via a trigger (fall on Kami →
+   disable nearby walls + play feedback).
 2. **Given** a patrolling officer, **When** Kami enters their vision cone and LoS
    with no obstruction for the configured time, **Then** the officer "catches" her —
    the normal defeat overlay plays with its text changed to something like "You were
    caught" (new `DeathCause` value + new localized overlay key, same pattern as
-   `DefeatDrowning`/`DefeatRocoso`/`DefeatGeneric`), and she respawns at a fixed point
-   inside the cell.
-3. **Given** the confiscated-items pickup zone, **When** Kami reaches it, **Then**
-   `Player.GetTijera()` (or equivalent) is called and her equipment is restored.
+   `DefeatDrowning`/`DefeatRocoso`/`DefeatGeneric`), she respawns at a fixed point
+   inside the cell, **is stripped of her gear again, and the recovery pickup resets**
+   so the escape is fully repeatable.
+3. **Given** the confiscated-gear pickup in the police station, **When** Kami reaches
+   it, **Then** both her scissors and the confiscated paper amount are restored, and
+   the pickup is consumed until the next capture re-arms it.
 4. **Given** enough paper and her scissors recovered, **When** Kami reaches the
    2nd-floor window and uses the paper-airplane origami, **Then** the escape sequence
    triggers the change to page 5.
@@ -286,6 +289,12 @@ to the ending cutscene.
   "unfold an already-folded route," that gap MUST be closed as a small, targeted
   extension of the existing system (e.g. a reveal-text field/callback on the route
   asset) rather than building a parallel system.
+- **FR-005b** *(added 2026-09-22, Diego's design call)*: The revealed text is a plain
+  TMP line that appears when the player completes the **last** fold. The origami MUST
+  NOT close instantly on completion: it holds while the player reads (a couple of
+  seconds), then shows a "press X to close" prompt and waits for Interact — the same
+  read-then-continue rhythm as a dialogue line, so the fold button press that finished
+  the route can never dismiss the text it just revealed.
 - **FR-006**: The system MUST provide ambient traffic (cars/pedestrians) that appear,
   move, and despawn as obstacles across all pages — one reused system, not one per
   page, configured via a prefab + obstacle-set ScriptableObject (see Design
@@ -299,8 +308,12 @@ to the ending cutscene.
   (same pattern as `DefeatDrowning`/`DefeatRocoso`/`DefeatGeneric`, e.g.
   `DefeatCaught` → "You were caught"), respawning at a fixed point inside the cell.
   No separate non-lethal mechanism is needed.
-- **FR-009**: `Player` MUST support losing and regaining the scissors in code
-  (`LoseTijera()` symmetrical to `GetTijera()`) for the page-4 confiscation.
+- **FR-009** *(extended 2026-09-22 after Diego's playtest review)*: `Player` MUST
+  support losing and regaining **both the scissors and the paper** in code
+  (`LoseTijera()` symmetrical to `GetTijera()`, plus zeroing/restoring
+  `ResourceType.papel` with the confiscated amount remembered) for the page-4
+  confiscation. Being caught mid-escape MUST re-confiscate and **reset the recovery
+  pickup**, so the whole escape can be retried indefinitely from the cell.
 - **FR-010**: All new dialogue MUST be registered in the 3 localization tables
   (es/en/pt) — no hardcoded Spanish text, consistent with the project's language rule
   for new content.

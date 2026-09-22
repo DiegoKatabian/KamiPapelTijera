@@ -111,6 +111,14 @@ MonoBehaviour:
     m_Key: FlapCambiarSeccion
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000001
+    m_Key: DefeatCaught
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000002
+    m_Key: OrigamiReadClose
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

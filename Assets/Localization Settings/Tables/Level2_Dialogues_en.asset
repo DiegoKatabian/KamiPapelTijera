@@ -17,7 +17,16 @@ MonoBehaviour:
   m_SharedData: {fileID: 11400000, guid: 7ea07188430e5524f9f8e0358c0ba55d, type: 2}
   m_Metadata:
     m_Items: []
-  m_TableData: []
+  m_TableData:
+  - m_Id: 5000000000001
+    m_Localized: "[PLACEHOLDER] The heist was a success... this is your cut."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5000000000002
+    m_Localized: "[PLACEHOLDER] Cafe de la Esquina - receipt, time of purchase matches\
+      \ the time of the robbery. Kami was never near the museum."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
