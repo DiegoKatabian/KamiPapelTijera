@@ -38,7 +38,7 @@ public class TrafficObstacle : MonoBehaviour
             }
         }
 
-        Debug.Log($"[TrafficObstacle] {name} launched: {distance:F1} units in {travelDuration:F1}s ({_speed:F1} u/s).");
+        //Debug.Log($"[TrafficObstacle] {name} launched: {distance:F1} units in {travelDuration:F1}s ({_speed:F1} u/s).");d
     }
 
     private void Update()
@@ -69,7 +69,7 @@ public class TrafficObstacle : MonoBehaviour
     private void Despawn(string reason)
     {
         _isMoving = false;
-        Debug.Log($"[TrafficObstacle] {name} {reason}, destroying.");
+        //Debug.Log($"[TrafficObstacle] {name} {reason}, destroying.");
         Destroy(gameObject);
     }
 }

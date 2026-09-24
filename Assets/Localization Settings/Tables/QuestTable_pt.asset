@@ -53,6 +53,14 @@ MonoBehaviour:
     m_Localized: Tiburcio I
     m_Metadata:
       m_Items: []
+  - m_Id: 300000000000
+    m_Localized: "Natalia I"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 300000000001
+    m_Localized: "Ajude Natalia a encontrar as pistas do roubo da Pelusa."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

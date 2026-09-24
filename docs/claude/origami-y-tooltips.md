@@ -31,11 +31,24 @@ reason: the button that completes the fold is the same button that dismisses, so
 the player's own last press would eat the text they just earned (the same class of
 same-frame input collision as issues #41.2/#41.14).
 
-**Still open** (flagged for Diego before pages 1/3/5 wire this up): the 3 new route
-prefabs still point at Abuela's placeholder flipbook art (`OSU-Abuela.prefab`) —
-Valentino needs new `OSU-Cafe`/`OSU-Letter` sprite/Animator template prefabs before this
-ships for real. `_textDisplay` on both text-reveal prefabs is unassigned by design
-(scene-specific placement).
+**Placeholder art (Diego's call, 2026-09-22)**: the café wrapper is a **2-step fold using
+`OSU-Avion`** (the paper plane, mirroring `OrigamiRoute Avion`) and the trap letter is a
+**1-step fold using `OSU-Puente`** (the puentecito, mirroring **`OrigamiRoute 1-Easy`** —
+Nivel 1 page 2). `OrigamiRoute_Cafe_Unfold` lists the same two folds as `_Cafe_Fold` in
+reverse order, which is exactly how `AbuelaUnfold` expresses "unfold" against `AbuelaFold`.
+Real `OSU-Cafe`/`OSU-Letter` art from Valentino replaces these later. `_textDisplay` on both
+text-reveal prefabs is unassigned by design (scene-specific placement).
+
+**Careful — two different "bridge" routes exist.** `OrigamiRoute 1-Easy` is the live
+puentecito: 1 fold, `OSU-Puente` art, used in Nivel 1 page 2. `OrigamiRoute Puente.prefab`
+is a separate 4-fold route that Diego believes was scrapped — do not use it as the reference
+for "the bridge origami", and check with him before building anything new on it.
+
+**Gotcha found while building these**: `MultipleRectCheck.StartOrigami()` never calls
+`NextRoute()`, so the `m_IsActive` flags authored on the OSU instances decide which fold is
+visible on a *fresh* start (`FailOrigami` only corrects it after a cancel). Whichever route
+sits at `origamiRoutes[0]` must be the active one, or the first fold of a new route shows the
+wrong art.
 
 ## Canvas de costo en pedestales de origami
 

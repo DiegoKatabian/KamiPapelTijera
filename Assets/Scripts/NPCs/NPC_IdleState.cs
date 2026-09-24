@@ -17,10 +17,16 @@ public class NPC_IdleState : IState
     public void OnEnter()
     {
         Debug.Log("[NPC] entro al idle state");
+        _npc.SetWalkAnimation(false);
     }
     public void OnUpdate()
     {
-        //Debug.Log("[NPC] entro al idle state");
+        //an NPC with extra states of its own (Abuela's dropoff) gets first say
+        if (_npc.TryExtraTransitions())
+        {
+            return;
+        }
+
         if (_npc.isFollowing)
         {
             _fsm.ChangeState(State.NPC_FollowPlayer);

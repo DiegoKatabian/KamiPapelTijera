@@ -30,20 +30,20 @@ public class TrafficSpawner : MonoBehaviour
     {
         if (obstacleSet == null)
         {
-            Debug.LogWarning($"[TrafficSpawner] {name} has no obstacleSet assigned, will not spawn anything.");
+            //Debug.LogWarning($"[TrafficSpawner] {name} has no obstacleSet assigned, will not spawn anything.");
             return;
         }
 
         if (spawnPoint == null || despawnPoint == null)
         {
-            Debug.LogWarning($"[TrafficSpawner] {name} is missing spawnPoint/despawnPoint, will not spawn anything.");
+            //Debug.LogWarning($"[TrafficSpawner] {name} is missing spawnPoint/despawnPoint, will not spawn anything.");
             return;
         }
 
         _spawnRoutine = StartCoroutine(SpawnLoop());
 
         float segmentLength = Vector3.Distance(spawnPoint.position, despawnPoint.position);
-        Debug.Log($"[TrafficSpawner] {name} started spawning from set '{obstacleSet.name}' over a {segmentLength:F1} unit segment (max {obstacleSet.MaxAlive} alive).");
+        //Debug.Log($"[TrafficSpawner] {name} started spawning from set '{obstacleSet.name}' over a {segmentLength:F1} unit segment (max {obstacleSet.MaxAlive} alive).");
     }
 
     private void OnDisable()
@@ -77,7 +77,7 @@ public class TrafficSpawner : MonoBehaviour
 
         if (_alive.Count >= obstacleSet.MaxAlive)
         {
-            Debug.Log($"[TrafficSpawner] {name} skipped a spawn: already at the cap of {obstacleSet.MaxAlive} alive obstacles.");
+            //Debug.Log($"[TrafficSpawner] {name} skipped a spawn: already at the cap of {obstacleSet.MaxAlive} alive obstacles.");
             return;
         }
 
@@ -93,13 +93,13 @@ public class TrafficSpawner : MonoBehaviour
         TrafficObstacle obstacle = instance.GetComponent<TrafficObstacle>();
         if (obstacle == null)
         {
-            Debug.LogWarning($"[TrafficSpawner] Prefab {prefab.name} has no TrafficObstacle component, destroying the spawned instance.");
+            //Debug.LogWarning($"[TrafficSpawner] Prefab {prefab.name} has no TrafficObstacle component, destroying the spawned instance.");
             Destroy(instance);
             return;
         }
 
         _alive.Add(instance);
         obstacle.Launch(despawnPoint.position, obstacleSet.GetRandomTravelDuration(), obstacleSet.MaxLifetime);
-        Debug.Log($"[TrafficSpawner] {name} spawned {prefab.name} ({_alive.Count}/{obstacleSet.MaxAlive} alive).");
+        //Debug.Log($"[TrafficSpawner] {name} spawned {prefab.name} ({_alive.Count}/{obstacleSet.MaxAlive} alive).");
     }
 }

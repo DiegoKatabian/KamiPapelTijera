@@ -10,21 +10,37 @@ public class NPC_Abuela : NPC
 
     //creo que solo va a moverse desde ser entregada hasta la mesa.
 
+    //Follow/idle now come from the shared NPC FSM (same behaviour Natalia uses) instead of the
+    //duplicated Abuela_IdleState/Abuela_FollowPlayerState this class used to own -- those two were
+    //deleted 2026-09-22. Her walk animation and sprite flip moved onto the base as options, and
+    //the dropoff, the one genuinely Abuela-specific state, stays here via TryExtraTransitions().
+    //This also fixed a latent crash: the old follow state changed to State.NPC_Idle, which this
+    //class never registered, and FiniteStateMachine.ChangeState throws on a missing key.
+
     [HideInInspector] public bool isDropoff;
     public Transform dropoffPoint;
     public Transform unfoldPoint;
     Vector3 originalScale;
 
-    public Animator anim;
-
     protected override void Start()
     {
-        _fsm = new FiniteStateMachine();
-        _fsm.AddState(State.Abuela_Idle, new Abuela_IdleState(_fsm, this));
-        _fsm.AddState(State.Abuela_FollowPlayer, new Abuela_FollowPlayerState(_fsm, this));
+        base.Start();
         _fsm.AddState(State.Abuela_Dropoff, new Abuela_DropoffState(_fsm, this));
-        _fsm.ChangeState(State.Abuela_Idle);
         originalScale = transform.localScale;
+    }
+
+    protected internal override bool TryExtraTransitions()
+    {
+        if (!isDropoff)
+        {
+            return false;
+        }
+
+        //being carried to the table outranks following: stop the follow first so that finishing
+        //the dropoff returns her to a genuine idle instead of bouncing straight back into follow
+        StopFollowingPlayer();
+        _fsm.ChangeState(State.Abuela_Dropoff);
+        return true;
     }
 
     public void GetFolded()
@@ -40,15 +56,6 @@ public class NPC_Abuela : NPC
         StartAbuelaDropoff();
     }
 
-    public void StartFollowingPlayer(params object[] parameter)
-    {
-        isFollowing = true;
-        transform.parent = player.transform.parent;
-    }
-    public void StopFollowingPlayer()
-    {
-        isFollowing = false;
-    }
     public void StartAbuelaDropoff(params object[] parameter)
     {
         isDropoff = true;

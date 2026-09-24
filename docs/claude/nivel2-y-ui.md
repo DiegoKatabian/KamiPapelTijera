@@ -41,9 +41,21 @@ now, ready for pages 1-5 to wire up:
   them. Sprites are bush stand-ins until Valentino draws the real art.
 - **Evidence items**: 4 new `ResourceType` values (`caughtBelonging`, `brokenWatch`,
   `arielScarfCap`, `pelusaPainting`) + matching `InventoryItem` assets in
-  `Assets/Scripts/Inventory/` (sprites left empty, no art yet). **Not yet wired** into any
-  scene's `InventoryManager._allItems` array — whichever task places the actual pickups
-  (2.A/2.C/3.A) needs to add them there in the Editor.
+  `Assets/Scripts/Inventory/` (sprites left empty, no art yet), registered in
+  `InventoryManager._allItems`.
+
+  **Careful — the two levels wire InventoryManager differently.**
+  `Nivel1_KamiPapelTijera.unity` instantiates `Assets/Prefabs/Managers/InventoryManager.prefab`,
+  but `Level2_Newspaper.unity` has a **standalone, non-prefab** `InventoryManager` component
+  with its own hardcoded copy of the item list. So editing the prefab alone never reaches
+  Level 2 — both had to be updated. Worth collapsing onto the prefab eventually (its
+  `_inventorySlotsParent`/`_showcaseSlot` point at scene objects, so that swap needs the
+  Editor, not YAML). Note `InventoryManager.Start()` builds a `ResourceType`-keyed dictionary
+  with `.Add()`, so a duplicated item in that list throws at startup.
+
+**Phase 1 (page 1) in progress** — `Assets/Prefabs/NPCs/Natalia.prefab` exists and is
+drag-and-drop (placed in Page 1); see `docs/claude/quests-y-dialogos.md` for her dialogue/
+quest wiring and the Event-quest gotcha that comes with it.
 
 **The full 5-page narrative is now defined** (Diego, 2026-09-22): Kami meets Natalia,
 they investigate a stolen painting (the Pelusa), get framed by Ariel, end up

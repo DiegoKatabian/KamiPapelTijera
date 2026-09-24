@@ -111,23 +111,52 @@ a separate agent — no file overlap between them.
 
 ## Phase 1 — Page 1 (depends on 0.A, 0.C, 0.D)
 
-- **1.A** `[P]` **NataliaDialogueTrigger + NPC**: on top of the generic
-  `NPC`/`NPC_IdleState`/`NPC_FollowPlayerState` (NOT the `NPC_Abuela` mold). Opening
-  dialogue (Ariel + the robbery), sets `isFollowing = true` and
-  `QuestManager.AddQuest(FindClues)`. 100% new — zero prior Natalia code in the
-  project.
+**Status: built 2026-09-22, not yet played.** Scope grew during the session per Diego:
+posters go in pages 1/2/3/5 (not just page 1), traffic gets a vertical + horizontal car
+in every page, and a cuttable typewriter was added for page 4.
 
-- **1.B** `[P]` **Cuttable posters wiring** in the page-1 scene (uses 0.C).
+- **1.A** `[P]` **NataliaDialogueTrigger + NPC** — ✅ built. `NPC_Natalia : NPC` uses the
+  generic FSM as-is; `NataliaDialogueTrigger : TriggerDialogue` (one level BELOW
+  `QuestDialogueTrigger`, whose 4-dialogue mold subtracts a resource on dialogue 2 and
+  can't express an Event quest). Opening dialogue → `AddQuest` + `StartFollowingPlayer`.
+  `Natalia.prefab` placed in Page 1 with placeholder art. See
+  `docs/claude/quests-y-dialogos.md` for the Event-quest handler gotcha this surfaced.
 
-- **1.C** `[P]` **Ambient traffic wiring** in page 1 (uses 0.B) — spawn points +
-  routes over the 4 `Paper Car` instances already placed in the scene.
+  **Follow-up (Diego, same day): Abuela's duplicated follow behaviour was scrapped and both
+  NPCs now share Natalia's.** `Abuela_IdleState`/`Abuela_FollowPlayerState` deleted (and
+  their `State` enum entries); the walk animator, sprite flip, page-reparenting and
+  start/stop-following moved onto the `NPC` base; `Abuela_DropoffState` survives via a new
+  `TryExtraTransitions()` hook.
 
-- **1.D** **Café-wrapper fold beat**: depends on 0.A (`OrigamiRoute_Cafe`) — plays
-  the fold via the existing Origami/sello flow.
+  **Then (Diego, 2026-09-24) all NPC movement moved onto the NavMesh**, like the chickens:
+  the hand-rolled `AddForce`/`Arrive` steering is deleted and `NPC` drives its own
+  `NavMeshAgent` (Rocoso's precedent). `NavMeshAgent` added to `Natalia.prefab` and
+  `Abuela.prefab`. **Blocker for testing: Level 2's pages need a baked NavMesh** or the NPCs
+  simply will not move (`PageNavMeshManager`, issue #21). This also settles 4.B's movement:
+  `PoliceOfficer : PatrollingAgent` already gets NavMesh patrol for free.
 
-- **1.E** **Quest_FindClues** (`QuestSO`, condition type decided during technical
-  planning — likely Event, fired once 2.A+2.C both complete). Depends on 1.A (who
-  grants it) and on the completion condition being defined together with Phase 2.
+  This removed the tech debt the spec had explicitly parked
+  ("refactoring `NPC_Abuela` is out of scope") and fixed two latent bugs — a
+  `KeyNotFoundException` when stopping her follow, and endless velocity drift after
+  stopping. Page 5's "Natalia and Abuela stay behind" (5.C) now works off one code path.
+
+- **1.B** `[P]` **Cuttable posters** — ✅ built, scope expanded: 2 posters each in pages
+  1, 2, 3 and 5, plus `CuttableTypewriter.prefab` (new, `PickupCortable`, grants 5 paper,
+  respawns) placed in page 4. Positions are placeholders — Diego places them by hand.
+
+- **1.C** `[P]` **Ambient traffic** — ✅ built, scope expanded: a vertical AND a horizontal
+  spawner per page, obstacle sets pre-assigned. The horizontal side needed new assets
+  because `Andando horizontal.anim` existed but no controller referenced it:
+  `Paper Car Horizontal.controller`, `TrafficObstacle_Car_Horizontal.prefab`,
+  `TrafficObstacleSet_StreetCarsHorizontal.asset`.
+
+- **1.D** **Café-wrapper fold beat** — route asset ready (`OrigamiRoute_Cafe_Fold`,
+  2-step `OSU-Avion` art per Diego); still needs its pedestal/scene wiring.
+
+- **1.E** **Quest05_FindClues** — ✅ built. Event-based on the new
+  `Evento.OnAllCluesFound` (index 50), reward `None`. **Phase 2 must fire that event only
+  once BOTH clues are collected**, and note that an Event quest also needs its handler in
+  `QuestManager` (added: `SetAllCluesFound`) or it can never complete.
 
 ---
 

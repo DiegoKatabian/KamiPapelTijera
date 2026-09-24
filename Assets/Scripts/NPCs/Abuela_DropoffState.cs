@@ -16,23 +16,28 @@ public class Abuela_DropoffState : IState
     public void OnEnter()
     {
         //Debug.Log("[NPC] entro al dropoff state");
-        _abuela.anim.SetBool("IsWalking", true);
+        _abuela.SetWalkAnimation(true);
+        //force the first path immediately: the dropoff point never moves, so waiting out the
+        //repath interval would just be a visible pause before she sets off
+        _abuela.MoveTowards(_abuela.dropoffPoint.position, force: true);
     }
     public void OnUpdate()
     {
         //Debug.Log("[NPC]  state");
 
-        _abuela.AddForce(_abuela.Arrive(_abuela.dropoffPoint.position));
+        _abuela.MoveTowards(_abuela.dropoffPoint.position);
+        _abuela.UpdateSpriteFlip();
 
-        if (Vector3.Distance(_abuela.transform.position, _abuela.dropoffPoint.position) < 3)
+        if (_abuela.HasArrived())
         {
-            _abuela.velocity = Vector3.zero;
+            _abuela.StopAgent();
             _abuela.isDropoff = false;
-            _fsm.ChangeState(State.Abuela_Idle);
+            _fsm.ChangeState(State.NPC_Idle);
         }
     }
     public void OnExit()
     {
         //Debug.Log("[NPC] salgo del dropoff state");
+        _abuela.SetWalkAnimation(false);
     }
 }

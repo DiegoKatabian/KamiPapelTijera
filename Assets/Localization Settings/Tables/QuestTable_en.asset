@@ -54,6 +54,14 @@ MonoBehaviour:
       scissors.
     m_Metadata:
       m_Items: []
+  - m_Id: 300000000000
+    m_Localized: "Natalia I"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 300000000001
+    m_Localized: "Help Natalia find the clues about the stolen Pelusa."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

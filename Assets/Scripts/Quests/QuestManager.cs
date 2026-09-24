@@ -36,6 +36,7 @@ public class QuestManager : Singleton<QuestManager>
         EventManager.Subscribe(Evento.OnAbuelaDropoff, SetAbuelaDropoff);
         EventManager.Subscribe(Evento.OnQuestDelivered, GiveReward);
         EventManager.Subscribe(Evento.OnTreeCutForChickens, SetTreeCutForChickens);
+        EventManager.Subscribe(Evento.OnAllCluesFound, SetAllCluesFound);
         //clear all quests
         //quests.Clear();
     }
@@ -84,6 +85,21 @@ public class QuestManager : Singleton<QuestManager>
         eventosSucedidos[Evento.OnTreeCutForChickens] = true;
         CheckQuests();
     }
+    //Level 2 (spec 006): completes Quest05_FindClues. Same mold as SetTreeCutForChickens --
+    //an Event quest only completes if QuestManager itself marks the event as happened, so a
+    //new Event condition always needs its handler registered here too.
+    public void SetAllCluesFound(params object[] parameter)
+    {
+        if (!eventosSucedidos.ContainsKey(Evento.OnAllCluesFound))
+        {
+            eventosSucedidos.Add(Evento.OnAllCluesFound, false);
+        }
+
+        eventosSucedidos[Evento.OnAllCluesFound] = true;
+        Debug.Log("[QuestManager] OnAllCluesFound registered, checking quests");
+        CheckQuests();
+    }
+
     public bool EventoYaSucedio(Evento evento)
     {
         //consulta de SOLO LECTURA del estado autoritativo de eventos ya sucedidos.
@@ -164,6 +180,7 @@ public class QuestManager : Singleton<QuestManager>
             EventManager.Unsubscribe(Evento.OnAbuelaDropoff, SetAbuelaDropoff);
             EventManager.Unsubscribe(Evento.OnQuestDelivered, GiveReward);
             EventManager.Unsubscribe(Evento.OnTreeCutForChickens, SetTreeCutForChickens);
+            EventManager.Unsubscribe(Evento.OnAllCluesFound, SetAllCluesFound);
         }
     }
 }

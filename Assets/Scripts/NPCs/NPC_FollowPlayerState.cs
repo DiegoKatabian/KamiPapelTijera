@@ -18,12 +18,21 @@ public class NPC_FollowPlayerState : IState
     public void OnEnter()
     {
         Debug.Log("[NPC] entro al follow player state");
+        _npc.SetWalkAnimation(true);
     }
     public void OnUpdate()
     {
-        //Debug.Log("[NPC]  state");
+        _npc.MoveTowards(_npc.player.transform.position);
+        _npc.UpdateSpriteFlip();
 
-        _npc.AddForce(_npc.FollowPlayer());
+        //stop the walk cycle once the agent is parked next to Kami, instead of moonwalking in place
+        _npc.SetWalkAnimation(!_npc.HasArrived());
+
+        //an NPC with extra states of its own (Abuela's dropoff) gets first say
+        if (_npc.TryExtraTransitions())
+        {
+            return;
+        }
 
         if (!_npc.isFollowing)
         {
@@ -34,5 +43,6 @@ public class NPC_FollowPlayerState : IState
     public void OnExit()
     {
         Debug.Log("[NPC] salgo del followplayer state");
+        _npc.SetWalkAnimation(false);
     }
 }

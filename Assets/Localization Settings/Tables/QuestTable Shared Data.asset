@@ -49,6 +49,14 @@ MonoBehaviour:
     m_Key: tiburcioquest_title
     m_Metadata:
       m_Items: []
+  - m_Id: 300000000000
+    m_Key: nataliaquest_clues_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 300000000001
+    m_Key: nataliaquest_clues
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

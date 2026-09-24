@@ -11,11 +11,10 @@ public enum State
     RocosoAttack,
     RocosoDeath,
 
-    //NPCs
+    //NPCs (Abuela_Idle/Abuela_FollowPlayer removed 2026-09-22: Abuela uses the shared
+    //NPC_Idle/NPC_FollowPlayer states now, same as Natalia. Dropoff is still hers alone.)
     NPC_Idle,
     NPC_FollowPlayer,
-    Abuela_Idle,
-    Abuela_FollowPlayer,
     Abuela_Dropoff,
 
     //Barquito

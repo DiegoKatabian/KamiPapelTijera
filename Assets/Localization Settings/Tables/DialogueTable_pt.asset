@@ -295,6 +295,42 @@ MonoBehaviour:
       ver se voc\xEA aprende alguma coisa..."
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000000
+    m_Localized: "Natalia"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000001
+    m_Localized: "...e se esse tal de Ariel me seguir de novo, eu mesma vou mult\xE1-lo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000002
+    m_Localized: "Ah! Desculpa, n\xE3o te vi. Natalia, detetive. Bom... quase."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000003
+    m_Localized: "Roubaram um quadro do museu. A Pelusa. E todo mundo age como se nada tivesse acontecido."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000004
+    m_Localized: "E ainda por cima tenho o Ariel atr\xE1s de mim o dia inteiro, fazendo perguntas e tocando minha campainha."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000005
+    m_Localized: "Voc\xEA tem tesoura e cara de quem n\xE3o se assusta com nada. Me ajuda a procurar pistas?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000006
+    m_Localized: "Vamos l\xE1. Dois pares de olhos veem o dobro."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000007
+    m_Localized: "Fica comigo, as pistas n\xE3o v\xE3o se procurar sozinhas."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000008
+    m_Localized: "E se voc\xEA vir o Ariel... me avisa antes que ele me veja."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

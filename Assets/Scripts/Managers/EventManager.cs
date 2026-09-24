@@ -77,7 +77,11 @@ public enum Evento //LOS EVENTOS SE AGREGAN AL FINAL. NO EN EL MEDIO, PORQUE ARR
     //spec 006 (Natalia, Level 2): fold/unfold completion for the OrigamiTextReveal-driven routes
     OnCafeWrapperFolded, //cafe wrapper folded, page 1
     OnTrapLetterUnfolded, //trap letter unfolded + read, page 3
-    OnCafeTicketUnfolded //cafe ticket unfolded (same object as the page 1 wrapper), page 5
+    OnCafeTicketUnfolded, //cafe ticket unfolded (same object as the page 1 wrapper), page 5
+
+    //completes Quest05_FindClues: fired by Phase 2 ONLY once BOTH page-2 clues
+    //(caughtBelonging + brokenWatch) are in the inventory, not once per clue
+    OnAllCluesFound
 }
 
 public class EventManager

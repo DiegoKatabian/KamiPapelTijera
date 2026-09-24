@@ -53,6 +53,14 @@ MonoBehaviour:
       tu tijera.
     m_Metadata:
       m_Items: []
+  - m_Id: 300000000000
+    m_Localized: "Natalia I"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 300000000001
+    m_Localized: "Ayud\xE1 a Natalia a encontrar las pistas del robo de la Pelusa."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

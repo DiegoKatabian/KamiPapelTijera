@@ -49,9 +49,10 @@ already exists vs. what's new, **as corrected by Diego's review**:
   a new destruction system.
 
 **Exists but needs extension:**
-- Abuela does NOT use the generic FSM above — she has her own (`NPC_Abuela.cs` +
-  `Abuela_*State.cs`), duplicated. No need to touch her for this feature (separate
-  tech debt); Natalia should use the generic FSM.
+- ~~Abuela does NOT use the generic FSM above~~ — **resolved 2026-09-22**: she does now.
+  The duplicated `Abuela_IdleState`/`Abuela_FollowPlayerState` were deleted and both she
+  and Natalia run the shared `NPC_IdleState`/`NPC_FollowPlayerState`; only her Dropoff
+  state is still her own.
 - `Solapa`/`TriggerSolapa` forces Kami's full-body `PullSolapas` animation (see
   `docs/claude/spine-kami.md`). Fine for the manhole-cover flap if that gesture reads
   correctly; otherwise a trigger variant that skips `Player.PlayPullSolapa` is needed.
@@ -396,9 +397,12 @@ to the ending cutscene.
 - Level 2's closing cutscene scene (after the catapult) is design/art's
   responsibility to coordinate separately (same pattern as `Level1EndCutscene`) — the
   code only needs the hook point (`GoToScene`).
-- Refactoring `NPC_Abuela` to use the generic FSM is **out of scope** for this
-  feature (already-noted tech debt) — Natalia is built clean from the start; Abuela
-  stays as she is, aside from whatever minimal new entrance behavior page 4 needs.
+- ~~Refactoring `NPC_Abuela` to use the generic FSM is out of scope~~ — **reversed by
+  Diego on 2026-09-22**: Abuela's duplicated follow behaviour was scrapped outright and
+  both NPCs now share Natalia's. Idle/follow/animator/sprite-flip/page-reparenting live
+  on the `NPC` base; only her Dropoff state remains hers. It also fixed two latent bugs
+  (a `KeyNotFoundException` on stopping her follow, and endless velocity drift). See
+  `docs/claude/quests-y-dialogos.md`.
 - Every new system in this feature should default to prefab/ScriptableObject
   authoring over scene-embedded logic (see "Design constraint" above) unless a
   specific system genuinely can't be expressed that way — that exception should be

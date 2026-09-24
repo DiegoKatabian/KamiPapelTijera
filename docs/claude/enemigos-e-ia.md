@@ -113,6 +113,19 @@ grafo de `Node` colocados a mano en la escena (`Pathfinding.cs`), con steering
 paradigmas de movimiento distintos** (NavMeshAgent en Gallina y Rocoso, cada uno con
 su propio wiring — Rocoso no hereda `PatrollingAgent`; A* por nodos en Barquito).
 
+## NPCs (Natalia, Abuela) — también NavMesh desde 2026-09-24
+
+`NPC` (`Assets/Scripts/NPCs/NPC.cs`) dejó de moverse con steering propio
+(`AddForce`/`Arrive` integrando `velocity` sobre `transform.position`) y ahora maneja su
+propio `NavMeshAgent`, igual que Rocoso. O sea, el proyecto quedó con **dos paradigmas**,
+no tres: `PatrollingAgent` para patrulla por waypoints (Gallina, y el `PoliceOfficer` de
+la página 4 cuando se implemente), y `NavMeshAgent` propio para lo que persigue un blanco
+que se mueve (Rocoso persiguiendo a Kami, los NPC siguiéndola). Barquito sigue siendo la
+excepción con su A* por nodos.
+
+Detalle del cambio y el requisito de bakear NavMesh por página: ver
+`docs/claude/quests-y-dialogos.md`.
+
 ## Patrón de daño (IGolpeable)
 
 `Assets/Scripts/AttackHitBoxes/IGolpeable.cs` — interfaz mínima
