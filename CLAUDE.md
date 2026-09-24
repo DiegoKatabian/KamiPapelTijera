@@ -146,5 +146,11 @@ La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso/**Caught**) decide la 
   sin abrir Unity. Warnings de baseline conocidos: `JumpFloodOutlineRenderer` CS0162 y
   `HongueroTiburcioDialogueTrigger` CS0414. **Ojo**: verifica compilación, NO runtime — el
   feel, la física y el input real los sigue validando Diego en el editor.
+- **Borrar código es el caso donde compile-check casi no sirve** (lección del 2026-09-24):
+  un MonoBehaviour sin `Update()`/`Start()`/`Awake()` compila perfecto, porque Unity los
+  llama por reflexión. Al eliminar un bloque, listar ANTES exactamente qué cae dentro del
+  rango que se borra, y DESPUÉS re-listar los métodos que quedaron en el archivo. Un
+  `Update()` borrado sin querer en `NPC.cs` dejó a Natalia sin tickear su FSM: compilaba
+  limpio y no seguía más a Kami.
 - `python tools/make-meta.py <ruta...>` genera los `.meta` de scripts/carpetas nuevas con
   GUID random verificado sin colisiones, sin depender de que Unity refresque.
