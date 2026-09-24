@@ -149,22 +149,31 @@ ends up following Kami and that the "Find clues" quest appears in the Flap.
 
 ### Story 2 — Page 2: Finding clues (Priority: P2)
 
-Kami and Natalia check a trash can (opens like a flap) and find a belonging caught on
-a manhole cover. They cut a strip of police tape to enter the museum and find a
-broken wristwatch showing the time of the robbery. "Find clues" completes; "Go back
-to Natalia's house" starts.
+Kami and Natalia search the street outside the museum. A trash can (opens like a flap)
+holds a **single glove**; a **hat** is snagged on a manhole cover. Two cops guard the
+museum's broken fence, taped off with police tape. Once Kami has two clues the cops drive
+off, and she cuts the tape to reach the museum's front yard, where a **broken wristwatch**
+shows the time of the robbery. "Find clues" completes; "Go back to Natalia's house" starts,
+and it completes when Kami talks to the giant gift box at Natalia's door (page 3).
 
-**Independent Test**: collect both clues (belonging + watch), confirm the quest
-completes and the next one starts.
+*Revised by Diego 2026-09-24: three clues instead of two (the glove is new), the cops as the
+gate for the third one, and the gift closing Quest06. Page 5 is this same street after all
+clues: tape cut, no cops.*
+
+**Independent Test**: collect the glove and the hat (any order), watch the cops leave, cut
+the tape, pick up the watch; confirm "Find clues" completes exactly once and "Go back to
+Natalia's house" starts; talk to the gift on page 3 and confirm it completes.
 
 **Acceptance Scenarios**:
 
-1. **Given** the trash can, **When** the player interacts (flap), **Then** the
-   caught belonging is revealed/given.
-2. **Given** the police tape is cut, **When** the player enters the museum, **Then**
-   they can pick up the broken watch (evidence with the time of the robbery).
-3. **Given** both clues are in the inventory, **Then** `OnQuestCompleted` fires for
-   "Find clues" and the next stage's event/quest starts.
+1. **Given** the clue trash can, **When** the player opens it (flap), **Then** the glove is
+   given. Every other trash can gives 2 paper, once.
+2. **Given** the police tape while the cops are there, **Then** it cannot be cut and the
+   fence gap is blocked.
+3. **Given** the player has 2 clues, **Then** the cops and their car leave and the tape can
+   be cut; cutting it opens the gap.
+4. **Given** all 3 clues are in the inventory, **Then** `OnAllCluesFound` fires once,
+   `OnQuestCompleted` fires for "Find clues" and "Go back to Natalia's house" is added.
 
 ---
 
@@ -335,7 +344,7 @@ to the ending cutscene.
 - **Quest_FindClues**, **Quest_GoBackToNataliasHouse**,
   **Quest_EscapeAndReturnThePainting** — 3 new `QuestSO` assets, same mold as the
   existing 4.
-- **Evidence items** (caught belonging, broken watch, Ariel's scarf/cap, the Pelusa) —
+- **Evidence items** (the hat — `caughtBelonging`, broken watch, lost glove, Ariel's scarf/cap, the Pelusa) —
   new `ResourceType` entries + `InventoryItem` assets, 1-count, same pattern as
   `abuela`.
 - **OrigamiRoute_Cafe**, **OrigamiRoute_Letter** *(corrected — replaces the earlier

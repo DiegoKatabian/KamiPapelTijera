@@ -14,10 +14,11 @@ public enum ResourceType
     tijera,
     tijeraMejorada,
     abuela,
-    caughtBelonging,   // Level 2: belonging Natalia finds caught on a manhole cover
+    caughtBelonging,   // Level 2: the robber's hat, snagged on a manhole cover (page 2 clue)
     brokenWatch,       // Level 2: broken wristwatch, evidence of the robbery time
     arielScarfCap,     // Level 2: Ariel's matching scarf/cap, compared against caughtBelonging
     pelusaPainting,    // Level 2: the stolen Pelusa painting itself
+    lostGlove,         // Level 2: a single glove found in a page 2 trash can (appended last so the serialized ints above keep their meaning)
     Count
 }
 

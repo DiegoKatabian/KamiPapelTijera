@@ -93,6 +93,10 @@ MonoBehaviour:
       camino!"
     m_Metadata:
       m_Items: []
+  - m_Id: 7000000000001
+    m_Localized: "{INPUT:accion} para espiar adentro"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

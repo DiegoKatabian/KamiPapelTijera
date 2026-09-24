@@ -84,11 +84,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000001
-    m_Localized: Caught Belonging
+    m_Localized: "Snagged Hat"
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000002
-    m_Localized: Something snagged on a manhole cover grate near the crime scene.
+    m_Localized: "Snagged on a manhole cover near the museum. Someone left in a hurry... and lost their cool."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000003
@@ -113,6 +113,14 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1000000000008
     m_Localized: The stolen painting, finally recovered.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000009
+    m_Localized: "Lost Glove"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000010
+    m_Localized: "A single glove fished out of a trash can. Its other half is still out there, hand in hand with the thief."
     m_Metadata:
       m_Items: []
   references:

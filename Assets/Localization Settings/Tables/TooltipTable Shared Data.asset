@@ -87,6 +87,10 @@ MonoBehaviour:
     m_Key: origami_guide
     m_Metadata:
       m_Items: []
+  - m_Id: 7000000000001
+    m_Key: trashcan_tooltip
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

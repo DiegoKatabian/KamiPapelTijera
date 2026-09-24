@@ -84,12 +84,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000001
-    m_Localized: Objeto Enganchado
+    m_Localized: "Sombrero enganchado"
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000002
-    m_Localized: "Algo qued\xF3 enganchado en la reja de una alcantarilla, cerca
-      de la escena del robo."
+    m_Localized: "Enganchado en la tapa de una alcantarilla cerca del museo. Alguien se fue muy apurado... y perdi\xF3 el sombrero."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000003
@@ -114,6 +113,14 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1000000000008
     m_Localized: El cuadro robado, por fin recuperado.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000009
+    m_Localized: "Guante perdido"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000010
+    m_Localized: "Un guante solito, rescatado de un tacho de basura. Su otra mitad sigue por ah\xED, mano a mano con el ladr\xF3n."
     m_Metadata:
       m_Items: []
   references:

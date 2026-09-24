@@ -100,6 +100,32 @@ public class NataliaDialogueTrigger : TriggerDialogue
         }
 
         _natalia.StartFollowingPlayer();
+        SetTalkable(false);
+    }
+
+    /// <summary>
+    /// While she follows Kami, this trigger travels with her and Kami is always inside it, so
+    /// EVERY interact press opened her chatter and beat whatever Kami was actually aiming at (the
+    /// gift box, a trash can). She is not talkable while following; whoever makes her stop
+    /// following later (page 5) calls SetTalkable(true).
+    /// </summary>
+    public void SetTalkable(bool talkable)
+    {
+        Collider trigger = GetComponent<Collider>();
+
+        if (!talkable)
+        {
+            //disabling a collider sends no OnTriggerExit, so leave the trigger by hand: that clears
+            //triggerBool (and with it the InteractionContext registration) and hides our post-it
+            OnExitBehaviour();
+        }
+
+        if (trigger != null)
+        {
+            trigger.enabled = talkable;
+        }
+
+        Debug.Log($"[NataliaDialogueTrigger] {gameObject.name}: talkable = {talkable}");
     }
 
     protected override void OnDestroy()

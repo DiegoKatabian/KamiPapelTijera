@@ -39,8 +39,9 @@ now, ready for pages 1-5 to wire up:
   trigger `BoxCollider` **plus a kinematic `Rigidbody`** — two triggers only report a hit
   if one side carries a Rigidbody, so without it the scissors would silently never cut
   them. Sprites are bush stand-ins until Valentino draws the real art.
-- **Evidence items**: 4 new `ResourceType` values (`caughtBelonging`, `brokenWatch`,
-  `arielScarfCap`, `pelusaPainting`) + matching `InventoryItem` assets in
+- **Evidence items**: 4 new `ResourceType` values (`caughtBelonging` — the hat,
+  `brokenWatch`, `arielScarfCap`, `pelusaPainting`; `lostGlove` was appended as a 5th in
+  Phase 2, in both InventoryManager lists) + matching `InventoryItem` assets in
   `Assets/Scripts/Inventory/` (sprites left empty, no art yet), registered in
   `InventoryManager._allItems`.
 
@@ -52,6 +53,32 @@ now, ready for pages 1-5 to wire up:
   `_inventorySlotsParent`/`_showcaseSlot` point at scene objects, so that swap needs the
   Editor, not YAML). Note `InventoryManager.Start()` builds a `ResourceType`-keyed dictionary
   with `.Add()`, so a duplicated item in that list throws at startup.
+
+**Phase 2 (page 2, "Find clues") built 2026-09-24 — compiles, not yet played.** Three
+clues (glove in a trash can, hat on the manhole, watch in the museum yard), two cops that
+drive off after the second clue so the police tape can be cut, and the quest handoff to
+`Quest06_GoBackToNataliasHouse`, closed by the gift box on page 3. What exists and where:
+
+- **Every trash can in Level 2 is now `Assets/Prefabs/Interactables/TrashCan.prefab`**
+  (15 of them, pages 1-5; the scene instances used to be the bare `Kami_TrashCan.fbx`).
+  Opening one runs the stock `Solapa`/`TriggerSolapa` flap flow (Kami's `PullSolapas`
+  gesture) and gives 2 paper once. `TrashCan_ClueGlove.prefab` is a variant that gives the
+  glove (page 2's `TrashCan_ClueGlove`). The contents are a `GrantResourcePickup`
+  (`Assets/Scripts/TriggerS/Pickups/`) in Revealed mode: opening = collecting, and it
+  destroys itself, so later opens find the can empty. The per-can "Newspaper 1" material
+  override the old instances had was carried over. The model sits under a `Wobble` pivot at
+  scale 0.012876 so the placeholder open/close squash (`Assets/Animations/TrashCan/`) has
+  something scale-1 to animate; Valentino's lid animation replaces those two clips.
+- `Assets/Prefabs/Level2/`: `CrimeSceneGate` (tape + blocker + cops + car,
+  `Assets/Scripts/Level2/CrimeSceneGate.cs`), `CluePickup_Hat`/`CluePickup_Watch` (walk-into
+  pickups), `FindCluesTracker` (`Assets/Scripts/Level2/FindCluesTracker.cs`: counts clues,
+  queues Natalia's comments, calls off the cops, fires `OnAllCluesFound` once, hands off the
+  quest) and `GiftBox` (`GiftDialogueTrigger`).
+- **Known gap: the museum fence has no colliders.** `KamiMuseo.fbx` imports with
+  `addColliders: 0` and the scene adds none, so the gate's blocker only blocks the gap itself
+  — Kami can walk around it. Also positions of the gate, the gift and the hat are
+  placeholders (`_PLACEHOLDER_POSITION` in the names), to be dragged into place in the Editor.
+- Page 5 is page 2 after the clues (Diego): none of the page 2 gameplay objects live there.
 
 **Phase 1 (page 1) in progress** — `Assets/Prefabs/NPCs/Natalia.prefab` exists and is
 drag-and-drop (placed in Page 1); see `docs/claude/quests-y-dialogos.md` for her dialogue/
@@ -81,7 +108,12 @@ page-turn). `AddResource()` dispara `Evento.OnResourceUpdated`, consumido por
 `InventoryManager` y `QuestSlot`. Los métodos `GiveSprintBoots()`/`GiveWaterBoots()`/
 `GiveTijeraMejorada()` son las recompensas de quest — ver `SetTijeraEquipment()` en
 `spine-kami.md` para el caso tijera. También decide qué música de nivel usar
-(MemoFloraMainLoop en Nivel 1, BohrenDestroyingAngels en Nivel 2) y expone un sistema
+(MemoFloraMainLoop en Nivel 1, BohrenDestroyingAngels en Nivel 2). **Level 2 music is per
+page since 2026-09-24**: `PageMusicManager` (`Assets/Scripts/Managers/`, instance of
+`Prefabs/Level2/PageMusicManager.prefab` at the scene root) holds one AudioId per page in the
+Inspector — Bohren on pages 1-2, silence on 3, **page 4 empty until its own track exists**
+(just type the id there), Bohren again on 5. It re-applies on `OnNewPageOpen` and one frame
+after start, so it wins over `LevelManager.Start` on a test started from page 3 y expone un sistema
 de cheats solo-editor gateado por flags.
 
 **Verificado**: el flujo de page-turn documentado en `paginas-y-hoja.md` sigue

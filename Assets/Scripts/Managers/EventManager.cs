@@ -79,9 +79,14 @@ public enum Evento //LOS EVENTOS SE AGREGAN AL FINAL. NO EN EL MEDIO, PORQUE ARR
     OnTrapLetterUnfolded, //trap letter unfolded + read, page 3
     OnCafeTicketUnfolded, //cafe ticket unfolded (same object as the page 1 wrapper), page 5
 
-    //completes Quest05_FindClues: fired by Phase 2 ONLY once BOTH page-2 clues
-    //(caughtBelonging + brokenWatch) are in the inventory, not once per clue
-    OnAllCluesFound
+    //completes Quest05_FindClues: fired by FindCluesTracker ONLY once ALL THREE page-2 clues
+    //(lostGlove + caughtBelonging + brokenWatch) are in the inventory, never once per clue
+    OnAllCluesFound,
+
+    //page 2: enough clues found that the cops guarding the museum's broken fence drive off
+    OnCrimeSceneUnguarded,
+    //completes Quest06_GoBackToNataliasHouse: Kami talked to the gift box at Natalia's door
+    OnGiftAtNataliasDoorReached
 }
 
 public class EventManager

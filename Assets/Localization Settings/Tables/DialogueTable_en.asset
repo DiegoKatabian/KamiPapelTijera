@@ -326,6 +326,46 @@ MonoBehaviour:
     m_Localized: "And if you see Ariel... tell me before he sees me."
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000100
+    m_Localized: "A single glove! Somebody left with cold hands... Let's keep it. This clue is right in the palm of our hand."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000101
+    m_Localized: "A hat, snagged on the manhole! Our thief left in such a hurry they lost their head... well, their hat."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000102
+    m_Localized: "A broken wristwatch... it stopped right at the time of the robbery. Time's up for our thief!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000103
+    m_Localized: "Look! The cops guarding the crime scene just left! Maybe we can cut our way in to look for more clues!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000104
+    m_Localized: "Let's cut to the chase!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000105
+    m_Localized: "These three clues should give us a great lead."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000106
+    m_Localized: "Let's head home to analyze them further. This case is starting to unfold!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000107
+    m_Localized: "A giant gift... at MY door? I don't remember ordering anything this size."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000108
+    m_Localized: "It's tied up tight. Somebody really wrapped this case up for us..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000109
+    m_Localized: "Still wrapped. Maybe those scissors of yours can lend a hand?"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

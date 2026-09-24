@@ -20,6 +20,10 @@ public class CuttableTwoPieces : ObjetoCortable
     [Tooltip("Fired once when cut. Wire this to whatever should happen next (gift box opening, catapult launch). Leave empty for a strip that only needs to get out of the way.")]
     [SerializeField] private UnityEvent onCut;
 
+    //for listeners wired from code (CrimeSceneGate) instead of the Inspector: a scene object
+    //cannot point a serialized UnityEvent at a component nested inside another prefab instance
+    public UnityEvent OnCut => onCut;
+
     private Vector3 _leftPieceStartPosition;
     private Vector3 _leftPieceStartScale;
 

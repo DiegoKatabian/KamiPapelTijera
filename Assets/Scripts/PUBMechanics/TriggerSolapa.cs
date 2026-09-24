@@ -19,6 +19,13 @@ public class TriggerSolapa : TriggerScript
     {
         if (triggerBool)
         {
+            //the same press that advances a dialogue line also reaches here: without this, closing
+            //Natalia's comment about the glove also slammed the trash can shut
+            if (LevelManager.Instance != null && LevelManager.Instance.inDialogue)
+            {
+                return;
+            }
+
             if (solapaAfectada == null)
             {
                 Debug.LogWarning("[TriggerSolapa] No hay solapa afectada asignada, se ignora la interaccion");

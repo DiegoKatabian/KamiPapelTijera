@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6446763140980112066
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3142802773371862952}
+  - component: {fileID: 8592695416723776377}
+  m_Layer: 0
+  m_Name: FindCluesTracker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3142802773371862952
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6446763140980112066}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8592695416723776377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6446763140980112066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9378c9c144764fbe9a1f02814d263b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _clues:
+  - resource: 12
+    comment: {fileID: 11400000, guid: 28cb866c50e247c6bd46de1a54117c69, type: 2}
+  - resource: 8
+    comment: {fileID: 11400000, guid: 052cfc1fee0d4589b57c9b0b6a36639b, type: 2}
+  - resource: 9
+    comment: {fileID: 11400000, guid: 3c6c9762baf24aafa503b70520f370af, type: 2}
+  _cluesToCallOffCops: 2
+  _copsLeftComment: {fileID: 11400000, guid: 1f10d49fb8c24228b6f59670dca5998f, type: 2}
+  _allCluesComment: {fileID: 11400000, guid: 7422b3f94ba64b70b18d4b07e35bbb7d, type: 2}
+  _findCluesQuest: {fileID: 11400000, guid: 04478d8f335943b1adadc7a7ac5fd81d, type: 2}
+  _nextQuest: {fileID: 11400000, guid: 504a0f08957c42ea8271b27b972219e9, type: 2}

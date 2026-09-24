@@ -303,6 +303,46 @@ MonoBehaviour:
     m_Key: natalia_02_02
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000100
+    m_Key: natalia_clue_glove_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000101
+    m_Key: natalia_clue_hat_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000102
+    m_Key: natalia_clue_watch_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000103
+    m_Key: natalia_cops_left_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000104
+    m_Key: natalia_cops_left_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000105
+    m_Key: natalia_all_clues_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000106
+    m_Key: natalia_all_clues_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000107
+    m_Key: gift_door_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000108
+    m_Key: gift_door_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000109
+    m_Key: gift_door_03
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

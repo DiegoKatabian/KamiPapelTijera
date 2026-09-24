@@ -324,6 +324,46 @@ MonoBehaviour:
     m_Localized: "Y si ves a Ariel... avisame antes de que me vea \xE9l a m\xED."
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000100
+    m_Localized: "\xA1Un guante solito! Alguien se fue con las manos fr\xEDas... Guard\xE9moslo: esta pista la tenemos al alcance de la mano."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000101
+    m_Localized: "\xA1Un sombrero enganchado en la alcantarilla! El ladr\xF3n se fue tan apurado que perdi\xF3 la cabeza... bueno, el sombrero."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000102
+    m_Localized: "Un reloj roto... se fren\xF3 justo a la hora del robo. \xA1Al ladr\xF3n se le acab\xF3 el tiempo!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000103
+    m_Localized: "\xA1Mir\xE1! \xA1Los polic\xEDas que cuidaban la escena del crimen se fueron! \xA1Capaz podemos abrirnos paso a tijeretazos para buscar m\xE1s pistas!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000104
+    m_Localized: "\xA1Vamos al grano... y al corte!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000105
+    m_Localized: "Estas tres pistas nos tendr\xEDan que dar una gran ventaja."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000106
+    m_Localized: "Vamos a casa a analizarlas mejor. \xA1Este caso se empieza a desplegar!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000107
+    m_Localized: "\xBFUn regalo gigante... en MI puerta? No me acuerdo de haber pedido nada tan grande."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000108
+    m_Localized: "Est\xE1 re atado. Alguien nos dej\xF3 este caso bien envuelto..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000109
+    m_Localized: "Sigue envuelto. \xBFY si tus tijeras nos dan una mano?"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

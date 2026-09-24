@@ -59,4 +59,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0d9816747ab0435997c84b134eb3621b, type: 2}
   - {fileID: 11400000, guid: 12c04cabe9204aae998a65ec39a45bca, type: 2}
   - {fileID: 11400000, guid: d91991bc3da94fecb1ecb83f145b2bf7, type: 2}
+  - {fileID: 11400000, guid: 11c5b31322394f3291dc3d43bf3e205c, type: 2}
   emptyItemSprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}

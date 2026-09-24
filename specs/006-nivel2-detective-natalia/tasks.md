@@ -155,32 +155,80 @@ in every page, and a cuttable typewriter was added for page 4.
 
 - **1.E** **Quest05_FindClues** — ✅ built. Event-based on the new
   `Evento.OnAllCluesFound` (index 50), reward `None`. **Phase 2 must fire that event only
-  once BOTH clues are collected**, and note that an Event quest also needs its handler in
+  once ALL clues are collected** (three since Diego's 2026-09-24 pass), and note that an Event quest also needs its handler in
   `QuestManager` (added: `SetAllCluesFound`) or it can never complete.
 
 ---
 
 ## Phase 2 — Page 2 (depends on 0.C tape, 0.D, Phase 1 in progress)
 
-- **2.A** `[P]` **Trash can as a flap**: decide whether to reuse `TriggerSolapa`
-  as-is (full `PullSolapas` gesture) or a variant without
-  `Player.PlayPullSolapa` — see Context in `spec.md`. Delivers the caught belonging
-  (uses 0.D).
+**Built 2026-09-24 (compiles; NOT yet played).** Diego's design pass changed the shape of
+this page, so the tasks below record what was actually built, not the original draft:
 
-- **2.B** `[P]` **Cuttable police tape** (uses 0.C) opening the path to the museum.
+- **Three clues, not two**: a **single glove** (`ResourceType.lostGlove`, new, appended
+  last) in a trash can, the **hat** (`caughtBelonging`, now described as a hat) on the
+  manhole, and the **broken wristwatch** (`brokenWatch`) on the museum's front-yard floor.
+- **Cops gate the third clue**: two cops and a police car stand at the museum's broken
+  fence. When Kami has **2** clues they drive off; only then can the police tape be cut.
+- **The gift at Natalia's door closes the next quest** (was 3.D): talking to it completes
+  and delivers `Quest06_GoBackToNataliasHouse`. Built here, placed on page 3.
 
-- **2.C** `[P]` **Broken watch pickup** in the museum (uses 0.D) — a simple pickup,
-  same pattern as existing `PickupCortable`-style collectibles.
+- **2.A** `[P]` **Trash can as a flap** — ✅ built. Option A: stock `Solapa` +
+  `TriggerSolapa` (full `PullSolapas` gesture), no variant script. **Every trash can in
+  Level 2 (15, pages 1-5) is now `Prefabs/Interactables/TrashCan.prefab`**, which gives 2
+  paper once; `TrashCan_ClueGlove.prefab` (a prefab variant) gives the glove instead and
+  replaces page 2's `Kami_TrashCan`. Cans can be closed again; they are emptied once. The
+  contents are a `GrantResourcePickup` in **Revealed** mode (opening = collecting), so the
+  can and its contents never compete for the same button press. The open/close animation is
+  a placeholder squash on a `Wobble` pivot (`Animations/TrashCan/`) until Valentino animates
+  `Kami_TrashCan.fbx` (a single mesh today, no separate lid). Same prefab is meant for the
+  sewer manholes later: only the art changes.
 
-- **2.D** **Close Quest_FindClues + start Quest_GoBackToNataliasHouse**: depends on
-  2.A and 2.C (both clues) plus 1.E (the quest already existing).
+- **2.B** `[P]` **Police tape + cops** — ✅ built as `Prefabs/Level2/CrimeSceneGate.prefab`
+  (`CrimeSceneGate.cs`): a nested `CuttablePoliceTape` whose trigger collider starts **off**
+  (uncuttable), a solid `GapBlocker`, two placeholder cops (blue-tinted Natalia sprite) and a
+  placeholder police car (`TrafficObstacle_Car`, driven off with `TrafficObstacle.Launch`, so
+  its tuning is seconds-to-leave, not speed). On `Evento.OnCrimeSceneUnguarded` the cops vanish,
+  the tape becomes cuttable and the car drives off; cutting the tape removes the blocker.
+  **Placed at a placeholder position** — the museum fence is baked into `KamiMuseo.fbx` and has
+  **no colliders at all**, so today Kami can walk around the gate; see open questions below.
+
+- **2.C** `[P]` **Floor clues** — ✅ built: `CluePickup_Hat.prefab` and
+  `CluePickup_Watch.prefab`, `GrantResourcePickup` in **PlayerTouches** mode (walk into it).
+  Deliberately not an A/E interaction: Natalia follows Kami closely and her own dialogue
+  trigger would compete for the same press. Placeholder sprites.
+
+- **2.D** **Close Quest05 + start Quest06** — ✅ built as `FindCluesTracker.cs`
+  (`Prefabs/Level2/FindCluesTracker.prefab`, placed on page 2). It counts clues in any order,
+  queues Natalia's comment for each one, fires `OnCrimeSceneUnguarded` at 2 clues and
+  `Evento.OnAllCluesFound` **exactly once** at 3 (latched). When Quest05 completes it queues
+  her "these 3 clues should give us a great lead" line, removes Quest05 and adds
+  `Quest06_GoBackToNataliasHouse` (Event-based on the new `OnGiftAtNataliasDoorReached`,
+  with its `QuestManager` handler). `GiftDialogueTrigger.cs` + `GiftBox.prefab` (placeholder
+  cube, page 3) fire that event when their first dialogue starts and deliver the quest when
+  it ends.
+
+**One Natalia, start to end (Diego, 2026-09-24)**: the page 1 instance is the only one. She
+is not talkable while following (`NataliaDialogueTrigger.SetTalkable(false)`); the page 5
+drop-off (5.C) must stop her follow and call `SetTalkable(true)`. The extra instances on pages
+2 and 5 were removed.
+
+**Page 5 continuity (Diego)**: page 5 is page 2 *after* all clues — tape already cut, no
+cops, no car, empty clue can. Page 5 gets none of the page 2 gameplay objects; its three
+trash cans are ordinary paper cans. Nothing carries state between the two pages.
+
+**Open for Diego (Editor placement, all flagged `_PLACEHOLDER_POSITION` in the scene)**:
+`CrimeSceneGate` onto the actual broken fence section, `GiftBox` onto Natalia's door, the
+hat onto the manhole. The museum fence needs colliders (or the gate is decorative).
 
 ---
 
 ## Phase 3 — Page 3 (depends on 0.A letter, 0.C ribbon, Phase 2 complete)
 
 - **3.A** `[P]` **Gift box + cuttable ribbon** (uses 0.C) → reveals the Pelusa
-  (uses 0.D for the evidence object).
+  (uses 0.D for the evidence object). The box itself already exists from Phase 2
+  (`Prefabs/Level2/GiftBox.prefab`, placed on page 3, talking to it closes Quest06): 3.A
+  adds the ribbon and the reveal to it.
 
 - **3.B** **Letter fold/unfold + read beat** (uses 0.A's `OrigamiRoute_Letter`) with
   the "the heist was a success..." text. Depends on 3.A (the opened box exposes it).
@@ -191,8 +239,8 @@ in every page, and a cuttable typewriter was added for page 4.
   level — sequential, depends on 3.B (triggers once the letter is read) and gates the
   start of page 4 (positions Kami already inside the cell).
 
-- **3.D** **Close Quest_GoBackToNataliasHouse + start
-  Quest_EscapeAndReturnThePainting**: depends on 3.C.
+- **3.D** **Start Quest_EscapeAndReturnThePainting**: depends on 3.C. (Closing
+  Quest_GoBackToNataliasHouse moved to Phase 2: the gift at Natalia's door delivers it.)
 
 ---
 

@@ -875,6 +875,18 @@ MonoBehaviour:
     spatialBlend: 0
     priority: 128
     interruptSelf: 0
+  - id: DeadEndAngels
+    clips:
+    - {fileID: 8300000, guid: 1618f0a50970837439307faadcef262d, type: 3}
+    volume: 0.03
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 0
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
   musicGroup: {fileID: 9197432607514441226, guid: 1e1b55ab68c5e16499c7e1b105afabc6,
     type: 2}
   sfxGroup: {fileID: 5805384339254084397, guid: 1e1b55ab68c5e16499c7e1b105afabc6,

@@ -331,6 +331,46 @@ MonoBehaviour:
     m_Localized: "E se voc\xEA vir o Ariel... me avisa antes que ele me veja."
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000100
+    m_Localized: "Uma luva sozinha! Algu\xE9m saiu com as m\xE3os frias... Vamos guardar: essa pista est\xE1 na palma da nossa m\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000101
+    m_Localized: "Um chap\xE9u preso no bueiro! O ladr\xE3o saiu com tanta pressa que perdeu a cabe\xE7a... bom, o chap\xE9u."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000102
+    m_Localized: "Um rel\xF3gio quebrado... parou bem na hora do roubo. O tempo do ladr\xE3o acabou!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000103
+    m_Localized: "Olha! Os policiais que vigiavam a cena do crime foram embora! Talvez a gente consiga abrir caminho na tesoura pra procurar mais pistas!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000104
+    m_Localized: "Vamos direto ao corte!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000105
+    m_Localized: "Essas tr\xEAs pistas devem nos dar uma \xF3tima vantagem."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000106
+    m_Localized: "Vamos pra casa analisar melhor. Esse caso est\xE1 come\xE7ando a se desdobrar!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000107
+    m_Localized: "Um presente gigante... na MINHA porta? N\xE3o lembro de ter pedido nada desse tamanho."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000108
+    m_Localized: "Est\xE1 bem amarrado. Algu\xE9m embrulhou esse caso direitinho pra gente..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000109
+    m_Localized: "Continua embrulhado. Ser\xE1 que sua tesoura d\xE1 uma m\xE3ozinha?"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

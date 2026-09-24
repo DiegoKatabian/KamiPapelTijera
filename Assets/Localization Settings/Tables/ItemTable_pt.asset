@@ -85,11 +85,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000001
-    m_Localized: Objeto Preso
+    m_Localized: "Chap\xE9u enroscado"
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000002
-    m_Localized: Algo ficou preso na grade de um bueiro, perto da cena do roubo.
+    m_Localized: "Preso na tampa de um bueiro perto do museu. Algu\xE9m saiu com muita pressa... e perdeu o chap\xE9u."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000003
@@ -114,6 +114,14 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1000000000008
     m_Localized: O quadro roubado, finalmente recuperado.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000009
+    m_Localized: "Luva perdida"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000010
+    m_Localized: "Uma luva sozinha, tirada de uma lixeira. A outra metade ainda est\xE1 por a\xED, de m\xE3os dadas com o ladr\xE3o."
     m_Metadata:
       m_Items: []
   references:

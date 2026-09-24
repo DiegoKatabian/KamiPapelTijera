@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 692a75f9da8fbd047ac062f0a359c87f, type: 3}
+  m_Name: Quest06_GoBackToNataliasHouse
+  m_EditorClassIdentifier: 
+  questName: nataliaquest_home_title
+  questDescription: nataliaquest_home
+  condition:
+    conditionType: 1
+    resourceType: 0
+    requiredAmount: 0
+    evento: 52
+  rewardType: 3
+  questSprite: {fileID: 0}
+  rewardRt: 0

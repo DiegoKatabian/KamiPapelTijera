@@ -74,7 +74,7 @@ reportarse un bug ahí.
 | Granjero Norberto | `GranjeroNorbertoDialogueTrigger.cs` | Completo — además spawnea el pickup de tijera en el primer diálogo |
 | **Chino** | `ChinoDialogueTrigger.cs` | **STUB VACÍO** — la clase existe pero no implementa nada, pese a que `Quest04_Chino.asset` ya está configurada (100× papel → SprintBoots). Quest sin NPC funcional. |
 | **Florista** | `NPCs/NPC_Florista.cs` | **STUB VACÍO** — clase sin implementación, sin diálogo conectado. |
-| Natalia (Nivel 2) | `NataliaDialogueTrigger.cs` + `NPCs/NPC_Natalia.cs` | Page 1 (opening dialogue + follow + quest start) implementado 2026-09-22; páginas 2-5 pendientes. Ver la sección de abajo. |
+| Natalia (Nivel 2) | `NataliaDialogueTrigger.cs` + `NPCs/NPC_Natalia.cs` | Page 1 (opening dialogue + follow + quest start) implementado 2026-09-22; page 2 clue comments come from `FindCluesTracker` (2026-09-24); páginas 3-5 pendientes. Ver la sección de abajo. |
 
 `NPC.cs` es la base común de estado (junto con `NPC_FollowPlayerState`/
 `NPC_IdleState`, reusados por Abuela y pensados para reusarse por más NPCs).
@@ -110,8 +110,51 @@ registered in `QuestManager.Start` (`SetAbuelaDropoff`, `SetTreeCutForChickens`,
 enough: without its own subscribe + handler + `Unsubscribe`, the quest can never
 complete, silently. Same family of bug as Tiburcio's missing `AddQuest()` above.
 
-**Phase 2 must fire `Evento.OnAllCluesFound` once BOTH clues (`caughtBelonging` and
-`brokenWatch`) are collected** — not once per clue.
+**Phase 2 fires `Evento.OnAllCluesFound` once ALL THREE clues (`lostGlove`,
+`caughtBelonging`, `brokenWatch`) are collected** — not once per clue. That's
+`FindCluesTracker` (`Assets/Scripts/Level2/`), latched. Built 2026-09-24.
+
+### Natalia is not talkable while she follows (2026-09-24, Diego playtest)
+
+Her `TriggerDialogue` child travels with her, so while following Kami was ALWAYS inside it:
+every interact press opened her chatter ("let's look for clues") and beat whatever Kami was
+aiming at — the gift box on page 3 could not be talked to. `NataliaDialogueTrigger` now calls
+`SetTalkable(false)` right after she starts following (manual `OnExitBehaviour()` + collider
+off; disabling a collider sends no `OnTriggerExit`). Whatever makes her stop following later
+(page 5 staying behind) must call `SetTalkable(true)`.
+
+Related: `TriggerSolapa.Interact` now ignores presses while `LevelManager.inDialogue` — the
+press that advanced her glove comment was also slamming the trash can shut.
+
+**There is exactly ONE Natalia in Level 2** (Diego, 2026-09-24): the page 1 instance. Kami
+picks her up on page 1 and she follows (reparenting to each page) until she is dropped off on
+page 5. The extra full instances that sat on pages 2 and 5 were deleted — each one would have
+re-run her opening dialogue, added Quest05 a second time and started a second follower. Don't
+place Natalia on other pages to "stage" her; page 5's drop-off (task 5.C) acts on the same one.
+
+### Quests without a delivering NPC: Quest05 → Quest06 (2026-09-24)
+
+`Quest05_FindClues` has no one to hand it to, and `Quest06_GoBackToNataliasHouse`
+(Event, `OnGiftAtNataliasDoorReached`, handler `SetGiftAtNataliasDoorReached`) is delivered
+to an object: `GiftDialogueTrigger` on the gift at Natalia's door. Two traps found building
+them, both relevant to any future quest that is closed from code:
+
+1. **Don't add or remove quests inside an `OnQuestCompleted` handler.** `QuestManager`
+   raises it from INSIDE `CheckQuests`' `foreach` over its quest list, so
+   `RemoveQuest`/`AddQuest` there throws "collection was modified" (and `EventManager`
+   swallows it into a log, so it just silently doesn't happen). `FindCluesTracker` waits one
+   frame. Related: a completed quest is re-announced on EVERY later `CheckQuests` until it is
+   removed, so handlers need a latch.
+2. **Don't fire `OnQuestDelivered` for a quest with no reward.** `ResourceParticleManager`
+   answers it by showing the quest's `rewardRt` sticker, and `rewardRt` defaults to 0 =
+   `hongos`: you'd get a mushroom. The NPC-less quests just `RemoveQuest` + play
+   `QuestCompleted02`.
+
+`DialogueManager.ShowDialogue` silently drops a request while another dialogue is open, so
+anything that wants a line to be heard for sure (the clue comments, "the cops left", "let's
+head home") queues it — see `FindCluesTracker.Update`. `GiftDialogueTrigger` counts the talk
+from `OnDialogueWriteText` of ITS dialogue, not from `Interact`, because the same press can
+open Natalia's chatter instead.
 
 ## Los NPC se mueven por NavMesh (2026-09-24)
 

@@ -61,6 +61,14 @@ MonoBehaviour:
     m_Localized: "Ajude Natalia a encontrar as pistas do roubo da Pelusa."
     m_Metadata:
       m_Items: []
+  - m_Id: 300000000002
+    m_Localized: "Natalia II"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 300000000003
+    m_Localized: "Volte para a casa da Natalia para analisar as pistas."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

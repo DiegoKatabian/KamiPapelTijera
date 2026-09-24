@@ -37,6 +37,7 @@ public class QuestManager : Singleton<QuestManager>
         EventManager.Subscribe(Evento.OnQuestDelivered, GiveReward);
         EventManager.Subscribe(Evento.OnTreeCutForChickens, SetTreeCutForChickens);
         EventManager.Subscribe(Evento.OnAllCluesFound, SetAllCluesFound);
+        EventManager.Subscribe(Evento.OnGiftAtNataliasDoorReached, SetGiftAtNataliasDoorReached);
         //clear all quests
         //quests.Clear();
     }
@@ -97,6 +98,19 @@ public class QuestManager : Singleton<QuestManager>
 
         eventosSucedidos[Evento.OnAllCluesFound] = true;
         Debug.Log("[QuestManager] OnAllCluesFound registered, checking quests");
+        CheckQuests();
+    }
+
+    //Level 2 (spec 006): completes Quest06_GoBackToNataliasHouse. Same mold as SetAllCluesFound.
+    public void SetGiftAtNataliasDoorReached(params object[] parameter)
+    {
+        if (!eventosSucedidos.ContainsKey(Evento.OnGiftAtNataliasDoorReached))
+        {
+            eventosSucedidos.Add(Evento.OnGiftAtNataliasDoorReached, false);
+        }
+
+        eventosSucedidos[Evento.OnGiftAtNataliasDoorReached] = true;
+        Debug.Log("[QuestManager] OnGiftAtNataliasDoorReached registered, checking quests");
         CheckQuests();
     }
 
@@ -181,6 +195,7 @@ public class QuestManager : Singleton<QuestManager>
             EventManager.Unsubscribe(Evento.OnQuestDelivered, GiveReward);
             EventManager.Unsubscribe(Evento.OnTreeCutForChickens, SetTreeCutForChickens);
             EventManager.Unsubscribe(Evento.OnAllCluesFound, SetAllCluesFound);
+            EventManager.Unsubscribe(Evento.OnGiftAtNataliasDoorReached, SetGiftAtNataliasDoorReached);
         }
     }
 }

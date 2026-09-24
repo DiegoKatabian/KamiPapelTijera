@@ -111,6 +111,14 @@ MonoBehaviour:
     m_Key: pelusa_painting_text
     m_Metadata:
       m_Items: []
+  - m_Id: 1000000000009
+    m_Key: lost_glove_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000010
+    m_Key: lost_glove_text
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

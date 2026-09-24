@@ -23,6 +23,9 @@ unless Diego asks for a translation.
 - `Assets/Scripts/Input/` — `InputHub` (fachada única de input), `InteractionContext` (el botón B contextual), `GamepadCursor`, `InputPromptSystem`
 - `Assets/Scripts/UI/` — `TooltipManager`/`PostIt` (tutorial), `FlapManager`/`CamWheelManager` (menú y selector de cámara), `InventorySlot`; `LocalizedText` (embudo ÚNICO de todo el texto localizado), y sobre él `ResaltadorDeConceptos` (palabras clave con color) + `IconosDeBoton`/`AnimadorDeIconos` (íconos animados de input) — ver `specs/005-textos-resaltados-e-iconos/spec.md`
 - `Assets/Scripts/Inventory/` — `InventoryManager`/`InventoryItem` (recursos recolectables)
+- `Assets/Scripts/Level2/` — Level 2 story glue: `FindCluesTracker` (page 2 clues → cops → quest handoff), `CrimeSceneGate` (guarded police tape). See `nivel2-y-ui.md`
+- `Assets/Prefabs/Interactables/TrashCan.prefab` — the openable trash can used everywhere in Level 2 (flap flow, 2 paper once); `TrashCan_ClueGlove` is its clue variant. Meant to be reused for sewer manholes
+- `Assets/Prefabs/Level2/` — page-specific Level 2 prefabs (clue pickups, crime-scene gate, clue tracker, gift box)
 - `Assets/Scripts/Quests/` — `QuestManager`/`QuestEffector` + un ScriptableObject `QuestNN_Nombre.asset` por quest
 - `Assets/Scripts/Dialogos/` — un `*DialogueTrigger.cs` por NPC + estados de NPC (`NPC_Abuela`, `NPC_Florista`, etc.)
 - `Assets/Scripts/Enemies/` — Rocoso (FSM + física, ver `enemigos-e-ia.md`), `EnemySpawner` (armado, sin usar todavía)
@@ -139,6 +142,13 @@ La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso/**Caught**) decide la 
 - El editor de Unity suele estar ABIERTO mientras trabajamos: al crear un asset, preferir el `.meta` que Unity autogenera. Pero si Unity no tiene foco puede tardar MUCHO en generarlo: es válido crear el `.meta` a mano con un GUID random, verificado sin colisiones por grep (Unity lo adopta al refrescar).
 - Cirugía YAML de prefabs: leer el archivo entero antes y copiar patrones existentes. Referencias a componentes de prefabs anidados = bloques MonoBehaviour *stripped* (patrón copiable en `OrigamiRoute 1-Easy.prefab`). El fileID que una escena usa para un target dentro de una instancia anidada se computa `(source XOR prefabInstance) & 0x7FFFFFFFFFFFFFFF`.
 - Line endings mixtos: algunos prefabs son CRLF y otros LF — preservar el del archivo al editar.
+- **Stripped blocks must use the XOR id too** (learned 2026-09-24 building Level 2 prefabs by
+  hand): inside a prefab or variant, the `stripped` block for an object of a nested instance has
+  fileID `(source XOR prefabInstance) & 0x7FFFFFFFFFFFFFFF` — not a free random id. A variant's
+  own root GO/Transform are addressed the same way. An object two levels deep (e.g. the fbx
+  renderer inside `TrashCan.prefab` inside `TrashCan_ClueGlove`) is XORed once per level.
+- **No live Editor control from here**: the Unity CLI's `unity command` needs the Pipeline
+  package, which requires Unity 6 — this project is 2021.3. Prefab/scene work is YAML surgery.
 - Verificación post-cirugía: contar bloques `--- !u!` antes/después + grep de unicidad de fileIDs.
 - **Sí se puede compilar desde acá**: `python tools/compile-check.py [tag]` compila
   `Assembly-CSharp` con el Roslyn que trae Unity, reusando el response file real que el
