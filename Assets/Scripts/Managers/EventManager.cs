@@ -85,8 +85,11 @@ public enum Evento //LOS EVENTOS SE AGREGAN AL FINAL. NO EN EL MEDIO, PORQUE ARR
 
     //page 2: enough clues found that the cops guarding the museum's broken fence drive off
     OnCrimeSceneUnguarded,
-    //completes Quest06_GoBackToNataliasHouse: Kami talked to the gift box at Natalia's door
-    OnGiftAtNataliasDoorReached
+    //completes Quest06_GoBackToNataliasHouse: the page 3 arrest cutscene ended and Kami is in her
+    //cell on page 4 (renamed from OnGiftAtNataliasDoorReached, same position: Quest06 stores the int)
+    OnArrestSequenceEnded,
+    //completes Quest07_EscapeAndReturnThePainting: fired by page 5's resolution with the museum owner
+    OnPaintingReturned
 }
 
 public class EventManager

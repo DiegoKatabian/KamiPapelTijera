@@ -201,6 +201,30 @@ public class NPC : Entity
         navAgent.isStopped = true;
     }
 
+    /// <summary>
+    /// Teleports the NPC (a cutscene placing it somewhere else, a different page). Goes through
+    /// NavMeshAgent.Warp: setting transform.position on an agent is overwritten by the agent on its
+    /// next update, and would leave it attached to the mesh where it used to be.
+    /// </summary>
+    public void WarpTo(Vector3 position)
+    {
+        if (navAgent == null || !navAgent.enabled)
+        {
+            Debug.LogWarning($"[{GetType().Name}] {gameObject.name}: no enabled NavMeshAgent, moving the transform directly to {position}.");
+            transform.position = position;
+            return;
+        }
+
+        if (!NavMesh.SamplePosition(position, out NavMeshHit hit, 5f, NavMesh.AllAreas))
+        {
+            Debug.LogWarning($"[{GetType().Name}] {gameObject.name}: {position} is not near the NavMesh (is this page baked and active?), moving the transform there anyway.");
+            transform.position = position;
+            return;
+        }
+
+        navAgent.Warp(hit.position);
+    }
+
     /// <summary>True once the agent is close enough to its destination to count as arrived.</summary>
     public bool HasArrived()
     {

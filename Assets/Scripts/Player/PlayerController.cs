@@ -25,6 +25,9 @@ public class PlayerController
     //el apreton de A de ESTE frame se resolvio como interactuar (y por lo tanto no salta)
     bool _gamepadInteractua;
 
+    //movement a cutscene drives Kami with (Player.SetCutsceneWalk), in the same units as the stick
+    Vector2 _cutsceneMove;
+
     public PlayerController(Player player)
     {
         _player = player;
@@ -61,6 +64,12 @@ public class PlayerController
         //cierran el Flap) porque no pasan por este gate.
         bool menuAbierto = FlapManager.Instance != null && FlapManager.Instance.IsMenuOpen;
 
+        //A cutscene owns Kami: no movement, jump or attack. Interact only goes through while a
+        //dialogue is on screen, so the player can advance the cutscene's lines but can't open a
+        //trash can or a page sphere Kami walks past during a scripted walk.
+        bool enCutscene = LevelManager.Instance.inCutscene;
+        bool dialogoEnPantalla = DialogueManager.Instance != null && DialogueManager.Instance.isShowing;
+
         //El boton A del joystick es CONTEXTUAL: si hay algo con que interactuar interactua, y si
         //no, salta. Asi un chico usa un solo boton para "hacer" y no tiene que aprender cual es
         //cual. El teclado NO cambia: E siempre interactua y el espacio siempre salta.
@@ -78,7 +87,7 @@ public class PlayerController
 
         //InteractDown ya incluye al boton A (comparten el eje "Interact", que ademas es el Submit
         //del EventSystem), asi que con esto solo alcanza para los dos devices.
-        if (!menuAbierto && !overlayRecienCerrado && InputHub.InteractDown)
+        if (!menuAbierto && !overlayRecienCerrado && InputHub.InteractDown && (!enCutscene || dialogoEnPantalla))
         {
             EventManager.Trigger(Evento.OnPlayerPressedE);
         }
@@ -86,7 +95,7 @@ public class PlayerController
         //B ataca siempre, sin contexto. El gate de timeScale evita el tijeretazo por atras con el
         //menu abierto (donde igual OnPrimaryClick no llegaria a nada util); menuAbierto cubre
         //ademas el teclado, que antes no pasaba por ningun gate de pausa.
-        if (!menuAbierto && (InputHub.AtaqueTecladoDown || (InputHub.AtaqueGamepadDown && Time.timeScale > 0f)))
+        if (!menuAbierto && !enCutscene && (InputHub.AtaqueTecladoDown || (InputHub.AtaqueGamepadDown && Time.timeScale > 0f)))
         {
             _player.OnPrimaryClick();
         }
@@ -105,6 +114,15 @@ public class PlayerController
         {
             EventManager.Trigger(Evento.OnPlayerPressedU);
         }
+
+        if (enCutscene)
+        {
+            ApplyCutsceneMove();
+            return;
+        }
+
+        //a cutscene that ended while Kami was mid-walk must not leave her walking on her own later
+        _cutsceneMove = Vector2.zero;
 
         if (LevelManager.Instance.inDialogue || menuAbierto) //en dialogo o con el Flap abierto no se captura movimiento ni salto
         {
@@ -127,5 +145,20 @@ public class PlayerController
         {
             EventManager.Trigger(Evento.OnPlayerPressedSpace);
         }
+    }
+
+    public void SetCutsceneMove(Vector2 move)
+    {
+        _cutsceneMove = move;
+    }
+
+    //the stick is ignored entirely: the cutscene's walk is the only movement, and never a jump
+    void ApplyCutsceneMove()
+    {
+        _player.IsSprinting = false;
+        Inputs.hor = _cutsceneMove.x;
+        Inputs.ver = _cutsceneMove.y;
+        Inputs.horRaw = Mathf.Abs(_cutsceneMove.x) > 0.01f ? Mathf.Sign(_cutsceneMove.x) : 0f;
+        Inputs.verRaw = Mathf.Abs(_cutsceneMove.y) > 0.01f ? Mathf.Sign(_cutsceneMove.y) : 0f;
     }
 }

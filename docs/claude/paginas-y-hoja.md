@@ -20,6 +20,14 @@ El reposicionamiento "de siempre" (`PlayerPageSpawnManager.PositionPlayerAtPoint
 
 `Assets/Scripts/PositionMarker.cs`, colgado del prefab `esferaPrev`/`esferaNext` (los triggers de borde), no de Kami. Mientras el player está parado en el trigger (`TriggerTurnPage.OnTriggerStay`), copia **solo la Z** de `player.transform.position` sobre su propio transform (X/Y quedan fijos en el borde del libro), y usa la distancia resultante para un alpha `_powerFactor / distancia²` (indicador visual de proximidad). Esta es la convención de "posición sobre el borde" que reutiliza el enganche de Kami: Z es el eje que corre a lo largo del filo del libro, X/Y son la posición "de salto" a la página siguiente (confirmado en `PlayerPageSpawnManager.GetProjectedPositionInNewPage`: sólo `desiredX`/`spawnY` cambian entre páginas, `playerCurrentPosition.z` se preserva tal cual).
 
+## Page turns forced from code (2026-09-25)
+
+`PageScrollerManager.TurnToNextPage(bool ridePage)` runs the same next-page flow without Kami on
+the edge sphere (the page 3 arrest ends with it). `ridePage = false` skips hanging Kami from the page
+edge (she is hidden "inside the patrol car"). `PlayerPageSpawnManager.OverrideNextPlacement(pos)` is
+a one-shot: the next turn drops Kami exactly there instead of the projected page entry, and since it
+goes through the normal placement it also becomes her respawn point.
+
 ## RidingPage: Kami enganchada al borde durante el giro
 
 Mecanismo (agosto 2026): mientras la hoja gira, Kami queda visualmente agarrada al hueso `PN000pageJoint30` en vez de congelada en el aire. Sin IK — se mueve el `transform` raíz de Kami entero (la animación "ala delta" ya viene autoposicionada con las manos en el borde).

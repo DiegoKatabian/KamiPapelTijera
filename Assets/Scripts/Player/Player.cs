@@ -407,6 +407,31 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         Debug.Log($"[Player] StopRidingPage: kami se suelta de la hoja en {transform.position}, cc.enabled={cc.enabled}");
     }
 
+    /// <summary>
+    /// Walks Kami toward a world direction while a cutscene owns her (LevelManager.inCutscene),
+    /// through the same input path as the stick, so she animates and collides exactly as if the
+    /// player were walking. inputScale is the stick amount: below 1 is a walk, not a run.
+    /// </summary>
+    public void SetCutsceneWalk(Vector3 worldDirection, float inputScale)
+    {
+        //movement is transform.right/forward based (PlayerModel.ApplyPhysics), so convert the
+        //world direction into those axes
+        Vector3 local = transform.InverseTransformDirection(worldDirection);
+        Vector2 move = new Vector2(local.x, local.z);
+
+        if (move.sqrMagnitude > 1f)
+        {
+            move.Normalize();
+        }
+
+        _controller.SetCutsceneMove(move * inputScale);
+    }
+
+    public void StopCutsceneWalk()
+    {
+        _controller.SetCutsceneMove(Vector2.zero);
+    }
+
     void CalibrateHitboxPlacement()
     {
         if (tijeraManager == null || tijeraManager.hitboxParent == null) return;

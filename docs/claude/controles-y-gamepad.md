@@ -48,6 +48,16 @@ minijuego** (es la convención de "volver" de cualquier joystick).
 click siempre ataca, exactamente como antes. Es una regla de oro de este feature — cero
 regresiones en lo que ya funcionaba.
 
+### Cutscenes: `LevelManager.inCutscene` (2026-09-25)
+
+While a Timeline cutscene owns Kami (`CutsceneDirector`, see `cutscenes.md`),
+`PlayerController.CheckControls()` skips attack (keyboard and gamepad), ignores the stick and jump,
+and only lets Interact through **while a dialogue is on screen** — so the player can advance the
+cutscene's lines, but a press can't open a trash can or a page sphere Kami walks past during a
+scripted walk. Movement comes from `Player.SetCutsceneWalk()` instead of the stick, through the same
+`Inputs` fields. A separate flag from `inDialogue` because `DialogueManager` clears that one at the
+end of every dialogue, and a cutscene chains several.
+
 ### Pausa del Flap: NINGÚN input de gameplay se procesa (issue #41.3)
 
 Mientras `FlapManager.IsMenuOpen` es `true` (mismo instante en que `Time.timeScale` pasa a

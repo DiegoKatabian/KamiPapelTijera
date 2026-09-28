@@ -57,7 +57,7 @@ now, ready for pages 1-5 to wire up:
 **Phase 2 (page 2, "Find clues") built 2026-09-24 — compiles, not yet played.** Three
 clues (glove in a trash can, hat on the manhole, watch in the museum yard), two cops that
 drive off after the second clue so the police tape can be cut, and the quest handoff to
-`Quest06_GoBackToNataliasHouse`, closed by the gift box on page 3. What exists and where:
+`Quest06_GoBackToNataliasHouse` (closed by the page 3 arrest since Phase 3). What exists and where:
 
 - **Every trash can in Level 2 is now `Assets/Prefabs/Interactables/TrashCan.prefab`**
   (15 of them, pages 1-5; the scene instances used to be the bare `Kami_TrashCan.fbx`).
@@ -73,12 +73,39 @@ drive off after the second clue so the police tape can be cut, and the quest han
   `Assets/Scripts/Level2/CrimeSceneGate.cs`), `CluePickup_Hat`/`CluePickup_Watch` (walk-into
   pickups), `FindCluesTracker` (`Assets/Scripts/Level2/FindCluesTracker.cs`: counts clues,
   queues Natalia's comments, calls off the cops, fires `OnAllCluesFound` once, hands off the
-  quest) and `GiftBox` (`GiftDialogueTrigger`).
+  quest) and `GiftBox` (`GiftDialogueTrigger`, extended in Phase 3 — see above).
 - **Known gap: the museum fence has no colliders.** `KamiMuseo.fbx` imports with
   `addColliders: 0` and the scene adds none, so the gate's blocker only blocks the gap itself
   — Kami can walk around it. Also positions of the gate, the gift and the hat are
   placeholders (`_PLACEHOLDER_POSITION` in the names), to be dragged into place in the Editor.
 - Page 5 is page 2 after the clues (Diego): none of the page 2 gameplay objects live there.
+
+**Phase 3 (page 3, "The trap") built 2026-09-25 — compiles, not yet played.** Chain: talk to
+the gift ("what's this? let's cut it open!") → cut its ribbon (any time, talked to or not) →
+the box opens, the Pelusa pops into the inventory, Natalia reacts → the letter origami opens by
+itself → reading it and closing the text starts the arrest cutscene → the page turns to page 4
+with Kami and Natalia in separate cells → Quest06 closes and `Quest07_EscapeAndReturnThePainting`
+starts. Where things are:
+
+- `GiftBox.prefab` now holds everything: the nested `CuttableRibbon`, closed/open placeholder
+  cubes, `PelusaPickup` (a `GrantResourcePickup` in Revealed mode, `pelusaPainting`) and a
+  nested `SelloOrigami Letter` pedestal with `_promptAutomatically` on. The scene wires that
+  pedestal's `origami` to `Canvas/Origamis/OrigamiRoute_Letter`, which shows its text on the new
+  `Canvas/OrigamiTextRevealPanel` (`Assets/Prefabs/UI/`). The loose Phase 0 ribbon and a leftover
+  `NPC_Florista` were removed from page 3.
+- `ArrestCutscene_PLACEHOLDER_POSITION` (instance of `Prefabs/Level2/ArrestCutscene.prefab`, at
+  the **scene root** on purpose) + `Assets/Timelines/Level2/Timeline_Arrest.playable`. Ariel and
+  the cops are tinted Natalia sprites (`CopEscort.prefab` = an `NPC` that can follow Kami). How to
+  retime it: `docs/claude/cutscenes.md`.
+- Page 4: `KamiCell_PLACEHOLDER_POSITION` and `NataliaCell_PLACEHOLDER_POSITION`, next to the
+  `CandadoCortable`. The forced page turn drops Kami on hers, which also makes it her respawn
+  point (useful for 4.B's capture).
+- **Phase 1's café pedestal is wired too** (task 1.D): it was already in the scene at the root,
+  inactive and pointed at the café fold route. It now lives under Page 1 (same world position),
+  auto-prompts, and appears when Natalia's opening dialogue ends
+  (`NataliaDialogueTrigger._activateAfterOpening`).
+- All positions are placeholders: the gift box, the cutscene (street group, car, car door mark,
+  drive-off target), both cells.
 
 **Phase 1 (page 1) in progress** — `Assets/Prefabs/NPCs/Natalia.prefab` exists and is
 drag-and-drop (placed in Page 1); see `docs/claude/quests-y-dialogos.md` for her dialogue/

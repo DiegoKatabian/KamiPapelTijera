@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 5000000000001
-    m_Localized: "[PLACEHOLDER] El golpe fue un \xE9xito... esta es tu parte."
+    m_Localized: "\"El golpe fue un \xE9xito... esta es tu parte. Bien hecho, socia.\"\n\u2014 Un amigo"
     m_Metadata:
       m_Items: []
   - m_Id: 5000000000002

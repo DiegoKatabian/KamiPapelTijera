@@ -30,6 +30,11 @@ public class LevelManager : Singleton<LevelManager>
     public bool agency;
     public bool inDialogue;
 
+    //a cutscene owns Kami: no movement, jump or attack, but Interact still advances its dialogue.
+    //Separate from inDialogue because DialogueManager clears that flag at the end of EVERY dialogue,
+    //and a cutscene strings several dialogues together (see CutsceneDirector)
+    [HideInInspector] public bool inCutscene;
+
     //el dictionario capo con cada tipo de recurso y valor
     public Dictionary<ResourceType, int> recursosRecolectados = new Dictionary<ResourceType, int>();
 

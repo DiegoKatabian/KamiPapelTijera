@@ -360,15 +360,59 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000107
-    m_Localized: "Um presente gigante... na MINHA porta? N\xE3o lembro de ter pedido nada desse tamanho."
+    m_Localized: "Um presente gigante... na MINHA porta? O que \xE9 isso?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000108
-    m_Localized: "Est\xE1 bem amarrado. Algu\xE9m embrulhou esse caso direitinho pra gente..."
+    m_Localized: "S\xF3 tem um jeito de descobrir. Vamos cortar a fita!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000109
     m_Localized: "Continua embrulhado. Ser\xE1 que sua tesoura d\xE1 uma m\xE3ozinha?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000110
+    m_Localized: "Ariel"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000111
+    m_Localized: "Pol\xEDcia Federal"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000112
+    m_Localized: "Kami... \xE9 o Pelusa! O ORIGINAL!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000113
+    m_Localized: "Temos que levar de volta pro museu! Espera, tem uma carta dobrada aqui dentro..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000114
+    m_Localized: "Vamos desdobrar. Tem alguma coisa nesse caso que n\xE3o se encaixa."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000115
+    m_Localized: "POL\xCDCIA FEDERAL! Ningu\xE9m se mexe!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000116
+    m_Localized: "Policiais! L\xE1 est\xE3o as ladras! Com o Pelusa nas m\xE3os!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000117
+    m_Localized: "Ariel?! O que voc\xEA... a gente n\xE3o roubou nada!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000118
+    m_Localized: "Ent\xE3o expliquem a carta. \"Esta \xE9 a sua parte\"... que fofo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000119
+    m_Localized: "Voc\xEAs duas v\xEAm com a gente. M\xE3os onde eu possa ver!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000120
+    m_Localized: "\xD3timo. Emolduradas... feito um quadro."
     m_Metadata:
       m_Items: []
   references:

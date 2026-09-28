@@ -70,6 +70,14 @@ MonoBehaviour:
     m_Localized: "Go back to Natalia's house to analyze the clues."
     m_Metadata:
       m_Items: []
+  - m_Id: 300000000004
+    m_Localized: "Natalia III"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 300000000005
+    m_Localized: "Break out of the police station and take the Pelusa back to the museum to clear your names."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

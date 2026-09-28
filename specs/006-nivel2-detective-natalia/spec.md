@@ -187,6 +187,12 @@ police. The police handcuff them and take them away in a patrol car (camera foll
 the car) into the next page. "Go back to the house" completes; "Escape the police
 station and return the painting" starts.
 
+*Revised by Diego 2026-09-25: the ribbon can be cut any time; the letter's origami opens by
+itself after Natalia's reaction; the arrest is a Timeline cutscene (cops appear on the street,
+then behind the girls, escort them into the car, the car drives off with the camera following);
+Kami and Natalia end up in separate cells; "Go back to Natalia's house" closes when the arrest
+ends on page 4, not at the gift.*
+
 **Independent Test**: run the whole sequence from cutting the ribbon to the page
 change that follows the patrol car, with no manual intervention between steps.
 

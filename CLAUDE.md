@@ -23,9 +23,10 @@ unless Diego asks for a translation.
 - `Assets/Scripts/Input/` — `InputHub` (fachada única de input), `InteractionContext` (el botón B contextual), `GamepadCursor`, `InputPromptSystem`
 - `Assets/Scripts/UI/` — `TooltipManager`/`PostIt` (tutorial), `FlapManager`/`CamWheelManager` (menú y selector de cámara), `InventorySlot`; `LocalizedText` (embudo ÚNICO de todo el texto localizado), y sobre él `ResaltadorDeConceptos` (palabras clave con color) + `IconosDeBoton`/`AnimadorDeIconos` (íconos animados de input) — ver `specs/005-textos-resaltados-e-iconos/spec.md`
 - `Assets/Scripts/Inventory/` — `InventoryManager`/`InventoryItem` (recursos recolectables)
-- `Assets/Scripts/Level2/` — Level 2 story glue: `FindCluesTracker` (page 2 clues → cops → quest handoff), `CrimeSceneGate` (guarded police tape). See `nivel2-y-ui.md`
+- `Assets/Scripts/Level2/` — Level 2 story glue: `FindCluesTracker` (page 2 clues → cops → quest handoff), `CrimeSceneGate` (guarded police tape), `ArrestCutscene` (page 3's arrest, answers the timeline's signals). See `nivel2-y-ui.md`
+- `Assets/Scripts/Cutscenes/` + `Assets/Timelines/` — generic Timeline cutscenes: `CutsceneDirector` (locks Kami via `LevelManager.inCutscene`, binds Cinemachine tracks in code), `CutsceneDialogueMarker` (the timeline waits for a dialogue), `HiddenRenderers`. See `cutscenes.md`
 - `Assets/Prefabs/Interactables/TrashCan.prefab` — the openable trash can used everywhere in Level 2 (flap flow, 2 paper once); `TrashCan_ClueGlove` is its clue variant. Meant to be reused for sewer manholes
-- `Assets/Prefabs/Level2/` — page-specific Level 2 prefabs (clue pickups, crime-scene gate, clue tracker, gift box)
+- `Assets/Prefabs/Level2/` — page-specific Level 2 prefabs (clue pickups, crime-scene gate, clue tracker, gift box with ribbon + Pelusa + letter pedestal, `ArrestCutscene`)
 - `Assets/Scripts/Quests/` — `QuestManager`/`QuestEffector` + un ScriptableObject `QuestNN_Nombre.asset` por quest
 - `Assets/Scripts/Dialogos/` — un `*DialogueTrigger.cs` por NPC + estados de NPC (`NPC_Abuela`, `NPC_Florista`, etc.)
 - `Assets/Scripts/Enemies/` — Rocoso (FSM + física, ver `enemigos-e-ia.md`), `EnemySpawner` (armado, sin usar todavía)
@@ -132,6 +133,7 @@ La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso/**Caught**) decide la 
 - Audio y partículas: @docs/claude/audio-y-particulas.md
 - Canvas de costo de origami y tooltips/post-its: @docs/claude/origami-y-tooltips.md
 - Paso de página (HojaMaster es Mecanim, no Spine), PositionMarker y el enganche de Kami al borde (RidingPage): @docs/claude/paginas-y-hoja.md
+- Cutscenes con Timeline (el arresto de la página 3, cómo tunearlo): @docs/claude/cutscenes.md
 - Enemigos e IA (Rocoso, PatrollingAgent/GallinaAgent, Barquito, patrón de hitboxes): @docs/claude/enemigos-e-ia.md
 - Nivel 2 (estado actual), LevelManager, Inventario, Flap/CamWheel UI, Cámara: @docs/claude/nivel2-y-ui.md
 - Quests y diálogos de NPCs: @docs/claude/quests-y-dialogos.md

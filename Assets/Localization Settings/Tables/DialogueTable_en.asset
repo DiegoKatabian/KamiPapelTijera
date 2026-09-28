@@ -355,15 +355,59 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000107
-    m_Localized: "A giant gift... at MY door? I don't remember ordering anything this size."
+    m_Localized: "A giant gift... at MY door? What's this?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000108
-    m_Localized: "It's tied up tight. Somebody really wrapped this case up for us..."
+    m_Localized: "Only one way to find out. Let's cut it open!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000109
     m_Localized: "Still wrapped. Maybe those scissors of yours can lend a hand?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000110
+    m_Localized: "Ariel"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000111
+    m_Localized: "Federal Police"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000112
+    m_Localized: "Kami... this is the Pelusa! The ORIGINAL!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000113
+    m_Localized: "We have to take it back to the museum! Wait, there's a letter folded inside..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000114
+    m_Localized: "Let's unfold it. Something about this case doesn't add up."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000115
+    m_Localized: "FEDERAL POLICE! Nobody move!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000116
+    m_Localized: "Officers! There they are, the thieves! With the Pelusa in their hands!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000117
+    m_Localized: "Ariel?! What are you... we didn't steal anything!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000118
+    m_Localized: "Then explain the letter. \"This is your cut\"... how touching."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000119
+    m_Localized: "You two are coming with us. Hands where I can see them!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000120
+    m_Localized: "Great. Framed... just like a painting."
     m_Metadata:
       m_Items: []
   references:

@@ -19,6 +19,7 @@ public class PlayerPageSpawnManager : Singleton<PlayerPageSpawnManager>
     CharacterController _playerCC;
     Vector3 lastUsedSpawn; //para recordar el ultimo usado para cuando el player muera
     Vector3 targetPos = Vector3.zero; //para cuando el player cambia de pagina, saber a donde debe ir
+    Vector3? _placementOverride;
 
     void Start()
     {
@@ -32,8 +33,27 @@ public class PlayerPageSpawnManager : Singleton<PlayerPageSpawnManager>
 
     //subscribing methods
 
+    /// <summary>
+    /// The NEXT page turn drops Kami exactly here instead of at the projected page entry (the arrest
+    /// puts her in a cell). One-shot: consumed by that turn. Being a normal placement it also becomes
+    /// the respawn point, so a death after it sends her back here.
+    /// </summary>
+    public void OverrideNextPlacement(Vector3 position)
+    {
+        _placementOverride = position;
+        Debug.Log($"[PlayerPageSpawnManager] the next page turn will place Kami at {position}");
+    }
+
     public void SetPlayerTargetPosition(params object[] parameters)
     {
+        if (_placementOverride.HasValue)
+        {
+            targetPos = _placementOverride.Value;
+            _placementOverride = null;
+            Debug.Log($"[PlayerPageSpawnManager] SetPlayerTargetPosition: using the placement override {targetPos}");
+            return;
+        }
+
         targetPos = GetProjectedPositionInNewPage(_player.transform.position, (bool)parameters[1]);
         Debug.Log($"[PlayerPageSpawnManager] SetPlayerTargetPosition: kami en {_player.transform.position}, targetPos calculado {targetPos}");
     }

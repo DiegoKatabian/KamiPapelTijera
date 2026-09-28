@@ -21,6 +21,9 @@ public class NataliaDialogueTrigger : TriggerDialogue
     [SerializeField, Tooltip("Quest registered when the opening dialogue ends (Quest05_FindClues).")]
     QuestSO _quest;
 
+    [SerializeField, Tooltip("Turned on when the opening dialogue ends: the cafe wrapper's pedestal, which then auto prompts its fold.")]
+    GameObject[] _activateAfterOpening;
+
     bool _openingDialogueDone;
 
     protected override void Start()
@@ -71,6 +74,26 @@ public class NataliaDialogueTrigger : TriggerDialogue
         StartFindCluesQuest();
         StartFollowingKami();
         PasarAlSiguienteDialogo();
+        ActivateAfterOpening();
+    }
+
+    void ActivateAfterOpening()
+    {
+        if (_activateAfterOpening == null)
+        {
+            return;
+        }
+
+        foreach (GameObject target in _activateAfterOpening)
+        {
+            if (target == null)
+            {
+                Debug.LogWarning($"[NataliaDialogueTrigger] {gameObject.name}: an empty slot in _activateAfterOpening, skipping it.");
+                continue;
+            }
+
+            target.SetActive(true);
+        }
     }
 
     void StartFindCluesQuest()

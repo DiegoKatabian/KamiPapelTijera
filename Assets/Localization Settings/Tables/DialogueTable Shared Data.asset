@@ -343,6 +343,50 @@ MonoBehaviour:
     m_Key: gift_door_03
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000110
+    m_Key: ariel_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000111
+    m_Key: police_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000112
+    m_Key: natalia_gift_opened_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000113
+    m_Key: natalia_gift_opened_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000114
+    m_Key: natalia_gift_opened_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000115
+    m_Key: arrest_police_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000116
+    m_Key: arrest_ariel_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000117
+    m_Key: arrest_natalia_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000118
+    m_Key: arrest_ariel_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000119
+    m_Key: arrest_police_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000120
+    m_Key: arrest_natalia_02
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

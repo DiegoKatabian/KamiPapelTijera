@@ -150,8 +150,9 @@ in every page, and a cuttable typewriter was added for page 4.
   `Paper Car Horizontal.controller`, `TrafficObstacle_Car_Horizontal.prefab`,
   `TrafficObstacleSet_StreetCarsHorizontal.asset`.
 
-- **1.D** **Café-wrapper fold beat** — route asset ready (`OrigamiRoute_Cafe_Fold`,
-  2-step `OSU-Avion` art per Diego); still needs its pedestal/scene wiring.
+- **1.D** **Café-wrapper fold beat** — ✅ wired 2026-09-25 (with Phase 3): the existing
+  `SelloOrigami Cafe` scene instance moved under Page 1, auto-prompts, and appears when Natalia's
+  opening dialogue ends (`NataliaDialogueTrigger._activateAfterOpening`).
 
 - **1.E** **Quest05_FindClues** — ✅ built. Event-based on the new
   `Evento.OnAllCluesFound` (index 50), reward `None`. **Phase 2 must fire that event only
@@ -225,22 +226,45 @@ hat onto the manhole. The museum fence needs colliders (or the gate is decorativ
 
 ## Phase 3 — Page 3 (depends on 0.A letter, 0.C ribbon, Phase 2 complete)
 
-- **3.A** `[P]` **Gift box + cuttable ribbon** (uses 0.C) → reveals the Pelusa
-  (uses 0.D for the evidence object). The box itself already exists from Phase 2
-  (`Prefabs/Level2/GiftBox.prefab`, placed on page 3, talking to it closes Quest06): 3.A
-  adds the ribbon and the reveal to it.
+**Built 2026-09-25 (compiles; NOT yet played).** Diego's design pass before building changed
+three things, recorded here with the reason:
+- **Quest06 closes after the arrest, not at the gift.** It completes and is delivered when the
+  police sequence ends and Kami is in her cell on page 4, and Quest07 starts right then. The gift
+  box no longer touches quests (its first line is now "what's this? let's cut it open!").
+- **The ribbon can be cut at any time**, talked to or not.
+- **Story origamis open by themselves** (`TriggerOrigami._promptAutomatically`), because it's more
+  helpful for players; the classic step-on-it pedestal stays as the fallback. Same bool on the café.
 
-- **3.B** **Letter fold/unfold + read beat** (uses 0.A's `OrigamiRoute_Letter`) with
-  the "the heist was a success..." text. Depends on 3.A (the opened box exposes it).
+- **3.A** **Gift box + cuttable ribbon** — ✅ built into `GiftBox.prefab`: nested `CuttableRibbon`
+  (listener added from code), closed/open placeholder cubes, `PelusaPickup`
+  (`GrantResourcePickup`, Revealed, `pelusaPainting`: Kami is literally caught holding it; 4.C
+  confiscates it), Natalia's reaction (`Natalia_GiftOpened`).
 
-- **3.C** **Arrest cutscene**: shout + camera pulls back (reuse `CameraManager`, a
-  new `CameraMode` or scripted sequence) + Ariel/police dialogue + handcuffs + camera
-  following the patrol car into the page change. The most "cinematic" piece of the
-  level — sequential, depends on 3.B (triggers once the letter is read) and gates the
-  start of page 4 (positions Kami already inside the cell).
+- **3.B** **Letter fold + read beat** — ✅ a `SelloOrigami Letter` nested in the box appears when it
+  opens and auto-prompts `OrigamiRoute_Letter`; its text shows on the new
+  `OrigamiTextRevealPanel.prefab` (placed once under Level 2's Canvas). Final letter copy written.
 
-- **3.D** **Start Quest_EscapeAndReturnThePainting**: depends on 3.C. (Closing
-  Quest_GoBackToNataliasHouse moved to Phase 2: the gift at Natalia's door delivers it.)
+- **3.C** **Arrest cutscene** — ✅ a real Unity Timeline, per Diego ("lean timeline workflow, I'll
+  tune durations and camera takes later"): `ArrestCutscene.prefab` + `Timeline_Arrest.playable`,
+  on generic pieces in `Assets/Scripts/Cutscenes/` (see `docs/claude/cutscenes.md`). Cops and Ariel
+  appear on the street, the cops pop up behind the girls and escort them (Kami scripted-walks to the
+  car door, Natalia and the cops follow her), sprites vanish + car door sound, the car drives off
+  followed by the camera, and the page turns with Kami hidden. **Not a new `CameraMode`**: those
+  would pollute the camera wheel (#43). No handcuff art exists; the beat is a dialogue line.
+  Kami and Natalia land in **separate cells** (Diego: Kami gets her scissors back, then frees
+  Natalia; Abuela breaking Kami's cell door is 4.A).
+
+- **3.D** **Close Quest06 + start Quest07** — ✅ `Quest07_EscapeAndReturnThePainting` (Event,
+  new `Evento.OnPaintingReturned` + its `QuestManager` handler, so 5.A only has to fire it).
+  `OnGiftAtNataliasDoorReached` was renamed in place to `OnArrestSequenceEnded`.
+
+**Hand-offs to Phase 4**: Natalia is idle and not talkable in her cell; freeing her must call
+`StartFollowingPlayer()`. Kami's respawn point is already her cell (the forced page turn places her
+through the normal placement path). The Pelusa is in the inventory for 4.C to confiscate.
+
+**Open for Diego (Editor)**: drag the `_PLACEHOLDER_POSITION` objects into place (gift box,
+`ArrestCutscene` street group/car/marks, both cells); retime the timeline; swap the `CarDoor`
+placeholder clip; real art for Ariel, the cops, the open box and the Pelusa.
 
 ---
 

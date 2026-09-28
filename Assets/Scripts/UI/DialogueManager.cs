@@ -104,6 +104,15 @@ public class DialogueManager : Singleton<DialogueManager>
         CheckPlayerInput();
     }
 
+    /// <summary>
+    /// True when ShowDialogue would really open a dialogue right now. ShowDialogue silently drops a
+    /// request while anything else holds the screen, so code that must be heard waits on this.
+    /// </summary>
+    public bool CanShowDialogueNow =>
+        !isShowing
+        && LevelManager.Instance != null && !LevelManager.Instance.inDialogue
+        && (OverlayManager.Instance == null || !OverlayManager.Instance.isLocked);
+
     public void ShowDialogue(DialogueSO dialogue)
     {
         if (OverlayManager.Instance != null && OverlayManager.Instance.isLocked)

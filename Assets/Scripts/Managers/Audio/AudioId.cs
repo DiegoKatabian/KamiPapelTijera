@@ -75,4 +75,5 @@ public static class AudioId
     public const string Pasos_Kami = "Pasos_Kami";
     public const string Pasos_KamiMojados_A = "Pasos_KamiMojados_A";
     public const string Pasos_KamiMojados_B = "Pasos_KamiMojados_B";
+    public const string CarDoor = "CarDoor";
 }

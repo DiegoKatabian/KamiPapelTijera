@@ -65,6 +65,14 @@ MonoBehaviour:
     m_Key: nataliaquest_home
     m_Metadata:
       m_Items: []
+  - m_Id: 300000000004
+    m_Key: nataliaquest_escape_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 300000000005
+    m_Key: nataliaquest_escape
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

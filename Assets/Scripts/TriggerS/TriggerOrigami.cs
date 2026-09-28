@@ -19,6 +19,13 @@ public class TriggerOrigami : TriggerScript
     [Tooltip("Canvas del pedestal que muestra el costo de papel; si queda vacio se busca solo en los hijos del padre")]
     [SerializeField] PedestalCanvasDisplay _canvasDisplay;
 
+    [Header("Auto prompt")]
+    [Tooltip("Open the origami by itself as soon as this pedestal appears and nothing else is on screen (dialogue, cutscene, menu), without Kami stepping on it. Only once: if the player cancels, the pedestal keeps working the normal way (step on it + Interact). Off = the classic pedestal.")]
+    [SerializeField] bool _promptAutomatically = false;
+
+    [Tooltip("Seconds the screen has to stay free before the auto prompt opens. Keeps the button press that closed the previous dialogue from also cancelling the origami it opens.")]
+    [SerializeField] float _autoPromptDelay = 0.5f;
+
     [Header("Particle Parameters When Step On")]
     public Color blueParticleActiveColor;
     public float activeSpeed = 1.5f;
@@ -27,6 +34,10 @@ public class TriggerOrigami : TriggerScript
 
     //auxiliares
     MultipleRectCheck currentCheck;
+    bool _autoPromptDone;
+    //the running check was opened by the auto prompt with Kami NOT on the pedestal: nobody's
+    //OnExitBehaviour will clean it up, so we do it when the origami ends
+    bool _autoCheckOwned;
     ParticleSystem ps;
     ParticleSystem.MainModule mainModule;
     ParticleSystem.VelocityOverLifetimeModule velocityModule;
@@ -49,6 +60,7 @@ public class TriggerOrigami : TriggerScript
         //originalEmissionRate = mainModule.emission.rateOverTime.constant;
 
         EventManager.Subscribe(Evento.OnPlayerDie, ForceTriggerExit);
+        EventManager.Subscribe(Evento.OnOrigamiEnd, OnAnyOrigamiEnd);
 
         //fallback por si nadie asigno el canvas en el inspector: lo buscamos desde el padre (PedestalParent)
         if (_canvasDisplay == null)
@@ -75,6 +87,7 @@ public class TriggerOrigami : TriggerScript
         {
             EventManager.Unsubscribe(Evento.OnPlayerPressedE, Interact);
             EventManager.Unsubscribe(Evento.OnPlayerDie, ForceTriggerExit);
+            EventManager.Unsubscribe(Evento.OnOrigamiEnd, OnAnyOrigamiEnd);
         }
     }
 
@@ -105,7 +118,14 @@ public class TriggerOrigami : TriggerScript
             if (LevelManager.Instance.recursosRecolectados[ResourceType.papel] >= origami.paperCost)
             {
                 base.OnEnterBehaviour(other);
-                currentCheck = Instantiate(checkPrefab).SetOrigami(origami);
+                //an auto-prompted check may already exist: Kami stepping on the pedestal adopts it
+                //(from here on the normal exit cleans it up) instead of spawning a second one that
+                //would answer the same Interact press
+                if (currentCheck == null)
+                {
+                    currentCheck = Instantiate(checkPrefab).SetOrigami(origami);
+                }
+                _autoCheckOwned = false;
                 //particulas y sonidito de entrar en la zona
                 SetParticleParameters();
             }
@@ -136,6 +156,109 @@ public class TriggerOrigami : TriggerScript
             //apagar particulas y sonidito de salir en la zona
             ChangeBackToOriginalParticleParameters();
         }
+    }
+
+    void OnEnable()
+    {
+        if (_promptAutomatically && !_autoPromptDone)
+        {
+            StartCoroutine(AutoPromptWhenFree());
+        }
+    }
+
+    //runs every time the pedestal appears until it has prompted once; a page turn that hides the
+    //pedestal mid-wait kills the coroutine, and the next OnEnable re-arms it
+    IEnumerator AutoPromptWhenFree()
+    {
+        float freeFor = 0f;
+        while (freeFor < _autoPromptDelay)
+        {
+            yield return null;
+            freeFor = CanAutoPrompt() ? freeFor + Time.deltaTime : 0f;
+        }
+
+        _autoPromptDone = true;
+
+        if (origami == null || checkPrefab == null)
+        {
+            Debug.LogWarning($"[TriggerOrigami] {gameObject.name}: auto prompt needs 'origami' and 'checkPrefab' assigned, skipping it");
+            yield break;
+        }
+
+        if (origami.wasUsed)
+        {
+            yield break;
+        }
+
+        if (LevelManager.Instance.recursosRecolectados[ResourceType.papel] < origami.paperCost)
+        {
+            Debug.Log($"[TriggerOrigami] {gameObject.name}: not enough paper to auto prompt, the pedestal works the normal way");
+            yield break;
+        }
+
+        Debug.Log($"[TriggerOrigami] {gameObject.name}: auto prompting the origami");
+
+        if (currentCheck == null)
+        {
+            currentCheck = Instantiate(checkPrefab).SetOrigami(origami);
+            _autoCheckOwned = !triggerBool;
+        }
+
+        currentCheck.StartOrigami(origami);
+    }
+
+    bool CanAutoPrompt()
+    {
+        if (LevelManager.Instance == null || LevelManager.Instance.inDialogue || LevelManager.Instance.inCutscene)
+        {
+            return false;
+        }
+
+        if (DialogueManager.Instance != null && DialogueManager.Instance.isShowing)
+        {
+            return false;
+        }
+
+        if (OverlayManager.Instance != null && OverlayManager.Instance.isLocked)
+        {
+            return false;
+        }
+
+        if (FlapManager.Instance != null && FlapManager.Instance.IsMenuOpen)
+        {
+            return false;
+        }
+
+        Player player = LevelManager.Instance.player;
+        if (player == null)
+        {
+            return false;
+        }
+
+        switch (player.CurrentState)
+        {
+            case PlayerState.Casting:
+            case PlayerState.ReceivingReward:
+            case PlayerState.Dead:
+            case PlayerState.RidingPage:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    //an auto-prompted check with Kami off the pedestal would otherwise stay alive listening for
+    //Interact, and reopen the origami from anywhere on the next press
+    void OnAnyOrigamiEnd(params object[] parameters)
+    {
+        if (!_autoCheckOwned || currentCheck == null)
+        {
+            return;
+        }
+
+        _autoCheckOwned = false;
+        Destroy(currentCheck.gameObject);
+        currentCheck = null;
     }
 
     public void SetParticleParameters()

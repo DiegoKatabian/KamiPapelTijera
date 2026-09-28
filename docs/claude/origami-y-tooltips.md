@@ -39,6 +39,17 @@ reverse order, which is exactly how `AbuelaUnfold` expresses "unfold" against `A
 Real `OSU-Cafe`/`OSU-Letter` art from Valentino replaces these later. `_textDisplay` on both
 text-reveal prefabs is unassigned by design (scene-specific placement).
 
+**Auto prompt (Diego, 2026-09-25)**: `TriggerOrigami._promptAutomatically` (off by default, so
+every existing pedestal is unchanged). When on, the origami opens by itself as soon as the pedestal
+becomes active and the screen has been free (no dialogue, cutscene, overlay, menu, casting) for
+`_autoPromptDelay` seconds (0.5, so the press that closed the previous dialogue can't also cancel
+the fold). It fires once; if the player cancels, the pedestal keeps working the classic way (step
+on it + Interact). A check opened this way while Kami is off the pedestal is destroyed on
+`OnOrigamiEnd`, otherwise it would keep listening for Interact and reopen the fold from anywhere.
+On for the page 3 letter (inside `GiftBox.prefab`) and the page 1 café. The text panel now exists:
+`Assets/Prefabs/UI/OrigamiTextRevealPanel.prefab`, placed once under Level 2's `Canvas` and
+assigned to the letter route's `_textDisplay` (the café fold has no text).
+
 **Careful — two different "bridge" routes exist.** `OrigamiRoute 1-Easy` is the live
 puentecito: 1 fold, `OSU-Puente` art, used in Nivel 1 page 2. `OrigamiRoute Puente.prefab`
 is a separate 4-fold route that Diego believes was scrapped — do not use it as the reference

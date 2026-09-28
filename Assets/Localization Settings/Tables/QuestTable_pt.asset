@@ -69,6 +69,14 @@ MonoBehaviour:
     m_Localized: "Volte para a casa da Natalia para analisar as pistas."
     m_Metadata:
       m_Items: []
+  - m_Id: 300000000004
+    m_Localized: "Natalia III"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 300000000005
+    m_Localized: "Fuja da delegacia e leve o Pelusa de volta ao museu para limpar seus nomes."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

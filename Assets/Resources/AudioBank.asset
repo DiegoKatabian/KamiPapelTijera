@@ -887,6 +887,18 @@ MonoBehaviour:
     spatialBlend: 0
     priority: 128
     interruptSelf: 0
+  - id: CarDoor
+    clips:
+    - {fileID: 8300000, guid: 2134304ff51945348ba80263bd471f4b, type: 3}
+    volume: 0.3
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
   musicGroup: {fileID: 9197432607514441226, guid: 1e1b55ab68c5e16499c7e1b105afabc6,
     type: 2}
   sfxGroup: {fileID: 5805384339254084397, guid: 1e1b55ab68c5e16499c7e1b105afabc6,

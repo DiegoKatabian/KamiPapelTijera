@@ -37,7 +37,8 @@ public class QuestManager : Singleton<QuestManager>
         EventManager.Subscribe(Evento.OnQuestDelivered, GiveReward);
         EventManager.Subscribe(Evento.OnTreeCutForChickens, SetTreeCutForChickens);
         EventManager.Subscribe(Evento.OnAllCluesFound, SetAllCluesFound);
-        EventManager.Subscribe(Evento.OnGiftAtNataliasDoorReached, SetGiftAtNataliasDoorReached);
+        EventManager.Subscribe(Evento.OnArrestSequenceEnded, SetArrestSequenceEnded);
+        EventManager.Subscribe(Evento.OnPaintingReturned, SetPaintingReturned);
         //clear all quests
         //quests.Clear();
     }
@@ -101,17 +102,34 @@ public class QuestManager : Singleton<QuestManager>
         CheckQuests();
     }
 
-    //Level 2 (spec 006): completes Quest06_GoBackToNataliasHouse. Same mold as SetAllCluesFound.
-    public void SetGiftAtNataliasDoorReached(params object[] parameter)
+    //Level 2 (spec 006): completes Quest06_GoBackToNataliasHouse once the page 3 arrest ends.
+    //Same mold as SetAllCluesFound.
+    public void SetArrestSequenceEnded(params object[] parameter)
     {
-        if (!eventosSucedidos.ContainsKey(Evento.OnGiftAtNataliasDoorReached))
+        MarkEventAndCheck(Evento.OnArrestSequenceEnded);
+    }
+
+    //Level 2 (spec 006): completes Quest07_EscapeAndReturnThePainting (fired on page 5).
+    public void SetPaintingReturned(params object[] parameter)
+    {
+        MarkEventAndCheck(Evento.OnPaintingReturned);
+    }
+
+    void MarkEventAndCheck(Evento evento)
+    {
+        if (!eventosSucedidos.ContainsKey(evento))
         {
-            eventosSucedidos.Add(Evento.OnGiftAtNataliasDoorReached, false);
+            eventosSucedidos.Add(evento, false);
         }
 
-        eventosSucedidos[Evento.OnGiftAtNataliasDoorReached] = true;
-        Debug.Log("[QuestManager] OnGiftAtNataliasDoorReached registered, checking quests");
+        eventosSucedidos[evento] = true;
+        Debug.Log($"[QuestManager] {evento} registered, checking quests");
         CheckQuests();
+    }
+
+    public bool HasQuest(QuestSO quest)
+    {
+        return quests.Contains(quest);
     }
 
     public bool EventoYaSucedio(Evento evento)
@@ -195,7 +213,8 @@ public class QuestManager : Singleton<QuestManager>
             EventManager.Unsubscribe(Evento.OnQuestDelivered, GiveReward);
             EventManager.Unsubscribe(Evento.OnTreeCutForChickens, SetTreeCutForChickens);
             EventManager.Unsubscribe(Evento.OnAllCluesFound, SetAllCluesFound);
-            EventManager.Unsubscribe(Evento.OnGiftAtNataliasDoorReached, SetGiftAtNataliasDoorReached);
+            EventManager.Unsubscribe(Evento.OnArrestSequenceEnded, SetArrestSequenceEnded);
+            EventManager.Unsubscribe(Evento.OnPaintingReturned, SetPaintingReturned);
         }
     }
 }

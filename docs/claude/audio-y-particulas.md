@@ -30,6 +30,10 @@ call site.
 `UIVolume`, `AmbienceVolume`). Bus volume is still applied per source in code; moving it onto the
 mixer parameters is Task 23 of the refactor plan.
 
+**Placeholder sounds**: `CarDoor` (the patrol car door in page 3's arrest, added 2026-09-25) reuses
+`PaperFold02`'s clip until a real door slam exists; swap the clip in the bank row, nothing else. Its
+`AudioId` constant was added by hand in the generator's format (running Regenerate AudioId keeps it).
+
 **Gotchas worth knowing:**
 - A `SoundHandle` carries a generation counter. A stale handle can never stop whatever is playing on
   that pooled source now — always stop through the handle or the id, never by grabbing the source.

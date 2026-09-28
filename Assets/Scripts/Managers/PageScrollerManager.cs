@@ -26,6 +26,10 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
 
     bool _isTurning = false;
 
+    //a turn forced from code (a cutscene) can skip Kami riding the page edge, e.g. while she is
+    //hidden "inside the patrol car". Reset when the turn finishes.
+    bool _skipRideThisTurn;
+
     public GameObject glitterParent;
     ParticleSystem[] glitterSystems;
 
@@ -78,6 +82,25 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
                 ChangeToPrevPage();
             }
         }
+    }
+
+    /// <summary>
+    /// Turns to the next page without Kami standing on the edge sphere (a cutscene ending). Same
+    /// flow as the player's own turn. ridePage = false skips Kami hanging from the page edge.
+    /// Returns false if a turn is already running.
+    /// </summary>
+    public bool TurnToNextPage(bool ridePage)
+    {
+        if (_isTurning)
+        {
+            Debug.LogWarning("[PageScrollerManager] TurnToNextPage: a page turn is already running, ignoring");
+            return false;
+        }
+
+        _skipRideThisTurn = !ridePage;
+        Debug.Log($"[PageScrollerManager] TurnToNextPage forced from code (ridePage {ridePage})");
+        ChangeToNextPage();
+        return true;
     }
 
     private void ChangeToPrevPage()
@@ -177,7 +200,10 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
         LevelManager.Instance.inDialogue = true;  //freezeo a kami
         PUBManager.Instance.ClosePUBs();
         CreateHoja(_isNext); //instancio la hoja que corresponda
-        StartPlayerRide();
+        if (!_skipRideThisTurn)
+        {
+            StartPlayerRide();
+        }
         CheckSpheres(activePageIndex); //chequeo si hay que poner/sacar zona
         PlayPageSound();
     }
@@ -238,6 +264,7 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
     {
         LevelManager.Instance.inDialogue = false;
         _isTurning = false;
+        _skipRideThisTurn = false;
         CameraManager.Instance.SetCamera(CameraMode.Normal);
         Destroy(hojaAux);
     } //este se dispara cuando la hoja termina de girar y avisa "che ya termine de girar" a traves el evento onpagefinishturnng

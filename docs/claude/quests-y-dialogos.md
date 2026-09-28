@@ -134,10 +134,15 @@ place Natalia on other pages to "stage" her; page 5's drop-off (task 5.C) acts o
 
 ### Quests without a delivering NPC: Quest05 → Quest06 (2026-09-24)
 
-`Quest05_FindClues` has no one to hand it to, and `Quest06_GoBackToNataliasHouse`
-(Event, `OnGiftAtNataliasDoorReached`, handler `SetGiftAtNataliasDoorReached`) is delivered
-to an object: `GiftDialogueTrigger` on the gift at Natalia's door. Two traps found building
-them, both relevant to any future quest that is closed from code:
+`Quest05_FindClues` has no one to hand it to, and neither has
+`Quest06_GoBackToNataliasHouse` (Event, `OnArrestSequenceEnded`, handler
+`SetArrestSequenceEnded`). **Changed 2026-09-25 (Diego)**: Quest06 used to close when Kami talked
+to the gift box; now it closes when the page 3 arrest ends and Kami is in her cell on page 4, and
+`ArrestCutscene` then starts `Quest07_EscapeAndReturnThePainting` (Event, `OnPaintingReturned`,
+handler `SetPaintingReturned` — page 5's resolution must fire that event). The enum value was
+renamed in place (`OnGiftAtNataliasDoorReached` → `OnArrestSequenceEnded`, same position), so
+Quest06's stored int still matches. The gift's `GiftDialogueTrigger` no longer touches quests.
+Two traps found building these, both relevant to any future quest that is closed from code:
 
 1. **Don't add or remove quests inside an `OnQuestCompleted` handler.** `QuestManager`
    raises it from INSIDE `CheckQuests`' `foreach` over its quest list, so
@@ -152,9 +157,17 @@ them, both relevant to any future quest that is closed from code:
 
 `DialogueManager.ShowDialogue` silently drops a request while another dialogue is open, so
 anything that wants a line to be heard for sure (the clue comments, "the cops left", "let's
-head home") queues it — see `FindCluesTracker.Update`. `GiftDialogueTrigger` counts the talk
-from `OnDialogueWriteText` of ITS dialogue, not from `Interact`, because the same press can
-open Natalia's chatter instead.
+head home") queues it — see `FindCluesTracker.Update`. For one-off lines the shorter form is
+waiting on `DialogueManager.CanShowDialogueNow` (added 2026-09-25) before `ShowDialogue`, as
+`GiftDialogueTrigger` and `CutsceneDirector` do.
+
+### Natalia after the arrest (hand-off to Phase 4)
+
+`ArrestCutscene` stops her follow when the girls board the patrol car and warps her into
+`NataliaCell_PLACEHOLDER_POSITION` (`NPC.WarpTo`, which goes through `NavMeshAgent.Warp` — setting
+`transform.position` on an agent gets overwritten). She stays idle and **not talkable** (her trigger
+was switched off when she started following on page 1). Whatever frees her in Phase 4 must call
+`StartFollowingPlayer()` on her; `SetTalkable(true)` is still page 5's job.
 
 ## Los NPC se mueven por NavMesh (2026-09-24)
 
