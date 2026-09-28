@@ -12,7 +12,7 @@ public class ObjetoCortable : MonoBehaviour, ICortable
     [SerializeField] protected SpriteRenderer spriteEntero, spriteBase, spriteTop;
 
     [SerializeField] protected float velocidadInicial = 5.0f;
-    [SerializeField] protected float anguloLanzamiento = 45.0f; // Ángulo en grados
+    [SerializeField] protected float anguloLanzamiento = 45.0f; // ï¿½ngulo en grados
     [SerializeField] protected float alturaInicial = 0;
 
     protected bool isCortable = true;
@@ -104,6 +104,21 @@ public class ObjetoCortable : MonoBehaviour, ICortable
     }
 
     
+    /// <summary>Puts a cut object back whole and cuttable right now, cancelling any pending
+    /// self-destruct or respawn. For sequences that restart (Level 2 page 4 after a capture).</summary>
+    public virtual void RestoreUncut()
+    {
+        //never cut: nothing to undo (and Start may not even have cached the pieces' positions yet)
+        if (isCortable)
+        {
+            return;
+        }
+
+        StopAllCoroutines();
+        ReunirSprites();
+        isCortable = true;
+    }
+
     protected void Respawn()
     {
         //print("respawn");

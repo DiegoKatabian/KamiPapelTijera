@@ -123,6 +123,14 @@ MonoBehaviour:
     m_Localized: "A single glove fished out of a trash can. Its other half is still out there, hand in hand with the thief."
     m_Metadata:
       m_Items: []
+  - m_Id: 1000000000011
+    m_Localized: "Caf\xE9 ticket"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000012
+    m_Localized: "The caf\xE9 ticket, folded up. The time is printed on it."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CandadoCortable : PickupCortable
 {
@@ -9,9 +10,33 @@ public class CandadoCortable : PickupCortable
 
     [SerializeField] protected CofreCortable cofreQueAbro;
 
+    [Tooltip("Fired once when cut. For a padlock that opens something other than a chest.")]
+    [SerializeField] UnityEvent onCut = new UnityEvent();
+
+    bool _hasCodeListeners;
+
+    //for listeners wired from code (PoliceStationPage opens a cell door): a scene object cannot point
+    //a serialized UnityEvent at a component nested inside another prefab instance
+    public void AddCutListener(UnityAction listener)
+    {
+        onCut.AddListener(listener);
+        _hasCodeListeners = true;
+    }
+
     protected override void ApplyCut()
     {
         base.ApplyCut();
-        cofreQueAbro.OpenChest();
+
+        //a padlock may lock a cell instead of a chest: only a padlock that opens nothing at all is a mistake
+        if (cofreQueAbro != null)
+        {
+            cofreQueAbro.OpenChest();
+        }
+        else if (onCut.GetPersistentEventCount() == 0 && !_hasCodeListeners)
+        {
+            Debug.LogWarning($"[CandadoCortable] {gameObject.name}: cut, but it opens nothing (no chest and no onCut listener)");
+        }
+
+        onCut.Invoke();
     }
 }

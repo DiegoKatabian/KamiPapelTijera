@@ -19,6 +19,7 @@ public enum ResourceType
     arielScarfCap,     // Level 2: Ariel's matching scarf/cap, compared against caughtBelonging
     pelusaPainting,    // Level 2: the stolen Pelusa painting itself
     lostGlove,         // Level 2: a single glove found in a page 2 trash can (appended last so the serialized ints above keep their meaning)
+    cafeTicket,        // Level 2: the café ticket Kami folds on page 1 (OrigamiItemGiver); unfolded on page 5 as proof of innocence
     Count
 }
 

@@ -408,6 +408,18 @@ MonoBehaviour:
     m_Localized: "Genial. Nos enmarcaron... como a un cuadro."
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000121
+    m_Localized: "\xA1Sorpresa! \xBFCre\xEDan que me iba a perder la fuga?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000122
+    m_Localized: "And\xE1 a buscar tus cosas y liberemos a tu amiga, nena."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000123
+    m_Localized: "Tras ser enga\xF1adas, y cuando todo parec\xEDa perdido, un tremendo revuelo se escuch\xF3 en el techo."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

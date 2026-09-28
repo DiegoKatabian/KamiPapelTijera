@@ -123,6 +123,14 @@ MonoBehaviour:
     m_Localized: "Un guante solito, rescatado de un tacho de basura. Su otra mitad sigue por ah\xED, mano a mano con el ladr\xF3n."
     m_Metadata:
       m_Items: []
+  - m_Id: 1000000000011
+    m_Localized: "Ticket del caf\xE9"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000012
+    m_Localized: "El ticket del caf\xE9, doblado. Tiene la hora impresa."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -58,7 +58,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5418449225323618739}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a994b0cd923022429725e83df214302, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d6efecfe6c74e8da745c0a53107de9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   origamiRoutes:
@@ -73,6 +73,8 @@ MonoBehaviour:
   _doesCameraChangeOnApply: 0
   _cameraModeOnApply: 1
   eventoParaTrigerear: 47
+  _grantedItem: 13
+  _grantedAmount: 1
 --- !u!1001 &4855349511422058640
 PrefabInstance:
   m_ObjectHideFlags: 0

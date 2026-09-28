@@ -32,13 +32,38 @@ Tiburcio — ver `quests-y-dialogos.md`) para pasar de "antes del árbol" a "cru
 (`evadeDistance`, default 5) salvo durante el cruce o en la zona segura; el destino de
 evade se samplea sobre NavMesh.
 
-**Para un enemigo stealth futuro**: `PatrollingAgent` es la base lista para heredar.
-Un `StealthEnemy : PatrollingAgent` reutilizaría patrulla + NavMesh y solo necesitaría
-sobreescribir `ShouldEvade()`/`UpdateEvadeDestination()` con detección real (cono de
-visión, distancia de oído) más un estado intermedio "Alerta" entre Patrolling y
-Evading. Hoy **no existe ningún sistema de detección** (vision cone, line-of-sight,
-hearing) en el proyecto — se buscó explícitamente y no hay precedente, salvo un
-método `InLineOfSight()` comentado (nunca implementado) en `Barquito/Pathfinding.cs`.
+## PoliceOfficer — the stealth enemy (spec 002, built 2026-09-27 for Level 2 page 4)
+
+`Assets/Scripts/AI/PoliceOfficer.cs` (`: PatrollingAgent`) + `VisionConeView.cs`, prefab
+`Assets/Prefabs/NPCs/PoliceOfficer.prefab` (CopEscort's tinted placeholder art + agent Height 7 /
+BaseOffset 4). The project's first detection system. Compiles; **not played yet**.
+
+- **Seeing**: a flat cone (`_visionAngle` 45°, `_visionRange` 10, taken from Diego's blocking cone)
+  along the direction he walks, plus a raycast from his eyes (`_eyeHeight` 6 above his feet) to
+  Kami's body against `_sightBlockers` (Default layer: walls, desks, cell fences). Kami more than
+  `_maxHeightDifference` (6) above/below his feet is never seen, which keeps the mezzanine safe.
+  Only Kami is seen: Natalia and the Abuela never trigger anything (Diego).
+- **Catching is a meter, not a glance**: plain view fills `Awareness` over `_secondsToCatch` (1.5,
+  deliberately generous); out of view it drains over `_secondsToCalmDown` (2). Full meter =
+  `Player.Die(DeathCause.Caught)`. The first glimpse puts him on alert: he stops and stares while he
+  sees her, walks to where he last saw her when he doesn't (`_alertSpeedMultiplier`), and gives up
+  after `_secondsToGiveUp` (3). He pauses `_pauseAtWaypoint` (1) at each corner. All seconds, all per
+  cop in the Inspector.
+- **Alert rides on PatrollingAgent's evade hooks** instead of a new state: `ShouldEvade()` = alerted,
+  `UpdateEvadeDestination()` = stare / investigate, and the base's "resume the waypoint he was
+  walking to" is exactly spec 002's FR-004. So in the base's debug logs, "Evading" means alerted.
+  `PatrollingAgent` itself was not touched. Its `Start` never sets a first destination (it would
+  skip waypoint 0), so the officer calls `SetWaypoints` itself, like Gallina.
+- **No detection while the game is frozen for the player**: dialogue, cutscene, overlay, page turn,
+  Kami dead or riding a page.
+- `VisionConeView` rebuilds the fan every frame from the officer's own numbers, cut short by the
+  same blockers, and colours it by awareness (calm -> alert -> caught). What the player sees and
+  what he detects can't disagree (FR-006). Gizmo when the officer is selected.
+- `ResetToStart()` / `SetDetectionEnabled()` are for the page owner (`PoliceStationPage`): back to
+  his post on a restart, blind after the escape.
+
+Not done from spec 002: FR-007's separate test scene (Diego tests page 4 directly: start the scene
+with `PageScrollerManager.startingPage = 4`) and any hearing (v1 is vision only, as decided).
 
 ## Rocoso — FSM + NavMeshAgent (migrado, issue #21)
 

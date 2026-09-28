@@ -211,6 +211,13 @@ change that follows the patrol car, with no manual intervention between steps.
 
 ### Story 4 — Page 4: Escaping the police station (Priority: P4)
 
+> **Updated 2026-09-27 (Diego, while building Phase 4)** — where this story's draft below differs,
+> this wins: Kami and Natalia are in **separate** cells (Natalia's holds the paper-plane pedestal and
+> has the padlock); the Abuela opens Kami's cell fence; only Kami can be spotted; **getting caught
+> restarts the whole page**; the window does **not** change the page — crossing it (past cuttable
+> drapes) completes the escape quest and starts a new one, "take the original Pelusa back to the
+> museum" (Quest08), and the page is left normally. Full list in `tasks.md` Phase 4 "Status".
+
 Kami and Natalia are in a cell. **Corrected**: the Grandmother falls on Kami, and the
 nearby walls get disabled (with feedback — particles/sound) to open a path; there's
 no real wall/ceiling destruction. Police officers patrol with vision cones — if they

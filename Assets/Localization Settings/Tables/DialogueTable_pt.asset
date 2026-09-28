@@ -415,6 +415,18 @@ MonoBehaviour:
     m_Localized: "\xD3timo. Emolduradas... feito um quadro."
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000121
+    m_Localized: "Surpresa! Acharam que eu ia perder a fuga?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000122
+    m_Localized: "V\xE1 pegar suas coisas e vamos libertar sua amiga, querida."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000123
+    m_Localized: "Depois de serem enganadas, e quando tudo parecia perdido, um tremendo alvoro\xE7o se ouviu no telhado."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

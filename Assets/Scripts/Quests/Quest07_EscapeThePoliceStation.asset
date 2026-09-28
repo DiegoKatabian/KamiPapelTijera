@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 692a75f9da8fbd047ac062f0a359c87f, type: 3}
-  m_Name: Quest07_EscapeAndReturnThePainting
+  m_Name: Quest07_EscapeThePoliceStation
   m_EditorClassIdentifier: 
   questName: nataliaquest_escape_title
   questDescription: nataliaquest_escape
@@ -18,7 +18,7 @@ MonoBehaviour:
     conditionType: 1
     resourceType: 0
     requiredAmount: 0
-    evento: 53
+    evento: 54
   rewardType: 3
   questSprite: {fileID: 0}
   rewardRt: 0

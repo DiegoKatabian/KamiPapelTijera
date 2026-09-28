@@ -88,8 +88,11 @@ public enum Evento //LOS EVENTOS SE AGREGAN AL FINAL. NO EN EL MEDIO, PORQUE ARR
     //completes Quest06_GoBackToNataliasHouse: the page 3 arrest cutscene ended and Kami is in her
     //cell on page 4 (renamed from OnGiftAtNataliasDoorReached, same position: Quest06 stores the int)
     OnArrestSequenceEnded,
-    //completes Quest07_EscapeAndReturnThePainting: fired by page 5's resolution with the museum owner
-    OnPaintingReturned
+    //completes Quest08_ReturnThePelusa: fired by page 5's resolution with the museum owner
+    OnPaintingReturned,
+    //completes Quest07_EscapeThePoliceStation: Kami crossed the 2nd floor window on page 4
+    //(PoliceStationPage). Appended last: quests store Evento as an int
+    OnPoliceStationEscaped
 }
 
 public class EventManager

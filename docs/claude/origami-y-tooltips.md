@@ -46,6 +46,13 @@ becomes active and the screen has been free (no dialogue, cutscene, overlay, men
 the fold). It fires once; if the player cancels, the pedestal keeps working the classic way (step
 on it + Interact). A check opened this way while Kami is off the pedestal is destroyed on
 `OnOrigamiEnd`, otherwise it would keep listening for Interact and reopen the fold from anywhere.
+**Origamis that give an item (2026-09-27)**: `OrigamiItemGiver` (subclass of `OrigamiEventTriggerer`)
+also adds `_grantedAmount` x `_grantedItem` to the inventory when the last fold is done, with the
+reward sticker placed on Kami (the origami lives on the canvas). `OrigamiRoute_Cafe_Fold` uses it to
+give the `cafeTicket` (it was only firing `OnCafeWrapperFolded`, so Kami never got the ticket). The
+item must be in BOTH InventoryManager lists (Level 2's is a standalone scene copy, see
+`nivel2-y-ui.md`), or the sticker throws on a missing key.
+
 On for the page 3 letter (inside `GiftBox.prefab`) and the page 1 café. The text panel now exists:
 `Assets/Prefabs/UI/OrigamiTextRevealPanel.prefab`, placed once under Level 2's `Canvas` and
 assigned to the letter route's `_textDisplay` (the café fold has no text).

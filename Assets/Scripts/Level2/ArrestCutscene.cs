@@ -70,11 +70,14 @@ public class ArrestCutscene : MonoBehaviour
     [SerializeField, Tooltip("Natalia's cell on page 4.")]
     Transform _nataliaCell;
 
+    [SerializeField, Tooltip("Page 4's sequence: told to start once the girls are in their cells.")]
+    PoliceStationPage _policeStation;
+
     [Header("Quests")]
     [SerializeField, Tooltip("Quest06_GoBackToNataliasHouse: completed and removed when the girls reach the station.")]
     QuestSO _goHomeQuest;
 
-    [SerializeField, Tooltip("Quest07_EscapeAndReturnThePainting: started when the girls reach the station.")]
+    [SerializeField, Tooltip("Quest07_EscapeThePoliceStation: started when the girls reach the station.")]
     QuestSO _escapeQuest;
 
     CutsceneDirector _cutscene;
@@ -310,6 +313,15 @@ public class ArrestCutscene : MonoBehaviour
 
         _cutscene.Release();
         Debug.Log("[ArrestCutscene] the girls are in their cells, closing Quest06");
+
+        if (_policeStation != null)
+        {
+            _policeStation.BeginFromArrest();
+        }
+        else
+        {
+            Debug.LogWarning("[ArrestCutscene] no _policeStation assigned, page 4's escape will not start");
+        }
 
         if (_goHomeQuest != null && QuestManager.Instance != null && QuestManager.Instance.HasQuest(_goHomeQuest))
         {

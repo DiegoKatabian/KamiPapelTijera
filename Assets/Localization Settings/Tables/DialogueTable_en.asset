@@ -410,6 +410,18 @@ MonoBehaviour:
     m_Localized: "Great. Framed... just like a painting."
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000121
+    m_Localized: "Surprise! Did you think I would miss the jailbreak?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000122
+    m_Localized: "Go get your things and let's free your friend, dear."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000123
+    m_Localized: "Tricked and locked away, just when all seemed lost, a tremendous commotion was heard on the roof."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

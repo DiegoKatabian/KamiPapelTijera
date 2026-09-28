@@ -39,6 +39,7 @@ public class QuestManager : Singleton<QuestManager>
         EventManager.Subscribe(Evento.OnAllCluesFound, SetAllCluesFound);
         EventManager.Subscribe(Evento.OnArrestSequenceEnded, SetArrestSequenceEnded);
         EventManager.Subscribe(Evento.OnPaintingReturned, SetPaintingReturned);
+        EventManager.Subscribe(Evento.OnPoliceStationEscaped, SetPoliceStationEscaped);
         //clear all quests
         //quests.Clear();
     }
@@ -109,10 +110,16 @@ public class QuestManager : Singleton<QuestManager>
         MarkEventAndCheck(Evento.OnArrestSequenceEnded);
     }
 
-    //Level 2 (spec 006): completes Quest07_EscapeAndReturnThePainting (fired on page 5).
+    //Level 2 (spec 006): completes Quest08_ReturnThePelusa (fired on page 5).
     public void SetPaintingReturned(params object[] parameter)
     {
         MarkEventAndCheck(Evento.OnPaintingReturned);
+    }
+
+    //Level 2 (spec 006): completes Quest07_EscapeThePoliceStation (page 4's window).
+    public void SetPoliceStationEscaped(params object[] parameter)
+    {
+        MarkEventAndCheck(Evento.OnPoliceStationEscaped);
     }
 
     void MarkEventAndCheck(Evento evento)
@@ -215,6 +222,7 @@ public class QuestManager : Singleton<QuestManager>
             EventManager.Unsubscribe(Evento.OnAllCluesFound, SetAllCluesFound);
             EventManager.Unsubscribe(Evento.OnArrestSequenceEnded, SetArrestSequenceEnded);
             EventManager.Unsubscribe(Evento.OnPaintingReturned, SetPaintingReturned);
+            EventManager.Unsubscribe(Evento.OnPoliceStationEscaped, SetPoliceStationEscaped);
         }
     }
 }

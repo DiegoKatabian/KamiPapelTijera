@@ -20,6 +20,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 {
     [Header("Stats")]
     public bool hasTijera = false;
+    [Tooltip("Kami starts the level already holding the normal scissors (Level 2: she brings them from Level 1). No pickup and no reward animation.")]
+    [SerializeField] bool _startWithTijera = false;
     public TijeraEquipment currentTijera = TijeraEquipment.Normal;
     public bool hasSprintBoots = false;
     public bool hasWaterBoots = false;
@@ -250,6 +252,26 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         EventManager.Subscribe(Evento.OnQuestRewardedStart, StartReceiveReward);
         EventManager.Subscribe(Evento.OnQuestRewardedEnd, EndReceiveReward);
         EventManager.Subscribe(Evento.OnPlayerPlaced, OnPlayerPlaced);
+
+        if (_startWithTijera)
+        {
+            StartCoroutine(EquipStartingTijera());
+        }
+    }
+
+    //a frame late so the InventoryManager, which builds its slots in its own Start, is already
+    //listening when the scissors land in the inventory
+    IEnumerator EquipStartingTijera()
+    {
+        yield return null;
+
+        if (hasTijera)
+        {
+            yield break;
+        }
+
+        EquipTijera(celebrate: false);
+        Debug.Log("[Player] starts the level holding the normal scissors");
     }
 
     private void Update()
@@ -684,12 +706,17 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     }
 
     //Eventos
-    public void GetTijera(params object[] parameters)
+    public void GetTijera(params object[] parameters) => EquipTijera(celebrate: true);
+
+    void EquipTijera(bool celebrate)
     {
         hasTijera = true;
         LevelManager.Instance.AddResource(ResourceType.tijera, 1);
         tijeraManager.SetTijera();
-        StartReceiveRewardAutoEnd();
+        if (celebrate)
+        {
+            StartReceiveRewardAutoEnd();
+        }
         _view.RefreshBodyAnimation();
         _view.RefreshOverrides();
     }
@@ -707,7 +734,11 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         }
 
         hasTijera = false;
-        LevelManager.Instance.AddResource(ResourceType.tijera, -1);
+        //the P cheat equips the upgraded pair without ever counting a normal one: never go below 0
+        if (LevelManager.Instance.recursosRecolectados[ResourceType.tijera] > 0)
+        {
+            LevelManager.Instance.AddResource(ResourceType.tijera, -1);
+        }
         _view.RefreshBodyAnimation();
         _view.RefreshOverrides();
         Debug.Log("[Player] LoseTijera: scissors confiscated");

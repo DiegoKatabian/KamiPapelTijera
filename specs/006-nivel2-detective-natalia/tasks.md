@@ -150,7 +150,9 @@ in every page, and a cuttable typewriter was added for page 4.
   `Paper Car Horizontal.controller`, `TrafficObstacle_Car_Horizontal.prefab`,
   `TrafficObstacleSet_StreetCarsHorizontal.asset`.
 
-- **1.D** **Café-wrapper fold beat** — ✅ wired 2026-09-25 (with Phase 3): the existing
+- **1.D** **Café-wrapper fold beat** — ✅ wired 2026-09-25 (with Phase 3); since 2026-09-27 the fold
+  also gives the `cafeTicket` inventory item page 5 unfolds (`OrigamiItemGiver`; before that the
+  fold gave nothing, reported by Diego playing). The existing
   `SelloOrigami Cafe` scene instance moved under Page 1, auto-prompts, and appears when Natalia's
   opening dialogue ends (`NataliaDialogueTrigger._activateAfterOpening`).
 
@@ -310,6 +312,41 @@ today — the cell needs its own "what opens" hook.
   change page" trigger. Depends on 4.B/4.C/4.D being playable (needs paper AND
   recovered scissors to test end to end), though the code itself can start earlier
   with test data.
+
+**Status (2026-09-27): 4.A-4.E built — compiles, NOT played yet.** Details and file map in
+`docs/claude/nivel2-y-ui.md` (Phase 4) and `docs/claude/enemigos-e-ia.md` (PoliceOfficer).
+Decisions taken with Diego while building, and what changed from the draft above:
+
+- **Layout**: Kami's cell is the west cell room (its east wall became a `CellFence`, no padlock); the
+  evidence pickup sits right east of it, where Diego had the TijeraPickup. **Natalia's cell is new,
+  in the front-left room, around the paper-plane pedestal**: freeing her is what opens the pedestal.
+  The padlock moved there.
+- **4.A** is a scripted fall (no Timeline, gameplay camera). First time: a narrator line ("tras ser
+  engañadas...", Kami still), then 3 s, then the fall; after a capture, no narrator, the fall comes
+  3 s after the respawn. Kami can move inside her closed cell while waiting and is only locked for
+  the fall + the Abuela's two lines. The fence is switched off (reveal), with dust + `RockSmash`.
+- **Getting caught restarts the WHOLE page** (not just a re-confiscation): both girls back in their
+  cells, padlock and drapes whole, the Abuela gone and falling again after 3 s, cops back at their
+  posts. The confiscation stash only grows, so a capture never loses anything; the plane hat is lost.
+- **4.B**: only Kami can be spotted; alert = stop and stare / walk to the last seen spot / give up
+  after 3 s, no chase; catching takes 1.5 s of plain view (meter drains when hidden). Spec 002's
+  separate test scene was skipped (`startingPage = 4` sets the prison up by itself instead).
+- **4.C** takes the scissors, all paper and the Pelusa; the pickup returns all of it.
+- **4.D** needed nothing new: the two desk typewriters (2 paper, respawn 30s) cover it; the stray
+  Phase 0 typewriter at the page origin was deleted. The padlock keeps its 1 paper.
+- **4.E changed**: the window does NOT change the page. It is covered by new `CuttableDrapes` (top
+  half stays, bottom half drops — an inverse bush); crossing it completes Quest07 ("escape") and
+  starts the new **Quest08_ReturnThePelusa** ("take the original Pelusa back to the museum"). Quest07
+  was split for this. The page is then left the normal way; the followers wait outside below the
+  window. The escape origami is the Level 1 Avion route (2 folds, 2 paper, reusable).
+- **Level 2 now starts with the normal scissors** (`Player._startWithTijera`); there is no upgraded
+  pair in Level 2.
+- No NavMesh rebake: every fence carves the NavMesh at runtime instead of being baked in.
+
+**Still to verify by playing**: the whole loop above, the cone's readability and timings, the two
+followers not blocking each other or Kami in the cell doorways, whether Kami's scissors reach the
+padlock (moved to door-handle height) and the drapes, the Abuela's landing spot/scale/flip, and the
+jump from the floor onto the mezzanine with the hat (22 units of jump vs ~18 of height: little margin).
 
 ---
 

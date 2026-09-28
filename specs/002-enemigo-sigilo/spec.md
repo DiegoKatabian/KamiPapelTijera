@@ -4,7 +4,12 @@
 
 **Created**: 2026-09-04
 
-**Status**: Draft
+**Status**: Implemented 2026-09-27 as `PoliceOfficer : PatrollingAgent` for Level 2 page 4 (spec 006
+task 4.B, issue #106) — compiles, not played yet. What was built and where it deviates from this
+draft: `docs/claude/enemigos-e-ia.md` ("PoliceOfficer"). In short: the cone fills an awareness meter
+(1.5 s of plain view catches, drains when hidden) instead of an instant catch; the Alert state rides
+on PatrollingAgent's evade hooks (no base-class change); `DeathCause.Caught` is the "Stealth" cause;
+FR-007's separate test scene was skipped (page 4 can be started directly).
 
 **Input**: Idea del equipo (Diego): "enemigo basado en sigilo". Investigado contra el
 código actual antes de escribir esta spec — ver `docs/claude/enemigos-e-ia.md`.

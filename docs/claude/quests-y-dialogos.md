@@ -74,7 +74,7 @@ reportarse un bug ahí.
 | Granjero Norberto | `GranjeroNorbertoDialogueTrigger.cs` | Completo — además spawnea el pickup de tijera en el primer diálogo |
 | **Chino** | `ChinoDialogueTrigger.cs` | **STUB VACÍO** — la clase existe pero no implementa nada, pese a que `Quest04_Chino.asset` ya está configurada (100× papel → SprintBoots). Quest sin NPC funcional. |
 | **Florista** | `NPCs/NPC_Florista.cs` | **STUB VACÍO** — clase sin implementación, sin diálogo conectado. |
-| Natalia (Nivel 2) | `NataliaDialogueTrigger.cs` + `NPCs/NPC_Natalia.cs` | Page 1 (opening dialogue + follow + quest start) implementado 2026-09-22; page 2 clue comments come from `FindCluesTracker` (2026-09-24); páginas 3-5 pendientes. Ver la sección de abajo. |
+| Natalia (Nivel 2) | `NataliaDialogueTrigger.cs` + `NPCs/NPC_Natalia.cs` | Page 1 (opening dialogue + follow + quest start) implementado 2026-09-22; page 2 clue comments come from `FindCluesTracker` (2026-09-24); page 3 arrest + page 4 cell/escape wired (2026-09-25/27); page 5 pendiente. Ver la sección de abajo. |
 
 `NPC.cs` es la base común de estado (junto con `NPC_FollowPlayerState`/
 `NPC_IdleState`, reusados por Abuela y pensados para reusarse por más NPCs).
@@ -138,8 +138,12 @@ place Natalia on other pages to "stage" her; page 5's drop-off (task 5.C) acts o
 `Quest06_GoBackToNataliasHouse` (Event, `OnArrestSequenceEnded`, handler
 `SetArrestSequenceEnded`). **Changed 2026-09-25 (Diego)**: Quest06 used to close when Kami talked
 to the gift box; now it closes when the page 3 arrest ends and Kami is in her cell on page 4, and
-`ArrestCutscene` then starts `Quest07_EscapeAndReturnThePainting` (Event, `OnPaintingReturned`,
-handler `SetPaintingReturned` — page 5's resolution must fire that event). The enum value was
+`ArrestCutscene` then starts `Quest07_EscapeThePoliceStation`. **Split 2026-09-27 (Diego)**: Quest07
+(renamed from `Quest07_EscapeAndReturnThePainting`, same guid) is now only the escape — Event
+`OnPoliceStationEscaped` (appended at the end of `Evento`, handler `SetPoliceStationEscaped`),
+fired by crossing page 4's window — and `PoliceStationPage` then starts `Quest08_ReturnThePelusa`
+("Natalia IV", Event `OnPaintingReturned`, handler `SetPaintingReturned` — page 5's resolution must
+fire that event). The enum value was
 renamed in place (`OnGiftAtNataliasDoorReached` → `OnArrestSequenceEnded`, same position), so
 Quest06's stored int still matches. The gift's `GiftDialogueTrigger` no longer touches quests.
 Two traps found building these, both relevant to any future quest that is closed from code:
@@ -161,19 +165,31 @@ head home") queues it — see `FindCluesTracker.Update`. For one-off lines the s
 waiting on `DialogueManager.CanShowDialogueNow` (added 2026-09-25) before `ShowDialogue`, as
 `GiftDialogueTrigger` and `CutsceneDirector` do.
 
-### Natalia after the arrest (hand-off to Phase 4)
+### Natalia and the Abuela on page 4 (Phase 4, 2026-09-27)
 
-`ArrestCutscene` stops her follow when the girls board the patrol car and warps her into
+`ArrestCutscene` stops Natalia's follow when the girls board the patrol car and warps her into
 `NataliaCell_PLACEHOLDER_POSITION` (`NPC.WarpTo`, which goes through `NavMeshAgent.Warp` — setting
 `transform.position` on an agent gets overwritten). She stays idle and **not talkable** (her trigger
-was switched off when she started following on page 1). Whatever frees her in Phase 4 must call
-`StartFollowingPlayer()` on her; `SetTalkable(true)` is still page 5's job.
+was switched off when she started following on page 1); `SetTalkable(true)` is still page 5's job.
 
-**How she gets out (Diego, 2026-09-27)**: Kami cuts the padlock on Natalia's cell — the
-`CandadoCortable` already placed on page 4. Careful: `CandadoCortable.ApplyCut()` calls
-`cofreQueAbro.OpenChest()` with no null check, and that instance has no chest assigned, so cutting it
-today throws right after granting its paper. Kami herself is freed by the Abuela falling from the sky
-and breaking her cell door (4.A).
+She gets out when Kami cuts the `CandadoCortable` on her cell door: `PoliceStationPage` listens
+through `CandadoCortable.AddCutListener` (new, the padlock's `onCut`), switches the door fence off and
+calls `StartFollowingPlayer()`. `ApplyCut` no longer assumes a chest (`cofreQueAbro` is null-checked;
+it only warns if the padlock opens nothing at all).
+
+The Abuela is a new instance of `Abuela_Follower.prefab`, a variant of Level 1's `Abuela.prefab` with
+her Level 1 pieces switched off (quest dialogue trigger, boss-fight cuttable, hard collider, both
+fold/unfold pedestals, dialogue globe), unrotated for Level 2's camera, and her agent sized to the art
+(Height 10 / BaseOffset 5 at scale 0.74 — the base prefab's Height 1 / BaseOffset 0 is the classic
+floating-agent trap, left untouched there so Level 1 doesn't move). `AbuelaEntrance` fills in her
+`player` (the base prefab can't reference the scene's Kami) before `StartFollowingPlayer()`.
+
+**Two followers at once (FR-002)**: Natalia stops 3 units from Kami, the Abuela 6
+(`followStoppingDistance`), and the Abuela's avoidance priority is 60 vs Natalia's 50, so they trail
+in a line instead of fighting for the same spot. Not seen in play yet.
+
+**On a capture both are reset** by `PoliceStationPage`: Natalia back in her closed cell, the Abuela
+gone until she falls again. After the escape both are warped outside below the window.
 
 ## Los NPC se mueven por NavMesh (2026-09-24)
 

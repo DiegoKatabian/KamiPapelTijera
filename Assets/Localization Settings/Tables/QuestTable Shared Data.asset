@@ -73,6 +73,14 @@ MonoBehaviour:
     m_Key: nataliaquest_escape
     m_Metadata:
       m_Items: []
+  - m_Id: 300000000006
+    m_Key: nataliaquest_museum_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 300000000007
+    m_Key: nataliaquest_museum
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

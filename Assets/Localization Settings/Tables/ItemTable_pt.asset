@@ -124,6 +124,14 @@ MonoBehaviour:
     m_Localized: "Uma luva sozinha, tirada de uma lixeira. A outra metade ainda est\xE1 por a\xED, de m\xE3os dadas com o ladr\xE3o."
     m_Metadata:
       m_Items: []
+  - m_Id: 1000000000011
+    m_Localized: "T\xEDquete do caf\xE9"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000012
+    m_Localized: "O t\xEDquete do caf\xE9, dobrado. Tem a hora impressa."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

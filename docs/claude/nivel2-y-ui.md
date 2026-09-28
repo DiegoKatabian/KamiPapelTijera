@@ -40,7 +40,9 @@ now, ready for pages 1-5 to wire up:
   if one side carries a Rigidbody, so without it the scissors would silently never cut
   them. Sprites are bush stand-ins until Valentino draws the real art.
 - **Evidence items**: 4 new `ResourceType` values (`caughtBelonging` — the hat,
-  `brokenWatch`, `arielScarfCap`, `pelusaPainting`; `lostGlove` was appended as a 5th in
+  `brokenWatch`, `arielScarfCap`, `pelusaPainting`; `cafeTicket` (2026-09-27, given by the page 1
+  café fold through `OrigamiItemGiver`, see `origami-y-tooltips.md`) was appended after `lostGlove`;
+  `lostGlove` was appended as a 5th in
   Phase 2, in both InventoryManager lists) + matching `InventoryItem` assets in
   `Assets/Scripts/Inventory/` (sprites left empty, no art yet), registered in
   `InventoryManager._allItems`.
@@ -97,15 +99,60 @@ starts. Where things are:
   the **scene root** on purpose) + `Assets/Timelines/Level2/Timeline_Arrest.playable`. Ariel and
   the cops are tinted Natalia sprites (`CopEscort.prefab` = an `NPC` that can follow Kami). How to
   retime it: `docs/claude/cutscenes.md`.
-- Page 4: `KamiCell_PLACEHOLDER_POSITION` and `NataliaCell_PLACEHOLDER_POSITION`, next to the
-  `CandadoCortable`. The forced page turn drops Kami on hers, which also makes it her respawn
-  point (useful for 4.B's capture).
+- Page 4: `KamiCell_PLACEHOLDER_POSITION` and `NataliaCell_PLACEHOLDER_POSITION` (moved into the
+  real cells in Phase 4, see below). The forced page turn drops Kami on hers, which also makes it
+  her respawn point.
 - **Phase 1's café pedestal is wired too** (task 1.D): it was already in the scene at the root,
   inactive and pointed at the café fold route. It now lives under Page 1 (same world position),
   auto-prompts, and appears when Natalia's opening dialogue ends
   (`NataliaDialogueTrigger._activateAfterOpening`).
 - All positions are placeholders: the gift box, the cutscene (street group, car, car door mark,
-  drive-off target), both cells.
+  drive-off target).
+
+**Phase 4 (page 4, "Escape from the police station") built 2026-09-27 — compiles, not yet played.**
+`PoliceStationPage` (`Assets/Scripts/Level2/`, on `Page 4/PoliceStation`) owns the whole page
+sequence and is the only thing that restarts it:
+
+1. The arrest's `WrapUp` calls `PoliceStationPage.BeginFromArrest()`. Kami (west cell room, whose
+   east wall is now a `CellFence`) and Natalia (a new fenced cell in the front-left room, AROUND the
+   paper-plane pedestal) are locked up, and `ConfiscatedGear` takes Kami's scissors, ALL her paper
+   and the Pelusa.
+2. The narrator's line (`Narrator_JailIntro`, `_introLine`, first time only) plays half a second
+   after the girls land — the dialogue itself keeps Kami still. `_abuelaDelaySeconds` (3) after it
+   closes (Kami can walk around her closed cell meanwhile) `AbuelaEntrance`
+   drops the Abuela (`Abuela_Follower` prefab variant) next to the fence: Kami is locked only for the
+   fall and her two lines (`Abuela_JailLanding`), the fence disappears (reveal, not destruction), she
+   follows Kami.
+3. `ConfiscatedGearPickup` (where Diego had placed the TijeraPickup, just east of the cell) gives
+   everything back. Kami cuts the `CandadoCortable` on Natalia's door (moved there, 1 paper as
+   before) -> the door opens and Natalia follows. Freeing her also opens the pedestal:
+   `OrigamiRoute_PaperPlane` (the Level 1 Avion route: 2 folds, 2 paper, reusable) under
+   `Canvas/Origamis`, classic step-on + Interact.
+4. The hat's one augmented jump (22 units) reaches the mezzanine (~18 above the floor). The window is
+   `Door (8)` (upper front-right; its collider is off), covered by `CuttableDrapes`. Past them,
+   `EscapeWindow` completes `Quest07_EscapeThePoliceStation`, starts `Quest08_ReturnThePelusa`, warps
+   both followers to `OutsideLanding` below the window, makes that Kami's respawn point and blinds
+   the cops. The page is then left the normal way (edge of the book), no forced turn.
+5. **Getting caught restarts the whole page** (Diego): on the respawn after a `DeathCause.Caught`,
+   everything above goes back to step 1, the Abuela falls again after only
+   `_abuelaDelayAfterCaptureSeconds` (3), the cops return to their posts. The stash only grows:
+   paper Kami gathered before being caught again is returned at the pickup too; the plane hat is lost.
+
+The cop is `PoliceOfficer.prefab` walking the four corners of Diego's "Poli Path" rectangle
+(`PoliceStation/PatrolRoute`); his blocking placeholder "Poli" (with the reference cone) is inactive.
+See `enemigos-e-ia.md`. The paper sources are the two desk typewriters (2 paper, respawn 30s); the
+stray Phase 0 typewriter at the page origin was deleted. **No NavMesh rebake was needed**: page
+NavMeshes are the classic bake of Navigation-Static objects, and every fence is non-static with a
+carving `NavMeshObstacle`, so opening one opens the path at runtime.
+
+Also removed in Phase 4 (Diego's call): the inactive Level 1 leftover `Objetos_Pagina_6 Abuela`
+under `Nivel (Mesa y Libro)` — it held a whole copy of Level 1's page 6 (Rocoso encounter, dam,
+river, props), all inactive. Recoverable from git (commit before Phase 4) if ever needed.
+
+**Level 2 starts with the normal scissors** (Diego): `Player._startWithTijera` is on for Level 2's
+Kami, equips them a frame after start without the reward pose. There is no upgraded pair in Level 2;
+the P cheat still gives one. Confiscating it works (`LoseTijera` no longer drives the normal-scissors
+count below 0), but after getting it back the upgraded pair shows the normal trail — cheat-only.
 
 **Phase 1 (page 1) in progress** — `Assets/Prefabs/NPCs/Natalia.prefab` exists and is
 drag-and-drop (placed in Page 1); see `docs/claude/quests-y-dialogos.md` for her dialogue/
