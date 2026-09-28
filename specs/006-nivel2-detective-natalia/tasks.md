@@ -272,6 +272,13 @@ placeholder clip; real art for Ariel, the cops, the open box and the Pelusa.
 complete). Internally very parallelizable — 4 nearly independent systems that only
 share the scene, not code:
 
+**Cell flow (Diego, 2026-09-25/27)**: Kami and Natalia are in **separate cells**. The Abuela falls
+from the sky and breaks **Kami's** cell door (4.A). Kami recovers her scissors (4.C), then cuts the
+**padlock on Natalia's cell** (`CandadoCortable`, already on page 4) to free her, and Natalia starts
+following again (`StartFollowingPlayer()`). Watch out: `CandadoCortable.ApplyCut()` calls
+`cofreQueAbro.OpenChest()` without a null check and the page 4 instance has no chest, so it throws
+today — the cell needs its own "what opens" hook.
+
 - **4.A** `[P]` **Abuela's entrance**. *Corrected scope*: not real
   destruction — a new triggered behavior (fall-on-Kami animation) that disables the
   nearby wall GameObjects via the existing `GameObjectActivator`/`QuestEffector`

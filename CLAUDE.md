@@ -56,7 +56,10 @@ Roadmap and future feature specs: `specs/` (Spec Kit) and `ROADMAP.md`.
 - **graphify** (`graphify-out/`): grafo de conocimiento del código en `Assets/Scripts` —
   `graphify-out/graph.html` (interactivo), `graphify-out/GRAPH_REPORT.md` (god nodes,
   comunidades, conexiones sorprendentes). Regenerar con `/graphify Assets/Scripts` tras
-  cambios grandes de arquitectura; `--update` para incremental.
+  cambios grandes de arquitectura; `--update` para incremental. Run it from the repo root: the
+  manifest lives in the root `graphify-out/`, and `Assets/Scripts/graphify-out/` is a mirror kept
+  in sync by copying (plus the AST cache). The corpus is code-only (AST, no LLM cost), so if
+  `--update` flags every file as changed (old manifest keys), a full rebuild costs the same.
 - **Spec Kit** (`.specify/`): flujo spec-driven para features medianas/grandes —
   `/speckit-specify` → `/speckit-plan` → `/speckit-tasks` → `/speckit-implement`.
   Constitución del proyecto en `.specify/memory/constitution.md`. Specs existentes en

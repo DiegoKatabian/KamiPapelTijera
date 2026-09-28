@@ -169,6 +169,12 @@ waiting on `DialogueManager.CanShowDialogueNow` (added 2026-09-25) before `ShowD
 was switched off when she started following on page 1). Whatever frees her in Phase 4 must call
 `StartFollowingPlayer()` on her; `SetTalkable(true)` is still page 5's job.
 
+**How she gets out (Diego, 2026-09-27)**: Kami cuts the padlock on Natalia's cell — the
+`CandadoCortable` already placed on page 4. Careful: `CandadoCortable.ApplyCut()` calls
+`cofreQueAbro.OpenChest()` with no null check, and that instance has no chest assigned, so cutting it
+today throws right after granting its paper. Kami herself is freed by the Abuela falling from the sky
+and breaking her cell door (4.A).
+
 ## Los NPC se mueven por NavMesh (2026-09-24)
 
 Diego's call: Natalia, Abuela and the future cops all move on the NavMesh, like the chickens.
