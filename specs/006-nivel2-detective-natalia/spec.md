@@ -258,12 +258,16 @@ without it being a real game-over).
 
 ### Story 5 — Page 5: Clearing their name (Priority: P5)
 
-They reach the museum, talk to the owner, and the confusion clears up: they unfold
-the café ticket (same Origami route as page 1, now unfolded) to prove their
-innocence, and compare their belongings with Ariel's (matching color palette —
-scarf/cap) plus the watch matching the time of the robbery to prove his guilt. The
-police apologize and the quest completes. Natalia and Grandmother stay behind. Kami
-talks to the owner again; she tells Kami to use the catapult. Pressing E confirms it,
+They reach the museum, talk to the owner (**Grace, the museum director** — named by Diego on
+2026-09-28), and the confusion clears up: they unfold the café ticket (same Origami route as page 1,
+now unfolded) to prove their innocence, and show that the thief's **hat and glove** (the page 2
+clues) are Ariel's, plus the watch matching the time of the robbery to prove his guilt (the old
+"scarf/cap" idea was dropped on 2026-09-28). The
+police apologize and the quest completes. Natalia and Grandmother stay behind. In the same
+dialogue (Diego, 2026-09-28: one talk, not two) she tells Kami to use the catapult. Ariel is on the
+page with the police, who chased the escapees there; the ticket is the girls' café receipt from the
+minute of the robbery (the café radio announced it on page 1), and Ariel's privileged access through
+his rich father is part of the case against him. Pressing E on the catapult confirms it,
 Kami and Grandmother get on, Kami cuts the rope, and they launch off. **Corrected**:
 this is a hard-animated sequence, not a physics launch — the camera holds on the
 assembled catapult; when the girls launch they quickly leave frame; the camera
@@ -275,9 +279,9 @@ to the ending cutscene.
 
 **Acceptance Scenarios**:
 
-1. **Given** both pieces of evidence (Ariel's belonging + the watch) are in the
-   inventory, **When** Kami talks to the owner, **Then** the resolution dialogue
-   fires and `QuestManager` completes "Escape the station and return the painting."
+1. **Given** the evidence (the Pelusa, the café ticket, the hat, the glove and the watch) is in
+   the inventory, **When** Kami talks to Grace and unfolds the ticket, **Then** the resolution
+   dialogue fires and `QuestManager` completes Quest08 "Return the Pelusa"
 2. **Given** the quest is complete, **Then** `Natalia.StopFollowingPlayer()` and
    `Abuela.StopFollowingPlayer()` are called — both end up idle in place.
 3. **Given** Kami talks to the owner a second time, **When** she presses E to confirm
@@ -287,6 +291,16 @@ to the ending cutscene.
    (`LevelManager.GoToScene` to a new scene — **NEEDS CLARIFICATION**: does Level 2's
    closing cutscene scene already exist, or does it need to be created/coordinated
    with Valentino, same as `Level1EndCutscene`?).
+
+### Addendum — Phase 6: presentation polish (Diego, 2026-09-28)
+
+After the first full playthrough: a Level 2 quest-start overlay when Natalia joins (rhyming, like
+Level 1's); a page 4 intro cutscene (camera tour + the jailer's taunt + Natalia's reply + the
+narrator) before the Abuela falls; Natalia thanks Kami when freed and asks for a paper plane, and
+**both followers ride the plane up to the mezzanine with Kami**; a page 5 arrival cutscene (Ariel
+and the police arrive by patrol car while Grace talks to the girls); and a sound effects pass
+(police, cells, the Abuela's fall, clues, café radio, catapult). Breakdown in `tasks.md` Phase 6.
+The jazz bar minigame under Natalia's house is its own feature: `specs/007-jazz-bar-minigame/`.
 
 ## Requirements *(mandatory)*
 
@@ -357,7 +371,7 @@ to the ending cutscene.
 - **Quest_FindClues**, **Quest_GoBackToNataliasHouse**,
   **Quest_EscapeAndReturnThePainting** — 3 new `QuestSO` assets, same mold as the
   existing 4.
-- **Evidence items** (the hat — `caughtBelonging`, broken watch, lost glove, Ariel's scarf/cap, the Pelusa) —
+- **Evidence items** (the hat — `caughtBelonging`, broken watch, lost glove, the Pelusa, the café ticket; Ariel's scarf/cap was retired on 2026-09-28) —
   new `ResourceType` entries + `InventoryItem` assets, 1-count, same pattern as
   `abuela`.
 - **OrigamiRoute_Cafe**, **OrigamiRoute_Letter** *(corrected — replaces the earlier

@@ -95,14 +95,6 @@ MonoBehaviour:
     m_Key: broken_watch_text
     m_Metadata:
       m_Items: []
-  - m_Id: 1000000000005
-    m_Key: ariel_scarf_title
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1000000000006
-    m_Key: ariel_scarf_text
-    m_Metadata:
-      m_Items: []
   - m_Id: 1000000000007
     m_Key: pelusa_painting_title
     m_Metadata:

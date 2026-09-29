@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7dbce3668a28f42bb62a3c585866f0, type: 3}
+  m_Name: Museum_Evidence
+  m_EditorClassIdentifier: 
+  wasRead: 0
+  events:
+  - text: museum_evidence_01
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: natalia_name
+  - text: museum_evidence_02
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: natalia_name
+  - text: museum_evidence_03
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: ariel_name
+  - text: museum_evidence_04
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: natalia_name
+  - text: museum_evidence_05
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: natalia_name
+  - text: museum_evidence_06
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: grace_name
+  - text: museum_evidence_07
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: natalia_name
+  - text: museum_evidence_08
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: police_name
+  - text: museum_evidence_09
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: ariel_name
+  - text: museum_evidence_10
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: grace_name
+  - text: museum_evidence_11
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: natalia_name
+  - text: museum_evidence_12
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: grace_name
+  - text: museum_evidence_13
+    sprite: {fileID: 21300000, guid: ea1a7dd0265051e45abee668b2136ef9, type: 3}
+    speakerName: Abuela
+  - text: museum_evidence_14
+    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    speakerName: grace_name
+  currentText: 0

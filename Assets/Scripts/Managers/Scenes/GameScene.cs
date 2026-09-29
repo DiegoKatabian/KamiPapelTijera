@@ -10,5 +10,6 @@ public enum GameScene
     MainMenu,
     Level1,
     Level1EndCutscene,
-    Level2
+    Level2,
+    Level2EndCutscene //appended: GameScene values are serialized as ints
 }

@@ -23,10 +23,10 @@ unless Diego asks for a translation.
 - `Assets/Scripts/Input/` — `InputHub` (fachada única de input), `InteractionContext` (el botón B contextual), `GamepadCursor`, `InputPromptSystem`
 - `Assets/Scripts/UI/` — `TooltipManager`/`PostIt` (tutorial), `FlapManager`/`CamWheelManager` (menú y selector de cámara), `InventorySlot`; `LocalizedText` (embudo ÚNICO de todo el texto localizado), y sobre él `ResaltadorDeConceptos` (palabras clave con color) + `IconosDeBoton`/`AnimadorDeIconos` (íconos animados de input) — ver `specs/005-textos-resaltados-e-iconos/spec.md`
 - `Assets/Scripts/Inventory/` — `InventoryManager`/`InventoryItem` (recursos recolectables)
-- `Assets/Scripts/Level2/` — Level 2 story glue: `FindCluesTracker` (page 2 clues → cops → quest handoff), `CrimeSceneGate` (guarded police tape), `ArrestCutscene` (page 3's arrest, answers the timeline's signals), and page 4's escape: `PoliceStationPage` (owns and restarts the page sequence), `ConfiscatedGear` + `ConfiscatedGearPickup`, `AbuelaEntrance`, `EscapeWindow`. See `nivel2-y-ui.md`
+- `Assets/Scripts/Level2/` — Level 2 story glue: `FindCluesTracker` (page 2 clues → cops → quest handoff), `CrimeSceneGate` (guarded police tape), `ArrestCutscene` (page 3's arrest, answers the timeline's signals), and page 4's escape: `PoliceStationPage` (owns and restarts the page sequence), `ConfiscatedGear` + `ConfiscatedGearPickup`, `AbuelaEntrance`, `EscapeWindow`, and page 5's ending: `MuseumPage` (Grace, the ticket unfold, closing the case) and `Catapult` (boarding + the launch timeline's signals). See `nivel2-y-ui.md`
 - `Assets/Scripts/Cutscenes/` + `Assets/Timelines/` — generic Timeline cutscenes: `CutsceneDirector` (locks Kami via `LevelManager.inCutscene`, binds Cinemachine tracks in code), `CutsceneDialogueMarker` (the timeline waits for a dialogue), `HiddenRenderers`. See `cutscenes.md`
 - `Assets/Prefabs/Interactables/TrashCan.prefab` — the openable trash can used everywhere in Level 2 (flap flow, 2 paper once); `TrashCan_ClueGlove` is its clue variant. Meant to be reused for sewer manholes
-- `Assets/Prefabs/Level2/` — page-specific Level 2 prefabs (clue pickups, crime-scene gate, clue tracker, gift box with ribbon + Pelusa + letter pedestal, `ArrestCutscene`, page 4's `CellFence` and `ConfiscatedGearPickup`). Also `Prefabs/NPCs/PoliceOfficer.prefab`, `Prefabs/NPCs/Abuela_Follower.prefab` (Level 2 variant of the Abuela) and `Prefabs/Cortables/CuttableDrapes.prefab`
+- `Assets/Prefabs/Level2/` — page-specific Level 2 prefabs (clue pickups, crime-scene gate, clue tracker, gift box with ribbon + Pelusa + letter pedestal, `ArrestCutscene`, page 4's `CellFence` and `ConfiscatedGearPickup`). Also `Prefabs/NPCs/PoliceOfficer.prefab`, `Prefabs/NPCs/Abuela_Follower.prefab` (Level 2 variant of the Abuela), `Prefabs/NPCs/Grace.prefab` (page 5's museum director, placeholder) and `Prefabs/Cortables/CuttableDrapes.prefab`. Page 5's catapult is built straight in the scene (`Page 5/Museum`), not a prefab
 - `Assets/Scripts/Quests/` — `QuestManager`/`QuestEffector` + un ScriptableObject `QuestNN_Nombre.asset` por quest
 - `Assets/Scripts/Dialogos/` — un `*DialogueTrigger.cs` por NPC + estados de NPC (`NPC_Abuela`, `NPC_Florista`, etc.)
 - `Assets/Scripts/Enemies/` — Rocoso (FSM + física, ver `enemigos-e-ia.md`), `EnemySpawner` (armado, sin usar todavía)
@@ -40,7 +40,8 @@ unless Diego asks for a translation.
 - `Assets/Prefabs/Particulas/` — prefabs de partículas
 - `Assets/2D/Kami Spine/Atlas 11/skeleton.json` — skeleton ACTIVO (lo referencia `Kami.prefab`; los Atlas 1-10 son viejos)
 - Escena de trabajo Nivel 1: `Nivel1_KamiPapelTijera.unity` (activa desde fines de agosto 2026 — `Nivel1_LaRural SpineTest.unity` quedó vieja/stale, no confundir; puede tener referencias rotas)
-- Escena de trabajo Nivel 2: `Level2_Newspaper.unity` — ver `nivel2-y-ui.md` para estado actual (página del museo en progreso)
+- Escena de trabajo Nivel 2: `Level2_Newspaper.unity` — ver `nivel2-y-ui.md` para estado actual (las 5 páginas armadas, pendientes de jugar/arte)
+- Level 2 closing cutscene: `Level2_EndCutscene.unity` (placeholder copy of `Nivel1_EndCutscene`, reached from the page 5 catapult; `GameScene.Level2EndCutscene`)
 
 Active work branches:
 - `feature/spine-animations` — Spine character animations (Spanish code/comments)
@@ -48,6 +49,7 @@ Active work branches:
 - `feature/textos-resaltados-e-iconos` — palabras clave resaltadas con código de colores didáctico + íconos animados de input dentro del texto. Sale de `feature/joystick-controls`. Ver `specs/005-textos-resaltados-e-iconos/spec.md` (español).
 - `pages-blocking` — blocking for Level 2's 5 pages (`Level2_Newspaper.unity`), in progress. Branches from `Level2_Newspaper`.
 - `006-nivel2-detective-natalia` (design work started 2026-09-22) — Level 2's new mechanics: Natalia's detective story across the 5 pages (companion NPC, 3 chained quests, ambient traffic, a police vision cone, new Origami routes, a catapult level ending). Branches from `pages-blocking` (carries its in-progress blocking). See `specs/006-nivel2-detective-natalia/spec.md` and `tasks.md` for the phased breakdown meant for parallel work.
+- `007-jazz-bar-minigame` (designed 2026-09-28, not started) — Level 2 sidequest 2: the page 3 bar's free-play jazz jam (every key plays a sax note), won saxophone usable from the inventory (sax mode). See `specs/007-jazz-bar-minigame/spec.md` and `tasks.md`, epic #131.
 
 Roadmap and future feature specs: `specs/` (Spec Kit) and `ROADMAP.md`.
 

@@ -97,6 +97,14 @@ MonoBehaviour:
     m_Localized: "{INPUT:accion} para espiar adentro"
     m_Metadata:
       m_Items: []
+  - m_Id: 7000000000002
+    m_Localized: "{INPUT:accion} para subir a la catapulta"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7000000000003
+    m_Localized: "\xA1Cort\xE1 la soga para despegar!"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

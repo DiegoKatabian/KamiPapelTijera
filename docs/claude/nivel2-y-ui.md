@@ -40,7 +40,9 @@ now, ready for pages 1-5 to wire up:
   if one side carries a Rigidbody, so without it the scissors would silently never cut
   them. Sprites are bush stand-ins until Valentino draws the real art.
 - **Evidence items**: 4 new `ResourceType` values (`caughtBelonging` — the hat,
-  `brokenWatch`, `arielScarfCap`, `pelusaPainting`; `cafeTicket` (2026-09-27, given by the page 1
+  `brokenWatch`, `arielScarfCap` (**retired 2026-09-28**: Ariel's evidence is the hat + glove; the
+  enum slot stays as `unusedArielScarfCap` so the later ints keep their meaning, its item asset and
+  ItemTable keys are gone), `pelusaPainting`; `cafeTicket` (2026-09-27, given by the page 1
   café fold through `OrigamiItemGiver`, see `origami-y-tooltips.md`) was appended after `lostGlove`;
   `lostGlove` was appended as a 5th in
   Phase 2, in both InventoryManager lists) + matching `InventoryItem` assets in
@@ -154,9 +156,50 @@ Kami, equips them a frame after start without the reward pose. There is no upgra
 the P cheat still gives one. Confiscating it works (`LoseTijera` no longer drives the normal-scissors
 count below 0), but after getting it back the upgraded pair shows the normal trail — cheat-only.
 
-**Phase 1 (page 1) in progress** — `Assets/Prefabs/NPCs/Natalia.prefab` exists and is
+**Phase 1 (page 1)** — `Assets/Prefabs/NPCs/Natalia.prefab` exists and is
 drag-and-drop (placed in Page 1); see `docs/claude/quests-y-dialogos.md` for her dialogue/
-quest wiring and the Event-quest gotcha that comes with it.
+quest wiring and the Event-quest gotcha that comes with it. **Since 2026-09-28 the café fold is
+mandatory**: Natalia only joins Kami (Quest05 + follow) once the café ticket is folded, so Kami
+always reaches page 5 with it.
+
+**Phase 5 (page 5, "Clearing their name") built 2026-09-28 — compiles, not yet played.**
+`MuseumPage` (`Assets/Scripts/Level2/`, on `Page 5/Museum`) owns the page:
+
+1. Talking to **Grace** (the museum director, `Prefabs/NPCs/Grace.prefab`: a tinted Natalia sprite +
+   `GraceDialogueTrigger`, whose lines `MuseumPage` picks) needs the Pelusa, the café ticket and the
+   three clues. Her meeting dialogue ends -> the ticket pedestal (`SelloOrigami CafeTicket`, a
+   `SelloOrigami Cafe` instance pointed at `OrigamiRoute_Cafe_Unfold`, 0 paper, auto-prompt) appears.
+   **Ariel and a cop are there** (tinted placeholders, `Ariel_PLACEHOLDER_POSITION` /
+   `CopWitness_PLACEHOLDER_POSITION`): they chased the escapees from page 4. The meeting is where
+   Grace introduces herself, and Natalia introduces herself and Kami.
+2. The unfold shows the ticket (the girls' receipt from page 1: 2 hot chocolates, paid at 21:47) on
+   the letter's `OrigamiTextRevealPanel`; closing it plays `Museum_Evidence`: both girls were at the
+   café at 21:47 and heard of the robbery on its radio, Ariel's hat + glove, the watch stopped at
+   21:47, Grace pointing out Ariel's access through his father, the police apology and arrest, Ariel's apology to Natalia, Grace's thanks, and **Grace's catapult offer in
+   the same dialogue** (Diego, 2026-09-28: the player talks to Grace once).
+3. When that ends: the five items leave the inventory (handed over), `OnPaintingReturned` completes
+   Quest08 (removed a frame later), Natalia and the Abuela stop following where they stand,
+   Natalia becomes talkable with her farewell (`NataliaDialogueTrigger.StayBehind`), and the
+   **catapult** (`Catapult`, same object) unlocks.
+4. Interact on the catapult = confirm -> short fade (`Canvas/ScreenFade`, `ScreenFader`), Kami lands in the
+   bucket (walled in by `BucketWalls`, she can still attack), the Abuela next to her, her line, a
+   "cut the rope" post-it. Only now is the rope's trigger on. Cutting it plays `Timeline_Catapult`
+   (see `cutscenes.md`): launch, hold on the empty catapult, fade, `Level2_EndCutscene`.
+
+The rope is the old loose root `CuttableRope` instance, moved under the catapult. Its 21-unit trigger
+sits 3.5 to Kami's right at seat height: her scissor hitbox (3.16 +- 4.27 ahead of her body center,
+1.15 +- 2.32 above it, +-1.74 deep) reaches it from anywhere in the 5x5 bucket, facing right.
+Everything is placeholder cubes/sprites and `_PLACEHOLDER_POSITION` objects (Grace, Ariel, the cop
+witness, the pedestal, the catapult). Starting the scene with `startingPage = 5` gives Kami the five items,
+Quest08 and both followers.
+
+`Level2_EndCutscene.unity` (`GameScene.Level2EndCutscene`, catalog + Build Settings) is a copy of
+`Nivel1_EndCutscene` running `Narrator_Level2Ending` (the flight, the Narrator's blue lamp, a third
+book) with empty portraits, then MainMenu: Valentino swaps the frames in the DialogueSO's sprites.
+
+Also removed in Phase 5 (Diego's call): the loose root `CuttablePoliceTape` and `CuttablePoster`
+(Phase 0 leftovers; page 2's tape lives in `CrimeSceneGate`), the unreferenced Level 1
+`ParticulasSplash`, the inactive `Plane-VertexPaintTest` and page 5's inactive `NPC_Florista`.
 
 **The full 5-page narrative is now defined** (Diego, 2026-09-22): Kami meets Natalia,
 they investigate a stolen painting (the Pelusa), get framed by Ariel, end up

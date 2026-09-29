@@ -95,6 +95,14 @@ MonoBehaviour:
     m_Localized: "{INPUT:accion} to peek inside"
     m_Metadata:
       m_Items: []
+  - m_Id: 7000000000002
+    m_Localized: "{INPUT:accion} to get on the catapult"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7000000000003
+    m_Localized: "Cut the rope to launch!"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -100,14 +100,6 @@ MonoBehaviour:
     m_Localized: Os ponteiros pararam bem na hora do roubo.
     m_Metadata:
       m_Items: []
-  - m_Id: 1000000000005
-    m_Localized: Cachecol do Ariel
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1000000000006
-    m_Localized: Combina com as cores do objeto encontrado na cena do roubo.
-    m_Metadata:
-      m_Items: []
   - m_Id: 1000000000007
     m_Localized: A Pelusa
     m_Metadata:

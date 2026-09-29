@@ -74,12 +74,13 @@ reportarse un bug ahí.
 | Granjero Norberto | `GranjeroNorbertoDialogueTrigger.cs` | Completo — además spawnea el pickup de tijera en el primer diálogo |
 | **Chino** | `ChinoDialogueTrigger.cs` | **STUB VACÍO** — la clase existe pero no implementa nada, pese a que `Quest04_Chino.asset` ya está configurada (100× papel → SprintBoots). Quest sin NPC funcional. |
 | **Florista** | `NPCs/NPC_Florista.cs` | **STUB VACÍO** — clase sin implementación, sin diálogo conectado. |
-| Natalia (Nivel 2) | `NataliaDialogueTrigger.cs` + `NPCs/NPC_Natalia.cs` | Page 1 (opening dialogue + follow + quest start) implementado 2026-09-22; page 2 clue comments come from `FindCluesTracker` (2026-09-24); page 3 arrest + page 4 cell/escape wired (2026-09-25/27); page 5 pendiente. Ver la sección de abajo. |
+| Natalia (Nivel 2) | `NataliaDialogueTrigger.cs` + `NPCs/NPC_Natalia.cs` | Page 1 (opening dialogue + follow + quest start) implementado 2026-09-22; page 2 clue comments come from `FindCluesTracker` (2026-09-24); page 3 arrest + page 4 cell/escape wired (2026-09-25/27); page 5 drop-off + farewell (2026-09-28). Ver la sección de abajo. |
+| Grace (Nivel 2) | `GraceDialogueTrigger.cs` (lines picked by `Level2/MuseumPage.cs`) | Page 5, 2026-09-28: museum director, placeholder tinted sprite (`Prefabs/NPCs/Grace.prefab`). Not an `NPC`: she never walks. |
 
 `NPC.cs` es la base común de estado (junto con `NPC_FollowPlayerState`/
 `NPC_IdleState`, reusados por Abuela y pensados para reusarse por más NPCs).
 
-## Natalia (Level 2 NPC) — page 1 implemented, pages 2-5 pending
+## Natalia (Level 2 NPC) — pages 1-5 implemented
 
 Natalia is NOT a simple quest NPC like the 4 above — she's a companion who travels with
 Kami across Level 2's 5 pages in a detective arc (a painting theft, Ariel's trap, an
@@ -97,6 +98,21 @@ design: `specs/006-nivel2-detective-natalia/`. The old spec
   request→reminder→thanks→chat mold with a resource subtraction on dialogue 2, which an
   Event quest with no item handover can't use.
 - `Quest05_FindClues.asset` — Event-based, completed by `Evento.OnAllCluesFound`.
+- **Changed 2026-09-28 (Diego): she joins Kami when the café ticket is folded, not when her
+  opening ends.** Opening ends -> the café pedestal appears and her dialogue 1 becomes the "fold the
+  ticket first" reminder (`Natalia_FoldTicket`). `OnCafeWrapperFolded` -> `_afterTicketDialogue`
+  (`Natalia_AfterTicket`: she realizes Kami was dragged here from another book and promises to find
+  a way to send her back in the morning; then the café's **radio** (`radio_name`) announces another
+  incident at the museum, the Pelusa, and she heads out to look for clues right now) -> when it
+  ends, Quest05 + follow. **Premise (Diego, 2026-09-28)**: Natalia investigates a *series* of
+  museum robberies and does not know about the Pelusa until the radio. Her opening says Ariel was on
+  her back all day at work and only just left her alone: he was at the museum. The girls' café
+  receipt (21:47, the minute of the robbery) is the alibi of both on page 5; Ariel had privileged
+  access to the museum through his rich father (the museum's biggest patron). This makes the ticket
+  mandatory for page 5. Nothing stops Kami from leaving page 1 without folding it (same as before,
+  when nothing stopped her leaving without talking to Natalia).
+- **Page 5**: `MuseumPage` stops her follow and calls `StayBehind()`: talkable again, and every talk
+  from then on is `_farewellDialogue` (`Natalia_Farewell`).
 - `Assets/Prefabs/NPCs/Natalia.prefab`, placed in Page 1. Visual is a placeholder
   `SpriteRenderer` child (`NataliaVisual_PLACEHOLDER`) until Valentino's Spine art;
   swapping it touches nothing else.
@@ -142,8 +158,9 @@ to the gift box; now it closes when the page 3 arrest ends and Kami is in her ce
 (renamed from `Quest07_EscapeAndReturnThePainting`, same guid) is now only the escape — Event
 `OnPoliceStationEscaped` (appended at the end of `Evento`, handler `SetPoliceStationEscaped`),
 fired by crossing page 4's window — and `PoliceStationPage` then starts `Quest08_ReturnThePelusa`
-("Natalia IV", Event `OnPaintingReturned`, handler `SetPaintingReturned` — page 5's resolution must
-fire that event). The enum value was
+("Natalia IV", Event `OnPaintingReturned`, handler `SetPaintingReturned`), which `MuseumPage` fires
+on page 5 once the evidence dialogue with Grace ends, and removes a frame later (the last quest of
+the level: nothing starts after it). The enum value was
 renamed in place (`OnGiftAtNataliasDoorReached` → `OnArrestSequenceEnded`, same position), so
 Quest06's stored int still matches. The gift's `GiftDialogueTrigger` no longer touches quests.
 Two traps found building these, both relevant to any future quest that is closed from code:

@@ -85,7 +85,8 @@ a separate agent — no file overlap between them.
   sprites as stand-in art for Valentino to swap.
 
 - **0.D** `[P]` **Evidence data** — ✅ Done. 4 new `ResourceType` values
-  (`caughtBelonging`, `brokenWatch`, `arielScarfCap`, `pelusaPainting`) in
+  (`caughtBelonging`, `brokenWatch`, `arielScarfCap` (retired 2026-09-28, slot kept as
+  `unusedArielScarfCap`), `pelusaPainting`) in
   `LevelManager.cs` + matching `InventoryItem` assets in `Assets/Scripts/Inventory/`
   (sprites left empty, no art yet), with real es/en/pt localization copy. **Open**:
   not yet added to any scene's `InventoryManager._allItems` array — whichever task
@@ -371,6 +372,130 @@ jump from the floor onto the mezzanine with the hat (22 units of jump vs ~18 of 
   fade to black → `LevelManager.GoToScene` to the closing cutscene.
   **NEEDS CLARIFICATION** (see `spec.md`): does the destination cutscene scene
   already exist?
+
+**Status (2026-09-28): 5.A-5.D built — compiles, NOT played yet.** File map in
+`docs/claude/nivel2-y-ui.md` (Phase 5). Decisions taken with Diego, and what changed from the draft:
+
+- **The owner is Grace, the museum director**, a placeholder tinted sprite (`Grace.prefab`). What she
+  says is picked by the page owner, `MuseumPage`.
+- **Evidence = the hat + the glove (Ariel's) + the watch** (the time of the robbery). The scarf/cap
+  item was retired (asset and list entries deleted, enum slot kept). The gate asks for the Pelusa,
+  the ticket and the three clues; a normal playthrough always has them.
+- **The café ticket is mandatory**: on page 1, Natalia only joins Kami once it is folded, and her
+  new line there says she will help Kami get back to her book (Diego). Page 5's dialogue is about
+  Grace thanking the girls and helping Kami and the Abuela home.
+- **Order**: Grace's meeting -> the ticket pedestal pops up and auto-prompts the unfold -> the
+  ticket's text -> the evidence dialogue (Natalia, the police apology, Grace's thanks) -> Quest08
+  closes -> the five items leave the inventory, both followers stay where they stand, Natalia gets a
+  farewell line, the catapult unlocks. **Revised after Diego's first play (same day)**: Grace's
+  catapult offer is part of the evidence dialogue (one talk, not two); **Ariel is on the page** with
+  one cop (they chased the escapees from page 4), accuses them, is arrested and apologizes to
+  Natalia; Grace introduces herself and Natalia introduces the two of them. **Premise**: Natalia
+  investigates a series of museum robberies and learns about the Pelusa from the café radio right
+  after the fold (page 1), which sends them out for clues; Ariel was on her back all day at work and
+  only just left her alone, so the girls' café receipt (21:47) is the alibi of both; Ariel had
+  privileged access through his rich father.
+- **5.D**: Interact on the catapult is the confirm. A short fade puts Kami in the bucket (invisible
+  walls: she can't leave but can attack) and the Abuela next to her; the rope only becomes cuttable
+  then. Cutting it plays `Timeline_Catapult` (camera hold, launch, fade, `Level2_EndCutscene`).
+  The rope is the old loose root instance, moved (Diego). Placeholder cubes, no Animator: the
+  loaded/fired art swap and the flight are code, timed by the timeline's signals.
+- **Closing scene** `Level2_EndCutscene` is a placeholder copy of `Nivel1_EndCutscene` with a
+  narrator dialogue (the flight, the Narrator's blue lamp, a third book), then MainMenu.
+- Page 5 music stays Bohren. Root leftovers removed: the loose police tape and poster, the Level 1
+  splash particles, the vertex-paint test plane, page 5's `NPC_Florista`.
+
+**Still to verify by playing**: the whole page 1 -> 5 run with the new café requirement; Grace's,
+the pedestal's and the catapult's placeholder positions; that Kami lands standing in the bucket and
+reaches the rope (checked numerically only); the camera framing of the hold; the fade and the scene
+change.
+
+---
+
+## Phase 6 — Presentation polish (designed 2026-09-28, after Diego played Phases 1-5)
+
+Diego's notes after the first full playthrough of Level 2, designed the same day (all defaults
+accepted). Everything here polishes flows that already work: no new systems except the followers'
+plane ride (6.C). **Only one agent may write `Level2_Newspaper.unity` at a time**: 6.A-6.D all touch
+it, so they run in sequence on one track; 6.E and 6.G are parallel-safe with them.
+
+- **6.A** **Level 2 quest-start overlay**. Level 1 shows `MainQuestOverlay` when a specific
+  dialogue ends (`OverlayManager.mainQuestTriggeringDialogue`); Level 2's `OverlayManager` still
+  points at Level 1's dialogues, so it never fires. Trigger it when `Natalia_AfterTicket` ends (the
+  moment she starts following), with a Level 2 text key in `UITexts` (the overlay's text is a
+  `LocalizeStringEvent` on the prefab: override its entry on Level 2's instance, don't touch Level
+  1's key). Copy (Diego picked option 1), es: *"A un nuevo libro llegaste / y los problemas
+  empiezan a brotar. / Ayudá a tu nueva amiga, / que ella te ayudará a regresar."* + the "press E to
+  continue" prompt as its own short line under the verse (`{INPUT:accion}`). en/pt adapted keeping a
+  rhyme.
+
+- **6.B** **Page 4 intro cutscene** (first time only, Timeline like the arrest, reusing
+  `CutsceneDirector`/`CutsceneDialogueMarker`/signals). Order: camera tour of the page (cells ->
+  the cop's patrol route -> Natalia's cell with the pedestal -> the mezzanine window; ~3 shots,
+  ~8 s, every shot draggable) -> the patrolling cop says *"¡Acá van a quedarse encerradas para
+  siempre! ¡Jajaja, ladronas embusteras!"* (`police_name`) -> Natalia: *"No somos embusteras ni
+  ladronas."* -> the narrator's line, rewritten: *"Después de un rato encerradas, se escuchó un
+  tremendo golpe..."* -> the Abuela falls `_abuelaDelaySeconds` later as today. Not skippable. After
+  a capture: no cutscene (same rule as the narrator today). `PoliceStationPage.StartSequence`
+  replaces its `IntroThenAbuela` coroutine with "play the intro cutscene, then schedule the Abuela".
+  The cops must not detect Kami while it plays (they already go blind during `inCutscene`).
+
+- **6.C** **Natalia thanks Kami + the followers ride the paper plane** (new, Diego 2026-09-28).
+  1. When the padlock is cut (`PoliceStationPage.OnNataliaPadlockCut`), Natalia says (new dialogue
+     `Natalia_Freed`): *"¡Gracias por salvarme! Tenemos que escapar por esa ventana abierta de
+     allá arriba. ¿Podés doblar un avioncito de papel o algo así?"* — this is what points the
+     player at the pedestal inside her cell.
+  2. When the plane hat is folded (`Evento.OnOrigamiGivePaperPlaneHat`) while on page 4, both
+     followers who are currently following **board the plane**: they stop following, their
+     `NavMeshAgent` goes off, and they are held at seat offsets around Kami every frame
+     (`LateUpdate`, the `RidingPage` pattern), so they fly up to the mezzanine with her.
+  3. **They get off when the hat is used up** (Kami lands after the augmented jump:
+     `Player.DestroyPaperPlaneHat`, which needs an event or a callback to hook): they are warped
+     next to Kami, agents back on, following again. If the jump is wasted on the ground floor they
+     simply walk again; refolding boards them again. Crossing the window keeps today's behaviour
+     (both warped outside). A capture while riding must dismount them first (the page restart
+     warps Natalia to her cell and hides the Abuela).
+  4. Riding poses: placeholders now (same sprites, a small bob), real "sitting on the plane" art
+     is **6.F**. Seat offsets and the bob are Inspector values.
+  Check during implementation: whether the mezzanine is on page 4's NavMesh (if it isn't, the
+  followers stand still up there until the window warps them out, which is acceptable).
+
+- **6.D** **Page 5 arrival cutscene**. Ariel and the cop are **not** on the page at first.
+  Talking to Grace plays a Timeline: Grace reacts (*"¿Puedo ayudarlas...? ¿¡Eso es el Pelusa!?"*)
+  -> sirens -> the patrol car drives in (reuse the arrest's car/`TrafficObstacle.Launch` and the
+  CopEscort/Ariel placeholders) -> Ariel and the cop walk up to the group while the camera pulls
+  back to show them arriving, then returns to the group -> the already-approved `Grace_Meeting`
+  lines (Ariel's accusation, the cop, Grace's and Natalia's introductions) -> the ticket pedestal
+  appears as today. `MuseumPage` starts the Timeline instead of showing `_graceMeeting` directly.
+
+- **6.E** `[P]` **Sound effects pass (hooks + bank rows)**. Every hook in code with an
+  `AudioBank` row and a placeholder clip where a similar sound exists; Diego swaps the real clips
+  in the bank later (6.G). Missing today:
+  - **Police (pages 3 and 5)**: siren loop, horn beeps, braking, running footsteps, handcuffs click
+    on the `Arrest_Cuffs` line.
+  - **Page 4**: cell bars slam when the girls are locked up (6.B), metal clank on the padlock cut,
+    fence rattle when a fence opens, the Abuela's falling whistle + crash (today `RockSmash`), a
+    whistle / "¡Eh!" when a cop first spots Kami, a sting when she is caught, typewriter clack at
+    the paper sources, cloth rip on the drapes.
+  - **Pages 1-2**: café ambience; radio static + news jingle before the announcement in
+    `Natalia_AfterTicket`; manhole clank on the hat clue; a short "clue found" sting; car engines
+    and horns on ambient traffic.
+  - **Page 3**: the gift box opening; bar ambience.
+  - **Page 5**: the rope creaking under tension; the catapult thud + whoosh (today
+    `Jump_Paperplane`).
+  - **Music**: page 4 still has no track (`PageMusicManager`, just an id to type in).
+  Dialogue-synced sounds need a way to play a sound on a given line: decide during implementation
+  between a per-line sound on `DialogueEvent` and a Timeline signal (cutscenes).
+
+- **6.F** `[P]` **[ART-VALEN] Riding poses**: Natalia and the Abuela sitting on / hanging from
+  the paper plane (replaces 6.C's placeholders). Also the arrival/tour cutscenes' art needs (patrol
+  car, Ariel, cops) are the same placeholders already tracked by the Phase 3 art issues.
+
+- **6.G** `[P]` **Audio: real clips for 6.E** (Diego, audio lead): source/record every sound
+  listed in 6.E and the page 4 music, then swap them into the `AudioBank` rows.
+
+**Parallelism**: one scene track (6.A -> 6.B -> 6.C -> 6.D, sequential because they all write the
+scene), with 6.E (code + bank, no scene) alongside it; 6.F and 6.G are art/audio, outside code.
 
 ---
 

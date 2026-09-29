@@ -23,8 +23,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 5000000000002
-    m_Localized: "[PLACEHOLDER] Cafe de la Esquina - receipt, time of purchase matches\
-      \ the time of the robbery. Kami was never near the museum."
+    m_Localized: "Caf\xE9 de la Esquina\n2 hot chocolates, 1 croissant\nPaid at 21:47"
     m_Metadata:
       m_Items: []
   references:

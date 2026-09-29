@@ -303,19 +303,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000003
-    m_Localized: "Someone stole a painting from the museum. The Pelusa. And everyone's acting like nothing happened."
+    m_Localized: "Things keep disappearing from the museum. A whole series of robberies, and everyone's acting like nothing happened."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000004
-    m_Localized: "And on top of that I've got Ariel behind me all day, asking questions and ringing my doorbell."
+    m_Localized: "And on top of that, Ariel has been on my back all day at work, asking questions. He only just left me alone."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000005
-    m_Localized: "You've got scissors and a face that doesn't scare easy. Help me find some clues?"
+    m_Localized: "You've got scissors and a face that doesn't scare easy. Fancy a hot chocolate while I tell you about the case?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000006
-    m_Localized: "Come on, then. Two pairs of eyes see twice as much."
+    m_Localized: "Come on, the caf\xE9 is right here."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000007
@@ -420,6 +420,154 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 661900000000123
     m_Localized: "Tricked and locked away, just when all seemed lost, a tremendous commotion was heard on the roof."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000124
+    m_Localized: "Grace"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000125
+    m_Localized: "Before we go, fold up that caf\xE9 wrapper on the pedestal. A good detective never throws away a receipt."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000126
+    m_Localized: "Nice fold! Hang on to that receipt, you never know when one will save your skin."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000127
+    m_Localized: "Say... you're not from this newspaper, are you? Your ink is different."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000128
+    m_Localized: "Someone dragged you here from another book? Against your will? That's awful."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000129
+    m_Localized: "Tell you what: help me search for clues tonight, and tomorrow morning we'll find a way to send you back to your book. Deal?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000130
+    m_Localized: "I'm Grace, director of this museum. Without proof, I'm afraid I can't believe a word you say."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000134
+    m_Localized: "Well? Let's see that ticket of yours."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000144
+    m_Localized: "The catapult is ready whenever you are. Don't forget to say goodbye to Natalia!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000145
+    m_Localized: "So this is goodbye, partner. Best case I ever cracked... and also my first."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000146
+    m_Localized: "Say hi to your book for me. And if you ever need a detective, you know which page to find me on."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000147
+    m_Localized: "Hold on tight, dear! I haven't flown since the great pillow fight of '58."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000148
+    m_Localized: "Kami and her grandmother soared over the rooftops of the newspaper, straight toward the fold of their own book..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000149
+    m_Localized: "...until they crashed into something big, round and blue: the lamp on the Narrator's desk."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000150
+    m_Localized: "Knocked off course, they tumbled between the pages of a book they had never read."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000151
+    m_Localized: "There they are, officers! The escapees! And they still have the Pelusa!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000152
+    m_Localized: "Nobody move! You two are going straight back to your cells."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000153
+    m_Localized: "Wait, officers. I'm Grace, director of this museum. If they stole the Pelusa... why would they bring it back?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000154
+    m_Localized: "Because we never stole it! I'm Natalia, and this is Kami. Someone framed us, and we can prove it."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000155
+    m_Localized: "Kami, our caf\xE9 receipt! Unfold it and show them."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000169
+    m_Localized: "Radio"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000170
+    m_Localized: "...breaking news: another incident at the city museum, just minutes ago. The Pelusa, its most treasured painting, has disappeared..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000171
+    m_Localized: "The Pelusa?! Another one, and right now! Come on, Kami, to the museum. Clues don't wait!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000172
+    m_Localized: "See the time? 21:47, the exact minute the Pelusa disappeared. We were both at the caf\xE9, having a hot chocolate."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000173
+    m_Localized: "We heard about the robbery on the caf\xE9's radio, like everyone else!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000174
+    m_Localized: "A receipt proves nothing! You... you could have paid and run!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000175
+    m_Localized: "Oh? Then whose hat got snagged on the manhole by the museum? And whose glove was in the trash?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000176
+    m_Localized: "They're yours, Ariel. And this watch was lying in the museum's yard, stopped at 21:47."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000177
+    m_Localized: "Ariel... your father is this museum's biggest patron. You could walk in and out of any room you pleased."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000178
+    m_Localized: "All day long you wouldn't leave me alone at work. The one evening you did, the Pelusa vanished."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000179
+    m_Localized: "Hmm... it all checks out, and I bet the other robberies do too. Ladies, the Federal Police owes you an apology. Ariel, you're coming with us!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000180
+    m_Localized: "Natalia... I'm sorry. I never meant for you to take the blame."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000181
+    m_Localized: "Thank you, girls. The Pelusa is home, thanks to you."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000182
+    m_Localized: "There's one more thing, Grace. Kami doesn't belong here: she needs to get back to her own book."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000183
+    m_Localized: "Then I have just the thing. Our oldest museum piece is a catapult: they say it can fling anything back between the pages it came from."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000184
+    m_Localized: "A catapult? Oh, how exciting! I'm coming too, dear."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000185
+    m_Localized: "Then climb in, both of you, and cut the rope when you're ready."
     m_Metadata:
       m_Items: []
   references:

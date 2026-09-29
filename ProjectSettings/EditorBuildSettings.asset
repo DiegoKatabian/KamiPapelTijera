@@ -29,6 +29,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Nivel1_KamiPapelTijera.unity
     guid: c940433f8aeb80345815e9204a6791fe
+  - enabled: 1
+    path: Assets/Scenes/Level2_EndCutscene.unity
+    guid: 8a702db234ab4e50b4c4953111214781
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 034a83661b805c742bed26f59cbe4731,
       type: 2}

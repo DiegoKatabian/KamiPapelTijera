@@ -308,19 +308,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000003
-    m_Localized: "Roubaram um quadro do museu. A Pelusa. E todo mundo age como se nada tivesse acontecido."
+    m_Localized: "Coisas n\xE3o param de sumir do museu. Uma s\xE9rie de roubos, e todo mundo age como se nada tivesse acontecido."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000004
-    m_Localized: "E ainda por cima tenho o Ariel atr\xE1s de mim o dia inteiro, fazendo perguntas e tocando minha campainha."
+    m_Localized: "E ainda por cima, o Ariel passou o dia inteiro atr\xE1s de mim no trabalho, fazendo perguntas. S\xF3 agora me deixou em paz."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000005
-    m_Localized: "Voc\xEA tem tesoura e cara de quem n\xE3o se assusta com nada. Me ajuda a procurar pistas?"
+    m_Localized: "Voc\xEA tem tesoura e cara de quem n\xE3o se assusta com nada. Um chocolate quente enquanto eu te conto o caso?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000006
-    m_Localized: "Vamos l\xE1. Dois pares de olhos veem o dobro."
+    m_Localized: "Vem, o caf\xE9 \xE9 logo ali."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000007
@@ -425,6 +425,154 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 661900000000123
     m_Localized: "Depois de serem enganadas, e quando tudo parecia perdido, um tremendo alvoro\xE7o se ouviu no telhado."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000124
+    m_Localized: "Grace"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000125
+    m_Localized: "Antes de irmos, dobra aquele papel do caf\xE9 no pedestal. Uma boa detetive nunca joga um recibo fora."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000126
+    m_Localized: "Bela dobra! Guarda esse recibo, nunca se sabe quando um comprovante vai salvar a sua pele."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000127
+    m_Localized: "Me diz... voc\xEA n\xE3o \xE9 deste jornal, \xE9? A sua tinta \xE9 diferente."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000128
+    m_Localized: "Algu\xE9m te arrastou de outro livro pra c\xE1? Contra a sua vontade? Que horror."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000129
+    m_Localized: "Vamos fazer um trato: me ajuda a procurar pistas esta noite, e amanh\xE3 de manh\xE3 a gente descobre um jeito de te mandar de volta pro seu livro. Combinado?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000130
+    m_Localized: "Sou a Grace, diretora deste museu. Sem provas, receio que n\xE3o posso acreditar em nada do que dizem."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000134
+    m_Localized: "E ent\xE3o? Vamos ver esse recibo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000144
+    m_Localized: "A catapulta est\xE1 pronta quando voc\xEAs quiserem. N\xE3o esquece de se despedir da Natalia!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000145
+    m_Localized: "Ent\xE3o \xE9 um adeus, parceira. O melhor caso que j\xE1 resolvi... e tamb\xE9m o primeiro."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000146
+    m_Localized: "Manda um oi pro seu livro. E se um dia precisar de uma detetive, voc\xEA sabe em que p\xE1gina me encontrar."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000147
+    m_Localized: "Segura firme, querida! N\xE3o voo desde a grande guerra de travesseiros de 58."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000148
+    m_Localized: "Kami e a av\xF3 voaram por cima dos telhados do jornal, direto para a dobra do pr\xF3prio livro..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000149
+    m_Localized: "...at\xE9 que bateram em algo grande, redondo e azul: a lumin\xE1ria da escrivaninha do Narrador."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000150
+    m_Localized: "Desviadas, ca\xEDram entre as p\xE1ginas de um livro que nunca tinham lido."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000151
+    m_Localized: "L\xE1 est\xE3o elas, policiais! As fugitivas! E ainda est\xE3o com a Pelusa!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000152
+    m_Localized: "Ningu\xE9m se mexe! Voc\xEAs duas v\xE3o direto de volta pras celas."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000153
+    m_Localized: "Esperem, policiais. Sou a Grace, diretora deste museu. Se elas roubaram a Pelusa... por que a devolveriam?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000154
+    m_Localized: "Porque a gente nunca roubou! Eu sou a Natalia, e esta \xE9 a Kami. Armaram pra gente, e podemos provar."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000155
+    m_Localized: "Kami, o nosso recibo do caf\xE9! Desdobra e mostra pra eles."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000169
+    m_Localized: "R\xE1dio"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000170
+    m_Localized: "...urgente: mais um incidente no museu da cidade, h\xE1 poucos minutos. A Pelusa, o quadro mais valioso do acervo, desapareceu..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000171
+    m_Localized: "A Pelusa?! Mais um, e bem agora! Vamos, Kami, pro museu. As pistas n\xE3o esperam!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000172
+    m_Localized: "Viram o hor\xE1rio? 21:47, o minuto exato em que a Pelusa sumiu. N\xF3s duas est\xE1vamos no caf\xE9, tomando um chocolate quente."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000173
+    m_Localized: "A gente soube do roubo pelo r\xE1dio do caf\xE9, como todo mundo!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000174
+    m_Localized: "Um recibo n\xE3o prova nada! Voc\xEAs... voc\xEAs podem ter pago e sa\xEDdo correndo!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000175
+    m_Localized: "Ah, \xE9? Ent\xE3o de quem \xE9 o chap\xE9u que ficou preso no bueiro do museu? E a luva no lixo?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000176
+    m_Localized: "S\xE3o seus, Ariel. E este rel\xF3gio estava ca\xEDdo no p\xE1tio do museu, parado \xE0s 21:47."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000177
+    m_Localized: "Ariel... o seu pai \xE9 o maior benfeitor deste museu. Voc\xEA podia entrar e sair de qualquer sala quando quisesse."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000178
+    m_Localized: "O dia inteiro sem me deixar em paz no trabalho. Justo na noite em que voc\xEA me deixou sossegada, a Pelusa sumiu."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000179
+    m_Localized: "Hmm... tudo confere, e aposto que os outros roubos tamb\xE9m. Senhoritas, a Pol\xEDcia Federal deve desculpas a voc\xEAs. Ariel, voc\xEA vem com a gente!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000180
+    m_Localized: "Natalia... me desculpa. Eu nunca quis que a culpa ca\xEDsse em voc\xEA."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000181
+    m_Localized: "Obrigada, meninas. A Pelusa voltou pra casa gra\xE7as a voc\xEAs."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000182
+    m_Localized: "Tem mais uma coisa, Grace. A Kami n\xE3o \xE9 daqui: ela precisa voltar pro pr\xF3prio livro."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000183
+    m_Localized: "Ent\xE3o tenho exatamente o que voc\xEAs precisam. A pe\xE7a mais antiga do museu \xE9 uma catapulta: dizem que ela lan\xE7a qualquer coisa de volta pras p\xE1ginas de onde veio."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000184
+    m_Localized: "Uma catapulta? Ai, que emo\xE7\xE3o! Eu tamb\xE9m vou, querida."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000185
+    m_Localized: "Ent\xE3o subam as duas, e cortem a corda quando estiverem prontas."
     m_Metadata:
       m_Items: []
   references:

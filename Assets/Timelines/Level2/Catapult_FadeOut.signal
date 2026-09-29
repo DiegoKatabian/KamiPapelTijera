@@ -9,11 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9e932fbba955d94aa74134dc4249bac, type: 3}
-  m_Name: ItemArielScarfCap
+  m_Script: {fileID: 11500000, guid: d6fa2d92fc1b3f34da284357edf89c3b, type: 3}
+  m_Name: Catapult_FadeOut
   m_EditorClassIdentifier:
-  itemName: ariel_scarf_title
-  itemDescription: ariel_scarf_text
-  itemSprite: {fileID: 0}
-  itemColor: {r: 1, g: 1, b: 1, a: 1}
-  resourceType: 10

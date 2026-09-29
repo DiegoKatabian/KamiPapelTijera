@@ -16,7 +16,7 @@ public enum ResourceType
     abuela,
     caughtBelonging,   // Level 2: the robber's hat, snagged on a manhole cover (page 2 clue)
     brokenWatch,       // Level 2: broken wristwatch, evidence of the robbery time
-    arielScarfCap,     // Level 2: Ariel's matching scarf/cap, compared against caughtBelonging
+    unusedArielScarfCap, // UNUSED (retired 2026-09-28: Ariel's evidence is the hat + glove). Kept so the values below keep their serialized ints
     pelusaPainting,    // Level 2: the stolen Pelusa painting itself
     lostGlove,         // Level 2: a single glove found in a page 2 trash can (appended last so the serialized ints above keep their meaning)
     cafeTicket,        // Level 2: the café ticket Kami folds on page 1 (OrigamiItemGiver); unfolded on page 5 as proof of innocence

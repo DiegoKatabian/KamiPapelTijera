@@ -33,3 +33,8 @@ MonoBehaviour:
     scenePath: Assets/Scenes/Level2_Newspaper.unity
     sceneName: Level2_Newspaper
     isCinematic: 0
+  - scene: 4
+    sceneAsset: {fileID: 102900000, guid: 8a702db234ab4e50b4c4953111214781, type: 3}
+    scenePath: Assets/Scenes/Level2_EndCutscene.unity
+    sceneName: Level2_EndCutscene
+    isCinematic: 1

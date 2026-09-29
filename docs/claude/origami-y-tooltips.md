@@ -55,7 +55,11 @@ item must be in BOTH InventoryManager lists (Level 2's is a standalone scene cop
 
 On for the page 3 letter (inside `GiftBox.prefab`) and the page 1 café. The text panel now exists:
 `Assets/Prefabs/UI/OrigamiTextRevealPanel.prefab`, placed once under Level 2's `Canvas` and
-assigned to the letter route's `_textDisplay` (the café fold has no text).
+assigned to the letter route's `_textDisplay` (the café fold has no text). Page 5's ticket unfold
+(`OrigamiRoute_Cafe_Unfold`, 2026-09-28) uses the same panel: its `_textDisplay` is set in the scene,
+and its pedestal is a second `SelloOrigami Cafe` instance under `Page 5/Museum` (0 paper, auto
+prompt), switched on by `MuseumPage` when Grace's meeting dialogue ends. On page 1 the café fold is
+now what makes Natalia join Kami (see `quests-y-dialogos.md`), so the ticket always reaches page 5.
 
 **Careful — two different "bridge" routes exist.** `OrigamiRoute 1-Easy` is the live
 puentecito: 1 fold, `OSU-Puente` art, used in Nivel 1 page 2. `OrigamiRoute Puente.prefab`
