@@ -30,8 +30,16 @@ public class AbuelaEntrance : MonoBehaviour
     [SerializeField, Tooltip("Particles played at the landing point on impact (optional).")]
     ParticleSystem _impactParticles;
 
-    [SerializeField, Tooltip("Sound played on impact.")]
-    string _impactSound = AudioId.RockSmash;
+    //new field names on purpose: the scene still carries the old serialized _impactSound
+    //(RockSmash), which would have overridden these defaults
+    [SerializeField, Tooltip("Falling whistle, played as she starts to drop. Leave empty for none.")]
+    string _fallSound = AudioId.AbuelaFall;
+
+    [SerializeField, Tooltip("Sound played on impact. Leave empty for none.")]
+    string _crashSound = AudioId.AbuelaCrash;
+
+    [SerializeField, Tooltip("Rattle of the cell fence giving way, played on impact. Leave empty for none.")]
+    string _fenceSound = AudioId.FenceRattle;
 
     [SerializeField, Tooltip("What she says after landing (optional).")]
     DialogueSO _landingLine;
@@ -104,6 +112,7 @@ public class AbuelaEntrance : MonoBehaviour
         Debug.Log("[AbuelaEntrance] the Abuela falls");
 
         _abuela.gameObject.SetActive(true);
+        PlaySound(_fallSound);
         if (_abuela.navAgent != null)
         {
             _abuela.navAgent.enabled = false; //an enabled agent snaps her back to the NavMesh every frame
@@ -171,10 +180,22 @@ public class AbuelaEntrance : MonoBehaviour
             _impactParticles.Play(true);
         }
 
-        if (!string.IsNullOrEmpty(_impactSound))
+        PlaySound(_crashSound);
+        PlaySound(_fenceSound);
+    }
+
+    static void PlaySound(string id)
+    {
+        if (string.IsNullOrEmpty(id))
         {
-            AudioManager.instance.Play(_impactSound);
+            return;
         }
+        if (AudioManager.instance == null)
+        {
+            Debug.LogWarning($"[AbuelaEntrance] no AudioManager, '{id}' skipped");
+            return;
+        }
+        AudioManager.instance.Play(id);
     }
 
     //only ever releases a lock this component took, so it can't cut another cutscene short

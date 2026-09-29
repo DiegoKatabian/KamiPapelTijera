@@ -208,6 +208,12 @@ in a line instead of fighting for the same spot. Not seen in play yet.
 **On a capture both are reset** by `PoliceStationPage`: Natalia back in her closed cell, the Abuela
 gone until she falls again. After the escape both are warped outside below the window.
 
+### Phase 6 additions (2026-09-29)
+
+`Natalia_Freed` plays when page 4's padlock is cut (first time only, `PoliceStationPage._nataliaFreedLine`).
+Followers ride the paper plane on page 4: see `PaperPlaneRide` in `nivel2-y-ui.md`. Level 2's
+quest-start overlay fires when `Natalia_AfterTicket` ends.
+
 ## Los NPC se mueven por NavMesh (2026-09-24)
 
 Diego's call: Natalia, Abuela and the future cops all move on the NavMesh, like the chickens.

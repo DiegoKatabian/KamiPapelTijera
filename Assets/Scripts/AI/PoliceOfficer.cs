@@ -17,6 +17,11 @@ using UnityEngine.AI;
 /// the base class's debug logs, "Evading" means "alerted" for this agent.
 ///
 /// Only Kami can be seen. Natalia and the Abuela are never spotted (Diego, 2026-09-27).
+///
+/// He can be cut (Diego, 2026-09-28): a scissor hit (PoliceOfficerCortable) knocks him out for
+/// _knockedOutSeconds. While he is out he sees nothing, walks nowhere and his cone is hidden; then
+/// he wakes calm and goes back to the waypoint he was walking to. The counterplay to a cop that
+/// has spotted her.
 /// </summary>
 public class PoliceOfficer : PatrollingAgent
 {
@@ -59,9 +64,22 @@ public class PoliceOfficer : PatrollingAgent
     [SerializeField, Tooltip("How fast the officer turns (and his cone with him), in degrees per second.")]
     float _turnDegreesPerSecond = 270f;
 
+    [Header("Being cut")]
+    [SerializeField, Tooltip("Seconds he stays knocked out after a scissor hit, before he wakes up and resumes his route.")]
+    float _knockedOutSeconds = 12f;
+
+    [SerializeField, Tooltip("Sound played when the scissors knock him out. Leave empty for none.")]
+    string _knockedOutSound = AudioId.CopKnockedOut;
+
+    [SerializeField, Tooltip("Tint of the placeholder sprite while he is out cold.")]
+    Color _knockedOutTint = new Color(0.55f, 0.55f, 0.55f, 1f);
+
+    [SerializeField, Tooltip("Where the sprite sits while he lies on the floor, relative to the officer (feet are baseOffset below). Placeholder for a real knocked-out pose.")]
+    Vector3 _knockedOutSpriteOffset = new Vector3(0f, -2.4f, 0f);
+
     [Header("Feedback")]
     [SerializeField, Tooltip("Sound played when he first notices Kami. Leave empty for none.")]
-    string _alertSound = AudioId.MagicFail;
+    string _alertSound = AudioId.CopWhistle;
 
     [SerializeField, Tooltip("The officer's sprite, flipped to face where he walks.")]
     SpriteRenderer _sprite;
@@ -84,10 +102,16 @@ public class PoliceOfficer : PatrollingAgent
     bool _pausing;
     float _pauseUntil;
     float _nextRepathTime;
+    bool _knockedOut;
+    float _wakeUpTime;
+    Vector3 _spriteStartLocalPosition;
+    Quaternion _spriteStartLocalRotation;
+    Color _spriteStartColor;
 
     /// <summary>0 = hasn't noticed anything, 1 = caught.</summary>
     public float Awareness { get; private set; }
     public bool IsAlerted => _alerted;
+    public bool IsKnockedOut => _knockedOut;
     public Vector3 Facing => _facing;
     public float VisionAngle => _visionAngle;
     public float VisionRange => _visionRange;
@@ -131,6 +155,13 @@ public class PoliceOfficer : PatrollingAgent
             _sprite = GetComponentInChildren<SpriteRenderer>();
         }
 
+        if (_sprite != null)
+        {
+            _spriteStartLocalPosition = _sprite.transform.localPosition;
+            _spriteStartLocalRotation = _sprite.transform.localRotation;
+            _spriteStartColor = _sprite.color;
+        }
+
         //PatrollingAgent.Start never sets a first destination: without this he would skip waypoint 0
         if (_startWaypoints.Length > 0)
         {
@@ -144,6 +175,15 @@ public class PoliceOfficer : PatrollingAgent
 
     protected override void Update()
     {
+        if (_knockedOut)
+        {
+            if (Time.time >= _wakeUpTime)
+            {
+                WakeUp();
+            }
+            return;
+        }
+
         UpdateAwareness();
         base.Update();
 
@@ -170,9 +210,75 @@ public class PoliceOfficer : PatrollingAgent
         }
     }
 
+    /// <summary>Called by PoliceOfficerCortable when the scissors hit him: out cold until he wakes up by himself.</summary>
+    public void KnockOut()
+    {
+        if (_knockedOut)
+        {
+            return;
+        }
+
+        _knockedOut = true;
+        _wakeUpTime = Time.time + _knockedOutSeconds;
+        _alerted = false;
+        _canSeeKami = false;
+        _pausing = false;
+        Awareness = 0f;
+
+        if (navAgent != null && navAgent.enabled && navAgent.isOnNavMesh)
+        {
+            navAgent.isStopped = true;
+            navAgent.velocity = Vector3.zero;
+        }
+
+        if (_sprite != null)
+        {
+            //lying down, facing the way he was looking; a real pose replaces this
+            float side = _sprite.flipX ? -1f : 1f;
+            _sprite.transform.localRotation = Quaternion.Euler(0f, 0f, 90f * side);
+            _sprite.transform.localPosition = _knockedOutSpriteOffset;
+            _sprite.color = _knockedOutTint;
+        }
+
+        if (!string.IsNullOrEmpty(_knockedOutSound))
+        {
+            AudioManager.instance.Play(_knockedOutSound);
+        }
+
+        Debug.Log($"[PoliceOfficer] {gameObject.name}: knocked out by the scissors for {_knockedOutSeconds}s");
+    }
+
+    void WakeUp()
+    {
+        _knockedOut = false;
+        RestoreSprite();
+
+        state = AgentState.Patrolling;
+        ResumeCurrentWaypoint(); //also lets him walk again and restores his patrol speed
+        Debug.Log($"[PoliceOfficer] {gameObject.name}: woke up, back to the route");
+    }
+
+    void RestoreSprite()
+    {
+        if (_sprite == null)
+        {
+            return;
+        }
+
+        _sprite.transform.localRotation = _spriteStartLocalRotation;
+        _sprite.transform.localPosition = _spriteStartLocalPosition;
+        _sprite.color = _spriteStartColor;
+    }
+
     /// <summary>Back to where the page started him, calm, walking his route from waypoint 0.</summary>
     public void ResetToStart()
     {
+        if (_knockedOut)
+        {
+            _knockedOut = false;
+            RestoreSprite();
+        }
+
         _alerted = false;
         _canSeeKami = false;
         _pausing = false;

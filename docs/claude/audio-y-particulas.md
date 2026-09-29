@@ -30,9 +30,41 @@ call site.
 `UIVolume`, `AmbienceVolume`). Bus volume is still applied per source in code; moving it onto the
 mixer parameters is Task 23 of the refactor plan.
 
-**Placeholder sounds**: `CarDoor` (the patrol car door in page 3's arrest, added 2026-09-25) reuses
+**Placeholder sounds** (the Level 2 pass above added 27 more rows): `CarDoor` (the patrol car door in page 3's arrest, added 2026-09-25) reuses
 `PaperFold02`'s clip until a real door slam exists; swap the clip in the bank row, nothing else. Its
 `AudioId` constant was added by hand in the generator's format (running Regenerate AudioId keeps it).
+
+**Level 2 SFX pass (task 6.E, 2026-09-28, compile-checked only)**: 27 placeholder rows, every one
+reusing an existing clip (clip list = the only thing to swap in 6.G, nothing in code changes). SFX
+bus unless noted; all 2D. Ids and where they fire:
+- Police (page 3 arrest, `ArrestCutscene` CUE_ methods): `CarBrake`, `PoliceHorn`, `RunningFootsteps`,
+  `PoliceSirenLoop` (loop, starts at `CUE_CopsBehindGirls`, stops at `CUE_TurnPage`/WrapUp/OnDestroy),
+  `CarEngine` + `PoliceHorn` at `CUE_DriveOff` and when `CrimeSceneGate`'s car leaves (page 2).
+- Page 4: `CellBarsSlam` (`PoliceStationPage.StartSequence`, also after a capture), `PadlockClank`
+  (`CandadoCortable.ApplyCut`, so Level 1's chest padlocks clank too), `FenceRattle` (Natalia's door
+  in `PoliceStationPage`, Kami's fence in `AbuelaEntrance.Impact`), `AbuelaFall` + `AbuelaCrash`
+  (`AbuelaEntrance` `_fallSound`/`_crashSound`/`_fenceSound`, replacing the old `_impactSound`),
+  `CopWhistle` (`PoliceOfficer._alertSound`, was `MagicFail`; also changed in `PoliceOfficer.prefab`),
+  `CaughtSting` (`Player.Die` on `DeathCause.Caught`, on top of the shared defeat music),
+  `TypewriterClack` (`PickupCortable._extraCutSound`, set on `CuttableTypewriter.prefab`), `ClothRip`
+  (`CuttableDrapes.ApplyCut`).
+- Pages 1-2: `ManholeClank` + `ClueFound` (`FindCluesTracker.PlayClueSounds`; the clank only for the
+  hat), `RadioStatic` + `NewsJingle` (dialogue lines, below), `CarEngine`/`CarHorn` on ambient
+  traffic (`TrafficSpawner.PlayTrafficSounds`: engine at most once per 6s and horn once per 20s at
+  15%, both counted across ALL spawners; tunable per spawner).
+- Page 3: `GiftBoxOpen` (`GiftDialogueTrigger.Open`), `Handcuffs` (dialogue line).
+- Page 5: `RopeCreak` (`Catapult.RopeCreakLoop`, every 3-6s while Kami sits in the bucket),
+  `CatapultThud` + `CatapultWhoosh` (`Catapult.CUE_Launch`, replacing `Jump_Paperplane`).
+- Ambience bus, loops: `CafeAmbience` (page 1) and `BarAmbience` (page 3), driven by `PageAmbience`
+  (`Managers/`, sibling of `PageMusicManager`: one id per page in the Inspector, same
+  play-if-not-already-playing rule). Drop `Prefabs/Level2/PageAmbience.prefab` into the scene; the
+  prefab is pre-filled for Level 2.
+- `CopKnockedOut` has a row but no code path yet (no knock-out mechanic exists).
+
+**Per-line dialogue sounds**: `DialogueEvent.soundOnLine` (an AudioId, empty = none) is played by
+`DialogueManager.WriteText` when that line starts being written. Set today: `Arrest_Cuffs` line 1
+-> `Handcuffs`; `Natalia_AfterTicket` line 4 -> `RadioStatic`, line 5 (the radio announcement) ->
+`NewsJingle`. New sounds tied to a sentence are one YAML/Inspector field, not a Timeline signal.
 
 **Gotchas worth knowing:**
 - A `SoundHandle` carries a generation counter. A stale handle can never stop whatever is playing on

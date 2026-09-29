@@ -66,8 +66,8 @@ public class Catapult : TriggerScript
     [SerializeField, Tooltip("How high the flight arcs above the straight line, in world units.")]
     float _flightArcHeight = 20f;
 
-    [SerializeField, Tooltip("Sound played at the launch.")]
-    string _launchSound = AudioId.Jump_Paperplane;
+    [SerializeField, Tooltip("Seconds between rope creaks while Kami waits in the bucket (random between the two values).")]
+    Vector2 _ropeCreakInterval = new Vector2(3f, 6f);
 
     [Header("Ending")]
     [SerializeField, Tooltip("Seconds of the fade to black (starts at the FadeOut signal).")]
@@ -182,6 +182,7 @@ public class Catapult : TriggerScript
 
         SeatAbuela();
         SetRopeCuttable(true);
+        StartCoroutine(RopeCreakLoop());
 
         if (_fader != null)
         {
@@ -208,6 +209,26 @@ public class Catapult : TriggerScript
         if (!_launched && TooltipManager.Instance != null && !string.IsNullOrEmpty(_cutRopeTooltip))
         {
             TooltipManager.Instance.ShowTooltip(_cutRopeTooltip, _cutRopeColor, this);
+        }
+    }
+
+    //the rope is under tension the whole time Kami sits in the bucket: an occasional creak, not a
+    //loop, so the bank row stays a plain one-shot Diego can swap for a real recording
+    IEnumerator RopeCreakLoop()
+    {
+        while (!_launched)
+        {
+            yield return new WaitForSeconds(Random.Range(_ropeCreakInterval.x, _ropeCreakInterval.y));
+
+            if (_launched)
+            {
+                yield break;
+            }
+
+            if (AudioManager.instance != null)
+            {
+                AudioManager.instance.Play(AudioId.RopeCreak);
+            }
         }
     }
 
@@ -274,7 +295,9 @@ public class Catapult : TriggerScript
 
         SetAllActive(_hideOnLaunch, false);
         SetAllActive(_showOnLaunch, true);
-        AudioManager.instance.Play(_launchSound);
+        //the arm hitting its stop, then the girls whooshing away (replaces Jump_Paperplane)
+        AudioManager.instance.Play(AudioId.CatapultThud);
+        AudioManager.instance.Play(AudioId.CatapultWhoosh);
 
         if (_flyingGirls != null && _flightTarget != null)
         {

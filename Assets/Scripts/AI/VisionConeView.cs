@@ -84,6 +84,13 @@ public class VisionConeView : MonoBehaviour
     //so wherever this child sits under the officer never distorts it
     void LateUpdate()
     {
+        //a knocked-out officer sees nothing, so his cone disappears
+        if (_officer.IsKnockedOut)
+        {
+            _mesh.Clear();
+            return;
+        }
+
         Vector3 feet = _officer.FeetPosition;
         Vector3 origin = feet + Vector3.up * _floorOffset;
         Vector3 rayOrigin = feet + Vector3.up * _clipHeight;

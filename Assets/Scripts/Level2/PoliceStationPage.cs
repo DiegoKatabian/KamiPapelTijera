@@ -6,8 +6,9 @@ using UnityEngine;
 /// and is the only thing that restarts it.
 ///
 /// The sequence: Kami and Natalia wake up in separate cells with their things confiscated. The
-/// narrator's _introLine plays, and _abuelaDelaySeconds after it closes the Abuela crashes down and
-/// opens Kami's cell fence (AbuelaEntrance). Kami
+/// intro cutscene plays the first time (a camera tour of the page, the cop's taunt, Natalia's reply
+/// and the narrator, all on Timeline_PoliceIntro), and _abuelaDelaySeconds after it ends the Abuela
+/// crashes down and opens Kami's cell fence (AbuelaEntrance). Kami
 /// gets her things back at the evidence pickup (ConfiscatedGear), cuts the padlock on Natalia's
 /// cell -- which also holds the paper-plane pedestal -- folds the plane, jumps to the 2nd floor,
 /// cuts the drapes and goes through the window. Crossing it completes Quest07 (escape) and starts
@@ -16,7 +17,8 @@ using UnityEngine;
 ///
 /// Getting caught by a cop restarts the WHOLE page (Diego, 2026-09-27): both girls back in their
 /// cells, everything confiscated again, padlock and drapes whole again, the Abuela gone and falling
-/// again after the shorter _abuelaDelayAfterCaptureSeconds, no narrator. The restart runs when Kami respawns in
+/// again after the shorter _abuelaDelayAfterCaptureSeconds, no intro cutscene, and anyone riding the
+/// paper plane (PaperPlaneRide) gets off first. The restart runs when Kami respawns in
 /// her cell (the arrest made the cell her respawn point), so the overlay hides every teleport.
 /// </summary>
 public class PoliceStationPage : MonoBehaviour
@@ -44,17 +46,20 @@ public class PoliceStationPage : MonoBehaviour
     [SerializeField, Tooltip("The padlock on Natalia's cell door.")]
     CandadoCortable _nataliaPadlock;
 
+    [SerializeField, Tooltip("What Natalia says when Kami frees her, the first time only: thanks, and the window + paper plane idea that points the player at the pedestal in her cell. Empty = no line.")]
+    DialogueSO _nataliaFreedLine;
+
     [Header("Abuela")]
     [SerializeField, Tooltip("The Abuela's fall onto Kami's cell.")]
     AbuelaEntrance _abuelaEntrance;
 
-    [SerializeField, Tooltip("The narrator's line that opens the page, the first time only. Kami stands still while it is on screen. Empty = no line.")]
-    DialogueSO _introLine;
+    [SerializeField, Tooltip("The intro cutscene (Timeline_PoliceIntro), played the first time only and not skippable: camera tour, the cop's taunt, Natalia's reply, the narrator. Empty = no intro.")]
+    CutsceneDirector _introCutscene;
 
-    [SerializeField, Tooltip("Seconds between the girls landing in their cells and the narrator's line.")]
+    [SerializeField, Tooltip("Seconds between the girls landing in their cells and the intro cutscene starting.")]
     float _introDelaySeconds = 0.5f;
 
-    [SerializeField, Tooltip("Seconds between the narrator's line closing and the Abuela crashing down (Kami can move inside her closed cell meanwhile).")]
+    [SerializeField, Tooltip("Seconds between the intro ending and the Abuela crashing down (Kami can move inside her closed cell meanwhile).")]
     float _abuelaDelaySeconds = 3f;
 
     [SerializeField, Tooltip("The same wait after a capture restarts the page: shorter, the player already saw it.")]
@@ -77,6 +82,9 @@ public class PoliceStationPage : MonoBehaviour
     [SerializeField, Tooltip("Sideways spacing between Natalia and the Abuela at _outsideLanding, in world units.")]
     float _followerSpacing = 3f;
 
+    [SerializeField, Tooltip("Gets the followers on and off the paper plane. Told to get everyone off before a restart, and to hand them back as followers when Kami crosses the window. Optional.")]
+    PaperPlaneRide _planeRide;
+
     [SerializeField, Tooltip("Quest07_EscapeThePoliceStation: completed by crossing the window.")]
     QuestSO _escapeQuest;
 
@@ -90,6 +98,7 @@ public class PoliceStationPage : MonoBehaviour
     Phase _phase = Phase.NotStarted;
     bool _restartPending;
     bool _questsHandedOff;
+    bool _freedLineShown;
     Coroutine _introRoutine;
 
     void Start()
@@ -168,6 +177,18 @@ public class PoliceStationPage : MonoBehaviour
         _phase = Phase.Imprisoned;
         Debug.Log($"[PoliceStationPage] {(firstTime ? "the girls are locked up" : "caught: the page starts over")}");
 
+        //the cell doors slam behind the girls (also after a capture, when they are put back in)
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.Play(AudioId.CellBarsSlam);
+        }
+
+        //before anything moves: riders must be off the plane, or the warps below would fight their seats
+        if (_planeRide != null)
+        {
+            _planeRide.ForceDismountAll();
+        }
+
         if (_gear != null)
         {
             _gear.ConfiscateAll();
@@ -204,8 +225,8 @@ public class PoliceStationPage : MonoBehaviour
         {
             _abuelaEntrance.ResetEntrance();
 
-            //the narrator only opens the page the first time; after a capture the Abuela just comes back
-            if (firstTime && _introLine != null)
+            //the intro only opens the page the first time; after a capture the Abuela just comes back
+            if (firstTime && _introCutscene != null)
             {
                 _introRoutine = StartCoroutine(IntroThenAbuela());
             }
@@ -225,20 +246,22 @@ public class PoliceStationPage : MonoBehaviour
         }
     }
 
-    //a dialogue freezes Kami by itself (LevelManager.inDialogue), so the line needs no extra lock
+    //the cutscene locks Kami by itself (CutsceneDirector -> LevelManager.inCutscene) and the cops go
+    //blind while it plays, so the tour is safe. The Abuela is only scheduled once it is over.
     IEnumerator IntroThenAbuela()
     {
         yield return new WaitForSeconds(_introDelaySeconds);
 
-        while (DialogueManager.Instance == null || !DialogueManager.Instance.CanShowDialogueNow)
+        //the page turn that brought Kami here (or a stray dialogue) may still be freezing the game
+        while (LevelManager.Instance == null || LevelManager.Instance.inDialogue || LevelManager.Instance.inCutscene)
         {
             yield return null;
         }
-        DialogueManager.Instance.ShowDialogue(_introLine);
+
+        _introCutscene.Play();
         yield return null;
 
-        //the line is over when the dialogue manager is free again
-        while (!DialogueManager.Instance.CanShowDialogueNow)
+        while (_introCutscene.IsPlaying)
         {
             yield return null;
         }
@@ -263,10 +286,33 @@ public class PoliceStationPage : MonoBehaviour
             _nataliaCellDoor.SetActive(false);
         }
 
+        //the padlock's own clank comes from CandadoCortable; this is the door swinging open
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.Play(AudioId.FenceRattle);
+        }
+
         if (_natalia != null)
         {
             _natalia.StartFollowingPlayer();
         }
+
+        if (!_freedLineShown && _nataliaFreedLine != null)
+        {
+            _freedLineShown = true;
+            StartCoroutine(SayFreedLine());
+        }
+    }
+
+    //the padlock cut can land in the middle of another line: wait for a free dialogue box
+    IEnumerator SayFreedLine()
+    {
+        while (DialogueManager.Instance == null || !DialogueManager.Instance.CanShowDialogueNow)
+        {
+            yield return null;
+        }
+
+        DialogueManager.Instance.ShowDialogue(_nataliaFreedLine);
     }
 
     void OnPlayerDie(params object[] parameters)
@@ -311,6 +357,12 @@ public class PoliceStationPage : MonoBehaviour
             {
                 officer.SetDetectionEnabled(false);
             }
+        }
+
+        if (_planeRide != null)
+        {
+            //anyone still on the plane (or parked up here) becomes a follower again, so the warp below takes them outside
+            _planeRide.RejoinAllForWindow();
         }
 
         if (_outsideLanding != null)

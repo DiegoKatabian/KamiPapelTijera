@@ -119,6 +119,10 @@ MonoBehaviour:
     m_Key: OrigamiReadClose
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000003
+    m_Key: overlay_mainquest_level2
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

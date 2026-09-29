@@ -23,6 +23,24 @@ public class TrafficSpawner : MonoBehaviour
     [Tooltip("Spawn one obstacle immediately on enable instead of waiting out the first interval. Useful so a street isn't empty the moment the page opens.")]
     [SerializeField] private bool spawnOneImmediately = true;
 
+    [Header("Sound")]
+    [Tooltip("Play a light engine pass (and the odd horn) when a car spawns. Rate-limited across ALL spawners so a busy street stays background texture instead of noise.")]
+    [SerializeField] private bool playSounds = true;
+
+    [Tooltip("Minimum seconds between two engine sounds, counted across every spawner in the scene.")]
+    [SerializeField] private float engineMinInterval = 6f;
+
+    [Tooltip("Chance (0-1) that an allowed engine sound is followed by a horn beep.")]
+    [SerializeField] [Range(0f, 1f)] private float hornChance = 0.15f;
+
+    [Tooltip("Minimum seconds between two horns, counted across every spawner in the scene.")]
+    [SerializeField] private float hornMinInterval = 20f;
+
+    // Static on purpose: two spawners spawning in the same second must not double the noise.
+    // Starts far in the past so the first car of a page is allowed to be heard.
+    private static float _lastEngineTime = -999f;
+    private static float _lastHornTime = -999f;
+
     private Coroutine _spawnRoutine;
     private readonly List<GameObject> _alive = new List<GameObject>();
 
@@ -52,6 +70,27 @@ public class TrafficSpawner : MonoBehaviour
         {
             StopCoroutine(_spawnRoutine);
             _spawnRoutine = null;
+        }
+    }
+
+    private void PlayTrafficSounds()
+    {
+        if (!playSounds || AudioManager.instance == null)
+        {
+            return;
+        }
+
+        if (Time.time - _lastEngineTime < engineMinInterval)
+        {
+            return;
+        }
+        _lastEngineTime = Time.time;
+        AudioManager.instance.Play(AudioId.CarEngine);
+
+        if (Time.time - _lastHornTime >= hornMinInterval && Random.value < hornChance)
+        {
+            _lastHornTime = Time.time;
+            AudioManager.instance.Play(AudioId.CarHorn);
         }
     }
 
@@ -100,6 +139,7 @@ public class TrafficSpawner : MonoBehaviour
 
         _alive.Add(instance);
         obstacle.Launch(despawnPoint.position, obstacleSet.GetRandomTravelDuration(), obstacleSet.MaxLifetime);
+        PlayTrafficSounds();
         //Debug.Log($"[TrafficSpawner] {name} spawned {prefab.name} ({_alive.Count}/{obstacleSet.MaxAlive} alive).");
     }
 }

@@ -79,6 +79,11 @@ public class GiftDialogueTrigger : TriggerDialogue
         SetTalkable(false);
         SetAllActive(_hideOnOpen, false);
 
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.Play(AudioId.GiftBoxOpen);
+        }
+
         //the reaction goes first so it is already on screen when the letter pedestal appears and
         //starts waiting for the screen to be free
         if (_openedComment != null)

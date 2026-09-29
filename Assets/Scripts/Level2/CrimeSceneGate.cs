@@ -115,6 +115,11 @@ public class CrimeSceneGate : MonoBehaviour
         {
             //the lifetime cap is only a safety net for the despawn, give it plenty of room
             _policeCar.Launch(_driveOffTarget.position, _driveOffSeconds, _driveOffSeconds * 3f + 1f);
+            if (AudioManager.instance != null)
+            {
+                AudioManager.instance.Play(AudioId.CarEngine);
+                AudioManager.instance.Play(AudioId.PoliceHorn);
+            }
         }
         else
         {

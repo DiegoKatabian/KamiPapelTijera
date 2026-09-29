@@ -50,6 +50,26 @@ the fired art, Kami and the Abuela vanish and `FlyingGirls_PLACEHOLDER` arcs to 
 `LoadEnding` before the end of the shot clip (6s). The durations that are not on the timeline live on
 `Catapult`: `_flightSeconds`, `_flightArcHeight`, `_fadeSeconds` and `_boardFadeSeconds`.
 
+## Tuning the page 4 intro (Level 2, Phase 6.B, 2026-09-29)
+
+`Assets/Timelines/Level2/Timeline_PoliceIntro.playable`, on the `PoliceStation` GameObject
+(`PlayableDirector` + `CutsceneDirector`, started by `PoliceStationPage`, first time only, not
+skippable). Cameras track: KamiCell, PatrolRoute, NataliaCell, Window (static vcams under
+`PoliceStation/IntroCameras`: drag the vcam itself to reframe), then CopFollow (Transposer following the
+patrolling cop) and NataliaCell again. Three dialogue markers: `Jail_CopTaunt` (9.2s), `Jail_NataliaReply`
+(12.8s), `Narrator_JailIntro` (13.9s). No signals: the cell-bars sound comes from
+`PoliceStationPage.StartSequence`. The Abuela is scheduled once the timeline ends.
+
+## Tuning the page 5 arrival (Phase 6.D)
+
+`Timeline_MuseumArrival.playable`, on the `Museum` GameObject. Markers: `Grace_Reaction` (0.4s),
+signals `Arrival_Sirens` (1.2s), `Arrival_CarArrives` (2.2s), `Arrival_WalkUp` (5.0s), then
+`Grace_Meeting` (9.6s). The signals call `MuseumPage.CUE_*`. The car (`PoliceCar_ARRIVAL_PLACEHOLDER`)
+is moved by `MuseumPage` itself (not `TrafficObstacle.Launch`, which destroys the car on arrival) from
+`ArrivalMarks/CarStart` to `CarStop` over `_carArriveSeconds`. Ariel and the cop start hidden and walk from
+the car to where they are placed in the scene. Vcams: GroupNear and PullBack follow Kami (set in code by
+`MuseumPage`), StreetWide is static.
+
 ## Gotchas
 
 - The cutscene lives at the **scene root**, not under Page 3: the page folder is switched off mid

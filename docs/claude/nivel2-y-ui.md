@@ -201,6 +201,17 @@ Also removed in Phase 5 (Diego's call): the loose root `CuttablePoliceTape` and 
 (Phase 0 leftovers; page 2's tape lives in `CrimeSceneGate`), the unreferenced Level 1
 `ParticulasSplash`, the inactive `Plane-VertexPaintTest` and page 5's inactive `NPC_Florista`.
 
+**Phase 6 (presentation polish, 2026-09-29) built - compiles, NOT played.** 6.A: Level 2's
+`OverlayManager.mainQuestTriggeringDialogue` now points at `Natalia_AfterTicket` and the overlay text
+uses the new UITexts key `overlay_mainquest_level2` (scene override on the nested LocalizeStringEvent).
+6.B: `Timeline_PoliceIntro` (camera tour, cop taunt, Natalia reply, narrator) played by
+`PoliceStationPage` first time only via `_introCutscene`; cameras are static vcams under
+`PoliceStation/IntroCameras` (drag them). 6.C: `Natalia_Freed` on the padlock cut (first time only) and
+`PaperPlaneRide` (followers board on the hat fold, leave on the new `Evento.OnPaperPlaneHatLost`; parked
+if Kami lands off-NavMesh). 6.D: `Timeline_MuseumArrival` + `MuseumPage.CUE_Sirens/CarArrives/WalkUp`
+(car enters from the left of the page along the street lane). Patrolling cops are cuttable
+(`PoliceOfficerCortable`): knocked out 12s, then resume. `PageAmbience` is placed in the scene.
+
 **The full 5-page narrative is now defined** (Diego, 2026-09-22): Kami meets Natalia,
 they investigate a stolen painting (the Pelusa), get framed by Ariel, end up
 arrested, escape with the Grandmother's help, and clear their name at the museum

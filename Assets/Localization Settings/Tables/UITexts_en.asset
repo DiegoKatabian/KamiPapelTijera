@@ -168,6 +168,10 @@ MonoBehaviour:
     m_Localized: '{INPUT:accion} to close'
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000003
+    m_Localized: "You've landed in a brand new book,\nwhere trouble sprouts wherever you look.\nHelp your new friend, and she'll see\nyou home again, safe and free.\n\n{INPUT:accion} to continue"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

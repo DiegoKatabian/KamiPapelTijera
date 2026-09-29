@@ -7,11 +7,12 @@ using UnityEngine;
 /// ChooseDialogue and this trigger just asks it on every talk.
 ///
 /// With nothing set (the prefab dropped into another scene) she falls back to the plain
-/// TriggerDialogue behaviour over _dialogues.
+/// TriggerDialogue behaviour over _dialogues. Once a page has set ChooseDialogue, a null answer means
+/// "the page handled this talk itself" (page 5 starts its arrival cutscene) and she says nothing here.
 /// </summary>
 public class GraceDialogueTrigger : TriggerDialogue
 {
-    /// <summary>Returns what Grace says on this talk. Null = fall back to _dialogues.</summary>
+    /// <summary>Returns what Grace says on this talk. Null = the page handled the talk itself (only when this is set at all).</summary>
     public Func<DialogueSO> ChooseDialogue;
 
     public override void Interact(params object[] parameter)
@@ -21,10 +22,15 @@ public class GraceDialogueTrigger : TriggerDialogue
             return;
         }
 
-        DialogueSO chosen = ChooseDialogue?.Invoke();
-        if (chosen == null)
+        if (ChooseDialogue == null)
         {
             base.Interact(parameter);
+            return;
+        }
+
+        DialogueSO chosen = ChooseDialogue();
+        if (chosen == null)
+        {
             return;
         }
 

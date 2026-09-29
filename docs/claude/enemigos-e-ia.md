@@ -62,6 +62,12 @@ BaseOffset 4). The project's first detection system. Compiles; **not played yet*
 - `ResetToStart()` / `SetDetectionEnabled()` are for the page owner (`PoliceStationPage`): back to
   his post on a restart, blind after the escape.
 
+**Cuttable (Diego, 2026-09-28/29)**: `PoliceOfficerCortable` (`Cortables/`) on the cop's trigger
+collider (plus a kinematic Rigidbody, or two triggers never report) calls `PoliceOfficer.KnockOut()`:
+out for `_knockedOutSeconds` (12), blind and still, cone hidden (`VisionConeView` checks
+`IsKnockedOut`), sprite lying down as a placeholder, then he wakes and resumes his waypoint.
+`ResetToStart()` wakes him too. Any scissors work.
+
 Not done from spec 002: FR-007's separate test scene (Diego tests page 4 directly: start the scene
 with `PageScrollerManager.startingPage = 4`) and any hearing (v1 is vision only, as decided).
 

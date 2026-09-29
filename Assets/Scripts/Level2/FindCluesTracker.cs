@@ -91,6 +91,7 @@ public class FindCluesTracker : MonoBehaviour
 
             _found.Add(clue.resource);
             Debug.Log($"[FindCluesTracker] clue found: {clue.resource} ({_found.Count}/{_clues.Length})");
+            PlayClueSounds(clue.resource);
             QueueComment(clue.comment);
         }
 
@@ -155,6 +156,23 @@ public class FindCluesTracker : MonoBehaviour
             QuestManager.Instance.AddQuest(_nextQuest);
             Debug.Log($"[FindCluesTracker] started {_nextQuest.name}");
         }
+    }
+
+    //the hat lies on a manhole cover, so picking it up also clanks the metal; every clue gets the
+    //short "found it" sting on top
+    void PlayClueSounds(ResourceType resource)
+    {
+        if (AudioManager.instance == null)
+        {
+            Debug.LogWarning("[FindCluesTracker] no AudioManager, clue sounds skipped.");
+            return;
+        }
+
+        if (resource == ResourceType.caughtBelonging)
+        {
+            AudioManager.instance.Play(AudioId.ManholeClank);
+        }
+        AudioManager.instance.Play(AudioId.ClueFound);
     }
 
     void QueueComment(DialogueSO comment)

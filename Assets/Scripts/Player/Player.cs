@@ -629,6 +629,11 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         Debug.Log($"[Player] Die: causa {cause}");
         SetState(PlayerState.Dead);
         AudioManager.instance.Play(AudioId.GameOverOrchestral);
+        if (cause == DeathCause.Caught)
+        {
+            //Level 2's police capture gets its own sting on top of the shared defeat music
+            AudioManager.instance.Play(AudioId.CaughtSting);
+        }
         EventManager.Trigger(Evento.OnPlayerDie, cause);
         StartCoroutine(DeathSequence(cause));
     }
@@ -770,6 +775,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
         TooltipManager.Instance.HideTooltip();
         nuevoTooltipPapelSalto.SetActive(false);
         _view.RefreshOverrides();
+        EventManager.Trigger(Evento.OnPaperPlaneHatLost);
     }
 
     private void StartReceiveReward(object[] parameters)

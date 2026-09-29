@@ -12,9 +12,17 @@ public class PickupCortable : ObjetoCortable, IAplastable
     [SerializeField] protected ResourceType pickupType;
     [SerializeField] protected int pickupAmount;
 
+    [SerializeField, Tooltip("Optional AudioId played on top of the base cut sound (e.g. TypewriterClack on the paper typewriters). Empty = none.")]
+    string _extraCutSound;
+
     protected override void ApplyCut()
     {
         base.ApplyCut();
+
+        if (!string.IsNullOrEmpty(_extraCutSound) && AudioManager.instance != null)
+        {
+            AudioManager.instance.Play(_extraCutSound);
+        }
 
         EventManager.Trigger(Evento.OnObjectWasCut, transform.position);
         

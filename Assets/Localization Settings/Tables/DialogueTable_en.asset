@@ -419,7 +419,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000123
-    m_Localized: "Tricked and locked away, just when all seemed lost, a tremendous commotion was heard on the roof."
+    m_Localized: "After a while locked up, a tremendous crash rang out..."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000124
@@ -568,6 +568,22 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 661900000000185
     m_Localized: "Then climb in, both of you, and cut the rope when you're ready."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000186
+    m_Localized: "You two are staying locked up in here forever! Ha ha ha, lying thieves!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000187
+    m_Localized: "We're not liars, and we're not thieves."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000188
+    m_Localized: "Thanks for saving me! We have to escape through that open window up there. Can you fold a paper plane or something?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000189
+    m_Localized: "May I help you...? Is that... the Pelusa?!"
     m_Metadata:
       m_Items: []
   references:

@@ -92,7 +92,10 @@ public enum Evento //LOS EVENTOS SE AGREGAN AL FINAL. NO EN EL MEDIO, PORQUE ARR
     OnPaintingReturned,
     //completes Quest07_EscapeThePoliceStation: Kami crossed the 2nd floor window on page 4
     //(PoliceStationPage). Appended last: quests store Evento as an int
-    OnPoliceStationEscaped
+    OnPoliceStationEscaped,
+    //the paper plane hat is gone (its augmented jump was used up, or the police took it). Page 4's
+    //PaperPlaneRide answers it by getting the followers off the plane. Appended last (enum ints stored)
+    OnPaperPlaneHatLost
 }
 
 public class EventManager

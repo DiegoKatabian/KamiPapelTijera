@@ -899,6 +899,336 @@ MonoBehaviour:
     spatialBlend: 0
     priority: 128
     interruptSelf: 0
+  - id: PoliceSirenLoop
+    clips:
+    - {fileID: 8300000, guid: a01ea5b4d8912ae48ac12e8f12bc1646, type: 3}
+    volume: 0.12
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PoliceHorn
+    clips:
+    - {fileID: 8300000, guid: 8d681e10a3e1cb84297a1167db0cb5e0, type: 3}
+    volume: 0.3
+    pitch: 1.4
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CarBrake
+    clips:
+    - {fileID: 8300000, guid: 1a7b33ca8967feb4fb64d352ef6e3d4c, type: 3}
+    volume: 0.4
+    pitch: 0.6
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: RunningFootsteps
+    clips:
+    - {fileID: 8300000, guid: 44992993c48758d459325faf694c4610, type: 3}
+    - {fileID: 8300000, guid: e3a3956824c297a438b55d97fd25001c, type: 3}
+    - {fileID: 8300000, guid: fc9dccabd10c72e46bfd007ffd3586a0, type: 3}
+    - {fileID: 8300000, guid: 094f94850b79a7a4fb890c4a601fb958, type: 3}
+    volume: 0.06
+    pitch: 1.15
+    pitchVariation: 0.05
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: Handcuffs
+    clips:
+    - {fileID: 8300000, guid: f4c9cdd0eb65d594b84d6b0962b1f4c4, type: 3}
+    volume: 0.5
+    pitch: 1.6
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CellBarsSlam
+    clips:
+    - {fileID: 8300000, guid: 2f2d3d4b85e02bf43a7dba7059797912, type: 3}
+    volume: 0.5
+    pitch: 1.3
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: PadlockClank
+    clips:
+    - {fileID: 8300000, guid: 6d69eac966988d444ad3df983134ff55, type: 3}
+    volume: 0.6
+    pitch: 1.3
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: FenceRattle
+    clips:
+    - {fileID: 8300000, guid: 6d69eac966988d444ad3df983134ff55, type: 3}
+    - {fileID: 8300000, guid: f4c9cdd0eb65d594b84d6b0962b1f4c4, type: 3}
+    volume: 0.4
+    pitch: 1.8
+    pitchVariation: 0.1
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: AbuelaFall
+    clips:
+    - {fileID: 8300000, guid: 1a7b33ca8967feb4fb64d352ef6e3d4c, type: 3}
+    volume: 0.5
+    pitch: 0.8
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: AbuelaCrash
+    clips:
+    - {fileID: 8300000, guid: 2f2d3d4b85e02bf43a7dba7059797912, type: 3}
+    volume: 0.6
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CopWhistle
+    clips:
+    - {fileID: 8300000, guid: 6afc3e1614751f843b49f708a80b613f, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CaughtSting
+    clips:
+    - {fileID: 8300000, guid: 6afc3e1614751f843b49f708a80b613f, type: 3}
+    volume: 0.35
+    pitch: 0.8
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: TypewriterClack
+    clips:
+    - {fileID: 8300000, guid: c7a69cf7cbb920448a03132b9deffd1b, type: 3}
+    - {fileID: 8300000, guid: a98068e4f9395bf4da6963d19fd59e9e, type: 3}
+    volume: 0.35
+    pitch: 1.6
+    pitchVariation: 0.1
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: ClothRip
+    clips:
+    - {fileID: 8300000, guid: a98068e4f9395bf4da6963d19fd59e9e, type: 3}
+    volume: 0.5
+    pitch: 0.7
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CafeAmbience
+    clips:
+    - {fileID: 8300000, guid: 7ef0cc8aeaeef69408c8f3368ff05ad9, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 3
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: RadioStatic
+    clips:
+    - {fileID: 8300000, guid: b639f0ac59f93e546b23afb5d63aab56, type: 3}
+    volume: 0.25
+    pitch: 1.4
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: NewsJingle
+    clips:
+    - {fileID: 8300000, guid: ee4629f9fba8bb34aae6c99b575accd9, type: 3}
+    volume: 0.35
+    pitch: 1.3
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: ManholeClank
+    clips:
+    - {fileID: 8300000, guid: f4c9cdd0eb65d594b84d6b0962b1f4c4, type: 3}
+    volume: 0.6
+    pitch: 0.8
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: ClueFound
+    clips:
+    - {fileID: 8300000, guid: 7551d73a646c7bd4f8d0dcb6bd93de37, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CarEngine
+    clips:
+    - {fileID: 8300000, guid: 1a7b33ca8967feb4fb64d352ef6e3d4c, type: 3}
+    volume: 0.12
+    pitch: 0.5
+    pitchVariation: 0.05
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CarHorn
+    clips:
+    - {fileID: 8300000, guid: 8d681e10a3e1cb84297a1167db0cb5e0, type: 3}
+    volume: 0.15
+    pitch: 0.9
+    pitchVariation: 0.1
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: GiftBoxOpen
+    clips:
+    - {fileID: 8300000, guid: 65236dcb8b4cad64fa2e1ee2c15bab55, type: 3}
+    - {fileID: 8300000, guid: c7a69cf7cbb920448a03132b9deffd1b, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: BarAmbience
+    clips:
+    - {fileID: 8300000, guid: a4e950327790c8440b61d6779c659a6c, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 3
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: RopeCreak
+    clips:
+    - {fileID: 8300000, guid: 2134304ff51945348ba80263bd471f4b, type: 3}
+    volume: 0.4
+    pitch: 0.5
+    pitchVariation: 0.05
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CatapultThud
+    clips:
+    - {fileID: 8300000, guid: 2f2d3d4b85e02bf43a7dba7059797912, type: 3}
+    volume: 0.7
+    pitch: 0.8
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CatapultWhoosh
+    clips:
+    - {fileID: 8300000, guid: f36d33a5c30a1104b873fdefc888b2d1, type: 3}
+    volume: 0.8
+    pitch: 0.9
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CopKnockedOut
+    clips:
+    - {fileID: 8300000, guid: 1d09748127bf47844ab60ca89c1d68ed, type: 3}
+    volume: 0.6
+    pitch: 0.8
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 0
+    priority: 128
+    interruptSelf: 0
   musicGroup: {fileID: 9197432607514441226, guid: 1e1b55ab68c5e16499c7e1b105afabc6,
     type: 2}
   sfxGroup: {fileID: 5805384339254084397, guid: 1e1b55ab68c5e16499c7e1b105afabc6,

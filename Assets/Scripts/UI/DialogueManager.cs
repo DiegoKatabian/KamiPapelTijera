@@ -162,6 +162,10 @@ public class DialogueManager : Singleton<DialogueManager>
             SetNativeSize(npcQueTeHablaImage.sprite);
             EventManager.Trigger(Evento.OnDialogueWriteText, dialogue);
 
+            //per-line sound (Level 2 SFX pass): plays as the line starts being written, so a
+            //cutscene beat like the handcuffs or the radio lands on the right sentence
+            PlayLineSound(dialogue.events[i].soundOnLine);
+
             yield return new WaitForEndOfFrame();
             waitingForInput = true;
 
@@ -174,6 +178,21 @@ public class DialogueManager : Singleton<DialogueManager>
             waitingForInput = false;
         }
         HideDialogue(dialogue);
+    }
+
+    void PlayLineSound(string soundId)
+    {
+        if (string.IsNullOrEmpty(soundId))
+        {
+            return;
+        }
+        if (AudioManager.instance == null)
+        {
+            Debug.LogWarning($"[DialogueManager] line sound '{soundId}' skipped: no AudioManager in the scene.");
+            return;
+        }
+        Debug.Log($"[DialogueManager] line sound '{soundId}'");
+        AudioManager.instance.Play(soundId);
     }
 
     //la corrutina se fue a LocalizedText (era una de siete copias). El dialogo se resuelve

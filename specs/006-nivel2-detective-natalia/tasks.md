@@ -468,7 +468,7 @@ it, so they run in sequence on one track; 6.E and 6.G are parallel-safe with the
   lines (Ariel's accusation, the cop, Grace's and Natalia's introductions) -> the ticket pedestal
   appears as today. `MuseumPage` starts the Timeline instead of showing `_graceMeeting` directly.
 
-- **6.E** `[P]` **Sound effects pass (hooks + bank rows)**. Every hook in code with an
+- **6.E** `[P]` **DONE 2026-09-28 (compile-checked, not played)** **Sound effects pass (hooks + bank rows)**. Every hook in code with an
   `AudioBank` row and a placeholder clip where a similar sound exists; Diego swaps the real clips
   in the bank later (6.G). Missing today:
   - **Police (pages 3 and 5)**: siren loop, horn beeps, braking, running footsteps, handcuffs click
@@ -486,6 +486,13 @@ it, so they run in sequence on one track; 6.E and 6.G are parallel-safe with the
   - **Music**: page 4 still has no track (`PageMusicManager`, just an id to type in).
   Dialogue-synced sounds need a way to play a sound on a given line: decide during implementation
   between a per-line sound on `DialogueEvent` and a Timeline signal (cutscenes).
+  **Done**: all of the above has a hook and a placeholder `AudioBank` row (27 ids, list and hook
+  locations in `docs/claude/audio-y-particulas.md`); dialogue sounds use the new
+  `DialogueEvent.soundOnLine` field (Handcuffs, RadioStatic, NewsJingle set); ambience via the new
+  `PageAmbience` (prefab `Prefabs/Level2/PageAmbience.prefab`, still to be placed in the scene).
+  Every clip is a placeholder: the real ones are **6.G**. `CopKnockedOut` has a row but no hook
+  (no knock-out mechanic exists). Page 4 music: untouched (`PageMusicManager` handles an empty id
+  without a warning).
 
 - **6.F** `[P]` **[ART-VALEN] Riding poses**: Natalia and the Abuela sitting on / hanging from
   the paper plane (replaces 6.C's placeholders). Also the arrival/tour cutscenes' art needs (patrol
@@ -493,6 +500,8 @@ it, so they run in sequence on one track; 6.E and 6.G are parallel-safe with the
 
 - **6.G** `[P]` **Audio: real clips for 6.E** (Diego, audio lead): source/record every sound
   listed in 6.E and the page 4 music, then swap them into the `AudioBank` rows.
+
+**Status 2026-09-29**: 6.A-6.E built and compile-checked, not played. Added on Diego's request: patrolling cops are cuttable (knocked out `_knockedOutSeconds`=12, then resume).
 
 **Parallelism**: one scene track (6.A -> 6.B -> 6.C -> 6.D, sequential because they all write the
 scene), with 6.E (code + bank, no scene) alongside it; 6.F and 6.G are art/audio, outside code.

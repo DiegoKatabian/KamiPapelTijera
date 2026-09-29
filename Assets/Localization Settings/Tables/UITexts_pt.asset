@@ -132,6 +132,10 @@ MonoBehaviour:
     m_Localized: '{INPUT:accion} para fechar'
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000003
+    m_Localized: "Voc\xEA chegou a um livro novo, sem saber,\ne os problemas come\xE7am a nascer.\nAjude sua nova amiga, com carinho,\nque ela te ajuda a voltar ao caminho.\n\n{INPUT:accion} para continuar"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

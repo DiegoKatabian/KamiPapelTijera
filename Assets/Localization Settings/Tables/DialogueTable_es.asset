@@ -417,7 +417,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000123
-    m_Localized: "Tras ser enga\xF1adas, y cuando todo parec\xEDa perdido, un tremendo revuelo se escuch\xF3 en el techo."
+    m_Localized: "Despu\xE9s de un rato encerradas, se escuch\xF3 un tremendo golpe..."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000124
@@ -566,6 +566,22 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 661900000000185
     m_Localized: "Entonces s\xFAbanse las dos, y corten la soga cuando est\xE9n listas."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000186
+    m_Localized: "\xA1Ac\xE1 van a quedarse encerradas para siempre! \xA1Jajaja, ladronas embusteras!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000187
+    m_Localized: "No somos embusteras ni ladronas."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000188
+    m_Localized: "\xA1Gracias por salvarme! Tenemos que escapar por esa ventana abierta de all\xE1 arriba. \xBFPod\xE9s doblar un avioncito de papel o algo as\xED?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000189
+    m_Localized: "\xBFPuedo ayudarlas...? \xBF\xA1Eso es el Pelusa!?"
     m_Metadata:
       m_Items: []
   references:

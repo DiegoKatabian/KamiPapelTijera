@@ -26,9 +26,11 @@ MonoBehaviour:
   - text: natalia_after_ticket_04
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: natalia_name
+    soundOnLine: RadioStatic
   - text: natalia_after_ticket_05
     sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
     speakerName: radio_name
+    soundOnLine: NewsJingle
   - text: natalia_after_ticket_06
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: natalia_name

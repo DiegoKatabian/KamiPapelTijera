@@ -73,6 +73,7 @@ MonoBehaviour:
   doesShrink: 1
   pickupType: 2
   pickupAmount: 2
+  _extraCutSound: TypewriterClack
 --- !u!54 &7000005
 Rigidbody:
   m_ObjectHideFlags: 0

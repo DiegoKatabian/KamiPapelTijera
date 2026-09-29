@@ -202,6 +202,13 @@ public class ArrestCutscene : MonoBehaviour
             cop.WarpTo(position);
         }
 
+        //the squad rolls in: brakes, a horn beep, running boots, and the siren stays on until the
+        //car leaves (stopped in CUE_TurnPage/WrapUp/OnDestroy)
+        PlaySound(AudioId.CarBrake);
+        PlaySound(AudioId.PoliceHorn);
+        PlaySound(AudioId.RunningFootsteps);
+        PlaySound(AudioId.PoliceSirenLoop);
+
         Debug.Log("[ArrestCutscene] the cops appear behind the girls");
     }
 
@@ -267,12 +274,16 @@ public class ArrestCutscene : MonoBehaviour
 
         //the lifetime is only a safety net; the car despawns itself on arrival
         _policeCar.Launch(_driveOffTarget.position, _driveOffSeconds, (_driveOffSeconds * 3f) + 1f);
+        PlaySound(AudioId.CarEngine);
+        PlaySound(AudioId.PoliceHorn);
         Debug.Log("[ArrestCutscene] the patrol car drives off");
     }
 
     /// <summary>Signal: turn to page 4, dropping Kami in her cell.</summary>
     public void CUE_TurnPage()
     {
+        StopSiren();
+
         if (_kamiCell != null && PlayerPageSpawnManager.Instance != null)
         {
             PlayerPageSpawnManager.Instance.OverrideNextPlacement(_kamiCell.position);
@@ -284,6 +295,26 @@ public class ArrestCutscene : MonoBehaviour
         {
             Debug.LogWarning("[ArrestCutscene] the page did not turn, wrapping up the cutscene here");
             WrapUp();
+        }
+    }
+
+    // ---------------------------------------------------------------- sound
+
+    static void PlaySound(string id)
+    {
+        if (AudioManager.instance == null)
+        {
+            Debug.LogWarning($"[ArrestCutscene] no AudioManager, '{id}' skipped");
+            return;
+        }
+        AudioManager.instance.Play(id);
+    }
+
+    static void StopSiren()
+    {
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.StopById(AudioId.PoliceSirenLoop);
         }
     }
 
@@ -302,6 +333,8 @@ public class ArrestCutscene : MonoBehaviour
 
     void WrapUp()
     {
+        StopSiren(); //safety net when the page never turned and CUE_TurnPage's stop was skipped
+
         _hiddenKami?.Restore();
         _hiddenNatalia?.Restore();
 
@@ -389,6 +422,7 @@ public class ArrestCutscene : MonoBehaviour
             EventManager.Unsubscribe(Evento.OnTrapLetterUnfolded, OnLetterUnfolded);
             EventManager.Unsubscribe(Evento.OnPageFinishTurning, OnPageFinishTurning);
             EventManager.Unsubscribe(Evento.OnQuestCompleted, OnQuestCompleted);
+            StopSiren();
         }
     }
 }

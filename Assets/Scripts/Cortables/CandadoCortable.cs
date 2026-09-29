@@ -27,6 +27,13 @@ public class CandadoCortable : PickupCortable
     {
         base.ApplyCut();
 
+        //metal-on-metal on top of the base cut sound: a padlock is not paper. Also plays on Level 1's
+        //chest padlocks, which is the intent
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.Play(AudioId.PadlockClank);
+        }
+
         //a padlock may lock a cell instead of a chest: only a padlock that opens nothing at all is a mistake
         if (cofreQueAbro != null)
         {
