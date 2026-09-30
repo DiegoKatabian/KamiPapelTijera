@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level 2 Art Checklist</title>
+<style>
+  :root{
+    --bg:#f6f1e7; --card:#fffdf8; --ink:#2b2622; --muted:#7a7066; --line:#e3d9c6;
+    --accent:#c2410c; --done:#4d7c0f; --p1:#b91c1c; --p2:#a16207; --p3:#52708c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#1c1917; --card:#26221f; --ink:#f0e9dd; --muted:#a39a8d; --line:#3a342f;
+           --accent:#fb923c; --done:#a3e635; --p1:#f87171; --p2:#fbbf24; --p3:#8fb0cf; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .wrap{max-width:860px;margin:0 auto;padding:24px 16px 80px}
+  h1{margin:0 0 4px;font-size:1.8rem}
+  .sub{color:var(--muted);margin:0 0 20px}
+  .bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 12px;border-bottom:1px solid var(--line);margin-bottom:20px}
+  .track{height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+  .fill{height:100%;width:0;background:var(--done);transition:width .25s}
+  .barrow{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:8px;flex-wrap:wrap;font-size:.9rem;color:var(--muted)}
+  .btns{display:flex;gap:8px;flex-wrap:wrap}
+  button{font:inherit;font-size:.85rem;padding:5px 10px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-bottom:20px}
+  .tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.04em;padding:1px 7px;border-radius:99px;border:1px solid currentColor;vertical-align:middle;margin-right:6px}
+  .p1{color:var(--p1)} .p2{color:var(--p2)} .p3{color:var(--p3)}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 18px 12px;margin-bottom:16px}
+  section h2{font-size:1.15rem;margin:14px 0 2px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+  section h2 small{font-weight:400;color:var(--muted);font-size:.8rem}
+  section .why{margin:0 0 6px;color:var(--muted);font-size:.88rem}
+  ul{list-style:none;margin:0;padding:0}
+  li{border-top:1px solid var(--line);padding:9px 0}
+  li:first-child{border-top:none}
+  label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+  input[type=checkbox]{margin-top:5px;width:18px;height:18px;accent-color:var(--done);flex:none}
+  .t{font-weight:600}
+  .n{display:block;color:var(--muted);font-size:.88rem;font-weight:400}
+  li.done .t{text-decoration:line-through;color:var(--muted)}
+  li.done .n{opacity:.6}
+  .foot{color:var(--muted);font-size:.85rem;margin-top:28px}
+  @media print{ .bar .btns{display:none} .bar{position:static} body{background:#fff} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Level 2 — Art Checklist</h1>
+  <p class="sub"><em>Newspaper</em> level: Kami &amp; Natalia's detective story, 5 pages. The whole level is playable with placeholder art — everything below is a stand-in waiting to be replaced. Tick what's done; your ticks are saved in this browser.</p>
+
+  <div class="bar">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="barrow">
+      <span id="count">0 / 0 done</span>
+      <span class="btns">
+        <button id="hide">Hide finished</button>
+        <button id="copy">Copy progress</button>
+        <button id="reset">Reset</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><span class="tag p1">P1</span>seen on the main path — every player sees it</span>
+    <span><span class="tag p2">P2</span>seen, but briefly or optional</span>
+    <span><span class="tag p3">P3</span>polish / can wait</span>
+  </div>
+
+  <div id="root"></div>
+
+  <p class="foot">Compiled 2026-09-29 from the Level 2 specs and code notes (placeholders are tinted sprites, cubes and reused Level 1 art). "Placeholder today" says what's standing in right now so you can spot it in the game. Anything unclear — ask Diego.</p>
+</div>
+
+<script>
+const DATA = [
+  { id:"chars", title:"Characters", why:"Every one of these is currently a tinted copy of Natalia's sprite.", items:[
+    ["Natalia — real art","p1","Placeholder today: flat sprite (child <code>NataliaVisual_PLACEHOLDER</code>). She follows Kami across all 5 pages, so she needs at least idle + walk. Swapping her art touches no code."],
+    ["Ariel (the villain)","p1","Placeholder today: tinted Natalia sprite. Appears on page 3 (arrest) and page 5 (accuses, gets arrested, apologizes)."],
+    ["Police officer (patrol cop)","p1","Placeholder today: tinted Natalia sprite. Used on page 2 (guarding the crime scene), page 3 (arrest escort) and page 4 (patrols with a vision cone). Needs idle + walk."],
+    ["Police officer — knocked out pose","p2","Placeholder today: the sprite lying down. Kami can cut a patrolling cop and he is out for 12 seconds, then wakes up."],
+    ["Grace (museum director)","p1","Placeholder today: tinted Natalia sprite. Page 5, talks with everyone."],
+    ["Abuela — Level 2 version","p2","Placeholder today: Level 1's Abuela reused. Falls from the sky in page 4 (falling pose + landing) and follows Kami."],
+    ["Followers riding the paper plane (Natalia + Abuela)","p2","Placeholder today: the normal sprites with a small bob. Needs \"sitting on / hanging from the paper plane\" poses. (Task 6.F)"]
+  ]},
+  { id:"p1", title:"Page 1 — Café", why:"Where Kami meets Natalia.", items:[
+    ["Café wrapper origami template (<code>OSU-Cafe</code>)","p1","Placeholder today: the paper-plane origami art. 2-step fold, reused as an unfold on page 5."],
+    ["Café ticket — inventory icon","p1","The girls' receipt: 2 hot chocolates, 21:47. It is the alibi that clears them."],
+    ["Radio in the café (optional prop)","p3","The dialogue mentions a radio announcing the robbery. No visual exists yet."],
+    ["Posters (cuttable)","p2","Placeholder today: a bush. 2 on pages 1, 2, 3 and 5. Any small paper poster, ideally with a \"cut\" state (whole → two pieces)."],
+    ["Ambient traffic: cars + pedestrians","p3","Cars use the existing animated paper car. There is no pedestrian variant yet; more variety would help the streets feel alive."]
+  ]},
+  { id:"p2", title:"Page 2 — Find the clues", why:"Three clues, two cops and a taped-off crime scene.", items:[
+    ["Glove — inventory icon + trash-can pickup","p1","Ariel's glove. Found inside a trash can."],
+    ["Hat — inventory icon + floor pickup","p1","Ariel's hat, lying on the manhole."],
+    ["Broken wristwatch — inventory icon + floor pickup","p1","Stopped at 21:47. Lying in the museum front yard."],
+    ["Police tape (cuttable)","p1","Placeholder today: a bush. Cut sideways into two halves that fly apart."],
+    ["Police car","p2","Placeholder today: the normal paper car. Sits at the museum fence, then drives off."],
+    ["Trash can with a lid animation","p1","Today it is a single mesh with a squash-and-stretch placeholder for open/close. 15 cans across Level 2 use the same prefab. Ideally a real lid; the same asset is planned for the sewer manholes."],
+    ["Manhole (clue location)","p3","Only needs to look like a place a hat could have fallen."]
+  ]},
+  { id:"p3", title:"Page 3 — The trap & the arrest", why:"Gift box, letter, arrest cutscene.", items:[
+    ["Gift box — closed and open","p1","Placeholder today: two cubes. Has a ribbon Kami cuts, then the box opens."],
+    ["Ribbon (cuttable)","p1","Placeholder today: a bush. Splits sideways into two halves."],
+    ["The Pelusa painting — inventory icon and in-box art","p1","The stolen painting. Kami is literally caught holding it."],
+    ["Letter origami template (<code>OSU-Letter</code>)","p1","Placeholder today: the bridge origami art. 1 fold, then the letter text appears."],
+    ["Letter text panel skin","p3","The panel that shows the letter / the café ticket. Plain today (<code>OrigamiTextRevealPanel</code>)."],
+    ["Arrest cutscene: patrol car","p1","Placeholder today: the normal paper car. It needs a door (a mark for boarding) and to be driven off."],
+    ["Handcuffs","p3","No art exists. The beat is only a dialogue line + sound. A small handcuff sprite would sell it."],
+    ["Bar interior: musicians (for the jazz mini-game)","p3","Designed, not started (spec 007). Only relevant if the jazz sidequest goes ahead."]
+  ]},
+  { id:"p4", title:"Page 4 — Police station escape", why:"The biggest page: two cells, a patrolling cop with a vision cone, a hat-powered jump to a window.", items:[
+    ["Cell fences / bars","p1","Placeholder today: plain fence objects. Kami's cell and Natalia's cell each have one. One disappears when the Abuela crashes in."],
+    ["Padlock on Natalia's cell door","p3","Already exists (Level 1's cuttable padlock). Just check it reads well at this scale."],
+    ["Confiscated-gear pickup (a bag / box with the scissors)","p1","Where Kami gets her scissors + paper + the Pelusa back. Placeholder today: a generic pickup."],
+    ["Typewriters on the desks (cuttable, give paper)","p2","There are two. Cutting one gives paper; it respawns."],
+    ["Drapes over the escape window (cuttable)","p1","Top half stays, bottom half drops when cut."],
+    ["Escape window","p2","Upper front-right, on the mezzanine. Should read as \"open, escapable\" once the drapes are cut."],
+    ["Wanted posters / paper stacks","p3","Extra cuttable paper sources, optional."],
+    ["Police vision cone look","p2","Built in code as a flat coloured fan (calm → alert → caught). Style can be replaced with a nicer texture/material if you want."],
+    ["Abuela falling + landing","p2","Fall pose and crash pose. Plays once from the sky onto the cell fence (dust + sound already exist)."],
+    ["Paper-plane hat origami","p3","Reuses Level 1's paper plane route/hat art; nothing needed unless you want a new look."]
+  ]},
+  { id:"p5", title:"Page 5 — The museum & the catapult", why:"Clearing their name and launching Kami home.", items:[
+    ["Catapult — loaded state","p1","Placeholder today: cubes. Kami and the Abuela stand in the bucket."],
+    ["Catapult — fired state","p1","The art swaps to this when the rope is cut. Then the girls fly off-screen."],
+    ["Rope (cuttable)","p1","Placeholder today: a bush. The rope Kami cuts to launch the catapult."],
+    ["Flying Kami + Abuela","p1","Placeholder today: <code>FlyingGirls_PLACEHOLDER</code>, a simple object that arcs across. Even a single sprite of the two of them in flight works."],
+    ["Museum fence (broken section)","p2","The museum model has the fence baked in. Placeholder in Level 2: a gap Kami cuts through on page 2; page 5 shows it as already open."],
+    ["Evidence items (in-hand handover)","p3","The five items leave the inventory when handed over: Pelusa, ticket, hat, glove, watch. Icons come from the items above, nothing extra."],
+    ["Ariel + cop arriving (cutscene)","p2","Same character art as above, plus the patrol car arriving."]
+  ]},
+  { id:"cut", title:"Closing cutscene & UI", why:"The frames the player sees at the end and the UI text panels.", items:[
+    ["Level 2 end-cutscene frames (<code>Level2_EndCutscene</code>)","p1","A copy of Level 1's ending with empty portraits. Narrator lines: the flight, the Narrator's blue lamp, a third book. Frames go into the <code>Narrator_Level2Ending</code> dialogue's sprites."],
+    ["Dialogue portraits for the new speakers","p2","Natalia, Ariel, cop, Grace, and the Narrator-in-Level-2 style. Check which speakers have no portrait during dialogues."],
+    ["Quest sprites (the quest-list thumbnails)","p2","Level 2 quests reuse Natalia's portrait. Each quest can have its own small image: Find the Clues, Go back home, Escape the station, Return the Pelusa."],
+    ["\"New quest\" overlay verse art","p3","Level 2 shows a 4-line poem when the first quest starts (text only today)."]
+  ]}
+];
+
+const KEY = "kpt-level2-art-checklist-v1";
+let state = {}; try{ state = JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){}
+let hideDone = false;
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} };
+
+const root = document.getElementById("root");
+let total = 0;
+DATA.forEach(sec=>{
+  const s = document.createElement("section");
+  s.innerHTML = `<h2>${sec.title}<small id="c-${sec.id}"></small></h2><p class="why">${sec.why}</p><ul></ul>`;
+  const ul = s.querySelector("ul");
+  sec.items.forEach((it,i)=>{
+    const id = `${sec.id}-${i}`; total++;
+    const li = document.createElement("li");
+    li.dataset.id = id; li.dataset.sec = sec.id;
+    li.innerHTML = `<label><input type="checkbox"><span><span class="t"><span class="tag ${it[1]}">${it[1].toUpperCase()}</span>${it[0]}</span><span class="n">${it[2]}</span></span></label>`;
+    const cb = li.querySelector("input");
+    cb.checked = !!state[id];
+    cb.addEventListener("change",()=>{ state[id]=cb.checked; if(!cb.checked) delete state[id]; save(); refresh(); });
+    ul.appendChild(li);
+  });
+  root.appendChild(s);
+});
+
+function refresh(){
+  let done = 0;
+  document.querySelectorAll("li").forEach(li=>{
+    const d = !!state[li.dataset.id]; if(d) done++;
+    li.classList.toggle("done", d);
+    li.style.display = (d && hideDone) ? "none" : "";
+  });
+  DATA.forEach(sec=>{
+    const n = sec.items.length, d = sec.items.filter((_,i)=>state[`${sec.id}-${i}`]).length;
+    document.getElementById("c-"+sec.id).textContent = `${d} / ${n}`;
+  });
+  document.getElementById("fill").style.width = (100*done/total)+"%";
+  document.getElementById("count").textContent = `${done} / ${total} done`;
+}
+document.getElementById("hide").onclick = e=>{ hideDone=!hideDone; e.target.textContent = hideDone?"Show finished":"Hide finished"; refresh(); };
+document.getElementById("reset").onclick = ()=>{ if(confirm("Clear all ticks?")){ state={}; save(); document.querySelectorAll("input").forEach(c=>c.checked=false); refresh(); } };
+document.getElementById("copy").onclick = async e=>{
+  const left=[]; DATA.forEach(sec=>sec.items.forEach((it,i)=>{ if(!state[`${sec.id}-${i}`]) left.push(`- [${sec.title}] ${it[0].replace(/<[^>]+>/g,"")}`); }));
+  const txt = `Level 2 art — still to do (${left.length}/${total}):\n`+left.join("\n");
+  try{ await navigator.clipboard.writeText(txt); e.target.textContent="Copied!"; }catch(err){ prompt("Copy this:",txt); }
+  setTimeout(()=>e.target.textContent="Copy progress",1500);
+};
+refresh();
+</script>
+</body>
+</html>

@@ -11,10 +11,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3736f067354f4abcb15a604e2f38deb9, type: 3}
   m_Name: TrafficObstacleSet_StreetCars
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   obstaclePrefabs:
   - {fileID: 1100000001, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
-  travelDurationRange: {x: 5, y: 8}
-  spawnIntervalRange: {x: 3, y: 6}
-  maxAlive: 4
-  maxLifetime: 30
+  - {fileID: 3197921192100531425, guid: fa997775dadba1f4aaf60b04c5e863b2, type: 3}
+  - {fileID: 3197921192100531425, guid: 079c3c9e47dce8e4b9e27df09d165caa, type: 3}
+  travelDurationRange: {x: 3, y: 4}
+  spawnIntervalRange: {x: 2, y: 3}
+  maxAlive: 5
+  maxLifetime: 10

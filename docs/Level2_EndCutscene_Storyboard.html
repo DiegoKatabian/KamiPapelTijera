@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level 2 End Cutscene - Storyboard</title>
+<style>
+  :root { --bg:#f4f1ea; --ink:#1d2433; --mute:#5b6478; --card:#fff; --line:#d9d4c7; --accent:#c0392b; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui,Segoe UI,Arial,sans-serif; }
+  .wrap { max-width:1040px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { margin:0 0 4px; font-size:26px; }
+  .sub { color:var(--mute); margin:0 0 20px; }
+  .box { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 18px; margin:0 0 18px; }
+  .box h2 { margin:0 0 6px; font-size:16px; }
+  .box ul { margin:6px 0 0; padding-left:20px; }
+  .shot { background:var(--card); border:1px solid var(--line); border-radius:10px; margin:0 0 22px; overflow:hidden; }
+  .shot-head { display:flex; justify-content:space-between; align-items:baseline; padding:10px 16px; border-bottom:1px solid var(--line); background:#efeadd; }
+  .shot-head b { font-size:17px; }
+  .shot-head span { color:var(--mute); font-size:13px; }
+  .shot-body { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:16px; padding:16px; }
+  @media (max-width:760px){ .shot-body { grid-template-columns:1fr; } }
+  svg.panel { width:100%; height:auto; display:block; border:2px solid var(--ink); border-radius:2px; background:#7690c8; }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  td { padding:5px 0; vertical-align:top; border-bottom:1px dashed var(--line); }
+  td:first-child { width:96px; color:var(--mute); font-weight:600; text-transform:uppercase; font-size:11.5px; letter-spacing:.04em; padding-top:8px; }
+  .cap { background:#f3efe2; border-left:3px solid var(--accent); padding:6px 10px; margin-top:8px; font-style:italic; }
+  .strip { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin:0 0 18px; }
+  .strip svg { width:100%; height:auto; border:1.5px solid var(--ink); background:#7690c8; display:block; }
+  .strip div { font-size:11px; text-align:center; color:var(--mute); margin-top:2px; }
+  code { background:#efeadd; padding:1px 5px; border-radius:4px; font-size:13px; }
+  @media print { body{background:#fff} .shot{break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Level 2 End Cutscene - Storyboard</h1>
+<p class="sub">Scene <code>Level2_EndCutscene</code> · 5 panels · 16:9 (1920x1080) · rough boards, not final art · v1 2026-09-29</p>
+
+<div class="box">
+  <h2>For Valen: what to draw</h2>
+  Five 1920x1080 frames, same pipeline as Level 1's ending: these rough panels are only blocking (who, where, which way they move, camera distance). Reuse Level 1's photo-frame border and paint style.
+  <ul>
+    <li><b>Red arrows</b> = direction of movement. <b>Dashed line</b> = path of travel. <b>Star burst</b> = impact.</li>
+    <li>Kami and the Abuela are drawn as dummies here (Kami: two buns + bow, scissors; Abuela: bun + round glasses + robe). Use the real character sheets.</li>
+    <li>Continuity: <b>the lamp is the big BLUE lamp of the Narrator's desk</b> (it already peeks in at the corner of Level 1's frame 4). The two books on the desk are Book 1 and Book 2. <b>Book 3's title is the last thing on screen.</b></li>
+    <li>The book title is in Spanish exactly as designed: <b>KAMI: FOTOS Y RECUERDOS</b>. Translations of the cover, if any, are a later call.</li>
+  </ul>
+</div>
+
+<div class="box">
+  <h2>The sequence at a glance</h2>
+  <div class="strip" id="strip"></div>
+  Beats: <b>fly</b> (1) → <b>hit the lamp</b> (2, 3) → <b>tumble</b> (4) → <b>land on Book 3</b> (5, hold).
+</div>
+
+<div class="box">
+  <h2>Industry format, in one paragraph</h2>
+  A storyboard is a grid of frames in the film's aspect ratio, in story order. Each frame carries a number, a <b>shot size</b> (WS wide, MS medium, CU close-up), the <b>camera angle/move</b>, the <b>action</b> in one sentence, the <b>dialogue/caption</b>, the <b>sound</b>, the <b>duration</b> and the <b>transition</b> to the next frame. Movement is drawn with arrows, camera moves with a second frame outline. Below, every panel follows exactly that.
+</div>
+
+<!-- ============ reusable dummies ============ -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5"/>
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c0392b"/>
+    </marker>
+    <g id="kami" stroke="#1d2433" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+      <line x1="-4" y1="2" x2="-6" y2="17" fill="none"/><line x1="4" y1="2" x2="6" y2="17" fill="none"/>
+      <path d="M-8,-17 L8,-17 L11,3 L-11,3 Z" fill="#5f86d6"/>
+      <line x1="-8" y1="-14" x2="-17" y2="-4"/><line x1="8" y1="-14" x2="17" y2="-8"/>
+      <circle cx="-7" cy="-34" r="4.5" fill="#1f3fbf"/><circle cx="7" cy="-34" r="4.5" fill="#1f3fbf"/>
+      <circle cx="0" cy="-26" r="9" fill="#f6e3d3"/>
+      <path d="M-9,-28 Q0,-38 9,-28 L9,-30 Q0,-40 -9,-30 Z" fill="#1f3fbf"/>
+      <rect x="-3" y="-35" width="6" height="3.4" fill="#c0392b"/>
+      <path d="M17,-8 L27,-20 M17,-8 L29,-12" stroke="#d8dbe6" stroke-width="2.2" fill="none"/>
+    </g>
+    <g id="abuela" stroke="#1d2433" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+      <line x1="-3" y1="2" x2="-4" y2="12"/><line x1="3" y1="2" x2="4" y2="12"/>
+      <path d="M-9,-14 L9,-14 L13,3 L-13,3 Z" fill="#7a5233"/>
+      <line x1="-9" y1="-11" x2="-17" y2="-2"/><line x1="9" y1="-11" x2="17" y2="-5"/>
+      <circle cx="0" cy="-28" r="4.5" fill="#1f3fbf"/>
+      <circle cx="0" cy="-21" r="9" fill="#e8c9ab"/>
+      <path d="M-9,-23 Q0,-33 9,-23 L9,-25 Q0,-35 -9,-25 Z" fill="#1f3fbf"/>
+      <circle cx="-3.6" cy="-21" r="3" fill="none"/><circle cx="3.6" cy="-21" r="3" fill="none"/>
+    </g>
+    <g id="star" fill="#fff6c8" stroke="#1d2433" stroke-width="1.6" stroke-linejoin="round">
+      <polygon points="0,-30 7,-11 27,-16 13,-1 30,12 9,12 6,32 -4,14 -25,22 -14,4 -32,-8 -10,-9"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- ============ SHOT 1 ============ -->
+<section class="shot">
+  <div class="shot-head"><b>Shot 01 · Liftoff</b><span>WS · eye level · static</span></div>
+  <div class="shot-body">
+    <svg class="panel" id="p1" viewBox="0 0 480 270" filter="url(#rough)">
+      <use href="#p1art"/>
+    </svg>
+    <div>
+      <table>
+        <tr><td>Size</td><td>Wide shot (WS)</td></tr>
+        <tr><td>Camera</td><td>Locked off, eye level. Girls cross frame left → right, small in the upper third.</td></tr>
+        <tr><td>Action</td><td>Kami and the Abuela sail over the newspaper's rooftops toward the gutter of their book, at the right of frame.</td></tr>
+        <tr><td>Sound</td><td>Catapult whoosh tail, wind, paper flutter.</td></tr>
+        <tr><td>Duration</td><td>Held until the player advances (click-to-advance, like Level 1).</td></tr>
+        <tr><td>Transition</td><td>Cut.</td></tr>
+        <tr><td>Draw notes</td><td>Rooftops are newsprint (columns of text, headlines). The book's fold is huge and far away: it sells the scale.</td></tr>
+      </table>
+      <div class="cap"><b>Narrator</b> · level2_end_01<br>"Kami and her grandmother soared over the rooftops of the newspaper, straight toward the fold of their own book..."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHOT 2 ============ -->
+<section class="shot">
+  <div class="shot-head"><b>Shot 02 · The lamp looms</b><span>MS · low angle · slight push-in</span></div>
+  <div class="shot-body">
+    <svg class="panel" id="p2" viewBox="0 0 480 270" filter="url(#rough)"><use href="#p2art"/></svg>
+    <div>
+      <table>
+        <tr><td>Size</td><td>Medium shot (MS)</td></tr>
+        <tr><td>Camera</td><td>Low angle, slow push-in toward the lamp. Girls on the left, lamp taking the right half.</td></tr>
+        <tr><td>Action</td><td>A huge round blue dome comes into frame. Kami spots it first: "!" over her head, the Abuela grabs her.</td></tr>
+        <tr><td>Sound</td><td>Wind rises, a low hum from the lamp.</td></tr>
+        <tr><td>Duration</td><td>Short, ~2 s, no text of its own (see note below).</td></tr>
+        <tr><td>Transition</td><td>Smash cut to impact.</td></tr>
+        <tr><td>Draw notes</td><td>The lamp is the star of this frame and the next. Blue, glossy, glowing bulb inside.</td></tr>
+      </table>
+      <div class="cap"><b>Narrator</b> · level2_end_02 (starts here)<br>"...until they crashed into something big, round and blue..."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHOT 3 ============ -->
+<section class="shot">
+  <div class="shot-head"><b>Shot 03 · Impact</b><span>CU · eye level · shake</span></div>
+  <div class="shot-body">
+    <svg class="panel" id="p3" viewBox="0 0 480 270" filter="url(#rough)"><use href="#p3art"/></svg>
+    <div>
+      <table>
+        <tr><td>Size</td><td>Close-up (CU)</td></tr>
+        <tr><td>Camera</td><td>Cut in tighter, small camera shake on the hit.</td></tr>
+        <tr><td>Action</td><td>Both girls squash flat against the blue dome. The lamp rocks on its stand.</td></tr>
+        <tr><td>Sound</td><td>BONK (metal-and-glass ring), then a wobbly lamp creak.</td></tr>
+        <tr><td>Duration</td><td>~1.5 s, this is the comedic beat.</td></tr>
+        <tr><td>Transition</td><td>Cut.</td></tr>
+        <tr><td>Draw notes</td><td>Cartoon squash. Curved arcs beside the lamp show its swing. A few paper scraps fly off.</td></tr>
+      </table>
+      <div class="cap"><b>Narrator</b> · level2_end_02 (continues)<br>"...the lamp on the Narrator's desk."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHOT 4 ============ -->
+<section class="shot">
+  <div class="shot-head"><b>Shot 04 · Tumble</b><span>MS · high angle · tilt down</span></div>
+  <div class="shot-body">
+    <svg class="panel" id="p4" viewBox="0 0 480 270" filter="url(#rough)"><use href="#p4art"/></svg>
+    <div>
+      <table>
+        <tr><td>Size</td><td>Medium shot (MS)</td></tr>
+        <tr><td>Camera</td><td>High angle, tilts down to follow them as they fall.</td></tr>
+        <tr><td>Action</td><td>Knocked off course, both spin down toward an open book on the desk. The lamp still swings at the top of frame.</td></tr>
+        <tr><td>Sound</td><td>Falling whistle, sparkles (magic dust like Level 1's frame 4).</td></tr>
+        <tr><td>Duration</td><td>~2 s.</td></tr>
+        <tr><td>Transition</td><td>Cut.</td></tr>
+        <tr><td>Draw notes</td><td>A spiral trail of sparkles. Keep the lamp swing visible so it reads as cause and effect.</td></tr>
+      </table>
+      <div class="cap"><b>Narrator</b> · level2_end_03<br>"Knocked off course, they tumbled between the pages of a book they had never read."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHOT 5 ============ -->
+<section class="shot">
+  <div class="shot-head"><b>Shot 05 · Book 3</b><span>WS · high angle · slow push-in · HOLD</span></div>
+  <div class="shot-body">
+    <svg class="panel" id="p5" viewBox="0 0 480 270" filter="url(#rough)"><use href="#p5art"/></svg>
+    <div>
+      <table>
+        <tr><td>Size</td><td>Wide shot (WS) of the desk</td></tr>
+        <tr><td>Camera</td><td>High angle, almost top-down. Very slow push-in on the cover.</td></tr>
+        <tr><td>Action</td><td>The girls land in a heap on the cover of the third book. Books 1 and 2 sit stacked at the left. The lamp is still swaying, shadows moving.</td></tr>
+        <tr><td>Sound</td><td>Soft thump, dust puff, then quiet. Music resolves.</td></tr>
+        <tr><td>Duration</td><td>Long hold, this is the last image. Player advances to the main menu.</td></tr>
+        <tr><td>Transition</td><td>Fade to black, then <code>MainMenu</code>.</td></tr>
+        <tr><td>Draw notes</td><td>The cover title must be legible: <b>KAMI: FOTOS Y RECUERDOS</b>. A photo-corner motif on the cover hints at the level ahead.</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="box">
+  <h2>Implementation note (Diego)</h2>
+  <code>Narrator_Level2Ending</code> has 3 dialogue events but this is 5 frames. Two ways: <b>(a)</b> 5 events, splitting line 2 at the ellipsis (lines 2a/2b), and shot 5 gets a short closing line; or <b>(b)</b> keep 3 events and let shots 2+3 share one sprite pair via the same sprite reused, which is what Level 1 did with frame 4 (used for two lines). Recommendation: (b) for zero new text, then Valen decides whether 2 and 3 stay separate frames.
+</div>
+
+</div>
+
+<!-- ============ ART DEFS (rendered via <use>) ============ -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- shared: lamp -->
+    <g id="lampBig" stroke="#1d2433" stroke-width="2.2" stroke-linejoin="round">
+      <path d="M-110,0 A110,110 0 0 1 110,0 Z" fill="#a9c2f0"/>
+      <path d="M-84,-30 A90,90 0 0 1 -40,-78" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".7"/>
+      <rect x="-14" y="0" width="28" height="90" fill="#8ea8de"/>
+      <ellipse cx="0" cy="92" rx="52" ry="10" fill="#8ea8de"/>
+    </g>
+    <g id="p1art">
+      <rect width="480" height="270" fill="#7690c8"/>
+      <!-- book gutter far right -->
+      <path d="M392,52 Q404,20 440,14 L480,12 L480,262 L440,250 Q404,240 392,214 Z" fill="#aac0ec" stroke="#1d2433" stroke-width="2.2"/>
+      <path d="M392,52 L392,214" stroke="#1d2433" stroke-width="3.5"/>
+      <g stroke="#1d2433" stroke-width="1" opacity=".55"><path d="M404,70 L470,64 M404,90 L470,86 M404,110 L470,108 M404,130 L470,130 M404,150 L470,152 M404,170 L470,174 M404,190 L470,194"/></g>
+      <text x="418" y="46" font-family="Arial Black,Arial" font-size="10" fill="#1d2433">THE FOLD</text>
+      <!-- rooftops -->
+      <g stroke="#1d2433" stroke-width="2" fill="#c8d5f2">
+        <path d="M0,212 L0,270 L90,270 L90,196 L70,178 L50,196 L50,212 Z"/>
+        <path d="M96,232 L96,270 L190,270 L190,214 L143,196 Z"/>
+        <path d="M198,222 L198,270 L300,270 L300,206 L262,206 L262,184 L230,184 L230,222 Z"/>
+        <path d="M308,240 L308,270 L400,270 L400,224 Z"/>
+      </g>
+      <g stroke="#1d2433" stroke-width="1.2" opacity=".55"><path d="M14,228 L76,228 M14,240 L76,240 M14,252 L76,252 M108,246 L180,246 M108,258 L180,258 M212,234 L290,234 M212,246 L290,246 M212,258 L290,258"/></g>
+      <!-- trajectory -->
+      <path d="M30,150 Q210,20 380,70" fill="none" stroke="#c0392b" stroke-width="2.2" stroke-dasharray="7 6" marker-end="url(#arr)"/>
+      <!-- girls -->
+      <use href="#abuela" transform="translate(238,66) rotate(-24) scale(1.05)"/>
+      <use href="#kami" transform="translate(292,72) rotate(-22) scale(1.1)"/>
+      <g stroke="#fff" stroke-width="2" opacity=".8" stroke-linecap="round"><path d="M170,86 L206,74 M160,104 L200,94 M178,120 L214,108"/></g>
+    </g>
+
+    <g id="p2art">
+      <rect width="480" height="270" fill="#7690c8"/>
+      <!-- desk edge -->
+      <path d="M0,236 L480,222 L480,270 L0,270 Z" fill="#5b74ad" stroke="#1d2433" stroke-width="2.2"/>
+      <!-- lamp -->
+      <use href="#lampBig" transform="translate(360,150) scale(1.15)"/>
+      <circle cx="360" cy="176" r="12" fill="#fff6c8" stroke="#1d2433" stroke-width="1.6" opacity=".9"/>
+      <!-- path -->
+      <path d="M40,80 Q160,60 268,112" fill="none" stroke="#c0392b" stroke-width="2.2" stroke-dasharray="7 6" marker-end="url(#arr)"/>
+      <use href="#abuela" transform="translate(110,92) rotate(12) scale(1.5)"/>
+      <use href="#kami" transform="translate(172,98) rotate(14) scale(1.6)"/>
+      <text x="196" y="30" font-family="Arial Black,Arial" font-size="34" fill="#fff6c8" stroke="#1d2433" stroke-width="1.6">!</text>
+      <path d="M170,120 L230,132" stroke="#fff" stroke-width="2" opacity=".8"/>
+    </g>
+
+    <g id="p3art">
+      <rect width="480" height="270" fill="#7690c8"/>
+      <use href="#lampBig" transform="translate(280,190) scale(1.5)"/>
+      <!-- swing arcs -->
+      <path d="M118,80 Q92,140 110,220" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#arr)"/>
+      <path d="M450,70 Q470,140 452,220" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#arr)"/>
+      <!-- burst -->
+      <use href="#star" transform="translate(200,86) scale(1.55)"/>
+      <!-- squashed girls -->
+      <use href="#abuela" transform="translate(176,80) rotate(-58) scale(1.35,.9)"/>
+      <use href="#kami" transform="translate(230,74) rotate(-66) scale(1.4,.9)"/>
+      <text x="292" y="58" font-family="Arial Black,Arial" font-size="30" fill="#fff6c8" stroke="#1d2433" stroke-width="1.6" transform="rotate(8 292 58)">BONK!</text>
+      <g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M120,40 L140,54 M60,110 L88,112 M330,20 L318,42"/></g>
+    </g>
+
+    <g id="p4art">
+      <rect width="480" height="270" fill="#7690c8"/>
+      <!-- lamp swinging top right -->
+      <path d="M470,-2 A90,90 0 0 0 388,-2" fill="#a9c2f0" stroke="#1d2433" stroke-width="2.2"/>
+      <path d="M340,60 Q360,90 380,60" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#arr)"/>
+      <!-- open book on desk -->
+      <path d="M40,268 L60,196 L240,214 L240,268 Z" fill="#dfe8fb" stroke="#1d2433" stroke-width="2.2"/>
+      <path d="M440,268 L420,196 L240,214 L240,268 Z" fill="#c8d5f2" stroke="#1d2433" stroke-width="2.2"/>
+      <g stroke="#1d2433" stroke-width="1" opacity=".5"><path d="M80,222 L228,232 M80,238 L228,246 M252,232 L400,222 M252,246 L400,238"/></g>
+      <!-- sparkle spiral -->
+      <path d="M170,40 Q120,70 168,96 Q230,120 210,150 Q180,178 236,182" fill="none" stroke="#fff6c8" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>
+      <path d="M270,30 Q270,110 240,168" fill="none" stroke="#c0392b" stroke-width="2.2" stroke-dasharray="7 6" marker-end="url(#arr)"/>
+      <use href="#abuela" transform="translate(250,100) rotate(150) scale(1.15)"/>
+      <use href="#kami" transform="translate(312,132) rotate(-130) scale(1.2)"/>
+      <g fill="#fff6c8" stroke="#1d2433" stroke-width="1"><polygon points="140,70 143,78 151,80 143,83 140,91 137,83 129,80 137,78"/><polygon points="360,90 363,98 371,100 363,103 360,111 357,103 349,100 357,98"/><polygon points="90,140 92,146 98,148 92,150 90,156 88,150 82,148 88,146"/></g>
+    </g>
+
+    <g id="p5art">
+      <rect width="480" height="270" fill="#7690c8"/>
+      <!-- desk plane -->
+      <path d="M0,60 L480,60 L480,270 L0,270 Z" fill="#6a84be"/>
+      <path d="M0,60 L480,60" stroke="#1d2433" stroke-width="2.2"/>
+      <!-- books 1 & 2 stacked, left -->
+      <g stroke="#1d2433" stroke-width="2.2" stroke-linejoin="round">
+        <path d="M24,196 L136,190 L146,228 L34,238 Z" fill="#a9c2f0"/><path d="M34,238 L146,228 L146,240 L34,250 Z" fill="#8ea8de"/>
+        <path d="M30,154 L130,150 L138,188 L38,194 Z" fill="#c8d5f2"/><path d="M38,194 L138,188 L138,199 L38,205 Z" fill="#8ea8de"/>
+      </g>
+      <text x="78" y="222" font-family="Arial Black,Arial" font-size="14" fill="#1d2433" text-anchor="middle">1</text>
+      <text x="74" y="180" font-family="Arial Black,Arial" font-size="14" fill="#1d2433" text-anchor="middle">2</text>
+      <!-- book 3 -->
+      <g stroke="#1d2433" stroke-width="2.4" stroke-linejoin="round">
+        <path d="M188,92 L420,92 L450,222 L164,222 Z" fill="#e6b98a"/>
+        <path d="M164,222 L450,222 L450,242 L164,242 Z" fill="#b98a5c"/>
+      </g>
+      <rect x="240" y="112" width="160" height="50" fill="#f6ead2" stroke="#1d2433" stroke-width="1.6" transform="skewX(-2)"/>
+      <text x="316" y="132" font-family="Arial Black,Arial" font-size="15" fill="#1d2433" text-anchor="middle">KAMI:</text>
+      <text x="316" y="152" font-family="Arial Black,Arial" font-size="12.5" fill="#1d2433" text-anchor="middle">FOTOS Y RECUERDOS</text>
+      <g stroke="#1d2433" stroke-width="2"><path d="M196,102 L212,102 L196,118 Z" fill="#c0392b"/><path d="M412,212 L396,212 L412,196 Z" fill="#c0392b"/></g>
+      <!-- girls landing -->
+      <use href="#star" transform="translate(300,196) scale(.6)"/>
+      <use href="#abuela" transform="translate(270,204) rotate(90) scale(.9)"/>
+      <use href="#kami" transform="translate(330,204) rotate(-75) scale(.95)"/>
+      <path d="M300,20 L300,84" stroke="#c0392b" stroke-width="2.2" stroke-dasharray="7 6" marker-end="url(#arr)"/>
+      <!-- lamp shadow / swing -->
+      <ellipse cx="420" cy="34" rx="46" ry="14" fill="#a9c2f0" stroke="#1d2433" stroke-width="2"/>
+      <path d="M380,50 Q400,72 430,52" fill="none" stroke="#c0392b" stroke-width="2" marker-end="url(#arr)"/>
+    </g>
+  </defs>
+</svg>
+
+<script>
+  // Build the thumbnail strip from the same art the panels use.
+  const strip = document.getElementById('strip');
+  ['p1','p2','p3','p4','p5'].forEach((id, i) => {
+    const d = document.createElement('div');
+    d.innerHTML = '<svg viewBox="0 0 480 270"><use href="#' + id + 'art"/></svg><div>0' + (i + 1) + '</div>';
+    strip.appendChild(d);
+  });
+</script>
+</body>
+</html>

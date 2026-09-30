@@ -154,3 +154,11 @@ sospechar primero de algo que esté llamando `HideTooltip()` sin color más segu
 - `OnExitBehaviour` esconde SOLO su color y SOLO si esa entrada llegó a mostrar algo (flag `_shownThisEntry`) — antes el exit de cualquier trigger mataba post-its ajenos vivos.
 
 **Debug:** logs `[TooltipManager]`, `[PostIt]` (con el nombre del GO) y `[TriggerScript]`.
+
+### `tooltipTextToShow` is a TooltipTable key, not display text (2026-09-30, spec 008)
+
+`TooltipManager` resolves the field against `TooltipTable`; a string that is not a key is shown
+as-is, in every language (Natalia's "Press E to talk" was English for that reason; she now uses
+`dialogue_tooltip`). Older NPCs/pedestals still hold literal Spanish, which only looks right in
+Spanish. Level 2's Azul post-it (trash cans, page-turn spheres) is placed by a scene override:
+bottom-centre anchor, y = -260 (under the player on purpose, so it covers neither Kami nor the can).

@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1100000005}
+  - {fileID: 9004070343151391722}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -43,9 +43,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1efbbbba07d1455c9f6372b8164093ce, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  faceMovementDirection: 1
+  m_Name: 
+  m_EditorClassIdentifier: 
+  faceMovementDirection: 0
 --- !u!1001 &1100000004
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53,10 +53,45 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1100000002}
     m_Modifications:
+    - target: {fileID: 566173865687695937, guid: d3e18111556873d42949957515d1d0fa,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 566173865687695937, guid: d3e18111556873d42949957515d1d0fa,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.125
+      objectReference: {fileID: 0}
+    - target: {fileID: 566173865687695937, guid: d3e18111556873d42949957515d1d0fa,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 6.5625
+      objectReference: {fileID: 0}
+    - target: {fileID: 5944045118774385781, guid: d3e18111556873d42949957515d1d0fa,
+        type: 3}
+      propertyPath: m_Name
+      value: Paper Car Prefab aniamted
+      objectReference: {fileID: 0}
     - target: {fileID: 9004070344251390190, guid: d3e18111556873d42949957515d1d0fa,
         type: 3}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9004070344251390190, guid: d3e18111556873d42949957515d1d0fa,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9004070344251390190, guid: d3e18111556873d42949957515d1d0fa,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9004070344251390190, guid: d3e18111556873d42949957515d1d0fa,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9004070344251390190, guid: d3e18111556873d42949957515d1d0fa,
         type: 3}
@@ -108,29 +143,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9004070344251390190, guid: d3e18111556873d42949957515d1d0fa,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9004070344251390190, guid: d3e18111556873d42949957515d1d0fa,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9004070344251390190, guid: d3e18111556873d42949957515d1d0fa,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5944045118774385781, guid: d3e18111556873d42949957515d1d0fa,
-        type: 3}
-      propertyPath: m_Name
-      value: Paper Car Prefab aniamted
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3e18111556873d42949957515d1d0fa, type: 3}
---- !u!4 &1100000005 stripped
+--- !u!4 &9004070343151391722 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9004070344251390190, guid: d3e18111556873d42949957515d1d0fa,
     type: 3}

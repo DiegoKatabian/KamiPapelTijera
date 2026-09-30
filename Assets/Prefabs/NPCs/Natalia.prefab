@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showTooltip: 1
-  tooltipTextToShow: Press E to talk
+  tooltipTextToShow: dialogue_tooltip
   postItColor: 1
   _maxTooltipShows: 0
   _burnAfterReading: 0
