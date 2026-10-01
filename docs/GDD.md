@@ -16,6 +16,7 @@ Estado: **living document** — vive junto al código, se actualiza a medida que
 | 0.1 | 2026-09-04 | Primera redacción completa a partir de auditoría de código, `ROADMAP.md`, specs en `specs/` y documentación técnica en `docs/claude/`. |
 | 0.2 | 2026-09-04 | Lore final incorporado: guion completo del Acto 1 (texto en español, canónico), outline página-por-página del Nivel 2 ("Kami, Tinta y Castigo/Condena"), y script outline original (inglés, `KPT Script Outline.pdf`) usado para completar Acto 2 (detalle) y Acto 3 completo. Secciones 1, 2, 3 y 5 reescritas. Se agregó §2.7 con puntos de reconciliación narrativa↔implementación que necesitan decisión del equipo. |
 | 0.3 | 2026-09-04 | **GDD cerrado**: las 8 disidencias de §2.7 resueltas en sesión con Diego. Principio general adoptado: **diseño transmedia** — el juego y el guion/película comparten universo y personajes pero pueden resolver beats de forma distinta sin que eso sea un bug a corregir. Título del Nivel 2 finalizado, mecánica de Rocoso y sistema de recompensas confirmados sin cambios en el juego, "Nivel 4" descartado, cutscene de cierre del Nivel 1 descartada del juego (queda solo en el guion), B-plot de la Abuela confirmado canon de historia, e idea anotada para la 2ª sidequest del Nivel 2 (minijuego de ritmo en el bar de jazz). |
+| 0.4 | 2026-10-01 | Kami's age corrected from 12 to 13 (Diego). Any script/pitch outside the repo (e.g. the original script PDF) may still say 12. |
 
 Fuentes usadas para este documento: `CLAUDE.md` (raíz), `docs/claude/*.md`, `ROADMAP.md`, `.specify/memory/constitution.md`, `specs/*/spec.md`. Cualquier sección ⚪ necesita una conversación con Diego/Valentino, no una suposición.
 
@@ -24,7 +25,7 @@ Fuentes usadas para este documento: `CLAUDE.md` (raíz), `docs/claude/*.md`, `RO
 ## 1. Visión
 
 ### 1.1 Pitch 🟢
-Kami tiene 12 años, pelo celeste atado en dos rodetes, vestido blanco con overol — estética **cottagecore**. Vive con su tío Norberto y su abuela en una granja (no tiene padres), dentro de un mundo **enteramente hecho de papel**: personajes, edificios, arbustos, árboles, todo, como en un libro pop-up. Es bondadosa y servicial hasta la exageración, muy hábil con su enorme tijera (corta casi cualquier cosa) pero un poco torpe con los pies. Su magia es el **Origami**: puede doblar el papel del mundo — incluso a personas de papel — para crear herramientas, vehículos y aliados improvisados.
+Kami tiene 13 años, pelo celeste atado en dos rodetes, vestido blanco con overol — estética **cottagecore**. Vive con su tío Norberto y su abuela en una granja (no tiene padres), dentro de un mundo **enteramente hecho de papel**: personajes, edificios, arbustos, árboles, todo, como en un libro pop-up. Es bondadosa y servicial hasta la exageración, muy hábil con su enorme tijera (corta casi cualquier cosa) pero un poco torpe con los pies. Su magia es el **Origami**: puede doblar el papel del mundo — incluso a personas de papel — para crear herramientas, vehículos y aliados improvisados.
 
 El juego entero es la travesía de Kami de vuelta a casa después de que **el Narrador** — una entidad metaficcional que narra todo lo que le pasa, dueño literal del escritorio donde conviven todos los libros del mundo — la castiga por "romper las reglas de las historias" (doblar personajes, cortar el escenario a su antojo) y la destierra a otros libros que no son el suyo. Cada nivel del juego es un **libro/historia distinta**, con estética y reglas propias, pero todos comparten la mecánica central: todo es de papel, y a Kami se le puede cortar y doblar.
 
@@ -62,7 +63,7 @@ El guion (destinado a película/libro) y el videojuego **comparten universo, per
 - Ante una divergencia nueva, no asumir cuál gana: anotarla y decidirla explícitamente (mismo patrón que §2.7).
 
 ### 2.2 Kami — la protagonista 🟢
-12 años, pelo celeste en dos rodetes, vestido blanco + overol, estética cottagecore. Vive con su tío Norberto y su abuela en una granja de campo; no tiene padres. Diligente y compasiva — ayuda a todo el mundo con sus tareas y problemas todos los días — pero un poco torpe con los pies (coherente con la fricción de locomoción ya implementada, ver `RunStop` en `docs/claude/spine-kami.md`). Es **muy** hábil con su enorme tijera (corta casi cualquier cosa) y tiene magia de **Origami**: dobla papel — incluso personas de papel — para construir cosas que la ayuden.
+13 años, pelo celeste en dos rodetes, vestido blanco + overol, estética cottagecore. Vive con su tío Norberto y su abuela en una granja de campo; no tiene padres. Diligente y compasiva — ayuda a todo el mundo con sus tareas y problemas todos los días — pero un poco torpe con los pies (coherente con la fricción de locomoción ya implementada, ver `RunStop` en `docs/claude/spine-kami.md`). Es **muy** hábil con su enorme tijera (corta casi cualquier cosa) y tiene magia de **Origami**: dobla papel — incluso personas de papel — para construir cosas que la ayuden.
 
 ### 2.3 Estructura en 3 libros (= 3 niveles)
 
@@ -143,7 +144,7 @@ Las 8 disidencias detectadas al incorporar el guion se resolvieron con Diego. Se
 
 ### 3.1 Kami (protagonista) 🟢
 
-**Descripción física** (guion): 12 años, pelo celeste en dos rodetes, vestido blanco + overol, estética cottagecore. En el Nivel 2 consigue un outfit de detective acorde al mundo noir (⚪ diseño de ese outfit sin especificar).
+**Descripción física** (guion): 13 años, pelo celeste en dos rodetes, vestido blanco + overol, estética cottagecore. En el Nivel 2 consigue un outfit de detective acorde al mundo noir (⚪ diseño de ese outfit sin especificar).
 
 **Personalidad**: diligente y compasiva, ayuda a todos con sus tareas y problemas todos los días; hábil con la tijera pero un poco torpe con los pies.
 

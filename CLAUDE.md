@@ -68,6 +68,8 @@ Roadmap and future feature specs: `specs/` (Spec Kit) and `ROADMAP.md`.
   Constitución del proyecto en `.specify/memory/constitution.md`. Specs existentes en
   `specs/`.
 
+- **Community Discord** (`tools/discord-setup/`, spec 010): script that builds the "Kami Paper Scissors" server (roles, ES/EN channels, AutoMod, pinned rules), designed for an audience that includes minors. Run on 2026-10-01 against the real server: 51 steps ok, 0 failed, idempotent, with language gating (Onboarding question -> Español/English roles unlock their category) and enforced channel order. Docs: `README.md` there, moderation in `docs/discord/moderation.md`, design in `specs/010-discord-community/spec.md`. Still open: Diego's by-hand checklist, the new-member test, the legal paragraph, soft launch.
+
 ### Modus operandi: documentación viva (NO es un issue, es una regla)
 
 Mantener el grafo, las specs y los docs al día es **parte de terminar cualquier tarea**,
