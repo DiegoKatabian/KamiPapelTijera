@@ -140,6 +140,10 @@ public class PlayerModel
         if (_player.isGettingWet || _player.CurrentState == PlayerState.Dead)
             return;
 
+        //a moving car is not a place to respawn
+        if (_player.IsOnMovingGround)
+            return;
+
         _safePosTimer += Time.deltaTime;
         if (_safePosTimer < _player.safeSnapshotInterval)
             return;
@@ -280,12 +284,18 @@ public class PlayerModel
             _move += _player.windVelocity;
         }
 
+        //same rule as the wind, for the same reason: a car's knockback and the moving ground under
+        //Kami are external velocities summed into THIS move, never a second cc.Move (issue #30)
+        Vector3 externalVelocity = _player.KnockbackVelocity + _player.GroundVelocity;
+        _move += externalVelocity;
+
         _move.y = _verticalVelocity;
         _player.cc.Move(_move * Time.deltaTime);
 
         if (hor != 0 || ver != 0)
         {
-            _player.lastDirection = new Vector3(_move.x, 0, _move.z);
+            //input-only heading: the paper plane hat's glide must not inherit a car's speed
+            _player.lastDirection = new Vector3(_move.x - externalVelocity.x, 0, _move.z - externalVelocity.z);
             _player._view.SetFacing(hor);
         }
     }

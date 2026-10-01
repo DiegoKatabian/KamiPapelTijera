@@ -28,6 +28,38 @@ now, ready for pages 1-5 to wire up:
   per-instance speed from the real distance. Two safety nets back it up: `maxAlive` (a
   spawn is skipped while at the cap, so obstacles physically cannot stack) and
   `maxLifetime` (a hard despawn that fires even if arrival somehow never happens).
+
+  **Cars hurt and carry Kami (spec 009, 2026-09-30, played and confirmed by Diego).** A front hit costs
+  `damage` (25 of her 120 HP) and shoves her sideways out of the lane; standing on a car's roof
+  carries her along. Sides and tail keep the old solid shove, no damage. Pieces:
+  - `TrafficCarHitbox` (`Traffic/`): trigger box + kinematic Rigidbody on a `CarHitbox` child of the
+    car's SOLID collider object (`Mesh`, under the animated art), in both car prefabs (the Dark/Gray
+    variants inherit it). The frontal test runs at runtime from `TrafficObstacle.TravelDirection`, so
+    one prefab works driven either way. All tuning is on the component (damage, `frontFraction`,
+    `pushDistance`/`pushDuration`, `immunitySeconds`, `hitSound` = `CarHorn`). By default it fits
+    itself to the mesh bounds at spawn (`fitToSolidCollider`; `heightFraction` keeps it below the
+    roof, `padding` makes it fire before the shove); turn that off to author the box with the gizmo.
+  - `IImpactReceiver`/`ImpactInfo` (`Player/`) and `IMovingGround` (`Traffic/`): the seams. The car
+    knows nothing about Kami and Kami nothing about cars (`Player` implements the first,
+    `TrafficObstacle` the second).
+  - **The car art has its own looping Animator** ("Andando"): it slides the `Mesh` collider along local
+    Z (about 17 u/s) on top of the root's own motion, so the real velocity is NOT
+    `TrafficObstacle`'s speed. `TrafficObstacle` therefore MEASURES the velocity of its solid collider
+    in `LateUpdate` (after the Animator) and caches it; `GroundVelocity`/`TravelDirection` read only
+    that cache (safe after Destroy). It stops carrying `releaseSecondsBeforeDespawn` (0.75 s) before
+    the root's despawn point.
+  - `Player`: `ReceiveImpact` (ignored when dead, in a cutscene, riding a page or immune),
+    `KnockbackVelocity` (linear decay, area = `pushDistance`), `OnControllerColliderHit` ground
+    tracking (`groundNormalMinY` 0.6, `movingGroundLatchSeconds` 0.1) -> `GroundVelocity` /
+    `IsOnMovingGround`. Both velocities are summed into the SINGLE `cc.Move` of
+    `PlayerModel.ApplyPhysics`, next to the wind (a second horizontal move brings back issue #30).
+    No last-safe-position snapshot while on moving ground; `lastDirection` stays input-only so the
+    paper plane glide does not inherit a car's speed.
+  - Knockback side at the car's axis: she is pushed against her own sideways `CharacterController`
+    velocity (the hitbox cannot read `Player.lastDirection` through the interface).
+  - Followers (Natalia, Abuela) are not carried and take no damage. The page 2 crime-scene car and
+    the page 3 patrol car are instances of the same prefab, so they carry the hitbox too (the arrest
+    car is covered by the cutscene filter, the page 2 car can hurt if Kami stands in its way).
 - **New cuttables** (`Assets/Prefabs/Cortables/`): `CuttablePoster.prefab`,
   `CuttablePoliceTape.prefab`, `CuttableRibbon.prefab`, `CuttableRope.prefab` — all built
   on the same bush pattern as `Arbusto 1.prefab` (`ObjetoCortable`: whole sprite off →

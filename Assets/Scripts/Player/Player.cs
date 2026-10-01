@@ -16,7 +16,7 @@ public enum RespawnBehavior
     LevelSpawnPoint   // punto de entrada de kami a la pagina actual (el respawn comun de siempre)
 }
 
-public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
+public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpactReceiver
 {
     [Header("Stats")]
     public bool hasTijera = false;
@@ -55,6 +55,12 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
 
     [Header("Hit Feedback")]
     public HitFeedbackConfig hitFeedback = new HitFeedbackConfig();
+
+    [Header("Impacts and moving ground")]
+    [Tooltip("A contact only counts as 'standing on' a moving surface when its normal points at least this far up (1 = flat floor). Keeps walls and car sides from carrying her.")]
+    [Range(0f, 1f)] [SerializeField] float groundNormalMinY = 0.6f;
+    [Tooltip("How long (seconds) the moving surface keeps carrying her after the last floor contact. Bridges the frames where the controller reports no hit, and lets go the moment she jumps off.")]
+    [SerializeField] float movingGroundLatchSeconds = 0.1f;
 
     [Header("Mezcla de animaciones")]
     public AnimationMixConfig animMix = new AnimationMixConfig();
@@ -837,6 +843,110 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable
     }
 
     public bool IsWindLatchAlive => Time.time <= _windLatchExpiry;
+
+    //Impacts (cars): same rule as the wind. A hit never moves the CharacterController by itself, it
+    //only leaves a knockback VELOCITY that PlayerModel.ApplyPhysics adds inside its single cc.Move.
+    //A second horizontal cc.Move would bring back the false Falling->Landing loop of issue #30.
+    Vector3 _knockbackDirection;
+    float _knockbackStartTime;
+    float _knockbackDistance;
+    float _knockbackDuration;
+    float _impactImmuneUntil;
+
+    //The speed decays linearly from 2*distance/duration to 0, so the area under it is exactly the
+    //configured pushDistance.
+    public Vector3 KnockbackVelocity
+    {
+        get
+        {
+            if (_knockbackDuration <= 0f)
+            {
+                return Vector3.zero;
+            }
+
+            float elapsed = Time.time - _knockbackStartTime;
+            if (elapsed >= _knockbackDuration)
+            {
+                return Vector3.zero;
+            }
+
+            float peakSpeed = 2f * _knockbackDistance / _knockbackDuration;
+            return _knockbackDirection * (peakSpeed * (1f - elapsed / _knockbackDuration));
+        }
+    }
+
+    public void ReceiveImpact(ImpactInfo impact)
+    {
+        if (CurrentState == PlayerState.Dead)
+        {
+            return;
+        }
+
+        if (LevelManager.Instance != null && LevelManager.Instance.inCutscene)
+        {
+            Debug.Log("[Player] impact ignored: a cutscene owns Kami");
+            return;
+        }
+
+        if (IsRidingPage)
+        {
+            Debug.Log("[Player] impact ignored: Kami is riding a page");
+            return;
+        }
+
+        if (Time.time < _impactImmuneUntil)
+        {
+            Debug.Log("[Player] impact ignored: still immune from the last one");
+            return;
+        }
+
+        _impactImmuneUntil = Time.time + impact.immunitySeconds;
+        TakeDamage(impact.damage, impact.cause);
+
+        //No knockback for a hit that killed her: the defeat sequence owns her from here
+        if (CurrentState == PlayerState.Dead)
+        {
+            return;
+        }
+
+        _knockbackDirection = impact.pushDirection.normalized;
+        _knockbackStartTime = Time.time;
+        _knockbackDistance = impact.pushDistance;
+        _knockbackDuration = impact.pushDuration;
+        Debug.Log($"[Player] impact: {impact.damage} damage, push {impact.pushDistance} units over {impact.pushDuration}s, immune {impact.immunitySeconds}s");
+    }
+
+    //Moving ground (a car's roof). Same latch pattern as the wind: OnControllerColliderHit only runs
+    //inside a cc.Move, so the surface is remembered for a moment instead of being consumed. Gravity
+    //is applied before every Move, so a grounded Kami reports a floor contact every frame.
+    IMovingGround _movingGround;
+    Collider _movingGroundCollider; //so the per-frame hit does not repeat the interface lookup
+    float _movingGroundLatchExpiry;
+
+    public bool IsOnMovingGround => _movingGround != null && Time.time <= _movingGroundLatchExpiry;
+
+    //Interface property on a possibly-destroyed car: IMovingGround implementers answer from cached
+    //fields only, so a late read after the car despawned is safe.
+    public Vector3 GroundVelocity => IsOnMovingGround ? _movingGround.GroundVelocity : Vector3.zero;
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.normal.y < groundNormalMinY)
+        {
+            return;
+        }
+
+        if (hit.collider != _movingGroundCollider)
+        {
+            _movingGroundCollider = hit.collider;
+            _movingGround = hit.collider.GetComponentInParent<IMovingGround>();
+        }
+
+        if (_movingGround != null)
+        {
+            _movingGroundLatchExpiry = Time.time + movingGroundLatchSeconds;
+        }
+    }
 
     public void StartAffectedByWind(float windForce, Vector3 windDirection)
     {
