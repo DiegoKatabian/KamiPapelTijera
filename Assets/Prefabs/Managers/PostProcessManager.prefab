@@ -46,4 +46,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bloomVolume: {fileID: 0}
   bloomLerpTime: 3
-  maxBloomOnChangePage: 10
+  targetBloomIntensity: 10

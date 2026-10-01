@@ -8,8 +8,9 @@ public class PostProcessManager : Singleton<PostProcessManager>
 {
     [SerializeField] Volume bloomVolume;
 
+    [Header("Bloom Intensity on Page Change")]
     [SerializeField] float bloomLerpTime = 3;
-    [SerializeField] float maxBloomOnChangePage = 80f;
+    [SerializeField] float targetBloomIntensity = 10f;
     float baseBloom;
 
     ColorAdjustments colorAdjustment;
@@ -51,14 +52,14 @@ public class PostProcessManager : Singleton<PostProcessManager>
         float t = 0;
         while (t < bloomLerpTime)
         {
-            bloom.intensity.value = Mathf.Lerp(baseBloom, maxBloomOnChangePage, t);
+            bloom.intensity.value = Mathf.Lerp(baseBloom, targetBloomIntensity, t);
             t += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
         t = 0;
         while (t < bloomLerpTime)
         {
-            bloom.intensity.value = Mathf.Lerp(maxBloomOnChangePage, baseBloom, t);
+            bloom.intensity.value = Mathf.Lerp(targetBloomIntensity, baseBloom, t);
             t += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
