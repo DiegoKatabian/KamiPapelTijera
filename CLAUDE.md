@@ -1,6 +1,6 @@
 # Kami: Papel y Tijera
 
-Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spine-unity **3.8** vendoreado en `Assets/Spine`) sobre mundo 3D.
+Juego de Unity (URP + Steam): personajes 2D animados con **Spine** (runtime spine-unity **4.2** vendored in `Assets/Spine`; these docs said 3.8 until 2026-10-02) sobre mundo 3D.
 
 ## LANGUAGE RULE (2026-09-09, set by Diego — overrides everything below)
 
@@ -39,7 +39,7 @@ unless Diego asks for a translation.
 - `Assets/Prefabs/OrigamiRoutes/` — sellos, `PedestalParent.prefab` y rutas de origami
 - `Assets/Prefabs/UI/PostIt.prefab` — los post-its de escena son instancias de este
 - `Assets/Prefabs/Particulas/` — prefabs de partículas
-- `Assets/2D/Kami Spine/Atlas 11/skeleton.json` — skeleton ACTIVO (lo referencia `Kami.prefab`; los Atlas 1-10 son viejos)
+- `Assets/2D/Kami Spine/Atlas 12 Spine4.2/skeleton.json` — the ACTIVE skeleton (Spine 4.2.43), applied by a `skeletonDataAsset` override in both level scenes. `Kami.prefab` and `MainMenu.unity` still reference `Atlas 11` (3.8 export, unloadable by the 4.2 runtime: spec 011 F2). Atlas 1-11 are old
 - Escena de trabajo Nivel 1: `Nivel1_KamiPapelTijera.unity` (activa desde fines de agosto 2026 — `Nivel1_LaRural SpineTest.unity` quedó vieja/stale, no confundir; puede tener referencias rotas)
 - Escena de trabajo Nivel 2: `Level2_Newspaper.unity` — ver `nivel2-y-ui.md` para estado actual (las 5 páginas armadas, pendientes de jugar/arte)
 - Level 2 closing cutscene: `Level2_EndCutscene.unity` (placeholder copy of `Nivel1_EndCutscene`, reached from the page 5 catapult; `GameScene.Level2EndCutscene`)
@@ -110,8 +110,10 @@ Kami tiene dos tipos de tijera con skins diferentes en Spine (Atlas 11):
 - `Player.LoseTijera()` (added 2026-09-22, spec 006 task 0.E) — the symmetrical counterpart to `GetTijera()`: sets `hasTijera = false`, decrements `ResourceType.tijera` by 1, and refreshes `PlayerView` the same way `GetTijera()` does. Guarded against double-calling when already unequipped. Called by `ConfiscatedGear` (Level 2 page 4, see `nivel2-y-ui.md`); never drives the `tijera` count below 0 (the P cheat equips the upgraded pair without one).
 - `Player._startWithTijera` (2026-09-27): the level starts with Kami holding the normal scissors, no pickup and no reward pose. On in Level 2 (Diego: Level 2 is played with the normal scissors only, there is no upgraded pair to get).
 
-**Futuro (comentado en código para Spine 4.x):**
-Cuando actualicemos a Spine 4.0, agregar multi-slot (botas, guantes, etc) usando `CurrentEquipment` struct y composición de skins. Hoy es simple porque solo maneja tijeras.
+**Next: spec 011 "Kami Gear"** (`specs/011-kami-gear/`, drafted 2026-10-02): outfit + scissors +
+boots (+ hats later) composed into one runtime Spine skin, so parts stack and survive an outfit
+change (Level 2 detective). Spine 4.2 is already installed; no upgrade needed. Later phase: a
+Wardrobe tab and equip/unequip from the bag.
 
 ## Muerte con causa (río, rocoso) — Agosto 2026
 

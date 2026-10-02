@@ -1,6 +1,6 @@
 # Spine: skeleton y animaciones de Kami
 
-Runtime: **spine-unity 3.8** (2021-11-10). Ojo: NO existe `TrackEntry.Reverse` (llegó en Spine 4.0) ni otras APIs modernas — verificar contra `Assets/Spine/Runtime/spine-csharp/` antes de usar algo.
+Runtime: **spine-unity 4.2** (package 2026-05-29, installed 2026-09-14 in `7f9706bd`; corrected here 2026-10-02, this doc used to say 3.8). Kami's active export is `Atlas 12 Spine4.2/skeleton.json` (Spine 4.2.43), applied through a `skeletonDataAsset` override in each level scene: `Kami.prefab` and `MainMenu.unity` still point at `Atlas 11` (a 3.8 export the 4.2 runtime refuses to load, see spec 011 F2). Verify any API against `Assets/Spine/Runtime/spine-csharp/` before using it.
 
 ## Tracks (PlayerView)
 
@@ -29,6 +29,11 @@ Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del
 
 `default`, `Tijera_Normal`, `Tijera_Upgrade_1`. Se cambian con `Player.SetTijeraEquipment()`: `Skeleton.SetSkin(nombre)` + `SetSlotsToSetupPose()` + actualiza TijeraManager/hitbox. Botas/guantes a futuro (multi-slot recién con Spine 4.x — hoy 3.8).
 
+**Superseded by spec 011 (Kami Gear), 2026-10-02**: the runtime is 4.2 and skin combining
+(`Skin.AddSkin`) needs no upgrade. `SetSkin(name)` replaces the whole skin, so it can't stack parts;
+the plan is outfit + scissors + feet composed into one runtime skin. How Spine mix-and-match works,
+and the authoring rules for Valen: `specs/011-kami-gear/spec.md`.
+
 ## Eventos dentro de las anims
 
 - `HandleAttack` (0.467s) en `Attack` y `AttackMOVE` (desde Atlas 5): dispara la hitbox. `Player.attackMoveHitboxDelay = -1` (el fallback por timer queda para atlas viejos; con ambos activos la hitbox disparaba doble).
@@ -56,7 +61,7 @@ Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del
 adentro del clip (t=0.333s en `Attack`, 0.467s en `AttackMOVE`; el fallback por timer está
 apagado, `attackMoveHitboxDelay = -1`).
 
-En spine-csharp 3.8 una entry interrumpida **nunca dispara sus eventos pendientes**:
+En spine-csharp (3.8, and still in 4.2: checked 2026-10-02) una entry interrumpida **nunca dispara sus eventos pendientes**:
 `AnimationState.cs` hace `var eventBuffer = mix < from.eventThreshold ? this.events : null;` y
 `eventThreshold` arranca en 0, o sea la condición nunca da true. Entonces atacar y abrir una
 solapa dentro de esos ~0.33s mataba el `HandleAttack` pendiente: `TijeraCoroutine` no corría
