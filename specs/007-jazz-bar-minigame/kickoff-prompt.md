@@ -11,7 +11,7 @@ win/fail, the sax in the inventory, the side quest). Sax mode (Phase 2) is the n
   `007-jazz-bar-minigame` from `011-kami-gear`'s HEAD.** The spec header still says "branches from
   `pages-blocking`": that's outdated, so fix it. Check `git status` before starting.
 - Never commit, push or open a PR without Diego's explicit permission, every time.
-- GitHub (M4, public build Oct 21): epic **#131**. This session = Phase 0 **#122 (0.A), #123 (0.B),
+- GitHub (M7, its own milestone since 2026-10-05: optional, after the public build): epic **#131**. This session = Phase 0 **#122 (0.A), #123 (0.B),
   #124 (0.C)**, then Phase 1 **#125 (1.A), #126 (1.B)**, then the close-out. Art #129 and audio #130 run
   outside code: use placeholders.
 
