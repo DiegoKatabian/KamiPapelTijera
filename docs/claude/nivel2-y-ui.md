@@ -347,9 +347,15 @@ runtime, one per gear item Kami owns (the bag's own count, so confiscated scisso
 tab) and a frame after any `OnResourceUpdated` (InventoryManager may update the amounts after it).
 
 **CamWheelManager** (implementa `IFlap`, mismo patrón de apertura/cierre que Flap):
-menú radial para elegir `CameraMode` a mano. Botones indexados por el enum de cámara;
-se resincroniza solo al cambiar de cámara por otro medio (`Evento.OnCameraChange` →
-`FakeSelectButton()` resalta el botón activo).
+menú radial para elegir `CameraMode` a mano. **Since #43 (2026-10-05) each `CamWheelButton`
+declares its `CameraMode` (`_mode`, set per instance in `CamWheelManager.prefab`: Close Up 0, Normal
+2, General 3, Book 4)** and its own `OnClick` calls `CamWheelButton.BTN_SelectCamera` ->
+`CameraManager.SelectCamera(_mode)`. That field is the only link between a button and a camera: the
+highlight (`Evento.OnCameraChange` -> `FakeSelectButton()`, scale only, never `Select()`) finds the
+button by mode, not by its position in the wheel. A new pickable camera = a new `CameraMode` + a
+button with that mode, no code. `ChangeCamera(int)` and its hand-written camera->button switch are gone
+(the stale test scenes `Level1_Kami (Test Use Only)`, `Nivel1_LaRural` and `SampleScene` still
+override their buttons to call it, so their wheels no longer click; they are out of the build).
 
 **HoverDetector**: dispara `Evento.OnMouseEnterFlap`/`OnMouseExitFlap`, usado para
 suprimir tooltips mientras el mouse está sobre UI.
@@ -360,5 +366,15 @@ suprimir tooltips mientras el mouse está sobre UI.
 (`CloseUp`, `OrigamiCasting`, `Normal`, `General`, `BookCenter`, `ReceiveReward`).
 `SetCamera(modo)` apaga todas y prende la target; `ToggleNextCamera()` (click medio)
 cicla. Durante un page-turn la secuencia es CloseUp → BookCenter (con delay) → Normal.
+
+**Player-pickable vs game-driven (#43, 2026-10-05, played by Diego in both levels).** `CameraManager.IsPlayerSelectable` is the one
+source of truth: `OrigamiCasting` and `ReceiveReward` are driven by `PlayerView` (casting / receiving
+a reward) and are never the player's. Cycling (middle click / L2) goes to the next pickable mode in enum
+order and skips them; a cycle press or a wheel pick (`SelectCamera`) while one of them is live is
+ignored, so L2 can't pull the camera off a fold or a reward. `BookCenter` stays pickable. Every
+`SetCamera` (game code included: page turns, the dam, origami, rewards) now raises
+`Evento.OnCameraChange` with the live `CameraMode` (it used to carry an int, only from cycling, and the
+wheel read it as a button index: L2 onto Normal lit General). Its only listener is `CamWheelManager`.
+The click sound stays on player picks only.
 `SplashCamaraController` es un sistema aparte y más simple (dos cámaras que alternan
 solas cada 5s) solo para la pantalla de splash/intro.

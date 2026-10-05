@@ -61,7 +61,7 @@ public enum Evento //LOS EVENTOS SE AGREGAN AL FINAL. NO EN EL MEDIO, PORQUE ARR
     OnPlayerChooseContinueGame,
     OnPlayerPressedI,
     OnPlayerPressedU,
-    OnCameraChange, //param0 es current camera
+    OnCameraChange, //param0: the live CameraMode (raised by every CameraManager.SetCamera)
     OnPageTurnStart, //param0 es activeindex, param1 es isnext
     OnAbuelaFold,
     OnAbuelaUnfold,

@@ -1051,7 +1051,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _autoDialogo: {fileID: 1411502613}
-  _sceneToLoadOnDialogueEnd: MainMenu
+  _sceneToLoadOnDialogueEnd: 0
   _endingSplash: {fileID: 254835639}
   closeAppOnDialogueEnd: 0
 --- !u!1 &1411502612

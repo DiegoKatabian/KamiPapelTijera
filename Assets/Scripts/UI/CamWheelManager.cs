@@ -75,45 +75,20 @@ public class CamWheelManager : Singleton<CamWheelManager>, IFlap
         //Debug.Log("isopen" + _isOpen);
 
     }
-    public void ChangeCamera(int cameraIndex)
-    {
-        CameraManager.Instance.SetCamera((CameraMode)cameraIndex);
-        CameraManager.Instance.PlaySetCameraSound();
-
-        switch (cameraIndex)
-        {
-            case 0: //close up
-                FakeSelectButton(0);
-                break;
-                case 1: //close up origami
-                //FakeSelectButton(1);
-                break;
-                case 2: //normal
-                FakeSelectButton(1);
-                break;
-                case 3: //general
-                FakeSelectButton(2);
-                break;
-                case 4: //book
-                FakeSelectButton(3);
-                break;
-                case 5: //receive reward
-                //FakeSelectButton(5);
-                break;
-        }
-    }
     //Resalta el boton de la camara activa. NO usa el EventSystem: ver el comentario de
     //CamWheelButton.Activate(). Antes hacia button.Select() y la rueda se quedaba con el foco
     //despues de cada cambio de camara, asi que el Submit del joystick la volvia a apretar.
+    //The button is found by the CameraMode it declares, never by its position in the wheel.
+    //While a game-driven camera is live (origami, reward) no button matches, so none is lit.
     public void FakeSelectButton(params object[] parameters)
     {
-        if (parameters == null || parameters.Length == 0 || !(parameters[0] is int))
+        if (parameters == null || parameters.Length == 0 || !(parameters[0] is CameraMode))
         {
-            Debug.LogWarning("[CamWheelManager] FakeSelectButton sin indice de camara valido, no resalto nada");
+            Debug.LogWarning("[CamWheelManager] FakeSelectButton without a CameraMode, nothing highlighted");
             return;
         }
 
-        int activo = (int)parameters[0];
+        CameraMode live = (CameraMode)parameters[0];
 
         for (int i = 0; i < _buttons.Length; i++)
         {
@@ -122,7 +97,7 @@ public class CamWheelManager : Singleton<CamWheelManager>, IFlap
                 continue;
             }
 
-            if (i == activo)
+            if (_buttons[i].Mode == live)
             {
                 _buttons[i].Activate();
             }
@@ -131,5 +106,10 @@ public class CamWheelManager : Singleton<CamWheelManager>, IFlap
                 _buttons[i].Deactivate();
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.Unsubscribe(Evento.OnCameraChange, FakeSelectButton);
     }
 }

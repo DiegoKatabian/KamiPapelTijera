@@ -246,10 +246,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CamWheelManager, Assembly-CSharp
-        m_MethodName: ChangeCamera
-        m_Mode: 3
+      - m_Target: {fileID: 100613841665500541}
+        m_TargetAssemblyTypeName: CamWheelButton, Assembly-CSharp
+        m_MethodName: BTN_SelectCamera
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -271,3 +271,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
+  _mode: 0
+  _escalaActiva: 1.15

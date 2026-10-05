@@ -75,7 +75,8 @@ the car to where they are placed in the scene. Vcams: GroupNear and PullBack fol
 - The cutscene lives at the **scene root**, not under Page 3: the page folder is switched off mid
   page-turn, and the wrap-up (cells, quests) runs after that. Its vcams are always on at priority 0,
   so they only go live through the Cameras track and never compete with `CameraManager` (priority 10).
-- Cutscene cameras are **not** `CameraMode`s: `CameraManager.ToggleNextCamera` cycles its whole array,
-  so a cutscene camera there would show up in the camera wheel (same problem as #43).
+- Cutscene cameras are **not** `CameraMode`s: `CameraManager` owns one vcam per mode and the player
+  cycles through the pickable ones (#43 made cycling skip the game-driven `OrigamiCasting`/`ReceiveReward`),
+  and `SetCamera` switches off every vcam in its array, which would fight the Timeline's Cameras track.
 - The timeline files were written by hand (YAML). If the Timeline window ever shows an empty or broken
   track, rebuild that track in the Editor — the scripts don't depend on how the asset was authored.
