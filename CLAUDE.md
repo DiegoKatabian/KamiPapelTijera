@@ -113,7 +113,8 @@ the `Gear_ScissorsNormal` / `Gear_ScissorsUpgrade1` items (Spine skins `Tijera_N
 - `Player._startWithTijera` (2026-09-27): the level starts with Kami holding the normal scissors, no pickup and no reward pose. On in Level 2 (Diego: Level 2 is played with the normal scissors only, there is no upgraded pair to get). Since spec 011 Phase 3 also no sticker: granted with `ownedAtLevelStart`.
 
 **Kami Gear, spec 011** (`specs/011-kami-gear/`; Phases 2 and 3 built and played 2026-10-05; Phase 4,
-"a Flap that only listens while it's open", planned as #152-#154, 4.A built; no gear persistence
+"a Flap that only listens while it's open" (#152-#154: `FlapState`, menu input/clicks only while `Open`),
+built and played 2026-10-05; no gear persistence
 between levels, Diego 2026-10-05): Kami's Spine skin is composed at runtime from outfit +
 Scissors + Feet (+ Hat later), so parts stack and survive an outfit change. Getting an item equips it
 (one `OnResourceUpdated` hook in `Player`); each level starts from a `GearLoadout`

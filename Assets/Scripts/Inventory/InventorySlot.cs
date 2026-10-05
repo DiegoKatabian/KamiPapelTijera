@@ -106,12 +106,13 @@ public class InventorySlot : MonoBehaviour
         }
     }
 
-    //Spec 011 FR-102: tapping a gear item also puts it on, or takes it off. Only with the Flap open,
-    //where the bag and the Wardrobe live: the reward stickers that fly by during gameplay are
-    //InventorySlots too, and a click on one must not undress Kami.
+    //Spec 011 FR-102: tapping a gear item also puts it on, or takes it off. Only with the Flap fully
+    //open (Q16), where the bag and the Wardrobe live and the only time their buttons take clicks: the
+    //reward stickers that fly by during gameplay are InventorySlots too, and a click on one must not
+    //undress Kami.
     void ToggleGear(InventoryItem item)
     {
-        if (FlapManager.Instance == null || !FlapManager.Instance.IsMenuOpen)
+        if (FlapManager.Instance == null || !FlapManager.Instance.IsFullyOpen)
         {
             return;
         }

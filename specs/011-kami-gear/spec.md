@@ -10,6 +10,8 @@ skin). F2 and F3 were confirmed in the Editor by Diego before the fix. Phase 3 s
 as built" in `tasks.md`, and Q9-Q11 below. His one finding (the Wardrobe tab showed during gameplay) led
 to **Phase 4, a Flap that only listens while it's open** (FR-301..306, F5/F6, Q12-Q14), planned the same
 day; its first task (4.A) was built right away. Phase C (carrying gear between levels) is dropped.
+**Phase 4 (4.A-4.C) built 2026-10-05 and played by Diego the same day** (everything on the checklist worked), with Diego's answers Q14-Q16
+(all the defaults): see "Phase 4 as built" in `tasks.md`.
 **Tasks**: `tasks.md`. **Art side**: the "Spine authoring contract" section is the brief for Valen.
 
 ## Request (Diego, 2026-10-02)
@@ -226,7 +228,8 @@ Not gear-specific: the Wardrobe exposed it (Q12 keeps it in this spec, in M4).
 - **FR-301** The Flap is always in exactly one state: `Closed`, `Opening`, `Open`, `Closing`. Every Flap
   rule reads that state. Nothing infers "open" from a position or from the end of a slide.
 - **FR-302** Menu input (R1/L1 tab cycling, B to close or to answer the exit confirm) and every selection
-  made by code happen only in `Open`. Leaving `Open` clears the selection.
+  made by code happen only in `Open`. Leaving `Open` clears the selection. *As built: every slide start
+  clears it (which includes leaving `Open`), see `tasks.md` "Phase 4 as built".*
 - **FR-303** The menu part (every display, the exit confirm, the tab buttons) can't be clicked, selected
   or navigated unless the Flap is `Open`. The HUD strip (pull tab, health, paper, page) is not touched,
   and the pull tab stays clickable in every state (it is what opens the Flap).
@@ -362,7 +365,16 @@ After playing Phase 3 (Diego, 2026-10-05):
 - **Q14 Gameplay input during the slides** (FR-306), to confirm at the Phase 4 kickoff. *Default: the menu
   owns input from the moment it starts opening until the moment it starts closing*, so pressing Esc
   freezes Kami at once and closing gives her back at once. Today it's the reverse: she can still move
-  during the 0.5 s opening slide, and can't move during the 0.5 s closing one.
+  during the 0.5 s opening slide, and can't move during the 0.5 s closing one. **Chosen (Diego,
+  2026-10-05, Phase 4 kickoff).** `IsMenuOpen` = `Opening` or `Open`.
+
+At the Phase 4 kickoff (Diego, 2026-10-05):
+
+- **Q15 A toggle mid-slide**: reverses it (Esc while opening closes, Esc while closing reopens, from
+  wherever the paper is), instead of restarting the opening or ignoring the press. *Chosen.*
+- **Q16 Gear taps need a fully open Flap**: `InventorySlot.ToggleGear` reads `IsFullyOpen` instead of
+  `IsMenuOpen`, so gear changes only from a fully open menu, the only time its buttons take clicks.
+  *Chosen.*
 
 ## Verification
 

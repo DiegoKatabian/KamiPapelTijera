@@ -155,14 +155,40 @@ Found playing Phase 3 (spec F5/F6). Not gear-specific, kept here by Q12. Everyth
 
 - [x] **4.A** #152 **Tabs only exist while the Flap is showing** (FR-304, F5): `SetTabsVisible` in
   `Start`, `OpenFlap` and at the end of the closing slide. Built 2026-10-05 on `011-kami-gear` with
-  Phase 3 (Q13), compile-checked, not played yet.
-- [ ] **4.B** #153 **Flap states** (FR-301, FR-302, FR-306): `FlapState` replaces `_isOpen`; menu input
+  Phase 3 (Q13). Played by Diego with the rest of Phase 4.
+- [x] **4.B** #153 **Flap states** (FR-301, FR-302, FR-306): `FlapState` replaces `_isOpen`; menu input
   (R1/L1/B) and selections by code only in `Open`; leaving `Open` clears the selection; `IsMenuOpen`
   follows Q14. Closes F6's close-slide leak.
-- [ ] **4.C** #154 **A closed Flap can't be clicked or navigated** (FR-303, FR-305): code-added
+- [x] **4.C** #154 **A closed Flap can't be clicked or navigated** (FR-303, FR-305): code-added
   `CanvasGroup`s on the menu roots (raycasts only in `Open`, `interactable` off only while `Closed`, see
   the Disabled-tint gotcha in spec "Phase D"), the safety-net deselect + warning, then the close-out
   (docs, graphify, Diego's checklist in spec "Verification").
+
+### Phase 4 as built (2026-10-05, played by Diego the same day: everything on the checklist worked)
+
+Diego took every default at the kickoff: Q14 (the menu owns input from the start of opening to the start
+of closing), Q15 (a toggle mid-slide reverses it) and Q16 (gear taps need `IsFullyOpen`). All in
+`FlapManager.cs`, plus one line each in `InventorySlot.ToggleGear` (Q16) and a comment in
+`PlayerController`. No prefab or scene edits. Changes vs. the design, and why:
+
+- **`MoveFlap(bool opening)`** instead of `MoveFlap(float targetY)`: it sets `Opening`/`Closing` itself at
+  the start, and the end state comes from the same flag, so nothing compares a position to decide "open"
+  (FR-301). It had no callers outside `FlapManager`.
+- **The selection is cleared at the start of every slide**, not only when leaving `Open` (FR-302 asked
+  for the latter, which is included). Reason: the pull tab (`Tirita fondo`, HUD strip) has Automatic
+  navigation, so the click that opens the Flap selects it, and WASD/stick during the opening slide would
+  navigate from it into the now-interactable menu. The `UISelector.Limpiar` that `CloseFlap` used to call
+  moved into `SetState`.
+- **`RefreshMenuGroup`** (new, not in the design): uGUI 1.0's `Selectable` caches whether its CanvasGroups
+  allow interaction and refreshes that only when a group changes while it is active (its `OnEnable` does
+  not; read in `Library/PackageCache/com.unity.ugui@1.0.0`). Without it, a display hidden while the Flap
+  closed and reopened (Esc shows Settings while closed, then R1 back to the bag) would come back greyed out
+  and unclickable in an open Flap. `ShowDesiredDisplay` and `BTN_Salir` flip the root's group right after
+  showing it and before selecting in it.
+- `BTN_Salir` selects the confirm's buttons only when `IsFullyOpen` (FR-302; with 4.C it can't be clicked
+  otherwise anyway).
+- Known, accepted: a reversed slide still takes the full 0.5 s even from halfway (it lerps from the
+  current position over `_flapTransitionDuration`). Not touched: no one asked, and it is visual only.
 
 ## Dropped — carry gear between levels (FR-201)
 

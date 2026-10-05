@@ -297,7 +297,7 @@ Hoja/EdgeBone → RidingPage) — no se encontraron discrepancias.
   al nombre del asset si la carga async todavía no resolvió) + cantidad si es &gt;1;
   sonidos de hover/click; fade in/out para el "sticker" de recompensa nueva. Los slots
   se reacomodan sin huecos cuando se quita un ítem.
-- **A tap on a gear item also wears it** (spec 011, 2026-10-05): with the Flap open, `BUTTON_OnPress`
+- **A tap on a gear item also wears it** (spec 011, 2026-10-05): with the Flap fully open (`IsFullyOpen`, Q16), `BUTTON_OnPress`
   showcases the item as always and then calls `Player.TryToggleGear` (outfits and boots; see
   `spine-kami.md`). The showcase slot's own click is emptied in the prefab, so it never toggles.
 - `InventoryManager.AddItem` warns and skips a resource missing from that scene's `_allItems` list
@@ -320,6 +320,13 @@ también es navegable/apretable con A. Los 3 sliders de Settings usan un handle 
 enfocar con joystick (mismo clip en los estados Pressed/Selected del Animator). Arriba de
 la columna de íconos de sección hay un cartel (`FlapTabHint`, componente
 `SoloConJoystick`) que dice "L1 / R1 para cambiar de sección", visible solo con joystick.
+
+**States (spec 011 Phase 4, 2026-10-05)**: the Flap is always `Closed`, `Opening`, `Open` or `Closing`
+(`FlapState`). Kami's input belongs to the menu from the moment it starts opening until it starts closing
+(`IsMenuOpen`), a toggle mid-slide reverses it, and the menu itself (every display, tab button and the exit
+confirm) takes clicks, R1/L1/B and code selections only while `Open` (`IsFullyOpen`), through `CanvasGroup`s
+`FlapManager` adds in `Awake` (no prefab edit). The HUD strip is never blocked. Detail and the uGUI
+stale-CanvasGroup gotcha: "Pausa del Flap" and "Fugas de foco" in `controles-y-gamepad.md`.
 
 **Wardrobe tab** (spec 011 FR-104, 2026-10-05, placeholder layout until Valen's #151): `_flapDisplays[4]`
 (appended last, so the hardcoded `BTN_*` indexes 0-3 still hold), `FlapManager.BTN_Wardrobe`, and a 5th

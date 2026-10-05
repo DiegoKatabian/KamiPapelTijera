@@ -72,8 +72,21 @@ por este gate) porque son justamente lo que abre y cierra el propio Flap.
 Ojo: el gate se resuelve leyendo `FlapManager.Instance.IsMenuOpen`, NO
 `LevelManager.agency` ni `LevelManager.inDialogue` — ninguno de los dos lo prendía al abrir
 el Flap (se investigó explícitamente, `agency` nunca se setea en código y `inDialogue` es de
-diálogo/overlay/page-turn). `IsMenuOpen` es la fuente de verdad porque es el mismo flag
-(`_isOpen`) que decide cuándo `Time.timeScale` pasa a 0.
+diálogo/overlay/page-turn).
+
+**The Flap's states (spec 011 Phase 4, 2026-10-05).** `FlapManager` is always in exactly one
+`FlapState`: `Closed`, `Opening`, `Open`, `Closing` (`MoveFlap` sets `Opening`/`Closing` when a slide
+starts and `Open`/`Closed` when it ends). It is the only source of truth; `_isOpen` is gone. Two
+readings of it:
+- `IsMenuOpen` = `Opening` or `Open` (Q14): the pause gate read by `PlayerController`,
+  `TriggerOrigami.CanAutoPrompt` and `Player.GetWetOnceTheMenuCloses`. Kami freezes the moment the
+  Flap **starts** opening and gets her input back the moment it **starts** closing (before Phase 4 it
+  was the reverse: free while opening, frozen for the whole closing slide). `Time.timeScale` is still 0
+  only while `Open`; the slides run at 1 (they use `Time.deltaTime`).
+- `IsFullyOpen` = `Open`: the only state where the Flap reads R1/L1/B, selects anything by code, takes
+  clicks, and where tapping gear in the bag/Wardrobe changes it (`InventorySlot.ToggleGear`, Q16).
+- A toggle (Esc/O/I/U, the pull tab) mid-slide reverses it (Q15): `ToggleFlap` closes from
+  `Opening`/`Open` and opens from `Closed`/`Closing`; the slide lerps from wherever the paper is.
 
 ## Arquitectura
 
@@ -179,14 +192,28 @@ limpia al cerrar menús y overlays, y por eso sólo se selecciona cuando hay joy
 
 ### Fugas de foco que ya nos mordieron (no repetirlas)
 
-- **OPEN (spec 011 Phase 4, #153/#154): a Flap left with something selected is driven by walking.**
-  The EventSystem navigates with `Horizontal`/`Vertical` (arrows, WASD **and** the stick) and submits
-  with `Interact` (E/Enter/A), and the active display stays live while the Flap is closed: a leftover
-  selection on a slider changes brightness/contrast/volume as Kami walks, one on a button gets pressed
-  by E/A. Known path (code reading, Diego remembers the symptom): `_isOpen` only turns false when the
-  0.5 s closing slide ends, `FlapManager.Update` keeps reading R1/L1 until then, and L1 is also sprint,
-  so "close and start running" re-selects inside the closing Flap. Until #153/#154 land: never select
-  anything in the Flap unless it is fully open, and remember the closing slide still counts as open.
+- **Resolved, played by Diego (spec 011 Phase 4, #153/#154, 2026-10-05): a Flap left with something
+  selected was driven by walking.** The EventSystem navigates with `Horizontal`/`Vertical` (arrows,
+  WASD **and** the stick) and submits with `Interact` (E/Enter/A), and the active display stays live
+  while the Flap is closed: a leftover selection on a slider changed brightness/contrast/volume as Kami
+  walked, one on a button got pressed by E/A. Cause (code reading, Diego remembers the symptom): the
+  old `_isOpen` only turned false when the 0.5 s closing slide ended, `FlapManager.Update` kept reading
+  R1/L1 until then, and L1 is also sprint, so "close and start running" re-selected inside the closing
+  Flap. A second path was a click on a Flap Selectable on screen while closed (the Wardrobe tab, F5).
+  Fix, all in `FlapManager`: the `FlapState` above, R1/L1/B and every selection by code only in
+  `Open`, and the selection cleared whenever a slide starts (that also covers the pull tab: a click
+  selects it, Automatic navigation, and WASD during the opening slide would navigate from it into the
+  menu). Each menu root (every display, every tab button, `_seguroOverlay`) gets a `CanvasGroup` added
+  in `Awake`: `blocksRaycasts` only while `Open`, `interactable` off only while `Closed` (off during the
+  slides it would flash the Disabled tint on screen). The HUD strip (pull tab, `HoverDetector`, health,
+  paper, page) is not touched. Safety net (FR-305): while not `Open`, a selection inside a menu root is
+  deselected with one `[FlapManager] ... (FR-305)` warning per object: one in normal play means a leak
+  path still exists.
+  **uGUI gotcha found doing it**: `Selectable` caches whether its CanvasGroups allow interaction and
+  only refreshes it when a group changes while the Selectable is active (`Selectable.OnEnable` doesn't,
+  in ugui 1.0). A display hidden while its group changed came back stale (greyed out in an open Flap),
+  so `ShowDesiredDisplay` and `BTN_Salir` flip the group (`RefreshMenuGroup`) right after showing a
+  root and before selecting in it.
 
 - **`Selectable.Select()` es `EventSystem.SetSelectedGameObject`.** No es "resaltar", es
   *dar el foco*. `CamWheelManager.FakeSelectButton` lo usaba para pintar la cámara activa, y
@@ -215,8 +242,8 @@ limpia al cerrar menús y overlays, y por eso sólo se selecciona cuando hay joy
 
 ### Navegación del Flap: R1/L1 cambian de tab, B cierra (issue #41.1)
 
-`FlapManager` tiene su propio `Update()`, activo SOLO mientras `_isOpen` (osea, solo cuando
-hay algo que navegar) — no interfiere con `PlayerController` porque ese ya se auto-gatea
+`FlapManager` tiene su propio `Update()`, activo SOLO mientras `IsFullyOpen` (the `Open` state, not
+during the slides; osea, solo cuando hay algo que navegar) — no interfiere con `PlayerController` porque ese ya se auto-gatea
 cuando el menú está abierto (ver pausa arriba), así que ningún input de gameplay compite por
 el mismo botón:
 
@@ -245,7 +272,7 @@ el mismo botón:
   Automatic navigation (the stick moves between rows); A on one is Submit -> `BUTTON_OnPress` -> wear /
   take off, B still closes the Flap. Highlighting the worn item uses scale, never `Select()` (that would
   give it focus). Played by Diego 2026-10-05; the tab buttons are now inactive while the Flap is
-  closed (spec 011 task 4.A, see the open leak below).
+  closed (spec 011 task 4.A; the rest of that leak, Phase 4, is in "Fugas de foco" above).
 
 **Ronda 2 (mismo issue #41, testing real con gamepad — ver
 `specs/004-joystick-controls/pending-issues.md` #41.10-#41.12 para el detalle completo)**:
@@ -413,7 +440,7 @@ pueden validar jugando.
   cerrar, atacar de una).
 - ~~#41.3 Input no se bloquea durante pausa~~ — **resuelto** (septiembre 2026):
   `PlayerController.CheckControls()` calcula `menuAbierto = FlapManager.Instance.IsMenuOpen`
-  (propiedad nueva, espeja `_isOpen`) y lo usa para saltear interactuar-en-el-mundo, atacar
+  (propiedad nueva; since spec 011 Phase 4 it reads `FlapState`, see "Pausa del Flap") y lo usa para saltear interactuar-en-el-mundo, atacar
   (teclado Y gamepad — antes el teclado no tenía NINGÚN gate de pausa) y el bloque de
   movimiento/salto. Esc/O/I/U siguen sin gatear porque son lo que abre/cierra el propio
   Flap. Detalle en "Pausa del Flap", arriba. Pendiente: confirmar jugando (parada sobre un

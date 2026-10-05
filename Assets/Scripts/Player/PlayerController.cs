@@ -62,6 +62,8 @@ public class PlayerController
         //EventSystem/UISelector, sin pasar por PlayerController) y R1/L1/B, que FlapManager
         //escucha directo de InputHub en su propio Update. Esc/I/U siguen funcionando (abren o
         //cierran el Flap) porque no pasan por este gate.
+        //Spec 011 Q14: IsMenuOpen also covers the opening slide (Kami freezes as soon as the Flap
+        //starts opening) and stops covering the closing one (she's free as soon as it starts closing).
         bool menuAbierto = FlapManager.Instance != null && FlapManager.Instance.IsMenuOpen;
 
         //A cutscene owns Kami: no movement, jump or attack. Interact only goes through while a

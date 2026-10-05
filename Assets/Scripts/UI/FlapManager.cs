@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [System.Serializable]
@@ -9,6 +10,16 @@ public struct FlapDisplay
     public int number;
     public GameObject display;
     public FlapDisplayButton flapButton;
+}
+
+//Spec 011 FR-301: the only source of truth for the Flap. Nothing infers "open" from the paper's
+//position or from a slide having ended.
+public enum FlapState
+{
+    Closed,
+    Opening,
+    Open,
+    Closing
 }
 
 public class FlapManager : Singleton<FlapManager>
@@ -21,16 +32,27 @@ public class FlapManager : Singleton<FlapManager>
     [SerializeField] Image _tiritaPull, _tiritaPush;
 
     float _posYClosed = 0;
-    bool _isOpen = false;
+    FlapState _state = FlapState.Closed;
     float _valueBeforeMute = 1;
     int _currentDisplayIndex = 0;
 
+    //FR-303: one per menu root (each display, its tab button, the exit confirm), added by code
+    readonly List<CanvasGroup> _menuGroups = new List<CanvasGroup>();
+    //FR-305: each leaked selection is reported once, not every frame
+    readonly HashSet<GameObject> _leaksReported = new HashSet<GameObject>();
+
     /// <summary>
-    /// El menu esta efectivamente abierto (mismo momento en que Time.timeScale pasa a 0).
-    /// La usa PlayerController (issue #41.3) para no procesar input de gameplay mientras el
-    /// Flap tapa la pantalla, y este mismo script para saber cuando escuchar R1/L1/B.
+    /// Spec 011 FR-306 (Q14): the menu owns the player's input from the moment it starts opening
+    /// until the moment it starts closing, so Esc freezes Kami at once and closing gives her back at
+    /// once. PlayerController (issue #41.3), TriggerOrigami and Player read it as "the pause".
     /// </summary>
-    public bool IsMenuOpen => _isOpen;
+    public bool IsMenuOpen => _state == FlapState.Opening || _state == FlapState.Open;
+
+    /// <summary>
+    /// The paper is all the way down (Time.timeScale is 0). The only state where the menu takes its
+    /// own input (R1/L1/B), gets selected by code, or takes clicks (FR-302, FR-303).
+    /// </summary>
+    public bool IsFullyOpen => _state == FlapState.Open;
 
     //flapdisplays:
     //0 es quests
@@ -38,6 +60,17 @@ public class FlapManager : Singleton<FlapManager>
     //2 es settings
     //3 es controles
     //4 is the Wardrobe (spec 011): appended last so the hardcoded indexes above keep working
+
+    protected override void Awake()
+    {
+        base.Awake();
+        if (Instance != this)
+        {
+            return; //a duplicate, being destroyed
+        }
+
+        AddMenuGroups();
+    }
 
     private void Start()
     {
@@ -60,7 +93,7 @@ public class FlapManager : Singleton<FlapManager>
         SetTabsVisible(true);
 
         StopAllCoroutines();
-        StartCoroutine(MoveFlap(_posYOpen));
+        StartCoroutine(MoveFlap(true));
     }   
     public void CloseFlap()
     {
@@ -70,12 +103,8 @@ public class FlapManager : Singleton<FlapManager>
         _tiritaPull.gameObject.SetActive(true);
         _tiritaPush.gameObject.SetActive(false);
 
-        //sin esto queda un boton del menu seleccionado y, como A es el Submit del EventSystem,
-        //el jugador lo seguiria apretando sin querer mientras juega
-        UISelector.Limpiar();
-
         StopAllCoroutines();
-        StartCoroutine(MoveFlap(_posYClosed));
+        StartCoroutine(MoveFlap(false));
     }
 
     /// <summary>
@@ -86,8 +115,11 @@ public class FlapManager : Singleton<FlapManager>
     /// </summary>
     private void Update()
     {
-        if (!_isOpen)
+        //FR-302: not during the slides either. While closing, L1 is also sprint, and "close the menu
+        //and start running" used to switch tabs and select inside a menu that was going away (F6).
+        if (!IsFullyOpen)
         {
+            DeselectLeakedMenuSelection();
             return;
         }
 
@@ -136,8 +168,12 @@ public class FlapManager : Singleton<FlapManager>
         AudioManager.instance.Play(AudioId.PageTurn02, 2.6f, 0.01f);
         ShowDesiredDisplay(_flapDisplays[nuevoIndex]);
     }
-    public IEnumerator MoveFlap(float targetY)
+    public IEnumerator MoveFlap(bool opening)
     {
+        float targetY = opening ? _posYOpen : _posYClosed;
+        SetState(opening ? FlapState.Opening : FlapState.Closing);
+
+        //the slide runs on Time.deltaTime: at timeScale 0 (the Flap pauses once Open) it would never move
         Time.timeScale = 1;
         Vector3 startPosition = transform.position;
         float elapsedTime = 0f;
@@ -153,8 +189,8 @@ public class FlapManager : Singleton<FlapManager>
         }
 
         transform.position = new Vector3(transform.position.x, targetY, transform.position.z);
-        _isOpen = (targetY == _posYOpen);
-        if (_isOpen)
+        SetState(opening ? FlapState.Open : FlapState.Closed);
+        if (opening)
         {
             Time.timeScale = 0;
 
@@ -166,6 +202,142 @@ public class FlapManager : Singleton<FlapManager>
         {
             SetTabsVisible(false);
         }
+    }
+
+    void SetState(FlapState newState)
+    {
+        if (newState == _state)
+        {
+            return;
+        }
+
+        FlapState previous = _state;
+        _state = newState;
+        Debug.Log($"[FlapManager] {previous} -> {newState}");
+
+        //FR-302: a selection belongs to the fully open menu. Left behind, the EventSystem keeps
+        //driving it with the gameplay axes: walking moves a selected slider, and A/E (Submit)
+        //presses a selected button. Limpiar also cancels UISelector's pending one-frame retry.
+        //Every slide start clears, which covers leaving Open, and also the pull tab: a click
+        //selects it (Automatic navigation), and WASD during the opening slide would navigate from
+        //it into the menu.
+        if (newState == FlapState.Opening || newState == FlapState.Closing)
+        {
+            UISelector.Limpiar();
+        }
+
+        ApplyMenuInteraction();
+    }
+
+    //FR-303: the menu takes clicks only while Open (blocksRaycasts), and takes navigation and Submit
+    //(interactable) unless Closed. interactable stays on during the slides on purpose: off, it switches
+    //every Selectable to its Disabled tint (0.78 gray, half alpha), which would flash while the paper
+    //moves on screen. During the slides "no clicks + no selection by code" is enough.
+    void ApplyMenuInteraction()
+    {
+        foreach (CanvasGroup group in _menuGroups)
+        {
+            if (group == null)
+            {
+                continue;
+            }
+            group.blocksRaycasts = _state == FlapState.Open;
+            group.interactable = _state != FlapState.Closed;
+        }
+    }
+
+    void AddMenuGroups()
+    {
+        if (_flapDisplays == null || _flapDisplays.Length == 0)
+        {
+            Debug.LogWarning("[FlapManager] no _flapDisplays: the menu can't be guarded while closed");
+        }
+        else
+        {
+            foreach (FlapDisplay d in _flapDisplays)
+            {
+                AddMenuGroup(d.display, $"display {d.number}");
+                AddMenuGroup(d.flapButton != null ? d.flapButton.gameObject : null, $"tab button {d.number}");
+            }
+        }
+        AddMenuGroup(_seguroOverlay, "_seguroOverlay");
+
+        ApplyMenuInteraction(); //the Flap starts Closed
+    }
+
+    void AddMenuGroup(GameObject root, string what)
+    {
+        if (root == null)
+        {
+            Debug.LogWarning($"[FlapManager] {what} is not assigned: it can't be guarded while the Flap is closed");
+            return;
+        }
+
+        CanvasGroup group = root.GetComponent<CanvasGroup>();
+        if (group == null)
+        {
+            group = root.AddComponent<CanvasGroup>();
+        }
+        _menuGroups.Add(group);
+    }
+
+    //uGUI 1.0 caches, per Selectable, whether its CanvasGroups allow interaction, and refreshes it only
+    //when a group changes while the Selectable is active (Selectable.OnEnable doesn't). A display that
+    //was hidden while the Flap closed and opened would come back with a stale answer: greyed out and
+    //unclickable in an open Flap, or live in a closed one. Flipping the group makes every active
+    //Selectable under it read it again. Call it right after showing a menu root, before selecting in it.
+    void RefreshMenuGroup(GameObject root)
+    {
+        if (root == null)
+        {
+            return;
+        }
+
+        CanvasGroup group = root.GetComponent<CanvasGroup>();
+        if (group == null)
+        {
+            return;
+        }
+
+        bool interactable = group.interactable;
+        group.interactable = !interactable;
+        group.interactable = interactable;
+    }
+
+    //FR-305, the safety net: nothing in the menu should be selected unless the Flap is Open. If
+    //something is, it is deselected before walking can drive it, and named once so the path that
+    //selected it can be found.
+    void DeselectLeakedMenuSelection()
+    {
+        EventSystem eventSystem = EventSystem.current;
+        if (eventSystem == null || eventSystem.currentSelectedGameObject == null)
+        {
+            return;
+        }
+
+        GameObject selected = eventSystem.currentSelectedGameObject;
+        if (!IsInMenu(selected.transform))
+        {
+            return; //the HUD strip (the pull tab) can stay selected: it only opens the Flap
+        }
+
+        if (_leaksReported.Add(selected))
+        {
+            Debug.LogWarning($"[FlapManager] '{selected.name}' was selected while the Flap is {_state}: deselected (FR-305). Something still selects inside the menu outside Open: report it");
+        }
+        UISelector.Limpiar();
+    }
+
+    bool IsInMenu(Transform t)
+    {
+        foreach (CanvasGroup group in _menuGroups)
+        {
+            if (group != null && t.IsChildOf(group.transform))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     //Spec 011 task 4.A: the tab buttons only exist while the Flap is showing. Closed, the paper sits
@@ -190,7 +362,9 @@ public class FlapManager : Singleton<FlapManager>
     //teclas del jugador
     public void ToggleFlap(params object[] parameters)
     {
-        if (_isOpen)
+        //Q15: a toggle mid-slide reverses it (Esc while opening closes, while closing reopens).
+        //MoveFlap lerps from wherever the paper is, so reversing is just starting the other slide.
+        if (_state == FlapState.Opening || _state == FlapState.Open)
         {
             CloseFlap();
         }
@@ -233,13 +407,19 @@ public class FlapManager : Singleton<FlapManager>
     public void BTN_Salir()
     {
         _seguroOverlay.SetActive(true);
+        RefreshMenuGroup(_seguroOverlay);
         Debug.Log("prendo el overlay");
         AudioManager.instance.Play(AudioId.PickupSFX, 1.25f);
 
         //el seguro es un dialogo modal (Si/No) encima del menu: si no seleccionamos uno de sus
         //botones, con joystick no habria forma de contestarle. UISelector avisa si _seguroOverlay
         //fuera null o no tuviera botones, no explota.
-        UISelector.SeleccionarPrimeroSiJoystick(_seguroOverlay);
+        //Only fully open (FR-302): Exit is a menu button, so this can't run otherwise once 4.C
+        //blocks clicks, but a selection made by code outside Open is exactly the leak F6 describes.
+        if (IsFullyOpen)
+        {
+            UISelector.SeleccionarPrimeroSiJoystick(_seguroOverlay);
+        }
     }
     public void BTN_Settings()
     {
@@ -336,6 +516,7 @@ public class FlapManager : Singleton<FlapManager>
 
         //Debug.Log("show desired display - " + flapDisplay);
         flapDisplay.display.SetActive(true);
+        RefreshMenuGroup(flapDisplay.display); //after its OnEnable (the Wardrobe builds its buttons there), before selecting
         flapDisplay.flapButton.Activate();
 
         //registrado aca (y no solo en CambiarTab) porque BTN_Settings/Inventory/Quests/Controles
@@ -350,7 +531,7 @@ public class FlapManager : Singleton<FlapManager>
         //seleccionado con el flap cerrado: el boton A es Submit, asi que el jugador terminaba
         //apretando botones fantasma del menu mientras jugaba. Cuando el flap se abre desde cero,
         //la seleccion la hace MoveFlap al terminar de abrirse.
-        if (_isOpen)
+        if (IsFullyOpen)
         {
             SeleccionarDentroDe(flapDisplay);
         }
@@ -384,7 +565,7 @@ public class FlapManager : Singleton<FlapManager>
     /// </summary>
     void SeleccionarDisplayVisible()
     {
-        if (!_isOpen)
+        if (!IsFullyOpen)
         {
             UISelector.Limpiar();
             return;
