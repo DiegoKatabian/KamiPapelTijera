@@ -57,28 +57,55 @@ public class CameraManager : Singleton<CameraManager>
         }
     }
 
+    public CameraMode CurrentMode => (CameraMode)currentCamera;
+
+    //The game drives these two (PlayerView, while casting an origami and while receiving a
+    //reward): the player can't pick them, and can't leave them either, or a press of L2 would
+    //pull the camera off the fold/reward mid-way (#43). Everything else is the player's.
+    public static bool IsPlayerSelectable(CameraMode mode)
+    {
+        return mode != CameraMode.OrigamiCasting && mode != CameraMode.ReceiveReward;
+    }
+
     public void ToggleNextCamera()
     {
-        //prendo la nueva. uso un index para saber cual tengo que encender.
-        currentCamera++;
-        if (currentCamera >= _virtualCameras.Length) //por si me paso del array
+        if (!IsPlayerSelectable(CurrentMode))
         {
-            currentCamera = 0;
-        }
-        _virtualCameras[currentCamera].gameObject.SetActive(true);
-
-
-        //apago la anterior. pero el index es distinto, asi que me hago un nuevo int
-        int previousCamera = currentCamera - 1;
-        if (previousCamera < 0) //si yo le pido index -1 al array crashea unity y se me apaga la compu todo mal. asi que primero chequeo que eso no pase
-        {
-            previousCamera = _virtualCameras.Length - 1;
+            Debug.Log($"[CameraManager] Cycle ignored: {CurrentMode} is game-driven");
+            return;
         }
 
-        _virtualCameras[previousCamera].gameObject.SetActive(false);
-        EventManager.Trigger(Evento.OnCameraChange, currentCamera);
+        for (int step = 1; step < _virtualCameras.Length; step++)
+        {
+            CameraMode candidate = (CameraMode)((currentCamera + step) % _virtualCameras.Length);
+            if (IsPlayerSelectable(candidate))
+            {
+                SetCamera(candidate);
+                PlaySetCameraSound();
+                return;
+            }
+        }
+
+        Debug.LogWarning("[CameraManager] Cycle: no other player-selectable camera in _virtualCameras");
+    }
+
+    //A pick from the camera wheel: same rules as cycling.
+    public void SelectCamera(CameraMode mode)
+    {
+        if (!IsPlayerSelectable(CurrentMode))
+        {
+            Debug.Log($"[CameraManager] Pick of {mode} ignored: {CurrentMode} is game-driven");
+            return;
+        }
+
+        if (!IsPlayerSelectable(mode))
+        {
+            Debug.LogWarning($"[CameraManager] {mode} is game-driven, a wheel button should not select it");
+            return;
+        }
+
+        SetCamera(mode);
         PlaySetCameraSound();
-
     }
     public void TurnOffAllVirtualCameras()
     {
@@ -90,11 +117,11 @@ public class CameraManager : Singleton<CameraManager>
 
     public void SetCamera(int index)
     {
-        TurnOffAllVirtualCameras();
-        currentCamera = index;
-        _virtualCameras[currentCamera].gameObject.SetActive(true);
-
+        SetCamera((CameraMode)index);
     }
+
+    //Every camera change goes through here, game-driven or not, so OnCameraChange always
+    //reports the live mode and the wheel's highlight can't go stale.
     public void SetCamera(CameraMode cam)
     {
         TurnOffAllVirtualCameras();
@@ -107,6 +134,7 @@ public class CameraManager : Singleton<CameraManager>
         {
             Debug.LogError($"[CameraManager] SetCamera: CameraMode index {currentCamera} is out of range (array length: {_virtualCameras.Length})");
         }
+        EventManager.Trigger(Evento.OnCameraChange, cam);
     }
 
     public void SetCamera(params object[] parameters)

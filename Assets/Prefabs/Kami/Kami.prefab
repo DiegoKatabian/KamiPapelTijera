@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3594971233757730330}
   - component: {fileID: 8265136736434708199}
   - component: {fileID: 1571676543898264472}
+  - component: {fileID: 1366940888300106300}
   m_Layer: 0
   m_Name: The Paper Model (SkeletonAnimation)
   m_TagString: Untagged
@@ -131,6 +132,21 @@ MonoBehaviour:
   _animationName: TitleScreen
   loop: 1
   timeScale: 1
+--- !u!114 &1366940888300106300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511614854351839340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63f4b43260124fe2b15de96c24faa19a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _layers: {fileID: 11400000, guid: 50a3e5cd0151f944db30439f5b5e9fb5, type: 2}
+  _layerIndex: 0
+  _showOutline: 1
 --- !u!1 &7567128660038721643
 GameObject:
   m_ObjectHideFlags: 0

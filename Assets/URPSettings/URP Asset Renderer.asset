@@ -84,7 +84,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   _outlineResources: {fileID: 11400000, guid: 231d88937a104094b8e4e0fdb8d2e77b, type: 2}
-  _outlineLayers: {fileID: 11400000, guid: 50a3e5cd0151f944db30439f5b5e9fb5, type: 2}
+  _outlineLayers: {fileID: 0}
   _outlineSettings:
     _outlineSettings: {fileID: 11400000, guid: 74347b692f6cd1342867bc2b92001343, type: 2}
     _outlineColor: {r: 1, g: 0, b: 0, a: 0.09803922}
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   _outlineResources: {fileID: 11400000, guid: 231d88937a104094b8e4e0fdb8d2e77b, type: 2}
-  _outlineLayers: {fileID: 11400000, guid: 50a3e5cd0151f944db30439f5b5e9fb5, type: 2}
+  _outlineLayers: {fileID: 0}
   _outlineSettings:
     _outlineSettings: {fileID: 0}
     _outlineColor: {r: 0, g: 0, b: 0, a: 1}
@@ -205,7 +205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   _outlineResources: {fileID: 11400000, guid: 231d88937a104094b8e4e0fdb8d2e77b, type: 2}
-  _outlineLayers: {fileID: 11400000, guid: 50a3e5cd0151f944db30439f5b5e9fb5, type: 2}
+  _outlineLayers: {fileID: 0}
   _outlineSettings:
     _outlineSettings: {fileID: 0}
     _outlineColor: {r: 0, g: 0, b: 0, a: 1}
@@ -234,7 +234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   _outlineResources: {fileID: 11400000, guid: 231d88937a104094b8e4e0fdb8d2e77b, type: 2}
-  _outlineLayers: {fileID: 11400000, guid: 50a3e5cd0151f944db30439f5b5e9fb5, type: 2}
+  _outlineLayers: {fileID: 0}
   _outlineSettings:
     _outlineSettings: {fileID: 0}
     _outlineColor: {r: 0.5936962, g: 0.5304379, b: 0.754717, a: 1}

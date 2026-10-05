@@ -114,6 +114,30 @@ asset in BOTH InventoryManager lists and its `ItemTable` keys, the café ticket 
 `nivel2-y-ui.md`). No code. The Wardrobe lists it by itself once Kami owns it. When Valen's renamed export lands (`scissors/normal`,
 `scissors/upgrade1`), only the two scissors items' skin fields change.
 
+## Outline through walls (#36, built and played by Diego 2026-10-05, on in both levels)
+
+`KamiOutline` (`Assets/Scripts/Player/`, on "The Paper Model (SkeletonAnimation)" in `Kami.prefab`) adds
+the skeleton object to layer 0 ("Player") of `Assets/URPSettings/OutlineLayerCollection.asset` in
+`OnEnable` and takes it out in `OnDisable` (the collection is a shared asset). Toggle `_showOutline`,
+read on enable.
+
+- **Why not the "Kami Outline" layer (13)**: the UnityFx `OutlineFeature`'s layer-mask path draws with an
+  override material that drops each renderer's texture, so Spine's textured quads would outline as
+  rectangles. The collection path (`OutlineRenderer.DrawRenderer`) with `EnableAlphaTesting` binds each
+  submesh's own atlas page and clips by its alpha (cutoff = the Spine material's `_Cutoff`, 0.1): her real
+  silhouette. No `EnableDepthTesting`, so it draws through walls like the 3D-era one.
+- **Look**: the layer reads `Assets/URPSettings/OutlineSettings.asset` (only this collection uses it):
+  white, 3 px, `_outlineMode: 4` (= EnableAlphaTesting). Tune color/width there, not in the collection's
+  inline values (ignored while that asset is assigned).
+- **Only the white "OutlineFeature" renders the collection.** All five `OutlineFeature`s in
+  `URP Asset Renderer.asset` used to reference it, which would outline her five times; the other four now
+  have `_outlineLayers` empty (they never had anything in it). Their layer-mask outlines are untouched.
+- It skips a renderer that is disabled (so `HiddenRenderers` in the page 3 arrest hides it), invisible
+  or inactive. Played: silhouette (not rectangles), through walls, flip, death anim, `RidingPage`, the
+  arrest's hiding, next to her paper border, and the main menu's outline unchanged.
+- The first renderer feature in that asset, "OutlineRendererFeature" (missing script `9561aef1...`), is
+  not in `m_RendererFeatures`: an orphaned sub-asset that never runs.
+
 ## Eventos dentro de las anims
 
 - `HandleAttack` (0.467s) en `Attack` y `AttackMOVE` (desde Atlas 5): dispara la hitbox. `Player.attackMoveHitboxDelay = -1` (el fallback por timer queda para atlas viejos; con ambos activos la hitbox disparaba doble).
