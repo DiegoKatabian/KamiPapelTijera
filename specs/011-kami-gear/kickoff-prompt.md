@@ -12,10 +12,12 @@ change. The design is approved (Diego took every default, 2026-10-02). Don't red
 
 ## Branch and state
 
-- Spec, tasks and doc fixes were written on `level2newspaper-pages-blocking-2` and may still be
-  uncommitted. **First thing: ask Diego which branch to work on** (my suggestion: commit the spec
-  where it is, then branch `011-kami-gear` from there). Never commit, push or open a PR without his
-  explicit permission, every time.
+- Work on branch **`011-kami-gear`** (already created and pushed). It starts at `c4ade2d7` (the spec
+  commit, on top of `level2newspaper-pages-blocking-2`). Check `git status` is clean before starting.
+  Never commit, push or open a PR without Diego's explicit permission, every time.
+- Before #140, ask Diego whether he already looked in the Editor at two things the spec only knows
+  from reading the code: (1) does Kami have scissors in Level 2 (F3 says she shouldn't), and (2) does
+  the MainMenu Kami render (F2 says it shouldn't). His answers become the "before" for the playtest.
 - GitHub (M4): epic **#139**. This session = **#140** (0.A), then **#142 → #143 + #144 → #145 → #146**.
   Art is in parallel and NOT needed for this session: #141 (Valen restructures the skins), #83 (rain
   boots skin), #61 (detective outfit skin). Phase 3 (#147-#151, the Wardrobe) is out of scope.

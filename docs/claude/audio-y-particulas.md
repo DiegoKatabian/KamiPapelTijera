@@ -59,7 +59,7 @@ bus unless noted; all 2D. Ids and where they fire:
   (`Managers/`, sibling of `PageMusicManager`: one id per page in the Inspector, same
   play-if-not-already-playing rule). Drop `Prefabs/Level2/PageAmbience.prefab` into the scene; the
   prefab is pre-filled for Level 2.
-- `CopKnockedOut` has a row but no code path yet (no knock-out mechanic exists).
+- `CopKnockedOut` plays when a patrol cop is cut and knocked out (`PoliceOfficer._knockedOutSound`, since 2026-09-29).
 
 **Per-line dialogue sounds**: `DialogueEvent.soundOnLine` (an AudioId, empty = none) is played by
 `DialogueManager.WriteText` when that line starts being written. Set today: `Arrest_Cuffs` line 1

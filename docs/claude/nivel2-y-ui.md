@@ -255,8 +255,8 @@ page (ambient traffic, a police vision cone, new Origami routes, the Natalia NPC
 etc., all 100% new). Cross-cutting systems (page-turn, inventory, quests, camera,
 Flap UI) are production-ready and get reused as the base.
 
-**Pendiente conocido**: feedback visual de las botas de agua (TODO en
-`LevelManager.cs`, línea ~121) — falta el skin de Spine correspondiente.
+**Water boots visual (2026-10-05)**: getting `botasAgua` equips `Gear_RainBoots` through Kami Gear
+(spec 011, see `spine-kami.md`); it shows once Valen exports the `feet/rain-boots` skin (#83).
 
 ## LevelManager
 
@@ -266,8 +266,8 @@ Guarda la referencia a `Player`, y los flags de control `agency` / `inDialogue` 
 gatean input y diálogo (ver `paginas-y-hoja.md` para el uso de `inDialogue` durante el
 page-turn). `AddResource()` dispara `Evento.OnResourceUpdated`, consumido por
 `InventoryManager` y `QuestSlot`. Los métodos `GiveSprintBoots()`/`GiveWaterBoots()`/
-`GiveTijeraMejorada()` son las recompensas de quest — ver `SetTijeraEquipment()` en
-`spine-kami.md` para el caso tijera. También decide qué música de nivel usar
+`GiveTijeraMejorada()` son las recompensas de quest; what each one looks like on Kami is gear (see
+"Skins: Kami Gear" in `spine-kami.md`). También decide qué música de nivel usar
 (MemoFloraMainLoop en Nivel 1, BohrenDestroyingAngels en Nivel 2). **Level 2 music is per
 page since 2026-09-24**: `PageMusicManager` (`Assets/Scripts/Managers/`, instance of
 `Prefabs/Level2/PageMusicManager.prefab` at the scene root) holds one AudioId per page in the

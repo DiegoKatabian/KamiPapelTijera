@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02ed2ee164f2479ea5ffe43d5b487ffb, type: 3}
+  m_Name: GearCatalog
+  m_EditorClassIdentifier: 
+  _skeletonDataAsset: {fileID: 11400000, guid: edc59de31b75beb428810d6ee630f293, type: 2}
+  _items:
+  - {fileID: 11400000, guid: 2c971d8124704b9db5a0fbfe6654b15f, type: 2}
+  - {fileID: 11400000, guid: 625c883d037c42b7bd11826f34321aad, type: 2}
+  - {fileID: 11400000, guid: c54c5ab52fc64e9f956759a8810414de, type: 2}
+  - {fileID: 11400000, guid: d9549f69f58044d29bec122c6b297c27, type: 2}
+  - {fileID: 11400000, guid: 239c65bc5e2c49359216c9583b8e1a9d, type: 2}
+  _ownedSlots:
+  - gearSlot: 1
+    spineSlots:
+    - tijera_back2
+    - tijera_front
+  - gearSlot: 2
+    spineSlots:
+    - 25_leg_zapato_front
+    - 23_leg_zapato_ebilla_front
+    - 26_leg_polaina_front
+    - 30_leg_zapato_back
+    - 28_leg_zapato_ebilla_back
+    - 26_leg_polaina_back
+    - 25_OL_leg_zapato_front
+    - 23_OL_leg_zapato_ebilla_front
+    - 26_OL_leg_polaina_front
+    - 30_OL_leg_zapato_back
+    - 28_OL_leg_zapato_ebilla_back
+    - 26_OL_leg_polaina_back

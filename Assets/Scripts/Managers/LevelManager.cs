@@ -126,8 +126,7 @@ public class LevelManager : Singleton<LevelManager>
     {
         //Debug.Log("el player se gano las botas water x haber completado la quest");
         player.hasWaterBoots = true;
-        //TODO: el swap de material era del modelo 3d viejo (ya borrado). cuando la animadora arme
-        //un skin/feedback de botas de agua en el skeleton de spine, aplicarlo aca.
+        //no visual code here: adding the resource equips Gear_RainBoots on Kami (spec 011, Player.EquipGainedGear)
         AddResource(ResourceType.botasAgua, 1);
     }
     public void GiveTijeraMejorada()
@@ -161,7 +160,7 @@ public class LevelManager : Singleton<LevelManager>
         AddResource(ResourceType.papel, 100);
         AddResource(ResourceType.flores, 100);
         GiveWaterBoots();
-        GiveSprintBoots();
+        //no sprint boots (Diego, 2026-10-05): nothing gives them any more, the Lightfall winged boots replace them later
         GiveTijeraMejorada();
     }
 

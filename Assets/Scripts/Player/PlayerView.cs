@@ -59,14 +59,49 @@ public class PlayerView
     bool _windApplied;
     bool _paperplaneApplied;
     bool _affectedByWind = false;
+    bool _skinDirty;
 
     public PlayerView(Player player)
     {
         _player = player;
         _skeletonAnimation = player.SkeletonAnimation;
         _skeletonAnimation.AnimationState.Event += OnSpineAnimationEvent;
+        _skeletonAnimation.BeforeApply += ApplyPendingSkin;
+        _player.OnGearChanged += MarkSkinDirty;
         SetBodyAnimation(ANIMATION_IDLE, true);
         RefreshOverrides();
+    }
+
+    //---------- Gear skin (spec 011) ----------
+
+    void MarkSkinDirty()
+    {
+        _skinDirty = true;
+    }
+
+    //Runs inside SkeletonAnimation's update, right before Spine applies the animations. Swapping the
+    //skin here means that same Apply re-hides the scissors keyed empty by the NoScissors animations,
+    //so they never flash for a frame. An extra AnimationState.Apply after SetSkin would do that too,
+    //but it re-fires every Spine event of the frame (HandleAttack, HandleFootstep), because
+    //animationLast only advances in AnimationState.Update.
+    void ApplyPendingSkin(ISkeletonAnimation animated)
+    {
+        if (!_skinDirty)
+        {
+            return;
+        }
+        _skinDirty = false;
+
+        GearCatalog catalog = GearCatalog.Instance;
+        if (catalog == null)
+        {
+            return; //the catalog already warned once: Kami keeps the skin she has
+        }
+
+        Spine.Skeleton skeleton = _skeletonAnimation.Skeleton;
+        skeleton.SetSkin(SpineSkinComposer.Compose(skeleton.Data, _player.Gear.EquippedInCompositionOrder(), catalog));
+        skeleton.SetSlotsToSetupPose();
+        Debug.Log("[PlayerView] gear skin recomposed");
     }
 
     private void OnSpineAnimationEvent(Spine.TrackEntry trackEntry, Spine.Event e)

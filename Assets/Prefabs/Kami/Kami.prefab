@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: d686b3724b809514bb6fadf42b2d1142, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: edc59de31b75beb428810d6ee630f293, type: 2}
   initialSkinName: 
   initialFlipX: 0
   initialFlipY: 0
@@ -315,6 +315,7 @@ MonoBehaviour:
   currentTijera: 0
   hasSprintBoots: 1
   hasWaterBoots: 0
+  _startingLoadout: {fileID: 11400000, guid: d843340390e34a4db7b45d7c1ca323dc, type: 2}
   drowningRespawnMode: 1
   safeSnapshotInterval: 4
   weaponCooldown: 0.05
@@ -362,7 +363,6 @@ MonoBehaviour:
   myPaperPlaneHat: {fileID: 4873526851434498889}
   tijeraManager: {fileID: 7238240882406101929}
   rewardSticker: {fileID: 2343045842677637873}
-  waterBootsMaterial: {fileID: 2100000, guid: a406b18ea7fbb6242aaa7be7da612443, type: 2}
   SkeletonAnimation: {fileID: 1571676543898264472}
   augmentedJumpForce: 22
   augmentedJumpsMax: 1

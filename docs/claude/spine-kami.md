@@ -1,6 +1,6 @@
 # Spine: skeleton y animaciones de Kami
 
-Runtime: **spine-unity 4.2** (package 2026-05-29, installed 2026-09-14 in `7f9706bd`; corrected here 2026-10-02, this doc used to say 3.8). Kami's active export is `Atlas 12 Spine4.2/skeleton.json` (Spine 4.2.43), applied through a `skeletonDataAsset` override in each level scene: `Kami.prefab` and `MainMenu.unity` still point at `Atlas 11` (a 3.8 export the 4.2 runtime refuses to load, see spec 011 F2). Verify any API against `Assets/Spine/Runtime/spine-csharp/` before using it.
+Runtime: **spine-unity 4.2** (package 2026-05-29, installed 2026-09-14 in `7f9706bd`; corrected here 2026-10-02, this doc used to say 3.8). Kami's active export is `Atlas 12 Spine4.2/skeleton.json` (Spine 4.2.43), referenced by `Kami.prefab` and MainMenu's skeletons since 2026-10-05 (spec 011 #140; before that they pointed at `Atlas 11`, a 3.8 export the 4.2 runtime refuses to load, and only the level scenes' overrides made Kami render). Verify any API against `Assets/Spine/Runtime/spine-csharp/` before using it.
 
 ## Tracks (PlayerView)
 
@@ -25,14 +25,72 @@ Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del
 - Overrides: `NoScissortsOverride` (typo del skeleton), `PaperPlaneOverride`
 - Existen pero NO se usan: `IdleNoScissors`, `walk2`, `jumpComplete`
 
-## Skins (Atlas 11)
+## Skins: Kami Gear (spec 011, built and played 2026-10-05)
 
-`default`, `Tijera_Normal`, `Tijera_Upgrade_1`. Se cambian con `Player.SetTijeraEquipment()`: `Skeleton.SetSkin(nombre)` + `SetSlotsToSetupPose()` + actualiza TijeraManager/hitbox. Botas/guantes a futuro (multi-slot recién con Spine 4.x — hoy 3.8).
+Atlas 12 skins: `default` (the whole body), `Tijera_Normal`, `Tijera_Upgrade_1` (only
+`tijera_back2` + `tijera_front`). Nothing calls `SetSkin(name)` any more: Kami's skin is **composed at
+runtime** from her gear and rebuilt on every gear change. How Spine mix-and-match works, and the
+authoring rules for Valen: `specs/011-kami-gear/spec.md`.
 
-**Superseded by spec 011 (Kami Gear), 2026-10-02**: the runtime is 4.2 and skin combining
-(`Skin.AddSkin`) needs no upgrade. `SetSkin(name)` replaces the whole skin, so it can't stack parts;
-the plan is outfit + scissors + feet composed into one runtime skin. How Spine mix-and-match works,
-and the authoring rules for Valen: `specs/011-kami-gear/spec.md`.
+```
+default skin (Spine's fallback, never touched)
+  + outfit, then Scissors, Feet, Hat (GearSlot order: the last one added wins a shared key)
+  = Kami's skin
+```
+
+- **Code** (`Assets/Scripts/Gear/`): `PlayerGear` (owned by `Player`, like `PlayerModel`) holds one
+  `GearItem` per `GearSlot` and raises `Player.OnGearChanged`. `PlayerView` marks the skin dirty and
+  rebuilds it with `SpineSkinComposer.Compose` from `SkeletonAnimation.BeforeApply`: `SetSkin` (a new
+  `Skin` every time, since `SetSkin` ignores the object it already has) + `SetSlotsToSetupPose`, then
+  Spine's own Apply that frame re-hides what the NoScissors animations key empty. **Don't add an extra
+  `AnimationState.Apply` after a skin change**: it re-fires the frame's Spine events (`HandleAttack`,
+  `HandleFootstep`), because `animationLast` only advances in `AnimationState.Update`.
+- **Start**: `Player.Start` applies `_startingLoadout` (Level 1 = `Level1_StartLoadout`: default outfit
+  and no scissors, the prefab default; Level 2 = `Level2_StartLoadout`: detective outfit + normal
+  scissors, scene override). Never in `Awake`: `SkeletonAnimation` builds its skeleton in its own
+  `Awake`. The level scenes no longer set `initialSkinName`.
+- **Getting an item equips it**: `Player.EquipGainedGear` listens to `Evento.OnResourceUpdated` and asks
+  `GearCatalog.ForResource`. Gains only: confiscation (`LoseTijera` adds -1) is ignored, the scissors
+  stay in the skin and the `*NoScissors` animations hide them. Equipping what is already on does nothing
+  (Level 2 equips the normal scissors twice: loadout + `_startWithTijera`). Newest wins in its slot.
+- **Visuals only**: `hasTijera`, `hasWaterBoots`, `hasSprintBoots` and `SetTijeraEquipment` (now only
+  TijeraManager + hitbox) are still owned-based.
+- **Missing art**: a `GearItem` whose Spine skin isn't in the export logs one warning per Play and is
+  skipped **entirely**, its slot clearing included (missing boots art must leave the outfit's shoes on).
+  Today that is `outfit/default` and `outfit/detective`. A missing `Resources/GearCatalog.asset` warns
+  once and nothing composes (`default` skin only).
+- **Sprint boots retired** (Diego, 2026-10-05): nothing gives them (the P cheat no longer does; Chino's
+  quest still lists them, but Chino is a stub), and `Gear_SprintBoots` was deleted. The Lightfall winged
+  boots replace them later as a new Feet item.
+
+**Placeholder `feet/rain-boots` (2026-10-05, until Valen's #83)**: a skin added by hand to the Atlas 12
+`skeleton.json`, built only from images already in the atlas: each shoe's white `_OL_` silhouette drawn
+at the shoe's own size and tinted yellow (a flat rubber boot inside its paper border), the gaiters
+(`polaina`) tinted yellow as the shaft, and the buckle + its outline overridden by transparent copies.
+The transparent buckle is a placeholder-only trick: the shoes still live in `default`, where the
+owned-slot clearing can't reach them. Valen's real skin leaves the buckle out. **A re-export of Kami
+overwrites this skin**: if #83 isn't in that export yet, the rain boots just go back to one missing-skin
+warning. Recipe: `tools/add-placeholder-rain-boots.py` (re-run it on a new export to bring the
+placeholder back).
+
+**Owned Spine slots** (`Resources/GearCatalog.asset`, Spine slot dropdowns): equipping an item first
+clears whatever the outfit put in its gear slot's Spine slots, then adds the item. An empty gear slot
+shows the outfit's own version.
+
+| Gear slot | Owned Spine slots |
+|---|---|
+| Outfit | none (it is the base layer) |
+| Scissors | `tijera_back2`, `tijera_front` |
+| Feet | `25_leg_zapato_front`, `23_leg_zapato_ebilla_front`, `26_leg_polaina_front`, `30_leg_zapato_back`, `28_leg_zapato_ebilla_back`, `26_leg_polaina_back`, and the `_OL_` twin of each (12) |
+| Hat | none yet |
+
+Only entries of the composed skin can be cleared: whatever lives in `default` can be replaced but never
+removed. That is why Valen moves the shoes out of `default` into `outfit/default` (#141).
+
+**Adding an item** = one `GearItem` asset (`Create > Kami > Gear Item`, in `Assets/Scripts/Gear/`:
+slot, Spine skin dropdown, the `ResourceType` that grants it) + one Spine skin in Kami's export + a line
+in `GearCatalog`'s items. No code. When Valen's renamed export lands (`scissors/normal`,
+`scissors/upgrade1`), only the two scissors items' skin fields change.
 
 ## Eventos dentro de las anims
 

@@ -4,10 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Gameplay only (TijeraManager, hitbox). What the scissors look like comes from the equipped
+//GearItem (Gear_ScissorsNormal / Gear_ScissorsUpgrade1), spec 011.
 public enum TijeraEquipment
 {
-    Normal,    // Spine skin: "Tijera_Normal"
-    Mejorada   // Spine skin: "Tijera_Upgrade_1"
+    Normal,
+    Mejorada
 }
 
 public enum RespawnBehavior
@@ -25,6 +27,10 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     public TijeraEquipment currentTijera = TijeraEquipment.Normal;
     public bool hasSprintBoots = false;
     public bool hasWaterBoots = false;
+
+    [Header("Gear")]
+    [Tooltip("What Kami wears when this level starts (outfit, scissors...). Items gained later are equipped on top of it.")]
+    [SerializeField] GearLoadout _startingLoadout;
 
     [Header("Respawn")]
     [Tooltip("donde respawnea kami al morir ahogada. las demas muertes usan siempre el respawn comun (entrada de la pagina)")]
@@ -79,7 +85,6 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     [SerializeField] GameObject myPaperPlaneHat;
     [SerializeField] TijeraManager tijeraManager;
     public InventorySlot rewardSticker;
-    public Material waterBootsMaterial; //TODO: sin uso hasta que las botas de agua tengan feedback visual sobre el spine (skin?)
     public SkeletonAnimation SkeletonAnimation;
 
     [Header("Planeo")]
@@ -184,6 +189,9 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     [HideInInspector] public PlayerView _view;
     PlayerController _controller;
 
+    public PlayerGear Gear { get; private set; }
+    public event Action OnGearChanged;
+
     public GameObject nuevoTooltipPapelSalto;
 
     //Properties
@@ -224,6 +232,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     void Awake()
     {
         _model = new PlayerModel(this);
+        Gear = new PlayerGear(() => OnGearChanged?.Invoke());
         _view = new PlayerView(this);
         _controller = new PlayerController(this);
     }
@@ -251,6 +260,11 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
 
         tijeraManager.InitTipFollowers(SkeletonAnimation); //los trails de tijera siguen la punta de la tijera de spine
 
+        //in Start, never Awake: the first skin is composed from this, and SkeletonAnimation builds its
+        //skeleton in its own Awake
+        Gear.ApplyLoadout(_startingLoadout);
+
+        EventManager.Subscribe(Evento.OnResourceUpdated, EquipGainedGear);
         EventManager.Subscribe(Evento.OnOrigamiStart, StartOrigamiCast);
         EventManager.Subscribe(Evento.OnOrigamiEnd, EndOrigamiCast);
         EventManager.Subscribe(Evento.OnPlayerGetTijera, GetTijera);
@@ -699,10 +713,6 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         if (currentTijera == newTijera) return;
         currentTijera = newTijera;
 
-        string skinName = newTijera == TijeraEquipment.Mejorada ? "Tijera_Upgrade_1" : "Tijera_Normal";
-        SkeletonAnimation.Skeleton.SetSkin(skinName);
-        SkeletonAnimation.Skeleton.SetSlotsToSetupPose();
-
         if (newTijera == TijeraEquipment.Mejorada)
         {
             tijeraManager.SetTijeraMejorada();
@@ -733,6 +743,35 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     }
 
     public void GetTijeraMejorada(params object[] parameters) => SetTijeraEquipment(TijeraEquipment.Mejorada);
+
+    //Getting a gear item equips it (spec 011 FR-003). One hook covers every way an item arrives
+    //(quests, pickups, the confiscation pickup, cheats), so none of them knows about gear. Losses are
+    //ignored on purpose: confiscated scissors stay in the skin and the NoScissors animations hide them.
+    void EquipGainedGear(params object[] parameters)
+    {
+        if (parameters.Length < 3 || !(parameters[0] is ResourceType resource) || !(parameters[2] is bool isAdding))
+        {
+            Debug.LogWarning("[Player] OnResourceUpdated arrived without (type, total, isAdding): gear not checked");
+            return;
+        }
+
+        if (!isAdding)
+        {
+            return;
+        }
+
+        GearCatalog catalog = GearCatalog.Instance;
+        if (catalog == null)
+        {
+            return; //the catalog already warned once
+        }
+
+        GearItem item = catalog.ForResource(resource);
+        if (item != null)
+        {
+            Gear.Equip(item);
+        }
+    }
 
     //Symmetrical to GetTijera(): confiscates the scissors (e.g. jail-cell scene start). Mirrors
     //every side effect GetTijera() has, in reverse, so the view/inventory don't drift out of sync.
@@ -978,6 +1017,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     {
         if (!gameObject.scene.isLoaded)
         {
+            EventManager.Unsubscribe(Evento.OnResourceUpdated, EquipGainedGear);
             EventManager.Unsubscribe(Evento.OnOrigamiStart, StartOrigamiCast);
             EventManager.Unsubscribe(Evento.OnOrigamiEnd, EndOrigamiCast);
             EventManager.Unsubscribe(Evento.OnPlayerGetTijera, GetTijera);

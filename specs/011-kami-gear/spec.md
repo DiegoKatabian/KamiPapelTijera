@@ -1,7 +1,11 @@
 # Spec 011: Kami Gear — mix-and-match Spine parts, outfits and the Wardrobe
 
-**Status**: Approved, 2026-10-02. Research done (Spine runtime + demo scenes + Kami's skeleton read
-directly), nothing implemented. Diego accepted every default in "Decisions" (Q1-Q8) the same day.
+**Status**: Approved, 2026-10-02. Diego accepted every default in "Decisions" (Q1-Q8) the same day.
+**Phase 0.A + Phase 2 built 2026-10-05 and played by Diego the same day** (everything on the checklist
+worked): see "Phase 2 as built" in `tasks.md` for what changed vs. this design (the skin is applied from
+`BeforeApply`, not with an extra `AnimationState.Apply`; sprint boots retired; a placeholder rain boots
+skin). F2 and F3 were confirmed in the Editor by Diego before the fix. Phase 3 session:
+`kickoff-prompt-phase3.md`.
 **Tasks**: `tasks.md`. **Art side**: the "Spine authoring contract" section is the brief for Valen.
 
 ## Request (Diego, 2026-10-02)
@@ -178,8 +182,9 @@ default skin (fallback, never changes: face, head, arms, everything no item touc
   also grants `outfitDetective` (and equips it).
 - **FR-102** Tapping (mouse) or pressing A on a gear item in the bag toggles it: equip, or unequip if
   it's already on. Outfits can't be unequipped, only swapped (there's always exactly one).
-- **FR-103** Effects follow what is *equipped*: water boots save from drowning only while worn, sprint
-  boots only while worn, the upgraded scissors' damage only while equipped.
+- **FR-103** Effects follow what is *equipped*: water boots save from drowning only while worn, the
+  upgraded scissors' damage only while equipped. (The sprint boots clause is gone with the item, Q4:
+  Kami's sprint is `hasSprintBoots`, on in `Kami.prefab`, and stays as it is.)
 - **FR-104** A Wardrobe tab in the Flap menu shows one row per gear slot (Outfit, Scissors, Feet, Hat
   when it exists) with the owned items, the equipped one highlighted. Fully navigable with gamepad
   (same rules as the other tabs: R1/L1, A, B, visible selected color).
@@ -198,8 +203,8 @@ default skin (fallback, never changes: face, head, arms, everything no item touc
 - `enum GearSlot { Outfit, Scissors, Feet, Hat }`. The order is the composition order.
 - `GearItem` (SO): `slot`, `spineSkin` (`[SpineSkin]` dropdown), `resource` (`ResourceType`, links it
   to the bag item), display name key. One asset per item: `Gear_OutfitDefault`, `Gear_OutfitDetective`,
-  `Gear_ScissorsNormal`, `Gear_ScissorsUpgrade1`, `Gear_RainBoots`, `Gear_SprintBoots` (a placeholder
-  until the Lightfall winged boots replace it; its skin doesn't exist, so it just warns, FR-006).
+  `Gear_ScissorsNormal`, `Gear_ScissorsUpgrade1`, `Gear_RainBoots`. (`Gear_SprintBoots` was built as a
+  placeholder and deleted on 2026-10-05: Diego retired the sprint boots, see Q4.)
 - `GearCatalog` (SO, `Resources/GearCatalog.asset`): the skeleton data (for the Spine dropdowns), all
   `GearItem`s, and per gear slot the **owned Spine slots** (`[SpineSlot]` list). Lookup
   `ForResource(ResourceType)`. Fallback with a warning if the asset is missing: nothing composes,
@@ -262,6 +267,9 @@ colors; nothing in game code tints slots, so `SetSlotsToSetupPose` can't wipe an
   **Note (Diego, 2026-10-02): the sprint boots will be replaced by the "Lightfall winged boots"** (a
   Feet item; design not started). Left for later: no art or code task is filed for the sprint boots
   or the winged boots. When it happens it's one `GearItem` asset + one `feet/` skin, nothing else.
+  **Update (Diego, 2026-10-05): the sprint boots are retired.** Nothing gives them (the P cheat no longer
+  does; Chino's quest still names them as its reward, but Chino is a stub) and `Gear_SprintBoots` was
+  deleted. Q4 is moot until the winged boots exist: today the rain boots are the only Feet item.
 - **Q5 Carry gear across levels** (Phase C)? Level 2 already resets to normal scissors by design.
   *Default: no carry-over for now; per-level starting loadouts. Revisit with a save system.*
 - **Q6 "Botas de ule" = the water boots** (`botasAgua`, Tiburcio's reward, issue #83's "zapatos ule").

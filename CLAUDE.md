@@ -23,6 +23,7 @@ unless Diego asks for a translation.
 - `Assets/Scripts/Input/` — `InputHub` (fachada única de input), `InteractionContext` (el botón B contextual), `GamepadCursor`, `InputPromptSystem`
 - `Assets/Scripts/UI/` — `TooltipManager`/`PostIt` (tutorial), `FlapManager`/`CamWheelManager` (menú y selector de cámara), `InventorySlot`; `LocalizedText` (embudo ÚNICO de todo el texto localizado), y sobre él `ResaltadorDeConceptos` (palabras clave con color) + `IconosDeBoton`/`AnimadorDeIconos` (íconos animados de input) — ver `specs/005-textos-resaltados-e-iconos/spec.md`
 - `Assets/Scripts/Inventory/` — `InventoryManager`/`InventoryItem` (recursos recolectables)
+- `Assets/Scripts/Gear/` — Kami Gear (spec 011): `GearSlot`, `GearItem` (+ the five `Gear_*.asset`), `GearLoadout` (+ `Level1_StartLoadout`/`Level2_StartLoadout`), `PlayerGear` (owned by Player), `SpineSkinComposer`; the catalog is `Assets/Resources/GearCatalog.asset` (items + owned Spine slots per gear slot)
 - `Assets/Scripts/Level2/` — Level 2 story glue: `FindCluesTracker` (page 2 clues → cops → quest handoff), `CrimeSceneGate` (guarded police tape), `ArrestCutscene` (page 3's arrest, answers the timeline's signals), and page 4's escape: `PoliceStationPage` (owns and restarts the page sequence), `ConfiscatedGear` + `ConfiscatedGearPickup`, `AbuelaEntrance`, `EscapeWindow`, and page 5's ending: `MuseumPage` (Grace, the ticket unfold, closing the case) and `Catapult` (boarding + the launch timeline's signals). See `nivel2-y-ui.md`
 - Level 2 Phase 6 (2026-09-29): `Level2/PaperPlaneRide` (followers ride the plane hat on page 4), `Cortables/PoliceOfficerCortable` (patrol cops can be cut: knocked out 12s), page 4/5 intro and arrival Timelines (see `cutscenes.md`)
 - `Assets/Scripts/Cutscenes/` + `Assets/Timelines/` — generic Timeline cutscenes: `CutsceneDirector` (locks Kami via `LevelManager.inCutscene`, binds Cinemachine tracks in code), `CutsceneDialogueMarker` (the timeline waits for a dialogue), `HiddenRenderers`. See `cutscenes.md`
@@ -39,7 +40,7 @@ unless Diego asks for a translation.
 - `Assets/Prefabs/OrigamiRoutes/` — sellos, `PedestalParent.prefab` y rutas de origami
 - `Assets/Prefabs/UI/PostIt.prefab` — los post-its de escena son instancias de este
 - `Assets/Prefabs/Particulas/` — prefabs de partículas
-- `Assets/2D/Kami Spine/Atlas 12 Spine4.2/skeleton.json` — the ACTIVE skeleton (Spine 4.2.43), applied by a `skeletonDataAsset` override in both level scenes. `Kami.prefab` and `MainMenu.unity` still reference `Atlas 11` (3.8 export, unloadable by the 4.2 runtime: spec 011 F2). Atlas 1-11 are old
+- `Assets/2D/Kami Spine/Atlas 12 Spine4.2/skeleton.json` — the ACTIVE skeleton (Spine 4.2.43), referenced by `Kami.prefab` and both `MainMenu.unity` skeletons since 2026-10-05 (spec 011 F2/#140: they pointed at the 3.8 `Atlas 11`, which the 4.2 runtime can't load); the level scenes' own overrides to Atlas 12 are now redundant. Atlas 1-11 are old
 - Escena de trabajo Nivel 1: `Nivel1_KamiPapelTijera.unity` (activa desde fines de agosto 2026 — `Nivel1_LaRural SpineTest.unity` quedó vieja/stale, no confundir; puede tener referencias rotas)
 - Escena de trabajo Nivel 2: `Level2_Newspaper.unity` — ver `nivel2-y-ui.md` para estado actual (las 5 páginas armadas, pendientes de jugar/arte)
 - Level 2 closing cutscene: `Level2_EndCutscene.unity` (placeholder copy of `Nivel1_EndCutscene`, reached from the page 5 catapult; `GameScene.Level2EndCutscene`)
@@ -97,23 +98,26 @@ Construye y coordina a los otros tres — ellos hablan con Player, nunca entre s
 
 ## Sistema de Equipamiento (Tijeras) — Agosto 2026
 
-**Status**: ✅ Implementado (solo skins de tijeras por ahora)
+**Status**: ✅ Implementado. Since 2026-10-05 what Kami *looks* like is Kami Gear (below); this
+section is the gameplay half.
 
-Kami tiene dos tipos de tijera con skins diferentes en Spine (Atlas 11):
-- `TijeraEquipment.Normal` → Spine skin `"Tijera_Normal"`
-- `TijeraEquipment.Mejorada` → Spine skin `"Tijera_Upgrade_1"`
+Kami tiene dos tipos de tijera: `TijeraEquipment.Normal` / `Mejorada` (gameplay only). Their look is
+the `Gear_ScissorsNormal` / `Gear_ScissorsUpgrade1` items (Spine skins `Tijera_Normal` /
+`Tijera_Upgrade_1`).
 
 **Código**:
-- `Player.cs:SetTijeraEquipment()` — cambia skin + lógica de daño en TijeraManager
+- `Player.cs:SetTijeraEquipment()` — lógica de daño en TijeraManager + hitbox (it no longer touches the skin)
 - `Player.currentTijera` — enum que trackea equipo actual
 - Al completar quest del chino, `LevelManager` llama `Player.GetTijeraMejorada()` que usa `SetTijeraEquipment()`
 - `Player.LoseTijera()` (added 2026-09-22, spec 006 task 0.E) — the symmetrical counterpart to `GetTijera()`: sets `hasTijera = false`, decrements `ResourceType.tijera` by 1, and refreshes `PlayerView` the same way `GetTijera()` does. Guarded against double-calling when already unequipped. Called by `ConfiscatedGear` (Level 2 page 4, see `nivel2-y-ui.md`); never drives the `tijera` count below 0 (the P cheat equips the upgraded pair without one).
 - `Player._startWithTijera` (2026-09-27): the level starts with Kami holding the normal scissors, no pickup and no reward pose. On in Level 2 (Diego: Level 2 is played with the normal scissors only, there is no upgraded pair to get).
 
-**Next: spec 011 "Kami Gear"** (`specs/011-kami-gear/`, drafted 2026-10-02): outfit + scissors +
-boots (+ hats later) composed into one runtime Spine skin, so parts stack and survive an outfit
-change (Level 2 detective). Spine 4.2 is already installed; no upgrade needed. Later phase: a
-Wardrobe tab and equip/unequip from the bag.
+**Kami Gear, spec 011** (`specs/011-kami-gear/`; Phase 2 built and played 2026-10-05): Kami's Spine skin is composed at runtime from outfit + Scissors + Feet (+ Hat later), so
+parts stack and survive an outfit change. Getting an item equips it (one `OnResourceUpdated` hook in
+`Player`); each level starts from a `GearLoadout` (`Player._startingLoadout`: Level 1 default outfit and
+no scissors, Level 2 detective + normal scissors). Visuals only: effects stay owned-based. Adding an
+item = one `GearItem` asset + one Spine skin, no code. Detail: "Skins: Kami Gear" in
+`docs/claude/spine-kami.md`. Next (Phase 3): a Wardrobe tab and equip/unequip from the bag.
 
 ## Muerte con causa (río, rocoso) — Agosto 2026
 
