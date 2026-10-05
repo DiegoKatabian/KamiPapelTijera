@@ -76,9 +76,9 @@ bus unless noted; all 2D. Ids and where they fire:
 - The pool reclaims finished one-shots from `Update()`, not from a coroutine per sound, precisely so
   an outside `AudioManager.instance.StopAllCoroutines()` (`EncounterManager` does this) cannot
   strand sources it already handed out.
-- **The 61 `AudioSource` children of `AudioManager.prefab` are dead weight now** — nothing reads
-  them. They are kept on purpose as the rollback path until Diego has played through and is happy;
-  retiring them is the last step of the refactor.
+- **The refactor is closed (#55, 2026-10-05)**: the shims and the 61 old `AudioSource` children of
+  `AudioManager.prefab` are gone. The one plan task not done is Task 23 (bus volume on the mixer's
+  exposed parameters instead of per source in code), optional by design.
 
 ## TijeraHitbox y TijeraMiss
 

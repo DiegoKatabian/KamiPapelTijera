@@ -150,6 +150,10 @@ MonoBehaviour:
     m_Localized: "Sombrero"
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000008
+    m_Localized: "Te atropell\xF3 un auto!\nToc\xE1 E para reiniciar."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

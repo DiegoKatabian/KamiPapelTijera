@@ -188,6 +188,10 @@ MonoBehaviour:
     m_Localized: "Hat"
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000008
+    m_Localized: "A car ran you over!\nPress E to try again."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

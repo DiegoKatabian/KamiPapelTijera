@@ -90,7 +90,7 @@ now, ready for pages 1-5 to wire up:
   Editor, not YAML). Note `InventoryManager.Start()` builds a `ResourceType`-keyed dictionary
   with `.Add()`, so a duplicated item in that list throws at startup.
 
-**Phase 2 (page 2, "Find clues") built 2026-09-24 — compiles, not yet played.** Three
+**Phase 2 (page 2, "Find clues") built 2026-09-24, played in Diego's full playthrough (2026-09-28).** Three
 clues (glove in a trash can, hat on the manhole, watch in the museum yard), two cops that
 drive off after the second clue so the police tape can be cut, and the quest handoff to
 `Quest06_GoBackToNataliasHouse` (closed by the page 3 arrest since Phase 3). What exists and where:
@@ -110,13 +110,14 @@ drive off after the second clue so the police tape can be cut, and the quest han
   pickups), `FindCluesTracker` (`Assets/Scripts/Level2/FindCluesTracker.cs`: counts clues,
   queues Natalia's comments, calls off the cops, fires `OnAllCluesFound` once, hands off the
   quest) and `GiftBox` (`GiftDialogueTrigger`, extended in Phase 3 — see above).
-- **Known gap: the museum fence has no colliders.** `KamiMuseo.fbx` imports with
+- **Known gap: the museum fence has no colliders** (Diego does it by hand: #155, "Manually position
+  pages blocking"). `KamiMuseo.fbx` imports with
   `addColliders: 0` and the scene adds none, so the gate's blocker only blocks the gap itself
   — Kami can walk around it. Also positions of the gate, the gift and the hat are
   placeholders (`_PLACEHOLDER_POSITION` in the names), to be dragged into place in the Editor.
 - Page 5 is page 2 after the clues (Diego): none of the page 2 gameplay objects live there.
 
-**Phase 3 (page 3, "The trap") built 2026-09-25 — compiles, not yet played.** Chain: talk to
+**Phase 3 (page 3, "The trap") built 2026-09-25, played in Diego's full playthrough (2026-09-28).** Chain: talk to
 the gift ("what's this? let's cut it open!") → cut its ribbon (any time, talked to or not) →
 the box opens, the Pelusa pops into the inventory, Natalia reacts → the letter origami opens by
 itself → reading it and closing the text starts the arrest cutscene → the page turns to page 4
@@ -143,7 +144,7 @@ starts. Where things are:
 - All positions are placeholders: the gift box, the cutscene (street group, car, car door mark,
   drive-off target).
 
-**Phase 4 (page 4, "Escape from the police station") built 2026-09-27 — compiles, not yet played.**
+**Phase 4 (page 4, "Escape from the police station") built 2026-09-27, played in Diego's full playthrough (2026-09-28).**
 `PoliceStationPage` (`Assets/Scripts/Level2/`, on `Page 4/PoliceStation`) owns the whole page
 sequence and is the only thing that restarts it:
 
@@ -194,7 +195,7 @@ quest wiring and the Event-quest gotcha that comes with it. **Since 2026-09-28 t
 mandatory**: Natalia only joins Kami (Quest05 + follow) once the café ticket is folded, so Kami
 always reaches page 5 with it.
 
-**Phase 5 (page 5, "Clearing their name") built 2026-09-28 — compiles, not yet played.**
+**Phase 5 (page 5, "Clearing their name") built 2026-09-28, played in Diego's full playthrough (2026-09-28).**
 `MuseumPage` (`Assets/Scripts/Level2/`, on `Page 5/Museum`) owns the page:
 
 1. Talking to **Grace** (the museum director, `Prefabs/NPCs/Grace.prefab`: a tinted Natalia sprite +
@@ -233,7 +234,7 @@ Also removed in Phase 5 (Diego's call): the loose root `CuttablePoliceTape` and 
 (Phase 0 leftovers; page 2's tape lives in `CrimeSceneGate`), the unreferenced Level 1
 `ParticulasSplash`, the inactive `Plane-VertexPaintTest` and page 5's inactive `NPC_Florista`.
 
-**Phase 6 (presentation polish, 2026-09-29) built - compiles, NOT played.** 6.A: Level 2's
+**Phase 6 (presentation polish, 2026-09-29) built, played by Diego 2026-10-05 (all good).** 6.A: Level 2's
 `OverlayManager.mainQuestTriggeringDialogue` now points at `Natalia_AfterTicket` and the overlay text
 uses the new UITexts key `overlay_mainquest_level2` (scene override on the nested LocalizeStringEvent).
 6.B: `Timeline_PoliceIntro` (camera tour, cop taunt, Natalia reply, narrator) played by

@@ -36,7 +36,7 @@ evade se samplea sobre NavMesh.
 
 `Assets/Scripts/AI/PoliceOfficer.cs` (`: PatrollingAgent`) + `VisionConeView.cs`, prefab
 `Assets/Prefabs/NPCs/PoliceOfficer.prefab` (CopEscort's tinted placeholder art + agent Height 7 /
-BaseOffset 4). The project's first detection system. Compiles; **not played yet**.
+BaseOffset 4). The project's first detection system. Played by Diego (full playthrough 2026-09-28).
 
 - **Seeing**: a flat cone (`_visionAngle` 45°, `_visionRange` 10, taken from Diego's blocking cone)
   along the direction he walks, plus a raycast from his eyes (`_eyeHeight` 6 above his feet) to

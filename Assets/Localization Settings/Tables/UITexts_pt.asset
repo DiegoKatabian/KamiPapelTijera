@@ -152,6 +152,10 @@ MonoBehaviour:
     m_Localized: "Chap\xE9u"
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000008
+    m_Localized: "Um carro te atropelou!\nPressione E para reiniciar."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

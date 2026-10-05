@@ -16,8 +16,8 @@ public class TrafficCarHitbox : MonoBehaviour
     [Tooltip("HP taken per front hit. Kami has 120 HP: at 25 the 5th hit defeats her.")]
     [SerializeField] private float damage = 25f;
 
-    [Tooltip("Death cause if the hit kills. Generic reuses the existing defeat text; a dedicated cause needs an enum value plus UITexts in 3 languages.")]
-    [SerializeField] private DeathCause cause = DeathCause.Generic;
+    [Tooltip("Death cause if the hit kills: picks the defeat overlay's text (Car = UITexts 'DefeatCar').")]
+    [SerializeField] private DeathCause cause = DeathCause.Car;
 
     [Tooltip("Only the front part of the box hurts. 0.35 = the front 35% along the direction of travel. The test runs at runtime from the car's real direction, so the same prefab works driven either way.")]
     [Range(0.05f, 1f)] [SerializeField] private float frontFraction = 0.35f;

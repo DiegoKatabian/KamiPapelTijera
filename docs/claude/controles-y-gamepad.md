@@ -510,11 +510,13 @@ pueden validar jugando.
   Controles" y "M - Control de sonido" sin traducir, porque el regex solo cubría `[EUI]`) se
   cerró en la tanda de íconos: ahora es `[EUIOM]`. Detalle en "El tab Controles del Flap YA
   se traduce solo", arriba.
-- **#41.7 Cursor auto-hide**: cursor aparece con mouse pero no desaparece al volver a joystick; falta timeout.
-- **#41.8 Chino dialogue**: texto tiene "[...]" duplicado.
+- ~~#41.7 Cursor auto-hide~~ — **resolved**: `CursorManager` hides it after `segundosInactividadParaEsconderCursor`
+  and follows the device switch (#50 closed 2026-10-05).
+- ~~#41.8 Chino dialogue~~ — **resolved**: no table contains `[...]` any more (#51 closed 2026-10-05).
 
 **P3 (nice to have)**:
-- **#41.9 Typewriter effect**: texto debería aparecer secuencialmente (como escribiéndose).
+- ~~#41.9 Typewriter effect~~ — **resolved**: `DialogueManager.EjecutarTypewriter` (#52 closed 2026-10-05).
+  The whole #41 family is closed (2026-10-05) except #57 (#41.15, rebinding), deferred, not started.
 
 ## Gotchas específicos del contexto A-button que ya nos agarraron
 

@@ -139,6 +139,10 @@ MonoBehaviour:
     m_Key: wardrobe_hat
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000008
+    m_Key: DefeatCar
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

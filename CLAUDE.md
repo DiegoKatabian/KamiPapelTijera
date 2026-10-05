@@ -127,7 +127,7 @@ skin + its bag item, no code. Detail: "Skins: Kami Gear" in `docs/claude/spine-k
 
 ## Muerte con causa (río, rocoso) — Agosto 2026
 
-La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso/**Caught**) decide la anim, el texto del overlay y el respawn:
+La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso/**Caught**/**Car**) decide la anim, el texto del overlay y el respawn:
 
 1. **Río**: `Rio.cs` espera `activationDelay` (tuneable) con el IMojable adentro — si sale antes, cancela y no pasa nada. Cumplido el delay llama `GetWet()`: para Kami eso es feedback (anim mojarse + sonido) y `Die(DeathCause.Drowning)` de una; otros IMojable siguen con damage normal. Rio NO conoce a Player, trata todo por IMojable.
 2. **Rocoso**: `GetGolpeado()` → `TakeDamage(dmg, DeathCause.Rocoso)` (overload que enhebra la causa hasta `Die`).
@@ -135,7 +135,7 @@ La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso/**Caught**) decide la 
 4. **Overlay**: `Player.DeathSequence` resuelve la posición de respawn (dueño de la política) y llama `ShowDefeatOverlay(cause, respawnOverride)`. `DefeatOverlay` (hereda `Overlay`) muestra la causa localizada — keys en tabla `UITexts`: `DefeatDrowning`, `DefeatRocoso`, `DefeatGeneric`, **`DefeatCaught`** (added 2026-09-22, spec 006 task 0.F, for Level 2's police-station capture — see `specs/006-nivel2-detective-natalia/`). `PlayerView.SetDeathAnimation` routes `Caught` to the generic `Death` anim (same as `Generic`/`Rocoso`) — no dedicated animation, just the new overlay text.
 5. **Respawn** al cerrar con E: drowning usa `Player.drowningRespawnMode` (`LastSafePosition` = snapshot generoso con doble buffer en PlayerModel, antigüedad 1-2× `safeSnapshotInterval`; o `LevelSpawnPoint` = entrada de página). Las demás muertes siempre respawn común (`lastUsedSpawn` del `PlayerPageSpawnManager`). `Caught` (Level 2 page 4) respawns in Kami's cell because the arrest's forced page turn made the cell her `lastUsedSpawn`, and that respawn is what triggers `PoliceStationPage`'s full page restart.
 
-**Setup de escena pendiente**: el GO del defeat overlay necesita el componente `DefeatOverlay` (reemplaza a `Overlay`), con `causeText` (TMP) asignado, y reasignar la ref en `OverlayManager`. **Verificado 2026-09-22**: `Assets/Prefabs/UI/Overlays Parent.prefab` ya tiene esto bien armado, y `Level2_Newspaper.unity` instancia ese prefab — para Nivel 2 este setup parece ya resuelto. `Nivel1_KamiPapelTijera.unity` NO referencia ese prefab — para Nivel 1 el gap de issue #20 sigue en pie. Confirmar en el Editor antes de cerrar esa issue.
+**Defeat overlay setup, per level (corrected 2026-10-05: the note here had the two levels backwards)**: Level 1 gets it from `Main Canvas.prefab` -> nested `Overlays Parent.prefab`, which nests `DefeatOverlay.prefab`, removes its base `Overlay` and adds a `DefeatOverlay` whose `causeText` is the overlay's own "Moriste Text". Level 2 instances `DefeatOverlay.prefab` directly, whose root was a plain `Overlay` (no cause text, one warning per death); since 2026-10-05 that root is a `DefeatOverlay` writing into the same "Moriste Text" (#20). `DeathCause.Car` (2026-10-05) is what `TrafficCarHitbox` passes (key `DefeatCar`). Keys live in `UITexts`: `DefeatDrowning`, `DefeatRocoso`, `DefeatGeneric`, `DefeatCaught`, `DefeatCar`.
 
 ## Convenciones de código
 

@@ -112,7 +112,7 @@ a separate agent — no file overlap between them.
 
 ## Phase 1 — Page 1 (depends on 0.A, 0.C, 0.D)
 
-**Status: built 2026-09-22, not yet played.** Scope grew during the session per Diego:
+**Status: built 2026-09-22, played in Diego's full playthrough (2026-09-28).** Scope grew during the session per Diego:
 posters go in pages 1/2/3/5 (not just page 1), traffic gets a vertical + horizontal car
 in every page, and a cuttable typewriter was added for page 4.
 
@@ -314,7 +314,7 @@ today — the cell needs its own "what opens" hook.
   recovered scissors to test end to end), though the code itself can start earlier
   with test data.
 
-**Status (2026-09-27): 4.A-4.E built — compiles, NOT played yet.** Details and file map in
+**Status (2026-09-27): 4.A-4.E built, played in Diego's full playthrough (2026-09-28).** Details and file map in
 `docs/claude/nivel2-y-ui.md` (Phase 4) and `docs/claude/enemigos-e-ia.md` (PoliceOfficer).
 Decisions taken with Diego while building, and what changed from the draft above:
 
@@ -373,7 +373,7 @@ jump from the floor onto the mezzanine with the hat (22 units of jump vs ~18 of 
   **NEEDS CLARIFICATION** (see `spec.md`): does the destination cutscene scene
   already exist?
 
-**Status (2026-09-28): 5.A-5.D built — compiles, NOT played yet.** File map in
+**Status (2026-09-28): 5.A-5.D built, played in Diego's full playthrough (2026-09-28).** File map in
 `docs/claude/nivel2-y-ui.md` (Phase 5). Decisions taken with Diego, and what changed from the draft:
 
 - **The owner is Grace, the museum director**, a placeholder tinted sprite (`Grace.prefab`). What she
@@ -468,7 +468,7 @@ it, so they run in sequence on one track; 6.E and 6.G are parallel-safe with the
   lines (Ariel's accusation, the cop, Grace's and Natalia's introductions) -> the ticket pedestal
   appears as today. `MuseumPage` starts the Timeline instead of showing `_graceMeeting` directly.
 
-- **6.E** `[P]` **DONE 2026-09-28 (compile-checked, not played)** **Sound effects pass (hooks + bank rows)**. Every hook in code with an
+- **6.E** `[P]` **DONE 2026-09-28 (played by Diego 2026-10-05)** **Sound effects pass (hooks + bank rows)**. Every hook in code with an
   `AudioBank` row and a placeholder clip where a similar sound exists; Diego swaps the real clips
   in the bank later (6.G). Missing today:
   - **Police (pages 3 and 5)**: siren loop, horn beeps, braking, running footsteps, handcuffs click
@@ -501,7 +501,7 @@ it, so they run in sequence on one track; 6.E and 6.G are parallel-safe with the
 - **6.G** `[P]` **Audio: real clips for 6.E** (Diego, audio lead): source/record every sound
   listed in 6.E and the page 4 music, then swap them into the `AudioBank` rows.
 
-**Status 2026-09-29**: 6.A-6.E built and compile-checked, not played. Added on Diego's request: patrolling cops are cuttable (knocked out `_knockedOutSeconds`=12, then resume).
+**Status 2026-09-29**: 6.A-6.E built; **played by Diego 2026-10-05, all good**. Added on Diego's request: patrolling cops are cuttable (knocked out `_knockedOutSeconds`=12, then resume).
 
 **Parallelism**: one scene track (6.A -> 6.B -> 6.C -> 6.D, sequential because they all write the
 scene), with 6.E (code + bank, no scene) alongside it; 6.F and 6.G are art/audio, outside code.

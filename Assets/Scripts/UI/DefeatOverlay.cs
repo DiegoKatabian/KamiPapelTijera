@@ -15,6 +15,7 @@ public class DefeatOverlay : Overlay
     const string KEY_DEFEAT_ROCOSO = "DefeatRocoso";
     const string KEY_DEFEAT_GENERIC = "DefeatGeneric";
     const string KEY_DEFEAT_CAUGHT = "DefeatCaught";
+    const string KEY_DEFEAT_CAR = "DefeatCar";
 
     public void ShowCause(DeathCause cause)
     {
@@ -39,6 +40,8 @@ public class DefeatOverlay : Overlay
                 return KEY_DEFEAT_ROCOSO;
             case DeathCause.Caught:
                 return KEY_DEFEAT_CAUGHT;
+            case DeathCause.Car:
+                return KEY_DEFEAT_CAR;
             default:
                 return KEY_DEFEAT_GENERIC;
         }

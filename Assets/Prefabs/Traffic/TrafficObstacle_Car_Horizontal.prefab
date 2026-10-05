@@ -209,7 +209,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   damage: 25
-  cause: 0
+  cause: 4
   frontFraction: 0.35
   pushDistance: 8
   pushDuration: 0.3

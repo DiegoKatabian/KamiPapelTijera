@@ -303,10 +303,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7937921103247803436}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e91cf7cf69aefc4d807c9f4fda19586, type: 3}
+  m_Script: {fileID: 11500000, guid: 1774641ed8098e609377f27d8c535b01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isShowing: 0
+  causeText: {fileID: 368762084264062235}
 --- !u!1 &8991307594370335086
 GameObject:
   m_ObjectHideFlags: 0
