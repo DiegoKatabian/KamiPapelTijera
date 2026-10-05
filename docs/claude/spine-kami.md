@@ -49,12 +49,32 @@ default skin (Spine's fallback, never touched)
   and no scissors, the prefab default; Level 2 = `Level2_StartLoadout`: detective outfit + normal
   scissors, scene override). Never in `Awake`: `SkeletonAnimation` builds its skeleton in its own
   `Awake`. The level scenes no longer set `initialSkinName`.
+- **Owned from the start (Phase 3)**: one frame after `Start` (so `InventoryManager` is listening),
+  `Player.GrantStartingItems` gives Kami the starting scissors (`_startWithTijera`) and then every bag item
+  the loadout lists, worn or "also owned" (Level 2 also owns the default outfit), skipping what she already
+  owns. Both go through `AddResource(type, 1, ownedAtLevelStart: true)`: the 4th value of
+  `OnResourceUpdated` (`LevelManager.IsOwnedAtLevelStart`) makes the reward sticker and the auto-equip skip
+  it, so nothing pops at level start and the loadout's choice stands. The loadout never grants scissors:
+  holding them is `hasTijera`, which `_startWithTijera` owns (a mismatch between the two warns).
 - **Getting an item equips it**: `Player.EquipGainedGear` listens to `Evento.OnResourceUpdated` and asks
   `GearCatalog.ForResource`. Gains only: confiscation (`LoseTijera` adds -1) is ignored, the scissors
-  stay in the skin and the `*NoScissors` animations hide them. Equipping what is already on does nothing
-  (Level 2 equips the normal scissors twice: loadout + `_startWithTijera`). Newest wins in its slot.
-- **Visuals only**: `hasTijera`, `hasWaterBoots`, `hasSprintBoots` and `SetTijeraEquipment` (now only
-  TijeraManager + hitbox) are still owned-based.
+  stay in the skin and the `*NoScissors` animations hide them. Equipping what is already on does nothing.
+  Newest wins in its slot. Level-start grants (above) are the one exception.
+- **Changing gear from the bag and the Wardrobe (Phase 3)**: a tap (mouse) or A on a gear item in the
+  bag, or in the Flap's Wardrobe tab, runs `InventorySlot.BUTTON_OnPress` -> `Player.TryToggleGear`: on if
+  it's off, off if it's on (an empty Feet slot shows the outfit's own shoes). Outfits are only swapped,
+  never taken off. Only for the gear slots in `GearCatalog._changeableFromBag` (Outfit and Feet: the
+  scissors always follow the newest pair, Diego 2026-10-05), only with the Flap open (the reward
+  stickers are `InventorySlot`s too), and refused while the game is frozen for the player (FR-105:
+  `inDialogue`, which also covers overlays and page turns, `inCutscene`, or Casting / ReceivingReward /
+  Dead / RidingPage). With the Flap open `Time.timeScale` is 0 but `SkeletonAnimation` still runs
+  `Update(0)` and `BeforeApply`, so the new look shows behind the menu.
+- **Effects follow what is worn (FR-103)**: water protection is `GearItem._savesFromDrowning` (on in
+  `Gear_RainBoots`), read through `PlayerGear.SavesFromDrowning` in `Player.GetWet`. `hasWaterBoots` was
+  removed. The river calls `GetWet` only on the way in, so taking the boots off while standing in it
+  re-checks once the Flap closes (`Player.RecheckWaterAfterGearChange`). `hasTijera`, `hasSprintBoots`
+  and `SetTijeraEquipment` (TijeraManager + hitbox) are still owned-based: the scissors can't be changed
+  from the bag, so the pair she holds is always the one she wears.
 - **Missing art**: a `GearItem` whose Spine skin isn't in the export logs one warning per Play and is
   skipped **entirely**, its slot clearing included (missing boots art must leave the outfit's shoes on).
   Today that is `outfit/default` and `outfit/detective`. A missing `Resources/GearCatalog.asset` warns
@@ -88,8 +108,10 @@ Only entries of the composed skin can be cleared: whatever lives in `default` ca
 removed. That is why Valen moves the shoes out of `default` into `outfit/default` (#141).
 
 **Adding an item** = one `GearItem` asset (`Create > Kami > Gear Item`, in `Assets/Scripts/Gear/`:
-slot, Spine skin dropdown, the `ResourceType` that grants it) + one Spine skin in Kami's export + a line
-in `GearCatalog`'s items. No code. When Valen's renamed export lands (`scissors/normal`,
+slot, Spine skin dropdown, the `ResourceType` that grants it, its effects while worn) + one Spine skin in
+Kami's export + a line in `GearCatalog`'s items + its bag item (the `ResourceType`, an `InventoryItem`
+asset in BOTH InventoryManager lists and its `ItemTable` keys, the café ticket recipe in
+`nivel2-y-ui.md`). No code. The Wardrobe lists it by itself once Kami owns it. When Valen's renamed export lands (`scissors/normal`,
 `scissors/upgrade1`), only the two scissors items' skin fields change.
 
 ## Eventos dentro de las anims

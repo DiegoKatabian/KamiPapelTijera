@@ -256,7 +256,15 @@ etc., all 100% new). Cross-cutting systems (page-turn, inventory, quests, camera
 Flap UI) are production-ready and get reused as the base.
 
 **Water boots visual (2026-10-05)**: getting `botasAgua` equips `Gear_RainBoots` through Kami Gear
-(spec 011, see `spine-kami.md`); it shows once Valen exports the `feet/rain-boots` skin (#83).
+(spec 011, see `spine-kami.md`); a yellow placeholder skin shows until Valen exports `feet/rain-boots`
+(#83). Since Phase 3 they only keep Kami from drowning while she wears them: tapped off in the bag or
+the Wardrobe, the river drowns her.
+
+**Outfits are bag items (spec 011 Phase 3, 2026-10-05)**: `outfitDefault`/`outfitDetective`
+(`ItemOutfitDefault`/`ItemOutfitDetective`, in BOTH InventoryManager lists). Level 2 starts wearing the
+detective outfit and owning both, so tapping one in the bag or the Wardrobe swaps them; the boots and the
+scissors stay on. Granted quietly at level start (no sticker), see "Owned from the start" in
+`spine-kami.md`.
 
 ## LevelManager
 
@@ -289,12 +297,20 @@ Hoja/EdgeBone → RidingPage) — no se encontraron discrepancias.
   al nombre del asset si la carga async todavía no resolvió) + cantidad si es &gt;1;
   sonidos de hover/click; fade in/out para el "sticker" de recompensa nueva. Los slots
   se reacomodan sin huecos cuando se quita un ítem.
+- **A tap on a gear item also wears it** (spec 011, 2026-10-05): with the Flap open, `BUTTON_OnPress`
+  showcases the item as always and then calls `Player.TryToggleGear` (outfits and boots; see
+  `spine-kami.md`). The showcase slot's own click is emptied in the prefab, so it never toggles.
+- `InventoryManager.AddItem` warns and skips a resource missing from that scene's `_allItems` list
+  (it used to throw). Every Kami gets her outfit at level start now, so the old test scenes with their
+  own outdated lists (`Nivel1_LaRural`, `SampleScene`, `Level1_Kami (Test Use Only)`) log one warning
+  instead of an exception.
 
 ## Flap UI (menú deslizable) y CamWheel (selector de cámara)
 
-**FlapManager**: panel que entra deslizando (tecla ESC/I/U) con 4 tabs — Quests
+**FlapManager**: panel que entra deslizando (tecla ESC/I/U) con 5 tabs — Quests
 (`QuestSlot[]`), Inventario (`InventorySlot[]`), Settings (sliders de
-brillo/contraste/volumen + confirmación de salida) y Controles. Al abrir del todo
+brillo/contraste/volumen + confirmación de salida), Controles y **Wardrobe** (spec 011, 2026-10-05,
+see below). Al abrir del todo
 pausa el juego (`Time.timeScale = 0`) y baja la música a 0.4x; sonido de "vuelta de
 página" al abrir/cerrar. Con joystick: R1/L1 ciclan de tab y B cierra (ver
 `controles-y-gamepad.md`); el botón de la "tirita" (imagen `_tiritaPull`/`_tiritaPush`
@@ -304,6 +320,23 @@ también es navegable/apretable con A. Los 3 sliders de Settings usan un handle 
 enfocar con joystick (mismo clip en los estados Pressed/Selected del Animator). Arriba de
 la columna de íconos de sección hay un cartel (`FlapTabHint`, componente
 `SoloConJoystick`) que dice "L1 / R1 para cambiar de sección", visible solo con joystick.
+
+**Wardrobe tab** (spec 011 FR-104, 2026-10-05, placeholder layout until Valen's #151): `_flapDisplays[4]`
+(appended last, so the hardcoded `BTN_*` indexes 0-3 still hold), `FlapManager.BTN_Wardrobe`, and a 5th
+tab button (`FlapDisplayButtonWardrobe`, a copy of the bag tab tinted lilac) below Controls at y = -85.
+**The Flap prefab has two bands**: the menu paper (local y above about -35) sits off screen while closed,
+and the HUD strip hanging under it (pull tab, health, paper ammo) is always on screen. y -85 falls in the
+HUD strip, so since 2026-10-05 (spec 011 task 4.A) **every tab button is inactive while the Flap is closed**
+(`FlapManager.SetTabsVisible`: on in `OpenFlap`, off when the closing slide ends). Anything new that must
+not show or be clicked during gameplay has to sit above the paper's bottom edge or be hidden the same way.
+`WardrobeDisplay` (`Assets/Scripts/UI/`) holds one row per gear slot (Outfit, Scissors, Feet), authored in
+`FlapManager.prefab` as `Row_*` = a `Label` (TMP + `LocalizeStringEvent`, UITexts `wardrobe_*`) and a
+`Slots` container (GridLayoutGroup, one row). The buttons are `InventorySlot.prefab` copies spawned at
+runtime, one per gear item Kami owns (the bag's own count, so confiscated scissors leave both), in
+`GearCatalog` order, reused rather than destroyed. The worn item is drawn at 1.15x, the others at 0.85x
+(Inspector); the selected one gets InventorySlot's amber. A tap goes through the bag's own path
+(`BUTTON_OnPress`). Rebuilt on `OnEnable` (FlapManager selects the first button right after showing the
+tab) and a frame after any `OnResourceUpdated` (InventoryManager may update the amounts after it).
 
 **CamWheelManager** (implementa `IFlap`, mismo patrón de apertura/cierre que Flap):
 menú radial para elegir `CameraMode` a mano. Botones indexados por el enum de cámara;

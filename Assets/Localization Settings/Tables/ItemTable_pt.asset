@@ -124,6 +124,22 @@ MonoBehaviour:
     m_Localized: "O t\xEDquete do caf\xE9, dobrado. Tem a hora impressa."
     m_Metadata:
       m_Items: []
+  - m_Id: 1000000000013
+    m_Localized: "Roupa de sempre"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000014
+    m_Localized: "A roupa que a Kami usa no pr\xF3prio livro. Leve como papel, e confort\xE1vel."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000015
+    m_Localized: "Roupa de detetive"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000016
+    m_Localized: "Perfeita para resolver o mist\xE9rio do quadro roubado."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

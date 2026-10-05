@@ -12,10 +12,24 @@ public class GearLoadout : ScriptableObject
              "share a slot, the last one wins (with a warning).")]
     [SerializeField] List<GearItem> _equipped = new List<GearItem>();
 
-    [Tooltip("Owned at level start but not worn, for the Wardrobe (spec 011 Phase 3). Nothing reads " +
-             "this before that phase.")]
+    [Tooltip("Owned at level start but not worn: they are in the bag and the Wardrobe from the first " +
+             "frame. Everything in both lists is granted quietly (no sticker), except scissors: Kami " +
+             "holds those through Player's 'Start With Tijera'.")]
     [SerializeField] List<GearItem> _alsoOwned = new List<GearItem>();
 
     public IReadOnlyList<GearItem> Equipped => _equipped;
     public IReadOnlyList<GearItem> AlsoOwned => _alsoOwned;
+
+    /// <summary>Everything Kami owns at level start: the worn items, then the also-owned ones.</summary>
+    public IEnumerable<GearItem> AllOwned()
+    {
+        foreach (GearItem item in _equipped)
+        {
+            yield return item;
+        }
+        foreach (GearItem item in _alsoOwned)
+        {
+            yield return item;
+        }
+    }
 }

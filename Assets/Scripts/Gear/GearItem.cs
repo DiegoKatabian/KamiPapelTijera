@@ -4,7 +4,9 @@ using UnityEngine;
 /// <summary>
 /// One piece of Kami's gear: the gear slot it goes in and the Spine skin that draws it (spec 011).
 /// Adding an item to the game = this asset + its Spine skin in Kami's export + a line in
-/// GearCatalog. Getting its inventory resource equips it (Player.EquipGainedGear).
+/// GearCatalog + its bag item (a ResourceType and an InventoryItem in both InventoryManager lists,
+/// which is what the bag and the Wardrobe show). Getting its inventory resource equips it
+/// (Player.EquipGainedGear); tapping it in the bag or the Wardrobe toggles it (Player.TryToggleGear).
 /// </summary>
 [CreateAssetMenu(fileName = "Gear_", menuName = "Kami/Gear Item")]
 public class GearItem : ScriptableObject, IHasSkeletonDataAsset
@@ -17,19 +19,26 @@ public class GearItem : ScriptableObject, IHasSkeletonDataAsset
     [SpineSkin(fallbackToTextField: true)]
     [SerializeField] string _spineSkin;
 
-    [Tooltip("On: getting the resource below equips this item. Off for items no bag item grants yet " +
-             "(the outfits, until spec 011 Phase 3).")]
+    [Tooltip("On: the resource below is this item's bag item, and getting it equips the item. Off only " +
+             "for an item no bag item grants yet (the enum's default 0 is 'hongos').")]
     [SerializeField] bool _grantedByResource = true;
 
-    [Tooltip("The inventory resource that grants it. Ignored while 'Granted By Resource' is off.")]
+    [Tooltip("The inventory resource that grants it. Owning it (count above 0) is what puts the item in " +
+             "the Wardrobe. Ignored while 'Granted By Resource' is off.")]
     [SerializeField] ResourceType _resource;
 
     [Tooltip("ItemTable key of its name, for the Wardrobe tab (spec 011 Phase 3).")]
     [SerializeField] string _displayNameKey;
 
+    [Header("Effects while worn")]
+    [Tooltip("While Kami wears it, water doesn't drown her (the rain boots). Taken off, it protects " +
+             "nothing, even if she still owns it (spec 011 FR-103).")]
+    [SerializeField] bool _savesFromDrowning;
+
     public GearSlot Slot => _slot;
     public string SpineSkinName => _spineSkin;
     public string DisplayNameKey => _displayNameKey;
+    public bool SavesFromDrowning => _savesFromDrowning;
 
     public bool TryGetResource(out ResourceType resource)
     {

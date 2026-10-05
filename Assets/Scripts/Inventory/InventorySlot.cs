@@ -102,7 +102,40 @@ public class InventorySlot : MonoBehaviour
         if (currentItem != null)
         {
             InventoryManager.Instance.ShowcaseItem(currentItem);
+            ToggleGear(currentItem);
         }
+    }
+
+    //Spec 011 FR-102: tapping a gear item also puts it on, or takes it off. Only with the Flap open,
+    //where the bag and the Wardrobe live: the reward stickers that fly by during gameplay are
+    //InventorySlots too, and a click on one must not undress Kami.
+    void ToggleGear(InventoryItem item)
+    {
+        if (FlapManager.Instance == null || !FlapManager.Instance.IsMenuOpen)
+        {
+            return;
+        }
+
+        GearCatalog catalog = GearCatalog.Instance;
+        if (catalog == null)
+        {
+            return; //the catalog already warned once
+        }
+
+        GearItem gear = catalog.ForResource(item.resourceType);
+        if (gear == null)
+        {
+            return; //not gear: showing it is all a tap does
+        }
+
+        Player player = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+        if (player == null)
+        {
+            Debug.LogWarning($"[InventorySlot] no Player in LevelManager: can't put on '{gear.name}'");
+            return;
+        }
+
+        player.TryToggleGear(gear);
     }
 
     public void StartLerpSequence(float duration)

@@ -172,6 +172,22 @@ MonoBehaviour:
     m_Localized: "You've landed in a brand new book,\nwhere trouble sprouts wherever you look.\nHelp your new friend, and she'll see\nyou home again, safe and free.\n\n{INPUT:accion} to continue"
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000004
+    m_Localized: "Outfit"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000005
+    m_Localized: "Scissors"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000006
+    m_Localized: "Feet"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000007
+    m_Localized: "Hat"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -3,7 +3,9 @@
 GitHub (M4), filed 2026-10-02: epic #139. 0.A #140, 1.A #141, 1.B #83, 1.C #61, 2.A #142, 2.B #143,
 2.C #144, 2.D #145, 2.E #146 (also closes #17), 3.A #147, 3.B #148, 3.C #149, 3.D #150, 3.E #151.
 #85 closed as answered (Spine 4.2 already installed). Phase 0.A + Phase 2 session: `kickoff-prompt.md`
-(done, closed 2026-10-05 with #17). Phase 3 session: `kickoff-prompt-phase3.md`.
+(done, closed 2026-10-05 with #17). Phase 3 session: `kickoff-prompt-phase3.md`. Phase 4 filed
+2026-10-05 (M4): 4.A #152, 4.B #153, 4.C #154 (#46 cross-linked). Phase 4 session:
+`kickoff-prompt-phase4.md`.
 
 Phases in order; `[P]` = parallel-safe with its siblings. Code tasks (Phase 2) do **not** wait for
 the art (Phase 1): the scissors skins already exist, and missing skins only log a warning (FR-006).
@@ -91,25 +93,85 @@ design above, and why:
 
 ## Phase 3 — The Wardrobe (FR-101..105), after Phase 2 is played
 
-- [ ] **3.A** **Outfits as items**: `outfitDefault`/`outfitDetective` `ResourceType`s (appended before
+- [x] **3.A** **Outfits as items**: `outfitDefault`/`outfitDetective` `ResourceType`s (appended before
   `Count`), `InventoryItem` assets, added to **both** InventoryManager lists (Level 2's is a scene
   copy), granted by the starting loadouts.
-- [ ] **3.B** `[P]` **Equip by tapping the bag**: `InventorySlot` click/A on a gear item toggles it
+- [x] **3.B** `[P]` **Equip by tapping the bag**: `InventorySlot` click/A on a gear item toggles it
   through `Player.Gear` (outfits swap, never empty). Blocked while frozen (FR-105).
-- [ ] **3.C** `[P]` **Effects follow what is equipped** (FR-103): `hasWaterBoots`/`hasSprintBoots`
+- [x] **3.C** `[P]` **Effects follow what is equipped** (FR-103): `hasWaterBoots`/`hasSprintBoots`
   read from `Player.Gear`; scissors damage too. Decide Q4 first.
-- [ ] **3.D** **Wardrobe tab** in the Flap: one row per gear slot, gamepad-navigable (R1/L1, A, B,
+- [x] **3.D** **Wardrobe tab** in the Flap: one row per gear slot, gamepad-navigable (R1/L1, A, B,
   visible `m_SelectedColor`, see `controles-y-gamepad.md`). Needs a small layout from Valen.
-- [ ] **3.E** `[ART-VALEN]` icons/stickers for the outfits and the Wardrobe tab.
+- [ ] **3.E** `[ART-VALEN]` icons/stickers for the outfits and the Wardrobe tab (#151, not needed by
+  3.A-3.D: everything ships with placeholders).
 
-## Phase 4 — Optional: carry gear between levels (FR-201, Q5: deferred, not filed)
+### Phase 3 as built (2026-10-05, played by Diego the same day: all good except F5, fixed by 4.A)
 
-- **4.A** A tiny persistent gear state (static or `DontDestroyOnLoad`), read by Player at start
-  with the starting loadout as fallback. Only if Q5 says yes.
+Diego took the three defaults asked before building (now Q9-Q11 in `spec.md`). What was built and what
+changed vs. the tasks above, and why:
+
+- **3.A** `ResourceType.outfitDefault` (14) / `outfitDetective` (15), only `Count` shifted (nothing
+  serializes it). `ItemOutfitDefault`/`ItemOutfitDetective` (no sprite yet, pale tints), in
+  `InventoryManager.prefab` and Level 2's scene list; `ItemTable` `outfit_*_title/_text` in es/en/pt, also
+  the outfit `GearItem`s' `_displayNameKey`; `_grantedByResource` on for both outfits.
+  **Granting at level start** (Q10): `Player.GrantStartingItems`, one frame after `Start`, gives the
+  starting scissors and then every bag item the loadout lists (skipping what she already owns) through
+  `AddResource(..., ownedAtLevelStart: true)`. That 4th `OnResourceUpdated` value makes the sticker
+  (`ResourceParticleManager.StartSystem`) and the auto-equip (`Player.EquipGainedGear`) skip it. Level 2's
+  starting scissors use it too, so they no longer pop a sticker at level start. The loadout never grants
+  scissors itself: holding them is `hasTijera` (`_startWithTijera`); either mismatch logs a warning.
+  `InventoryManager.AddItem` now warns and skips a resource missing from the scene's list instead of
+  throwing (old test scenes with outdated lists would otherwise throw at start).
+- **3.B** `InventorySlot.BUTTON_OnPress` keeps the showcase and then calls `Player.TryToggleGear`, only
+  with the Flap open (the reward stickers are InventorySlots too). Toggleable gear slots are data:
+  `GearCatalog._changeableFromBag` = Outfit, Feet (Q9). Frozen = `inDialogue` (also overlays, page turns),
+  `inCutscene`, or the states that already block the attack (Casting, ReceivingReward, Dead, RidingPage).
+- **3.C** `GearItem._savesFromDrowning` (on in `Gear_RainBoots`) + `PlayerGear.SavesFromDrowning`, read
+  by `Player.GetWet`; `Player.hasWaterBoots` removed (and its key in `Kami.prefab`). **Added**: the river
+  calls `GetWet` only on entry, so boots taken off while standing in it would still protect her until she
+  stepped out; `Player.RecheckWaterAfterGearChange` re-runs `GetWet` once the Flap closes. Scissors damage
+  needed nothing (Q9: the newest pair is always the one worn); `hasSprintBoots` is not gear (retired item).
+- **3.D** (Q11) `WardrobeDisplay` (`Assets/Scripts/UI/`) as `_flapDisplays[4]`, `FlapManager.BTN_Wardrobe`,
+  a 5th tab button (copy of the bag tab, lilac) at y = -85 below Controls, three `Row_*` (label with
+  `LocalizeStringEvent` on UITexts `wardrobe_*`, `Slots` GridLayoutGroup) authored in `FlapManager.prefab`
+  by YAML (219 -> 256 blocks, fileIDs unique, hierarchy/root orders checked). Item buttons are
+  `InventorySlot.prefab` copies spawned at runtime per owned item; worn = scale 1.15, others 0.85.
+- **Noted, not done**: `GearItem._displayNameKey` is still read by nothing (the Wardrobe shows the bag
+  item's name, like the bag). Keep it for Valen's Wardrobe art or remove it: Diego's call. A `wardrobe_hat`
+  UITexts key exists for the day the Hat row does.
+
+**Diego's playtest checklist** (from the kickoff): Level 1 bag holds the default outfit from the start,
+no sticker; P gives the rain boots; tapping them takes them off (default shoes and buckle back) and on;
+river drowns her only with them off. Level 2 starts in the detective outfit (default look + one
+missing-skin warning until #61) owning both outfits; swapping keeps boots and scissors. Wardrobe: one row
+per slot, worn item bigger, R1/L1 reach it, A equips, B closes, amber selected color visible, nothing
+selected after closing; check the 5th tab's position on the paper. Frozen (dialogue, cutscene, origami,
+dead, riding a page): refused. Console: no new errors.
+
+## Phase 4 — A Flap that only listens while it's open (FR-301..306; planned 2026-10-05)
+
+Found playing Phase 3 (spec F5/F6). Not gear-specific, kept here by Q12. Everything is in
+`FlapManager.cs`: one session, in order (no `[P]`). Confirm Q14 at its kickoff.
+
+- [x] **4.A** #152 **Tabs only exist while the Flap is showing** (FR-304, F5): `SetTabsVisible` in
+  `Start`, `OpenFlap` and at the end of the closing slide. Built 2026-10-05 on `011-kami-gear` with
+  Phase 3 (Q13), compile-checked, not played yet.
+- [ ] **4.B** #153 **Flap states** (FR-301, FR-302, FR-306): `FlapState` replaces `_isOpen`; menu input
+  (R1/L1/B) and selections by code only in `Open`; leaving `Open` clears the selection; `IsMenuOpen`
+  follows Q14. Closes F6's close-slide leak.
+- [ ] **4.C** #154 **A closed Flap can't be clicked or navigated** (FR-303, FR-305): code-added
+  `CanvasGroup`s on the menu roots (raycasts only in `Open`, `interactable` off only while `Closed`, see
+  the Disabled-tint gotcha in spec "Phase D"), the safety-net deselect + warning, then the close-out
+  (docs, graphify, Diego's checklist in spec "Verification").
+
+## Dropped — carry gear between levels (FR-201)
+
+Diego, 2026-10-05: no persistence between levels for now (Q5). Each level starts from its own
+`GearLoadout`; revisit only together with a save system.
 
 ## Parallelism summary
 
 Phase 1 (Valen) runs alongside Phase 2 (code). Inside Phase 2: 2.A first, then 2.B and 2.C in
 parallel (different files: `PlayerView.cs` + composer vs `Player.cs` + `PlayerGear.cs`), then 2.D
 (only one writer for the scenes/prefab). Phase 3: 3.B and 3.C in parallel after 3.A; 3.D after 3.B.
-Max 2 code agents at a time.
+Phase 4: nothing parallel (all `FlapManager.cs`): 4.B, then 4.C. Max 2 code agents at a time.

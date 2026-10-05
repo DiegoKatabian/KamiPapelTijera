@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slot: 0
   _spineSkin: outfit/detective
-  _grantedByResource: 0
-  _resource: 0
-  _displayNameKey: 
+  _grantedByResource: 1
+  _resource: 15
+  _displayNameKey: outfit_detective_title
+  _savesFromDrowning: 0

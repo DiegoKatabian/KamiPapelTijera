@@ -37,10 +37,12 @@ public class FlapManager : Singleton<FlapManager>
     //1 es inventory
     //2 es settings
     //3 es controles
+    //4 is the Wardrobe (spec 011): appended last so the hardcoded indexes above keep working
 
     private void Start()
     {
         _posYClosed = transform.position.y;
+        SetTabsVisible(false); //the Flap starts closed
         EventManager.Subscribe(Evento.OnPlayerPressedEsc, OpenSettings);
         EventManager.Subscribe(Evento.OnPlayerPressedM, ToggleMute);
         EventManager.Subscribe(Evento.OnPlayerPressedI, OpenInventory);
@@ -55,6 +57,7 @@ public class FlapManager : Singleton<FlapManager>
         AudioManager.instance.SetBGMVolumes(0.4f);
         _tiritaPull.gameObject.SetActive(false);
         _tiritaPush.gameObject.SetActive(true);
+        SetTabsVisible(true);
 
         StopAllCoroutines();
         StartCoroutine(MoveFlap(_posYOpen));
@@ -118,7 +121,7 @@ public class FlapManager : Singleton<FlapManager>
         }
     }
 
-    /// <summary>Cicla entre las 4 secciones del Flap (Tareas/Morral/Settings/Controles) con R1/L1.</summary>
+    /// <summary>Cicla entre las secciones del Flap (Tareas/Morral/Settings/Controles/Wardrobe) con R1/L1.</summary>
     void CambiarTab(int direccion)
     {
         if (_flapDisplays == null || _flapDisplays.Length == 0)
@@ -158,6 +161,28 @@ public class FlapManager : Singleton<FlapManager>
             //recien aca el menu esta realmente abierto: es el unico momento en que es seguro
             //dejar algo seleccionado para que el joystick pueda navegarlo
             SeleccionarDisplayVisible();
+        }
+        else
+        {
+            SetTabsVisible(false);
+        }
+    }
+
+    //Spec 011 task 4.A: the tab buttons only exist while the Flap is showing. Closed, the paper sits
+    //off screen but the HUD strip hanging under it (pull tab, health, paper) stays visible, and a tab
+    //placed low enough peeks into it (the Wardrobe one did): clickable during gameplay, and a clicked
+    //tab stays selected, so walking would then navigate the hidden menu. Inactive, a tab can't be seen,
+    //clicked or reached by navigation.
+    void SetTabsVisible(bool visible)
+    {
+        foreach (FlapDisplay d in _flapDisplays)
+        {
+            if (d.flapButton == null)
+            {
+                Debug.LogWarning($"[FlapManager] display {d.number} has no tab button: nothing to show or hide");
+                continue;
+            }
+            d.flapButton.gameObject.SetActive(visible);
         }
     }
 
@@ -238,6 +263,18 @@ public class FlapManager : Singleton<FlapManager>
     {
         ShowDesiredDisplay(_flapDisplays[3]);
         //Debug.Log("muestro las quests");
+        AudioManager.instance.Play(AudioId.PageTurn02, 2.6f, 0.01f);
+    }
+    public void BTN_Wardrobe()
+    {
+        const int wardrobeIndex = 4;
+        if (_flapDisplays == null || _flapDisplays.Length <= wardrobeIndex)
+        {
+            Debug.LogWarning("[FlapManager] BTN_Wardrobe: no Wardrobe display at index 4 of _flapDisplays");
+            return;
+        }
+
+        ShowDesiredDisplay(_flapDisplays[wardrobeIndex]);
         AudioManager.instance.Play(AudioId.PageTurn02, 2.6f, 0.01f);
     }
     public void BTN_Si()

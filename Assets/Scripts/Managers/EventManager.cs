@@ -30,7 +30,7 @@ public enum Evento //LOS EVENTOS SE AGREGAN AL FINAL. NO EN EL MEDIO, PORQUE ARR
     OnPlayerPlaced, //triggereado por PlacePlayer. cuando muere, o cambia de pag, etc
 
     OnOrigamiApplied, //param0 es papercost (numero negativo), param1 es Origami origami
-    OnResourceUpdated, //se triggerea cuando uso AddResource, param0 es el tipo, param1 es el amount total actual, param2 bool es si suma
+    OnResourceUpdated, //se triggerea cuando uso AddResource, param0 es el tipo, param1 es el amount total actual, param2 bool es si suma, param3 bool: owned at level start (no sticker, no auto-equip; see LevelManager.AddResource)
     OnOrigamiStart, //param0 deberia ser origami
     OnOrigamiEnd, //se triggerea en cada final de ruta o fail
     

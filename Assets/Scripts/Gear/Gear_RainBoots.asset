@@ -17,3 +17,4 @@ MonoBehaviour:
   _grantedByResource: 1
   _resource: 3
   _displayNameKey: boots_rain_title
+  _savesFromDrowning: 1

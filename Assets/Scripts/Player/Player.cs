@@ -26,7 +26,6 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     [SerializeField] bool _startWithTijera = false;
     public TijeraEquipment currentTijera = TijeraEquipment.Normal;
     public bool hasSprintBoots = false;
-    public bool hasWaterBoots = false;
 
     [Header("Gear")]
     [Tooltip("What Kami wears when this level starts (outfit, scissors...). Items gained later are equipped on top of it.")]
@@ -233,6 +232,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     {
         _model = new PlayerModel(this);
         Gear = new PlayerGear(() => OnGearChanged?.Invoke());
+        OnGearChanged += RecheckWaterAfterGearChange;
         _view = new PlayerView(this);
         _controller = new PlayerController(this);
     }
@@ -273,25 +273,68 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         EventManager.Subscribe(Evento.OnQuestRewardedEnd, EndReceiveReward);
         EventManager.Subscribe(Evento.OnPlayerPlaced, OnPlayerPlaced);
 
-        if (_startWithTijera)
-        {
-            StartCoroutine(EquipStartingTijera());
-        }
+        StartCoroutine(GrantStartingItems());
     }
 
     //a frame late so the InventoryManager, which builds its slots in its own Start, is already
-    //listening when the scissors land in the inventory
-    IEnumerator EquipStartingTijera()
+    //listening when the starting items land in the bag
+    IEnumerator GrantStartingItems()
     {
         yield return null;
 
-        if (hasTijera)
+        if (_startWithTijera && !hasTijera)
         {
-            yield break;
+            EquipTijera(atLevelStart: true);
+            Debug.Log("[Player] starts the level holding the normal scissors");
+
+            //granted at level start, they don't auto-equip: what she wears is the loadout's call
+            if (Gear.GetEquipped(GearSlot.Scissors) == null)
+            {
+                Debug.LogWarning("[Player] 'Start With Tijera' is on but the starting loadout equips no scissors: " +
+                                 "she can cut but they won't show. Add a scissors item to the loadout's Equipped list");
+            }
         }
 
-        EquipTijera(celebrate: false);
-        Debug.Log("[Player] starts the level holding the normal scissors");
+        GrantStartingLoadout();
+    }
+
+    //Everything the starting loadout lists is Kami's from the first frame, worn or not (spec 011
+    //FR-101): Level 2 also owns the default outfit, so she can change back into it. Granted quietly,
+    //so it neither celebrates nor auto-equips over the loadout's own choice.
+    void GrantStartingLoadout()
+    {
+        if (_startingLoadout == null)
+        {
+            return; //ApplyLoadout already warned
+        }
+
+        foreach (GearItem item in _startingLoadout.AllOwned())
+        {
+            if (item == null || !item.TryGetResource(out ResourceType resource))
+            {
+                continue;
+            }
+
+            //holding scissors is gameplay (hasTijera), which _startWithTijera owns: granting only the
+            //bag item would show them in the bag of a Kami who can't cut
+            if (item.Slot == GearSlot.Scissors)
+            {
+                if (!hasTijera)
+                {
+                    Debug.LogWarning($"[Player] '{_startingLoadout.name}' lists '{item.name}' but 'Start With Tijera' is off: " +
+                                     "the scissors aren't granted. Turn it on, or take them out of the loadout");
+                }
+                continue;
+            }
+
+            if (LevelManager.Instance.recursosRecolectados[resource] > 0)
+            {
+                continue;
+            }
+
+            LevelManager.Instance.AddResource(resource, 1, ownedAtLevelStart: true);
+            Debug.Log($"[Player] owns '{item.name}' from the start of the level");
+        }
     }
 
     private void Update()
@@ -685,7 +728,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     public void GetWet(float wetDamage)
     {
         isGettingWet = true;
-        if (!hasWaterBoots)
+        //what she wears, not what she owns (spec 011 FR-103): rain boots in the bag don't count
+        if (!Gear.SavesFromDrowning)
         {
             Debug.Log("[Player] GetWet: me mojé, feedback + muerte por ahogo");
             _view.StartGetWetAnimation();
@@ -698,6 +742,33 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     }
 
     public void StopGettingWet() => isGettingWet = false;
+
+    Coroutine _wetRecheck;
+
+    //The river calls GetWet only once, on the way in, so boots taken off while she stands in it would
+    //keep her safe until she stepped out. Re-checked after every gear change, once the Flap is closed:
+    //drowning behind the menu would only show the defeat once it closes anyway.
+    void RecheckWaterAfterGearChange()
+    {
+        if (!isGettingWet || Gear.SavesFromDrowning || CurrentState == PlayerState.Dead || _wetRecheck != null)
+        {
+            return;
+        }
+
+        _wetRecheck = StartCoroutine(GetWetOnceTheMenuCloses());
+    }
+
+    IEnumerator GetWetOnceTheMenuCloses()
+    {
+        yield return new WaitUntil(() => FlapManager.Instance == null || !FlapManager.Instance.IsMenuOpen);
+        _wetRecheck = null;
+
+        if (isGettingWet && !Gear.SavesFromDrowning && CurrentState != PlayerState.Dead)
+        {
+            Debug.Log("[Player] took the rain boots off while standing in the water");
+            GetWet(0f);
+        }
+    }
 
     public void GetGolpeado(float dmg)
     {
@@ -727,14 +798,15 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     }
 
     //Eventos
-    public void GetTijera(params object[] parameters) => EquipTijera(celebrate: true);
+    public void GetTijera(params object[] parameters) => EquipTijera(atLevelStart: false);
 
-    void EquipTijera(bool celebrate)
+    //atLevelStart: she already holds them when the level begins (Level 2), so no reward pose and no sticker
+    void EquipTijera(bool atLevelStart)
     {
         hasTijera = true;
-        LevelManager.Instance.AddResource(ResourceType.tijera, 1);
+        LevelManager.Instance.AddResource(ResourceType.tijera, 1, atLevelStart);
         tijeraManager.SetTijera();
-        if (celebrate)
+        if (!atLevelStart)
         {
             StartReceiveRewardAutoEnd();
         }
@@ -760,6 +832,13 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
             return;
         }
 
+        //owned since the level began: the starting loadout already decided what she wears (Level 2
+        //owns the default outfit too, and must stay in the detective one)
+        if (LevelManager.IsOwnedAtLevelStart(parameters))
+        {
+            return;
+        }
+
         GearCatalog catalog = GearCatalog.Instance;
         if (catalog == null)
         {
@@ -771,6 +850,78 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         {
             Gear.Equip(item);
         }
+    }
+
+    /// <summary>
+    /// A tap on a gear item in the bag or the Wardrobe (spec 011 FR-102): puts it on, or takes it off
+    /// if it's already on. Outfits are only swapped, never taken off. Only for the gear slots the
+    /// catalog lets the player change, and refused while the game is frozen for the player (FR-105);
+    /// the Flap itself is a pause, so changing from it is fine. Returns whether anything changed.
+    /// </summary>
+    public bool TryToggleGear(GearItem item)
+    {
+        if (item == null)
+        {
+            Debug.LogWarning("[Player] TryToggleGear: null item, ignored");
+            return false;
+        }
+
+        GearCatalog catalog = GearCatalog.Instance;
+        if (catalog == null)
+        {
+            return false; //the catalog already warned once
+        }
+
+        if (!catalog.CanChangeFromBag(item.Slot))
+        {
+            Debug.Log($"[Player] {item.Slot} isn't changed from the bag: '{item.name}' stays as it is");
+            return false;
+        }
+
+        string frozenReason = GearChangeBlockedReason();
+        if (frozenReason != null)
+        {
+            Debug.Log($"[Player] gear change refused ({frozenReason}): '{item.name}'");
+            return false;
+        }
+
+        if (Gear.GetEquipped(item.Slot) != item)
+        {
+            Gear.Equip(item);
+            return true;
+        }
+
+        if (item.Slot == GearSlot.Outfit)
+        {
+            Debug.Log($"[Player] '{item.name}' is already on: outfits are swapped, never taken off");
+            return false;
+        }
+
+        Gear.Unequip(item.Slot);
+        return true;
+    }
+
+    //null when Kami's gear can change now. Dialogues, overlays and page turns all set inDialogue.
+    string GearChangeBlockedReason()
+    {
+        LevelManager levelManager = LevelManager.Instance;
+        if (levelManager != null && levelManager.inDialogue)
+        {
+            return "dialogue, overlay or page turn";
+        }
+
+        if (levelManager != null && levelManager.inCutscene)
+        {
+            return "cutscene";
+        }
+
+        //the same states that own Kami's attack: casting an origami, the reward pose, dead, riding a page
+        if (BloqueaAtaque(CurrentState))
+        {
+            return CurrentState.ToString();
+        }
+
+        return null;
     }
 
     //Symmetrical to GetTijera(): confiscates the scissors (e.g. jail-cell scene start). Mirrors

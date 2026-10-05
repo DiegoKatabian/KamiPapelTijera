@@ -179,6 +179,15 @@ limpia al cerrar menús y overlays, y por eso sólo se selecciona cuando hay joy
 
 ### Fugas de foco que ya nos mordieron (no repetirlas)
 
+- **OPEN (spec 011 Phase 4, #153/#154): a Flap left with something selected is driven by walking.**
+  The EventSystem navigates with `Horizontal`/`Vertical` (arrows, WASD **and** the stick) and submits
+  with `Interact` (E/Enter/A), and the active display stays live while the Flap is closed: a leftover
+  selection on a slider changes brightness/contrast/volume as Kami walks, one on a button gets pressed
+  by E/A. Known path (code reading, Diego remembers the symptom): `_isOpen` only turns false when the
+  0.5 s closing slide ends, `FlapManager.Update` keeps reading R1/L1 until then, and L1 is also sprint,
+  so "close and start running" re-selects inside the closing Flap. Until #153/#154 land: never select
+  anything in the Flap unless it is fully open, and remember the closing slide still counts as open.
+
 - **`Selectable.Select()` es `EventSystem.SetSelectedGameObject`.** No es "resaltar", es
   *dar el foco*. `CamWheelManager.FakeSelectButton` lo usaba para pintar la cámara activa, y
   como está suscripto a `OnCameraChange`, después de cada cambio de cámara la rueda se
@@ -229,6 +238,14 @@ el mismo botón:
   RGB de `m_HighlightedColor` a `m_Colors.m_SelectedColor` por instancia en
   `FlapManager.prefab` (cirugía YAML, mismos 4 bloques `PrefabInstance`, sin tocar el prefab
   base). Con mouse y con joystick ahora resaltan con el mismo color por sección.
+- **5th tab, Wardrobe (spec 011, 2026-10-05)**: `_flapDisplays[4]`, so R1/L1 reach it with no new
+  code (`CambiarTab` cycles over the array length). Its tab button has its own lilac
+  `m_HighlightedColor` AND `m_SelectedColor` overrides (same lesson as above). The item buttons are
+  `InventorySlot.prefab` copies spawned at runtime, so they inherit its amber `m_SelectedColor` and
+  Automatic navigation (the stick moves between rows); A on one is Submit -> `BUTTON_OnPress` -> wear /
+  take off, B still closes the Flap. Highlighting the worn item uses scale, never `Select()` (that would
+  give it focus). Played by Diego 2026-10-05; the tab buttons are now inactive while the Flap is
+  closed (spec 011 task 4.A, see the open leak below).
 
 **Ronda 2 (mismo issue #41, testing real con gamepad — ver
 `specs/004-joystick-controls/pending-issues.md` #41.10-#41.12 para el detalle completo)**:

@@ -123,6 +123,22 @@ MonoBehaviour:
     m_Localized: "El ticket del caf\xE9, doblado. Tiene la hora impresa."
     m_Metadata:
       m_Items: []
+  - m_Id: 1000000000013
+    m_Localized: "Ropa de siempre"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000014
+    m_Localized: "La ropa que Kami usa en su propio libro. Liviana como el papel, y c\xF3moda."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000015
+    m_Localized: "Traje de detective"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000016
+    m_Localized: "Justo lo que hace falta para resolver el misterio del cuadro robado."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

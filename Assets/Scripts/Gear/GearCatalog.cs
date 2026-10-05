@@ -38,6 +38,11 @@ public class GearCatalog : ScriptableObject, IHasSkeletonDataAsset
     [Tooltip("Which Spine slots each gear slot owns. The outfit owns none: it is the base layer.")]
     [SerializeField] List<OwnedSlots> _ownedSlots = new List<OwnedSlots>();
 
+    [Tooltip("Gear slots the player changes by tapping an item in the bag or the Wardrobe (spec 011 " +
+             "FR-102). The others change only by getting an item: the newest pair of scissors is always " +
+             "the one she holds, so their damage always matches what she wears.")]
+    [SerializeField] List<GearSlot> _changeableFromBag = new List<GearSlot> { GearSlot.Outfit, GearSlot.Feet };
+
     static GearCatalog _instance;
     static bool _missingReported;
 
@@ -74,6 +79,20 @@ public class GearCatalog : ScriptableObject, IHasSkeletonDataAsset
 
         _byResource.TryGetValue(resource, out GearItem item);
         return item;
+    }
+
+    public bool CanChangeFromBag(GearSlot gearSlot) => _changeableFromBag.Contains(gearSlot);
+
+    /// <summary>The catalog's items for one gear slot, in catalog order (the Wardrobe's row order).</summary>
+    public IEnumerable<GearItem> ItemsIn(GearSlot gearSlot)
+    {
+        foreach (GearItem item in _items)
+        {
+            if (item != null && item.Slot == gearSlot)
+            {
+                yield return item;
+            }
+        }
     }
 
     public IReadOnlyList<string> OwnedSpineSlots(GearSlot gearSlot)

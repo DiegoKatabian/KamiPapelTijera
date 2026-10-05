@@ -20,6 +20,22 @@ public class PlayerGear
 
     public GearItem GetEquipped(GearSlot slot) => _equipped[(int)slot];
 
+    /// <summary>Effects follow what she wears, not what she owns (spec 011 FR-103).</summary>
+    public bool SavesFromDrowning
+    {
+        get
+        {
+            foreach (GearItem item in _equipped)
+            {
+                if (item != null && item.SavesFromDrowning)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     /// <summary>Outfit first, then Scissors, Feet, Hat. Empty slots are skipped.</summary>
     public IEnumerable<GearItem> EquippedInCompositionOrder()
     {

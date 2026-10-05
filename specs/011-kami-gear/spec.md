@@ -6,6 +6,10 @@ worked): see "Phase 2 as built" in `tasks.md` for what changed vs. this design (
 `BeforeApply`, not with an extra `AnimationState.Apply`; sprint boots retired; a placeholder rain boots
 skin). F2 and F3 were confirmed in the Editor by Diego before the fix. Phase 3 session:
 `kickoff-prompt-phase3.md`.
+**Phase 3 (the Wardrobe, FR-101..105) built 2026-10-05 and played by Diego the same day**: see "Phase 3
+as built" in `tasks.md`, and Q9-Q11 below. His one finding (the Wardrobe tab showed during gameplay) led
+to **Phase 4, a Flap that only listens while it's open** (FR-301..306, F5/F6, Q12-Q14), planned the same
+day; its first task (4.A) was built right away. Phase C (carrying gear between levels) is dropped.
 **Tasks**: `tasks.md`. **Art side**: the "Spine authoring contract" section is the brief for Valen.
 
 ## Request (Diego, 2026-10-02)
@@ -108,6 +112,24 @@ In the Spine editor Valen can pin several skins in the Skins view to preview a c
   always composed at start).
 - **F4** Effects are tied to *owning* an item, so with "one pair of boots at a time" the water and
   sprint boots would both be active while only one is visible (Q4).
+- **F5** (2026-10-05, Diego playing Phase 3) **The Wardrobe tab showed during gameplay.** `FlapManager.prefab`
+  has two bands: the menu paper (local y above about -35) sits off screen at the top while the Flap is
+  closed, and the HUD strip hanging under it (pull tab y -23, health -130, paper ammo -105) is always on
+  screen. The 5th tab was placed at y -85, inside the HUD strip. Fixed by task 4.A (FR-304).
+- **F6** (2026-10-05, from reading the code, not reproduced) **The Flap can be driven while playing**
+  (Diego remembers changing settings "on any tab" during gameplay). The EventSystem navigates with the
+  `Horizontal`/`Vertical` axes (arrows, WASD and the stick) and submits with `Interact` (E/Enter/A), and
+  the Flap's active display stays live while closed. So a Selectable left selected after closing is
+  driven by walking: left/right moves a selected slider (brightness, contrast, volume), E/A presses a
+  selected button (Exit included). Two ways a selection survives closing:
+  1. **The close slide.** `_isOpen` turns false only when the 0.5 s slide ends, and `FlapManager.Update`
+     keeps reading R1/L1/B until then. L1 is also sprint: closing and starting to run fires
+     `CambiarTab` -> `ShowDesiredDisplay`, which selects inside the display AFTER `CloseFlap` cleared the
+     selection. Joystick only (code selects only for joystick players).
+  2. **A click on a Flap Selectable shown while closed.** A click selects it. Before Phase 3 that was
+     only the pull tab, whose click opens the Flap anyway; F5's tab was a second one (closed by 4.A).
+  Side effect of the same `_isOpen` timing: gameplay input is free during the opening slide and blocked
+  for the whole closing slide, the opposite of what feels right (FR-306).
 
 ## Concept: three layers, composed in a fixed order
 
@@ -191,10 +213,30 @@ default skin (fallback, never changes: face, head, arms, everything no item touc
 - **FR-105** Equipping is blocked while the game is frozen for the player (dialogue, cutscene,
   casting, dead, riding a page). The Flap is a pause, so equipping from it is allowed.
 
-### Phase C: carry gear between levels (optional, Q5)
+### Phase C: carry gear between levels — DROPPED (Q5: Diego, 2026-10-05, no persistence for now)
 
-- **FR-201** What Kami owns and wears at the end of a level is the start of the next, with the level's
-  starting loadout as the fallback (playing a level directly from the Editor).
+- ~~**FR-201** What Kami owns and wears at the end of a level is the start of the next, with the level's
+  starting loadout as the fallback (playing a level directly from the Editor).~~ Each level starts from
+  its own loadout. Revisit only with a save system.
+
+### Phase D: a Flap that only listens while it's open (planned 2026-10-05, F5/F6)
+
+Not gear-specific: the Wardrobe exposed it (Q12 keeps it in this spec, in M4).
+
+- **FR-301** The Flap is always in exactly one state: `Closed`, `Opening`, `Open`, `Closing`. Every Flap
+  rule reads that state. Nothing infers "open" from a position or from the end of a slide.
+- **FR-302** Menu input (R1/L1 tab cycling, B to close or to answer the exit confirm) and every selection
+  made by code happen only in `Open`. Leaving `Open` clears the selection.
+- **FR-303** The menu part (every display, the exit confirm, the tab buttons) can't be clicked, selected
+  or navigated unless the Flap is `Open`. The HUD strip (pull tab, health, paper, page) is not touched,
+  and the pull tab stays clickable in every state (it is what opens the Flap).
+- **FR-304** The tab buttons exist only while the Flap isn't `Closed`: shown when it starts opening,
+  hidden when it finishes closing, so no tab can show or be clicked during gameplay. **Built 2026-10-05
+  (4.A).**
+- **FR-305** Safety net: a Selectable inside the menu part found selected while the Flap isn't `Open` is
+  deselected, with one warning naming it, so any leak path we haven't found shows up in the console.
+- **FR-306** Gameplay input during the slides follows Q14: the menu owns input from the moment it starts
+  opening until the moment it starts closing (today it's the reverse).
 
 ## Design
 
@@ -245,6 +287,25 @@ default skin (fallback, never changes: face, head, arms, everything no item touc
   the upgraded pair reaches the skin through FR-003 when `tijeraMejorada` is added.
   `TijeraEquipment` stays as is for now (Phase B can fold it into `GearItem`).
 
+### Phase D: the Flap's states (all in `FlapManager.cs`, no prefab edits)
+
+- `enum FlapState { Closed, Opening, Open, Closing }` replaces `_isOpen`. `MoveFlap` sets `Opening`/`Closing`
+  when a slide starts and `Open`/`Closed` when it ends; a reversed slide (open pressed mid-close) just
+  starts the other one. `IsMenuOpen`, the pause gate that `PlayerController`, `TriggerOrigami`,
+  `InventorySlot` and `Player` read, follows Q14. A second property (`IsFullyOpen`, `State == Open`) gates
+  menu input and selection: `Update`, `CambiarTab`, `ShowDesiredDisplay`, `SeleccionarDisplayVisible`.
+- Menu part = each `_flapDisplays[i].display`, its `flapButton` and `_seguroOverlay`. Each gets a
+  `CanvasGroup`, added by code in `Awake` when missing (code-only wiring, like `UISelector`), driven by
+  the state: `blocksRaycasts` only in `Open`; `interactable` false only while `Closed`.
+  **Gotcha**: `interactable = false` switches every Selectable under it to its Disabled tint (0.78 gray,
+  half alpha). While `Closed` the paper is off screen so it's never seen; during the slides it would
+  flash, so the slides rely on "no raycasts + no selection" instead.
+- Safety net (FR-305): `Update` already runs every frame; while not `Open` it checks whether
+  `EventSystem.current.currentSelectedGameObject` sits under a menu root, and if so calls
+  `UISelector.Limpiar()` and warns once per object.
+- Tabs (FR-304, built): `SetTabsVisible` activates every `flapButton` in `OpenFlap` and deactivates them
+  when the closing slide ends, plus once in `Start`.
+
 ### What does not change
 
 Tracks and mix times, the NoScissors overrides, bone followers (`tijera_front3`, `9_HEAD`, `Smoke`;
@@ -272,6 +333,7 @@ colors; nothing in game code tints slots, so `SetSlotsToSetupPose` can't wipe an
   deleted. Q4 is moot until the winged boots exist: today the rain boots are the only Feet item.
 - **Q5 Carry gear across levels** (Phase C)? Level 2 already resets to normal scissors by design.
   *Default: no carry-over for now; per-level starting loadouts. Revisit with a save system.*
+  **Confirmed (Diego, 2026-10-05): no persistence between levels for now.** Phase C is dropped.
 - **Q6 "Botas de ule" = the water boots** (`botasAgua`, Tiburcio's reward, issue #83's "zapatos ule").
   *Default: yes, the same item: `feet/rain-boots`, yellow.*
 - **Q7 F2 fix**: point `Kami.prefab` (and MainMenu's Kami) at Atlas 12 so the scene overrides become
@@ -279,6 +341,28 @@ colors; nothing in game code tints slots, so `SetSlotsToSetupPose` can't wipe an
   task 0.A.*
 - **Q8 Level 2's detective outfit arrives with no reward pose** (she simply is in it when the level
   starts; the bag shows both outfits). *Default: no pose.*
+
+Asked before building Phase 3 (Diego took every default, 2026-10-05):
+
+- **Q9 What the player can change from the bag/Wardrobe**: outfits and Feet only, as in request 3.
+  The scissors stay auto-equipped (newest pair), so FR-102's "any gear item" is narrowed and FR-103's
+  scissors clause holds by construction. Data, not code: `GearCatalog._changeableFromBag`.
+- **Q10 Granting what a level starts with**: one frame after `Start`, quietly (`ownedAtLevelStart`: no
+  sticker, no auto-equip), and Level 2's starting scissors through the same path (they used to pop a
+  sticker at level start).
+- **Q11 Wardrobe layout**: a 5th Flap tab appended last, rows authored in the prefab, item buttons spawned
+  at runtime from `InventorySlot.prefab` (placeholder until Valen's #151).
+
+After playing Phase 3 (Diego, 2026-10-05):
+
+- **Q12 Where the Flap fix lives**: Phase 4 of this spec (replacing the dropped Phase C), sub-issues of
+  epic #139 in M4, so it ships in the public build with the Wardrobe that exposed it. *Chosen.*
+- **Q13 The visible Wardrobe tab**: fixed right away on the Phase 3 branch by hiding every tab while the
+  Flap is closed (4.A), rather than re-spacing the tabs. The rest of Phase 4 gets its own session. *Chosen.*
+- **Q14 Gameplay input during the slides** (FR-306), to confirm at the Phase 4 kickoff. *Default: the menu
+  owns input from the moment it starts opening until the moment it starts closing*, so pressing Esc
+  freezes Kami at once and closing gives her back at once. Today it's the reverse: she can still move
+  during the 0.5 s opening slide, and can't move during the 0.5 s closing one.
 
 ## Verification
 
@@ -290,6 +374,11 @@ colors; nothing in game code tints slots, so `SetSlotsToSetupPose` can't wipe an
 - Level 2: detective outfit + normal scissors from the first frame (F3 gone); confiscation hides and
   returns the scissors; switching outfit keeps boots and scissors (Phase B).
 - Spine side: the warning list on start names every gear skin missing from the export.
+- Phase 4 (Flap): no tab ever shows during gameplay. With a joystick, close the Flap and immediately hold
+  L1 (sprint), then walk and press A for a while: no slider moves (brightness, contrast, volume stay put)
+  and nothing in the menu gets pressed. Same with the mouse: open with the pull tab, click a slider, close
+  with Esc, walk. Opening and closing fast, the exit confirm with B, and every tab (Wardrobe included)
+  keep working. Console: no FR-305 warning in normal play (one would mean a leak path still exists).
 
 ## Out of scope
 

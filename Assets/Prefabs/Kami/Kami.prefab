@@ -314,7 +314,6 @@ MonoBehaviour:
   hasTijera: 0
   currentTijera: 0
   hasSprintBoots: 1
-  hasWaterBoots: 0
   _startingLoadout: {fileID: 11400000, guid: d843340390e34a4db7b45d7c1ca323dc, type: 2}
   drowningRespawnMode: 1
   safeSnapshotInterval: 4

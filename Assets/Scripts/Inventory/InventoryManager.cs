@@ -64,6 +64,15 @@ public class InventoryManager : Singleton<InventoryManager>
     public void AddItem(params object[] parameters)
     {
         ResourceType rt = (ResourceType)parameters[0];
+
+        //every Kami now gets her outfit at level start (spec 011), so a scene whose list predates an
+        //item would throw here on its first frame
+        if (!itemsByResourceType.ContainsKey(rt))
+        {
+            Debug.LogWarning($"[InventoryManager] {rt} is not in this scene's item list (_allItems): it won't show in the bag. Add its InventoryItem asset to the list.");
+            return;
+        }
+
         SetItemAmount(itemsByResourceType[rt], (int)parameters[1]);
 
         bool shouldClear = false;

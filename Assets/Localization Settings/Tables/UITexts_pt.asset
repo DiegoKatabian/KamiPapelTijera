@@ -136,6 +136,22 @@ MonoBehaviour:
     m_Localized: "Voc\xEA chegou a um livro novo, sem saber,\ne os problemas come\xE7am a nascer.\nAjude sua nova amiga, com carinho,\nque ela te ajuda a voltar ao caminho.\n\n{INPUT:accion} para continuar"
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000004
+    m_Localized: "Roupa"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000005
+    m_Localized: "Tesoura"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000006
+    m_Localized: "P\xE9s"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000007
+    m_Localized: "Chap\xE9u"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

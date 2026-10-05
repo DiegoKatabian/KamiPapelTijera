@@ -71,6 +71,12 @@ public class ResourceParticleManager : Singleton<ResourceParticleManager>
             return;
         }
 
+        //already Kami's when the level began (her starting loadout): nothing was earned, nothing to celebrate
+        if (LevelManager.IsOwnedAtLevelStart(parameter))
+        {
+            return;
+        }
+
         ResourceType rt = (ResourceType)parameter[0];
         ActivateSystem(rt);
     }

@@ -20,6 +20,8 @@ public enum ResourceType
     pelusaPainting,    // Level 2: the stolen Pelusa painting itself
     lostGlove,         // Level 2: a single glove found in a page 2 trash can (appended last so the serialized ints above keep their meaning)
     cafeTicket,        // Level 2: the café ticket Kami folds on page 1 (OrigamiItemGiver); unfolded on page 5 as proof of innocence
+    outfitDefault,     // spec 011: Kami's own clothes, owned from the start of every level (Gear_OutfitDefault)
+    outfitDetective,   // spec 011: the detective outfit, owned and worn from the start of Level 2 (Gear_OutfitDetective)
     Count
 }
 
@@ -125,8 +127,8 @@ public class LevelManager : Singleton<LevelManager>
     public void GiveWaterBoots()
     {
         //Debug.Log("el player se gano las botas water x haber completado la quest");
-        player.hasWaterBoots = true;
-        //no visual code here: adding the resource equips Gear_RainBoots on Kami (spec 011, Player.EquipGainedGear)
+        //no player flag and no visual code here: adding the resource equips Gear_RainBoots on Kami (spec 011,
+        //Player.EquipGainedGear), and wearing them is what keeps her from drowning (Player.GetWet)
         AddResource(ResourceType.botasAgua, 1);
     }
     public void GiveTijeraMejorada()
@@ -164,7 +166,13 @@ public class LevelManager : Singleton<LevelManager>
         GiveTijeraMejorada();
     }
 
-    public void AddResource(ResourceType pickupType, int valueToAdd)
+    /// <param name="ownedAtLevelStart">
+    /// The item was already Kami's when the level began (her starting loadout, the scissors she brings
+    /// into Level 2). The bag and the quests count it like any gain, but nothing celebrates it (no
+    /// reward sticker) and it is not auto-equipped: the starting loadout already chose what she wears.
+    /// Travels as the 4th value of OnResourceUpdated; read it with IsOwnedAtLevelStart.
+    /// </param>
+    public void AddResource(ResourceType pickupType, int valueToAdd, bool ownedAtLevelStart = false)
     {
         //agrega la cantidad valuetoadd al total. si quiero restar, valuetoadd deberia ser negativo
         bool isAdding = false;
@@ -175,7 +183,14 @@ public class LevelManager : Singleton<LevelManager>
             isAdding = true;
         }
 
-        EventManager.Trigger(Evento.OnResourceUpdated, pickupType, recursosRecolectados[pickupType], isAdding);
+        EventManager.Trigger(Evento.OnResourceUpdated, pickupType, recursosRecolectados[pickupType], isAdding, ownedAtLevelStart);
+    }
+
+    /// <summary>True when an OnResourceUpdated gain was granted at level start (see AddResource).</summary>
+    public static bool IsOwnedAtLevelStart(object[] onResourceUpdatedParameters)
+    {
+        return onResourceUpdatedParameters != null && onResourceUpdatedParameters.Length > 3 &&
+               onResourceUpdatedParameters[3] is bool ownedAtLevelStart && ownedAtLevelStart;
     }
     public void AddHealth(int curacion)
     {

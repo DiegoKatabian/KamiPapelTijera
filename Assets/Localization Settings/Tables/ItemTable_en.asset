@@ -123,6 +123,22 @@ MonoBehaviour:
     m_Localized: "The caf\xE9 ticket, folded up. The time is printed on it."
     m_Metadata:
       m_Items: []
+  - m_Id: 1000000000013
+    m_Localized: "Everyday outfit"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000014
+    m_Localized: "The clothes Kami wears in her own book. Light as paper, and comfy."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000015
+    m_Localized: "Detective outfit"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000016
+    m_Localized: "Just right for solving the mystery of the stolen painting."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

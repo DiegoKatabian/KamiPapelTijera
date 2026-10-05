@@ -38,3 +38,6 @@ MonoBehaviour:
     - 30_OL_leg_zapato_back
     - 28_OL_leg_zapato_ebilla_back
     - 26_OL_leg_polaina_back
+  _changeableFromBag:
+  - 0
+  - 2

@@ -134,6 +134,22 @@ MonoBehaviour:
     m_Localized: "A un nuevo libro llegaste\ny los problemas empiezan a brotar.\nAyud\xE1 a tu nueva amiga,\nque ella te ayudar\xE1 a regresar.\n\n{INPUT:accion} para continuar"
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000004
+    m_Localized: "Ropa"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000005
+    m_Localized: "Tijera"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000006
+    m_Localized: "Pies"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000007
+    m_Localized: "Sombrero"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

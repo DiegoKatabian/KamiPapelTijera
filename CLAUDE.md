@@ -21,9 +21,9 @@ unless Diego asks for a translation.
 - `Assets/Scripts/TriggerS/` — triggers de zona (base `TriggerScript`, con tooltip por color)
 - `Assets/Scripts/Origami/` — minijuego de origami + `PedestalCanvasDisplay` (costo en pedestal)
 - `Assets/Scripts/Input/` — `InputHub` (fachada única de input), `InteractionContext` (el botón B contextual), `GamepadCursor`, `InputPromptSystem`
-- `Assets/Scripts/UI/` — `TooltipManager`/`PostIt` (tutorial), `FlapManager`/`CamWheelManager` (menú y selector de cámara), `InventorySlot`; `LocalizedText` (embudo ÚNICO de todo el texto localizado), y sobre él `ResaltadorDeConceptos` (palabras clave con color) + `IconosDeBoton`/`AnimadorDeIconos` (íconos animados de input) — ver `specs/005-textos-resaltados-e-iconos/spec.md`
+- `Assets/Scripts/UI/` — `TooltipManager`/`PostIt` (tutorial), `FlapManager`/`CamWheelManager` (menú y selector de cámara), `InventorySlot`, `WardrobeDisplay` (the Flap's Wardrobe tab, spec 011); `LocalizedText` (embudo ÚNICO de todo el texto localizado), y sobre él `ResaltadorDeConceptos` (palabras clave con color) + `IconosDeBoton`/`AnimadorDeIconos` (íconos animados de input) — ver `specs/005-textos-resaltados-e-iconos/spec.md`
 - `Assets/Scripts/Inventory/` — `InventoryManager`/`InventoryItem` (recursos recolectables)
-- `Assets/Scripts/Gear/` — Kami Gear (spec 011): `GearSlot`, `GearItem` (+ the five `Gear_*.asset`), `GearLoadout` (+ `Level1_StartLoadout`/`Level2_StartLoadout`), `PlayerGear` (owned by Player), `SpineSkinComposer`; the catalog is `Assets/Resources/GearCatalog.asset` (items + owned Spine slots per gear slot)
+- `Assets/Scripts/Gear/` — Kami Gear (spec 011): `GearSlot`, `GearItem` (+ the five `Gear_*.asset`), `GearLoadout` (+ `Level1_StartLoadout`/`Level2_StartLoadout`), `PlayerGear` (owned by Player), `SpineSkinComposer`; the catalog is `Assets/Resources/GearCatalog.asset` (items + owned Spine slots per gear slot + which gear slots the player changes from the bag)
 - `Assets/Scripts/Level2/` — Level 2 story glue: `FindCluesTracker` (page 2 clues → cops → quest handoff), `CrimeSceneGate` (guarded police tape), `ArrestCutscene` (page 3's arrest, answers the timeline's signals), and page 4's escape: `PoliceStationPage` (owns and restarts the page sequence), `ConfiscatedGear` + `ConfiscatedGearPickup`, `AbuelaEntrance`, `EscapeWindow`, and page 5's ending: `MuseumPage` (Grace, the ticket unfold, closing the case) and `Catapult` (boarding + the launch timeline's signals). See `nivel2-y-ui.md`
 - Level 2 Phase 6 (2026-09-29): `Level2/PaperPlaneRide` (followers ride the plane hat on page 4), `Cortables/PoliceOfficerCortable` (patrol cops can be cut: knocked out 12s), page 4/5 intro and arrival Timelines (see `cutscenes.md`)
 - `Assets/Scripts/Cutscenes/` + `Assets/Timelines/` — generic Timeline cutscenes: `CutsceneDirector` (locks Kami via `LevelManager.inCutscene`, binds Cinemachine tracks in code), `CutsceneDialogueMarker` (the timeline waits for a dialogue), `HiddenRenderers`. See `cutscenes.md`
@@ -110,14 +110,19 @@ the `Gear_ScissorsNormal` / `Gear_ScissorsUpgrade1` items (Spine skins `Tijera_N
 - `Player.currentTijera` — enum que trackea equipo actual
 - Al completar quest del chino, `LevelManager` llama `Player.GetTijeraMejorada()` que usa `SetTijeraEquipment()`
 - `Player.LoseTijera()` (added 2026-09-22, spec 006 task 0.E) — the symmetrical counterpart to `GetTijera()`: sets `hasTijera = false`, decrements `ResourceType.tijera` by 1, and refreshes `PlayerView` the same way `GetTijera()` does. Guarded against double-calling when already unequipped. Called by `ConfiscatedGear` (Level 2 page 4, see `nivel2-y-ui.md`); never drives the `tijera` count below 0 (the P cheat equips the upgraded pair without one).
-- `Player._startWithTijera` (2026-09-27): the level starts with Kami holding the normal scissors, no pickup and no reward pose. On in Level 2 (Diego: Level 2 is played with the normal scissors only, there is no upgraded pair to get).
+- `Player._startWithTijera` (2026-09-27): the level starts with Kami holding the normal scissors, no pickup and no reward pose. On in Level 2 (Diego: Level 2 is played with the normal scissors only, there is no upgraded pair to get). Since spec 011 Phase 3 also no sticker: granted with `ownedAtLevelStart`.
 
-**Kami Gear, spec 011** (`specs/011-kami-gear/`; Phase 2 built and played 2026-10-05): Kami's Spine skin is composed at runtime from outfit + Scissors + Feet (+ Hat later), so
-parts stack and survive an outfit change. Getting an item equips it (one `OnResourceUpdated` hook in
-`Player`); each level starts from a `GearLoadout` (`Player._startingLoadout`: Level 1 default outfit and
-no scissors, Level 2 detective + normal scissors). Visuals only: effects stay owned-based. Adding an
-item = one `GearItem` asset + one Spine skin, no code. Detail: "Skins: Kami Gear" in
-`docs/claude/spine-kami.md`. Next (Phase 3): a Wardrobe tab and equip/unequip from the bag.
+**Kami Gear, spec 011** (`specs/011-kami-gear/`; Phases 2 and 3 built and played 2026-10-05; Phase 4,
+"a Flap that only listens while it's open", planned as #152-#154, 4.A built; no gear persistence
+between levels, Diego 2026-10-05): Kami's Spine skin is composed at runtime from outfit +
+Scissors + Feet (+ Hat later), so parts stack and survive an outfit change. Getting an item equips it
+(one `OnResourceUpdated` hook in `Player`); each level starts from a `GearLoadout`
+(`Player._startingLoadout`: Level 1 default outfit and no scissors, Level 2 detective + normal scissors,
+and it owns the default outfit too). The outfits are bag items. Tapping (or A on) an outfit or the rain
+boots in the bag or the Flap's **Wardrobe** tab puts it on or takes it off (`Player.TryToggleGear`; the
+scissors always follow the newest pair). Water protection follows what she wears (`hasWaterBoots` is
+gone); scissors damage and sprint stay owned-based. Adding an item = one `GearItem` asset + one Spine
+skin + its bag item, no code. Detail: "Skins: Kami Gear" in `docs/claude/spine-kami.md`.
 
 ## Muerte con causa (río, rocoso) — Agosto 2026
 

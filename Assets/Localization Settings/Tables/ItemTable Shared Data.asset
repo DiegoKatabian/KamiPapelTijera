@@ -119,6 +119,22 @@ MonoBehaviour:
     m_Key: cafe_ticket_text
     m_Metadata:
       m_Items: []
+  - m_Id: 1000000000013
+    m_Key: outfit_default_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000014
+    m_Key: outfit_default_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000015
+    m_Key: outfit_detective_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1000000000016
+    m_Key: outfit_detective_text
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
