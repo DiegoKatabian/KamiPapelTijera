@@ -11,10 +11,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3736f067354f4abcb15a604e2f38deb9, type: 3}
   m_Name: TrafficObstacleSet_StreetCarsHorizontal
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   obstaclePrefabs:
   - {fileID: 1300000001, guid: c03f2eb2bc334dc7af533c0c0eca9a40, type: 3}
-  travelDurationRange: {x: 5, y: 8}
-  spawnIntervalRange: {x: 3, y: 6}
-  maxAlive: 4
-  maxLifetime: 30
+  travelDurationRange: {x: 3, y: 4}
+  spawnIntervalRange: {x: 2, y: 3}
+  maxAlive: 5
+  maxLifetime: 10
