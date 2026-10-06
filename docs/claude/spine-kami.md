@@ -27,6 +27,19 @@ Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del
 
 ## Skins: Kami Gear (spec 011, built and played 2026-10-05)
 
+**Atlas 13 (2026-10-06, the active skeleton for `Kami.prefab`, Level 1 and Level 2; MainMenu's two
+static skeletons are still on Atlas 12).** Skins: `FullSkins/Kami Libro 1` (default outfit, no shoes),
+`FullSkins/Kami Diario` (detective, no shoes), `Tijeras/Tijera_Normal|Upgrade_1`,
+`Zapatos/Zapatos_Base|Detective|Upgrade_1`, and an EMPTY `default`. Slots are named `KamiLibro/...`
+(the `GearCatalog` owned-slot lists use that prefix). Consequences: shoes are a Feet item
+(`Gear_ShoesBase` in Level 1, `Gear_ShoesDetective` in Level 2, both without a bag resource, so they only
+come from the loadout and aren't in the Wardrobe); the gaiters (`polaina`) are NOT in the owned-slot list
+because the outfits draw them and the shoes skins don't. The old `feet/rain-boots` placeholder is gone, so
+`Gear_RainBoots` is skipped with one warning until Valen's real skin lands; taking boots off leaves her
+barefoot (the outfit has no shoes), a known gap. `default` used to hold the detective coat and thighs,
+which every outfit then drew: `tools/move-default-skin-into-diario.py` moves them into Diario (re-run it
+if a re-export brings them back). Atlas 12 notes below are history:
+
 Atlas 12 skins: `default` (the whole body), `Tijera_Normal`, `Tijera_Upgrade_1` (only
 `tijera_back2` + `tijera_front`). Nothing calls `SetSkin(name)` any more: Kami's skin is **composed at
 runtime** from her gear and rebuilt on every gear change. How Spine mix-and-match works, and the

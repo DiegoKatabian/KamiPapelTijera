@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Gear_ScissorsUpgrade1
   m_EditorClassIdentifier: 
   _slot: 1
-  _spineSkin: Tijera_Upgrade_1
+  _spineSkin: Tijeras/Tijera_Upgrade_1
   _grantedByResource: 1
   _resource: 6
   _displayNameKey: scissor_gold_title

@@ -15,5 +15,6 @@ MonoBehaviour:
   _equipped:
   - {fileID: 11400000, guid: 625c883d037c42b7bd11826f34321aad, type: 2}
   - {fileID: 11400000, guid: c54c5ab52fc64e9f956759a8810414de, type: 2}
+  - {fileID: 11400000, guid: db88a67330ff41e4a100e626b1fd2146, type: 2}
   _alsoOwned:
   - {fileID: 11400000, guid: 2c971d8124704b9db5a0fbfe6654b15f, type: 2}

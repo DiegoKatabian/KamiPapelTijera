@@ -629,6 +629,12 @@
 	{
 		"name": "default",
 		"attachments": {
+		}
+	},
+	{
+		"name": "FullSkins/Kami Diario",
+		"transform": [ "Bun-Detective", "DetectiveBow" ],
+		"attachments": {
 			"tapado": {
 				"Detective/tapado": {
 					"type": "mesh",
@@ -646,13 +652,7 @@
 			},
 			"KamiLibro/22_leg_muslo_detective2": {
 				"Detective/22_leg_muslo_detective": { "x": 193.24, "y": 2.27, "rotation": 85.83, "width": 184, "height": 453 }
-			}
-		}
-	},
-	{
-		"name": "FullSkins/Kami Diario",
-		"transform": [ "Bun-Detective", "DetectiveBow" ],
-		"attachments": {
+			},
 			"4_head_mono": {
 				"4_head_mono": {
 					"name": "Detective/4_head_mono",

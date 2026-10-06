@@ -14138,7 +14138,7 @@ PrefabInstance:
         type: 3}
       propertyPath: skeletonDataAsset
       value: 
-      objectReference: {fileID: 11400000, guid: edc59de31b75beb428810d6ee630f293,
+      objectReference: {fileID: 11400000, guid: 7600ec780cd6bca4eb1928b7eac19172,
         type: 2}
     - target: {fileID: 1597159253881706718, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Gear_ScissorsNormal
   m_EditorClassIdentifier: 
   _slot: 1
-  _spineSkin: Tijera_Normal
+  _spineSkin: Tijeras/Tijera_Normal
   _grantedByResource: 1
   _resource: 5
   _displayNameKey: scissors_title
