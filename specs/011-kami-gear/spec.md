@@ -392,6 +392,16 @@ At the Phase 4 kickoff (Diego, 2026-10-05):
   with Esc, walk. Opening and closing fast, the exit confirm with B, and every tab (Wardrobe included)
   keep working. Console: no FR-305 warning in normal play (one would mean a leak path still exists).
 
+## Atlas 13 migration (2026-10-06, played by Diego, worked)
+
+Valen's Atlas 13 export renamed and reorganised the skins, so the gear data moved with it. The spec's Atlas 12 assumptions above are history. What changed and why:
+
+- Skins: `FullSkins/Kami Libro 1` (default outfit) and `FullSkins/Kami Diario` (detective) are the outfits, `Tijeras/*` the scissors, `Zapatos/*` the shoes; `default` is empty. Slots carry the `KamiLibro/` prefix, so `GearCatalog`'s owned-slot lists use it. `Kami.prefab`, `GearCatalog` and `Nivel1_KamiPapelTijera.unity` point at Atlas 13 (the gear items are shared, so Level 1 had to move with Level 2); MainMenu stays on Atlas 12.
+- **Shoes became a Feet item**: neither outfit draws shoes. `Gear_ShoesBase` (Level 1) and `Gear_ShoesDetective` (Level 2) are in the start loadouts, with no bag resource (loadout-only, not in the Wardrobe).
+- **Gaiters (`polaina`) are not in the Feet owned-slot list**: the outfits draw them and the shoes skins don't, and a Feet equip clears owned slots from the outfit.
+- **`default` leak**: Atlas 13 exported the detective coat and thighs in `default`, which Spine draws under every outfit (the coat would show on Kami Libro 1). `tools/move-default-skin-into-diario.py` moves them into Diario; re-run it after a re-export unless Valen fixes it at the source.
+- **Open**: `Gear_RainBoots` (`feet/rain-boots`) has no art in Atlas 13, so it is skipped with one warning, and taking boots off leaves Kami barefoot (no outfit shoes). Needs handling when the boots art lands (#83), e.g. falling back to the loadout's shoes.
+
 ## Out of scope
 
 Runtime sprite remapping/repacking, Spine 4.x multi-character skin sharing, hats (only the slot is

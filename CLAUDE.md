@@ -40,7 +40,8 @@ unless Diego asks for a translation.
 - `Assets/Prefabs/OrigamiRoutes/` — sellos, `PedestalParent.prefab` y rutas de origami
 - `Assets/Prefabs/UI/PostIt.prefab` — los post-its de escena son instancias de este
 - `Assets/Prefabs/Particulas/` — prefabs de partículas
-- `Assets/2D/Kami Spine/Atlas 12 Spine4.2/skeleton.json` — the ACTIVE skeleton (Spine 4.2.43), referenced by `Kami.prefab` and both `MainMenu.unity` skeletons since 2026-10-05 (spec 011 F2/#140: they pointed at the 3.8 `Atlas 11`, which the 4.2 runtime can't load); the level scenes' own overrides to Atlas 12 are now redundant. Atlas 1-11 are old
+- `Assets/2D/Kami Spine/Atlas 13/skeleton.json` — the ACTIVE skeleton for gameplay Kami (`Kami.prefab`, Level 1 and Level 2) since 2026-10-06: skins `FullSkins/Kami Libro 1|Diario`, `Tijeras/*`, `Zapatos/*` and an empty `default`, slots named `KamiLibro/...`; its `default` is emptied by `tools/move-default-skin-into-diario.py` (re-run after a re-export). Details in `docs/claude/spine-kami.md`. MainMenu's two static skeletons are still on Atlas 12.
+- `Assets/2D/Kami Spine/Atlas 12 Spine4.2/skeleton.json` — the previous skeleton (Spine 4.2.43), used by MainMenu only now (Spine 4.2.43), referenced by `Kami.prefab` and both `MainMenu.unity` skeletons since 2026-10-05 (spec 011 F2/#140: they pointed at the 3.8 `Atlas 11`, which the 4.2 runtime can't load); the level scenes' own overrides to Atlas 12 are now redundant. Atlas 1-11 are old
 - Escena de trabajo Nivel 1: `Nivel1_KamiPapelTijera.unity` (activa desde fines de agosto 2026 — `Nivel1_LaRural SpineTest.unity` quedó vieja/stale, no confundir; puede tener referencias rotas)
 - Escena de trabajo Nivel 2: `Level2_Newspaper.unity` — ver `nivel2-y-ui.md` para estado actual (las 5 páginas armadas, pendientes de jugar/arte)
 - Level 2 closing cutscene: `Level2_EndCutscene.unity` (placeholder copy of `Nivel1_EndCutscene`, reached from the page 5 catapult; `GameScene.Level2EndCutscene`)

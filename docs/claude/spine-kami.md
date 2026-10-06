@@ -1,6 +1,6 @@
 # Spine: skeleton y animaciones de Kami
 
-Runtime: **spine-unity 4.2** (package 2026-05-29, installed 2026-09-14 in `7f9706bd`; corrected here 2026-10-02, this doc used to say 3.8). Kami's active export is `Atlas 12 Spine4.2/skeleton.json` (Spine 4.2.43), referenced by `Kami.prefab` and MainMenu's skeletons since 2026-10-05 (spec 011 #140; before that they pointed at `Atlas 11`, a 3.8 export the 4.2 runtime refuses to load, and only the level scenes' overrides made Kami render). Verify any API against `Assets/Spine/Runtime/spine-csharp/` before using it.
+Runtime: **spine-unity 4.2** (package 2026-05-29, installed 2026-09-14 in `7f9706bd`; corrected here 2026-10-02, this doc used to say 3.8). Kami's active export is `Atlas 13/skeleton.json` (Spine 4.2.43, gameplay Kami since 2026-10-06; see "Skins: Kami Gear"), the one before it `Atlas 12 Spine4.2` (Kami.prefab and MainMenu's skeletons from 2026-10-05, MainMenu only now) (spec 011 #140; before that they pointed at `Atlas 11`, a 3.8 export the 4.2 runtime refuses to load, and only the level scenes' overrides made Kami render). Verify any API against `Assets/Spine/Runtime/spine-csharp/` before using it.
 
 ## Tracks (PlayerView)
 
