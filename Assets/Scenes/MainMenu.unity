@@ -170,8 +170,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: edc59de31b75beb428810d6ee630f293, type: 2}
-  initialSkinName: 
+  skeletonDataAsset: {fileID: 11400000, guid: 7600ec780cd6bca4eb1928b7eac19172, type: 2}
+  initialSkinName: FullSkins/Kami Diario
+  fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
   initialFlipY: 0
   updateWhenInvisible: 3
@@ -192,6 +193,11 @@ MonoBehaviour:
     materialsInsideMask: []
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
+  physicsPositionInheritanceFactor: {x: 1, y: 1}
+  physicsRotationInheritanceFactor: 1
+  physicsMovementRelativeTo: {fileID: 0}
+  updateTiming: 1
+  unscaledTime: 0
   _animationName: TitleScreen
   loop: 1
   timeScale: 1
@@ -215,17 +221,29 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 03a9b8e2179a2fb4383804a2a8bae82f, type: 2}
-  - {fileID: 2100000, guid: f820f7e56b05f3443afec28fea0f90d6, type: 2}
-  - {fileID: 2100000, guid: 03a9b8e2179a2fb4383804a2a8bae82f, type: 2}
-  - {fileID: 2100000, guid: f820f7e56b05f3443afec28fea0f90d6, type: 2}
-  - {fileID: 2100000, guid: 03a9b8e2179a2fb4383804a2a8bae82f, type: 2}
-  - {fileID: 2100000, guid: f820f7e56b05f3443afec28fea0f90d6, type: 2}
-  - {fileID: 2100000, guid: 03a9b8e2179a2fb4383804a2a8bae82f, type: 2}
-  - {fileID: 2100000, guid: f820f7e56b05f3443afec28fea0f90d6, type: 2}
-  - {fileID: 2100000, guid: 03a9b8e2179a2fb4383804a2a8bae82f, type: 2}
-  - {fileID: 2100000, guid: f820f7e56b05f3443afec28fea0f90d6, type: 2}
-  - {fileID: 2100000, guid: 03a9b8e2179a2fb4383804a2a8bae82f, type: 2}
+  - {fileID: 2100000, guid: 9eeb61ba7484227499aee5b78eb0aa14, type: 2}
+  - {fileID: 2100000, guid: ab42056abb0cb28428f3ff72e3034ae2, type: 2}
+  - {fileID: 2100000, guid: 613ea957e494fcf45b490f3a1ebc4a5b, type: 2}
+  - {fileID: 2100000, guid: 9eeb61ba7484227499aee5b78eb0aa14, type: 2}
+  - {fileID: 2100000, guid: 613ea957e494fcf45b490f3a1ebc4a5b, type: 2}
+  - {fileID: 2100000, guid: ab42056abb0cb28428f3ff72e3034ae2, type: 2}
+  - {fileID: 2100000, guid: 9eeb61ba7484227499aee5b78eb0aa14, type: 2}
+  - {fileID: 2100000, guid: ab42056abb0cb28428f3ff72e3034ae2, type: 2}
+  - {fileID: 2100000, guid: 9eeb61ba7484227499aee5b78eb0aa14, type: 2}
+  - {fileID: 2100000, guid: ab42056abb0cb28428f3ff72e3034ae2, type: 2}
+  - {fileID: 2100000, guid: 9eeb61ba7484227499aee5b78eb0aa14, type: 2}
+  - {fileID: 2100000, guid: ab42056abb0cb28428f3ff72e3034ae2, type: 2}
+  - {fileID: 2100000, guid: 9eeb61ba7484227499aee5b78eb0aa14, type: 2}
+  - {fileID: 2100000, guid: ab42056abb0cb28428f3ff72e3034ae2, type: 2}
+  - {fileID: 2100000, guid: 9eeb61ba7484227499aee5b78eb0aa14, type: 2}
+  - {fileID: 2100000, guid: ab42056abb0cb28428f3ff72e3034ae2, type: 2}
+  - {fileID: 2100000, guid: 9eeb61ba7484227499aee5b78eb0aa14, type: 2}
+  - {fileID: 2100000, guid: ab42056abb0cb28428f3ff72e3034ae2, type: 2}
+  - {fileID: 2100000, guid: 9eeb61ba7484227499aee5b78eb0aa14, type: 2}
+  - {fileID: 2100000, guid: ab42056abb0cb28428f3ff72e3034ae2, type: 2}
+  - {fileID: 2100000, guid: 9eeb61ba7484227499aee5b78eb0aa14, type: 2}
+  - {fileID: 2100000, guid: ab42056abb0cb28428f3ff72e3034ae2, type: 2}
+  - {fileID: 2100000, guid: 9eeb61ba7484227499aee5b78eb0aa14, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9004,6 +9022,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: edc59de31b75beb428810d6ee630f293, type: 2}
   initialSkinName: Tijera_Normal
+  fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
   initialFlipY: 0
   updateWhenInvisible: 3
@@ -9024,6 +9043,11 @@ MonoBehaviour:
     materialsInsideMask: []
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
+  physicsPositionInheritanceFactor: {x: 1, y: 1}
+  physicsRotationInheritanceFactor: 1
+  physicsMovementRelativeTo: {fileID: 0}
+  updateTiming: 1
+  unscaledTime: 0
   _animationName: landing
   loop: 1
   timeScale: 1

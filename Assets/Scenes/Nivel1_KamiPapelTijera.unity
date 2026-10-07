@@ -14134,12 +14134,6 @@ PrefabInstance:
       propertyPath: _animationName
       value: landing
       objectReference: {fileID: 0}
-    - target: {fileID: 1571676543898264472, guid: 55968c0be0eae574cac6fbf9493c0537,
-        type: 3}
-      propertyPath: skeletonDataAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 7600ec780cd6bca4eb1928b7eac19172,
-        type: 2}
     - target: {fileID: 1597159253881706718, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
       propertyPath: m_IsActive
@@ -14548,7 +14542,7 @@ PrefabInstance:
     - target: {fileID: 8265136736434708199, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
       propertyPath: m_Materials.Array.size
-      value: 11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8265136736434708199, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
@@ -14658,12 +14652,12 @@ PrefabInstance:
     - target: {fileID: 9100000000000000005, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.4417076
+      value: 0.40075684
       objectReference: {fileID: 0}
     - target: {fileID: 9100000000000000005, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.1642475
+      value: 3.161097
       objectReference: {fileID: 0}
     - target: {fileID: 9100000000000000005, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
