@@ -37,6 +37,10 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
 
     bool _bossfightWasCompleted;
 
+    //the "next page" sphere stays off while something holds it shut (Level 2: the page's task isn't done
+    //yet, see PageExitLock). Never set in Level 1, where it keeps behaving as before.
+    bool _nextLocked;
+
     public float DelayBetweenCamCloseUpAndCamBook = 2;
 
 
@@ -160,6 +164,27 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
         CameraManager.Instance.SetCamera(CameraMode.BookCenter);
     }
 
+    /// <summary>
+    /// Keeps the next-page sphere off (or lets it back on) for the page being shown. Called by whoever
+    /// owns a page's "you can't leave yet" rule. During a turn only the flag changes: CheckSpheres runs
+    /// for the new page when the old one closes.
+    /// </summary>
+    public void SetNextLocked(bool locked)
+    {
+        if (_nextLocked == locked)
+        {
+            return;
+        }
+
+        _nextLocked = locked;
+        Debug.Log($"[PageScrollerManager] next page sphere {(locked ? "locked" : "unlocked")}");
+
+        if (!_isTurning)
+        {
+            CheckSpheres(activePageIndex);
+        }
+    }
+
     public void CheckSpheres(int activePageIndex)
     {
         //este metodo chequea, segun la currentPage, que esferas deberian estar activas
@@ -187,6 +212,12 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
             {
                 esferaNext.gameObject.SetActive(true);
             }
+        }
+        else if (_nextLocked)
+        {
+            //Kami may be standing in it: leave by hand, switching a trigger off sends no OnTriggerExit
+            esferaNext.OnExitBehaviour();
+            esferaNext.gameObject.SetActive(false);
         }
         else
         {

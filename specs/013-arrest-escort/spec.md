@@ -1,6 +1,14 @@
 # Spec 013: Arrest escort, the cops march the girls to the patrol car (Level 2 page 3)
 
-Status: DRAFT 2026-10-08 (idea + decisions with Diego; not designed in detail, no tasks yet).
+Status: BUILT 2026-10-08 in `ArrestCutscene` (first pass, compile-checked, NOT playtested). Diego asked for it after
+playing spec 012 and accepted the open questions' defaults: the cops just walk close behind (no shove), the existing
+cameras stay, and `BoardCar` is the safety net. Also asked: Kami's escort speed lower (`_escortWalkInput` 0.45 -> 0.3).
+What was built: with `_copsLeadTheEscort` on, `CUE_StartEscort` asks for a NavMesh route from the lead cop to the car
+door; the cops walk it at Kami's escort pace x `_copsSpeedFactor`, stopping `_copsKeepBack` behind her; Kami is aimed
+`_girlsLookAhead` further along THEIR route (never turning back toward it) and waits when she gets more than
+`_maxGirlsAhead` ahead of the lead cop. Natalia keeps the normal follow (she trails Kami, so she is ahead of the cops
+too). No route (page 3 not baked near the door) = the old behaviour, with a warning. Not done: a visible shove, a
+second cop flanking by design (both just walk to the door and hold back from Kami).
 Separate from spec 012 on purpose (different file, different risk). The one-number part of the same
 complaint, "Kami skips instead of walking", is task **1.D of spec 012** (#161). GitHub: #167.
 

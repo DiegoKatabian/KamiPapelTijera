@@ -16,6 +16,13 @@ using UnityEngine;
 /// back to her own book), and when it ends the "Find clues" quest registers and she starts
 /// following. Tying the follow to the fold guarantees Kami reaches page 5 with the ticket.
 ///
+/// The fold is driven by HER conversation (Diego, 2026-10-08): the pedestal is code-driven (no
+/// stepping on it, no "hold E" tooltip), so the only thing that answers the Interact press is Natalia.
+/// After the opening the origami opens by itself; if the player cancels it, talking to her again plays
+/// the short reminder and then opens the origami again. While the origami is up (or the very frame it
+/// closed) her trigger ignores Interact, otherwise the press that cancels the fold would also reopen
+/// her dialogue.
+///
 /// Page 5: StayBehind() makes her talkable again, with _farewellDialogue from then on.
 /// </summary>
 public class NataliaDialogueTrigger : TriggerDialogue
@@ -38,12 +45,16 @@ public class NataliaDialogueTrigger : TriggerDialogue
     bool _openingDialogueDone;
     bool _joined;
     bool _stayedBehind;
+    TriggerOrigami _cafeOrigami; //found on _activateAfterOpening: the pedestal she re-prompts
+    int _origamiEndFrame = -1;
 
     protected override void Start()
     {
         base.Start();
         EventManager.Subscribe(Evento.OnDialogueEnd, OnDialogueEnded);
         EventManager.Subscribe(Evento.OnCafeWrapperFolded, OnTicketFolded);
+        EventManager.Subscribe(Evento.OnOrigamiEnd, OnOrigamiEnded);
+        FindCafeOrigami();
 
         //Tiburcio's quest shipped broken precisely because nothing ever called AddQuest, so the
         //event that was supposed to complete it had nothing to complete. Shout at setup time
@@ -61,6 +72,11 @@ public class NataliaDialogueTrigger : TriggerDialogue
 
     public override void Interact(params object[] parameter)
     {
+        if (IsOrigamiBusy())
+        {
+            return;
+        }
+
         if (_stayedBehind && _farewellDialogue != null)
         {
             if (triggerBool)
@@ -92,6 +108,17 @@ public class NataliaDialogueTrigger : TriggerDialogue
             return;
         }
 
+        //the short reminder ("fold the ticket first") ended: the fold opens again, not on its own
+        if (_openingDialogueDone && !_joined && _dialogues != null && _dialogues.Length > 1 && ended == _dialogues[1])
+        {
+            if (_cafeOrigami != null)
+            {
+                Debug.Log($"[NataliaDialogueTrigger] {gameObject.name}: reminder finished, prompting the café fold again");
+                _cafeOrigami.PromptNow();
+            }
+            return;
+        }
+
         if (!_joined && _afterTicketDialogue != null && ended == _afterTicketDialogue)
         {
             JoinKami();
@@ -114,6 +141,46 @@ public class NataliaDialogueTrigger : TriggerDialogue
         }
 
         StartCoroutine(ShowWhenFree(_afterTicketDialogue));
+    }
+
+    void OnOrigamiEnded(params object[] parameters)
+    {
+        _origamiEndFrame = Time.frameCount;
+    }
+
+    //Kami is in the origami, or it closed this very frame (the press that cancels a fold is an Interact
+    //press, and which Update sees it first is not guaranteed: same race as issue #41.2)
+    bool IsOrigamiBusy()
+    {
+        if (Time.frameCount == _origamiEndFrame)
+        {
+            return true;
+        }
+
+        Player player = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+        return player != null && player.CurrentState == PlayerState.Casting;
+    }
+
+    void FindCafeOrigami()
+    {
+        if (_activateAfterOpening == null)
+        {
+            return;
+        }
+
+        foreach (GameObject target in _activateAfterOpening)
+        {
+            if (target == null)
+            {
+                continue;
+            }
+
+            _cafeOrigami = target.GetComponentInChildren<TriggerOrigami>(true);
+            if (_cafeOrigami != null)
+            {
+                return;
+            }
+        }
     }
 
     //the fold's own end and its reward sticker can still hold the screen: ShowDialogue silently
@@ -228,6 +295,7 @@ public class NataliaDialogueTrigger : TriggerDialogue
         {
             EventManager.Unsubscribe(Evento.OnDialogueEnd, OnDialogueEnded);
             EventManager.Unsubscribe(Evento.OnCafeWrapperFolded, OnTicketFolded);
+            EventManager.Unsubscribe(Evento.OnOrigamiEnd, OnOrigamiEnded);
         }
     }
 }

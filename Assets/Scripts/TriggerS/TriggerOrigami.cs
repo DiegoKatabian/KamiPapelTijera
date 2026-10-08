@@ -26,6 +26,10 @@ public class TriggerOrigami : TriggerScript
     [Tooltip("Seconds the screen has to stay free before the auto prompt opens. Keeps the button press that closed the previous dialogue from also cancelling the origami it opens.")]
     [SerializeField] float _autoPromptDelay = 0.5f;
 
+    [Header("Code-driven")]
+    [Tooltip("The pedestal is never stepped on: no cost canvas, no tooltip, no 'step on it + Interact'. Something else opens it by calling PromptNow() (Natalia's conversation on page 1: the dialogue is the only thing that answers the Interact press, so the origami can't compete with it). Combine with 'Prompt Automatically' for the first prompt.")]
+    [SerializeField] bool _openOnlyByCode = false;
+
     [Header("Particle Parameters When Step On")]
     public Color blueParticleActiveColor;
     public float activeSpeed = 1.5f;
@@ -35,6 +39,7 @@ public class TriggerOrigami : TriggerScript
     //auxiliares
     MultipleRectCheck currentCheck;
     bool _autoPromptDone;
+    bool _promptPending; //a PromptNow is waiting for the screen to be free
     //the running check was opened by the auto prompt with Kami NOT on the pedestal: nobody's
     //OnExitBehaviour will clean it up, so we do it when the origami ends
     bool _autoCheckOwned;
@@ -98,6 +103,11 @@ public class TriggerOrigami : TriggerScript
 
     public override void OnEnterBehaviour(Collider other)
     {
+        if (_openOnlyByCode)
+        {
+            return;
+        }
+
         if (origami.wasUsed)
         {
             print("ya activaste este sello");
@@ -141,6 +151,12 @@ public class TriggerOrigami : TriggerScript
     {
         //print("on exit beh");
 
+        //a code-driven origami is not tied to Kami standing here: leaving the pedestal must not end it
+        if (_openOnlyByCode)
+        {
+            return;
+        }
+
         //el canvas se esconde SIEMPRE al salir, incluso si currentCheck es null:
         //cuando el player entro sin papel suficiente no hay check pero el canvas de costo esta visible igual
         if (_canvasDisplay != null)
@@ -160,6 +176,7 @@ public class TriggerOrigami : TriggerScript
 
     void OnEnable()
     {
+        _promptPending = false; //a coroutine killed by SetActive(false) never got to clear it
         if (_promptAutomatically && !_autoPromptDone)
         {
             StartCoroutine(AutoPromptWhenFree());
@@ -170,33 +187,71 @@ public class TriggerOrigami : TriggerScript
     //pedestal mid-wait kills the coroutine, and the next OnEnable re-arms it
     IEnumerator AutoPromptWhenFree()
     {
+        yield return WaitUntilScreenIsFree();
+
+        _autoPromptDone = true;
+        OpenCheckFromCode();
+    }
+
+    /// <summary>
+    /// Opens the origami once the screen is free, whatever happened before (the auto prompt already
+    /// ran, the player cancelled). For the code that owns this pedestal, e.g. Natalia re-prompting the
+    /// café fold after her reminder dialogue. A prompt that is already waiting is not stacked.
+    /// </summary>
+    public void PromptNow()
+    {
+        if (!isActiveAndEnabled)
+        {
+            Debug.LogWarning($"[TriggerOrigami] {gameObject.name}: PromptNow while the pedestal is inactive, ignoring it");
+            return;
+        }
+
+        if (_promptPending)
+        {
+            return;
+        }
+
+        StartCoroutine(PromptNowRoutine());
+    }
+
+    IEnumerator PromptNowRoutine()
+    {
+        _promptPending = true;
+        yield return WaitUntilScreenIsFree();
+        _promptPending = false;
+        OpenCheckFromCode();
+    }
+
+    IEnumerator WaitUntilScreenIsFree()
+    {
         float freeFor = 0f;
         while (freeFor < _autoPromptDelay)
         {
             yield return null;
             freeFor = CanAutoPrompt() ? freeFor + Time.deltaTime : 0f;
         }
+    }
 
-        _autoPromptDone = true;
-
+    void OpenCheckFromCode()
+    {
         if (origami == null || checkPrefab == null)
         {
-            Debug.LogWarning($"[TriggerOrigami] {gameObject.name}: auto prompt needs 'origami' and 'checkPrefab' assigned, skipping it");
-            yield break;
+            Debug.LogWarning($"[TriggerOrigami] {gameObject.name}: prompting needs 'origami' and 'checkPrefab' assigned, skipping it");
+            return;
         }
 
         if (origami.wasUsed)
         {
-            yield break;
+            return;
         }
 
         if (LevelManager.Instance.recursosRecolectados[ResourceType.papel] < origami.paperCost)
         {
-            Debug.Log($"[TriggerOrigami] {gameObject.name}: not enough paper to auto prompt, the pedestal works the normal way");
-            yield break;
+            Debug.Log($"[TriggerOrigami] {gameObject.name}: not enough paper to prompt, the pedestal works the normal way");
+            return;
         }
 
-        Debug.Log($"[TriggerOrigami] {gameObject.name}: auto prompting the origami");
+        Debug.Log($"[TriggerOrigami] {gameObject.name}: prompting the origami");
 
         if (currentCheck == null)
         {

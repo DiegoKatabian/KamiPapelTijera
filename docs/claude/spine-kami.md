@@ -1,6 +1,6 @@
 # Spine: skeleton y animaciones de Kami
 
-Runtime: **spine-unity 4.2** (package 2026-05-29, installed 2026-09-14 in `7f9706bd`; corrected here 2026-10-02, this doc used to say 3.8). Kami's active export is `Atlas 13/skeleton.json` (Spine 4.2.43, gameplay Kami since 2026-10-06; see "Skins: Kami Gear"), the one before it `Atlas 12 Spine4.2` (Kami.prefab and MainMenu's skeletons from 2026-10-05, MainMenu only now) (spec 011 #140; before that they pointed at `Atlas 11`, a 3.8 export the 4.2 runtime refuses to load, and only the level scenes' overrides made Kami render). Verify any API against `Assets/Spine/Runtime/spine-csharp/` before using it.
+Runtime: **spine-unity 4.2** (package 2026-05-29, installed 2026-09-14 in `7f9706bd`; corrected here 2026-10-02, this doc used to say 3.8). Kami's active export is `Atlas 13/skeleton.json` (Spine 4.2.43, gameplay Kami since 2026-10-06; see "Skins: Kami Gear"), the one before it `Atlas 12 Spine4.2` (Kami.prefab and MainMenu's skeletons from 2026-10-05, referenced by nothing since 2026-10-08) (spec 011 #140; before that they pointed at `Atlas 11`, a 3.8 export the 4.2 runtime refuses to load, and only the level scenes' overrides made Kami render). Verify any API against `Assets/Spine/Runtime/spine-csharp/` before using it.
 
 ## Tracks (PlayerView)
 
@@ -28,7 +28,7 @@ Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del
 ## Skins: Kami Gear (spec 011, built and played 2026-10-05)
 
 **Atlas 13 (2026-10-06, the active skeleton for `Kami.prefab`, Level 1 and Level 2, and for the main
-menu's active title Kami; only the menu's inactive `The Paper Model` is still on Atlas 12).** Skins: `FullSkins/Kami Libro 1` (default outfit, no shoes),
+menu's title Kami, dressed by `LoadoutSkin`: see below).** Skins: `FullSkins/Kami Libro 1` (default outfit, no shoes),
 `FullSkins/Kami Diario` (detective, no shoes), `Tijeras/Tijera_Normal|Upgrade_1`,
 `Zapatos/Zapatos_Base|Detective|Upgrade_1`, and an EMPTY `default`. Slots are named `KamiLibro/...`
 (the `GearCatalog` owned-slot lists use that prefix). Consequences: shoes are a Feet item
@@ -147,7 +147,14 @@ as rotate springs). Atlas 12 had none, which is why nothing ever noticed a movin
   (and all physics), rotation did nothing.
 - **Teleports are a trap**: `Player.LateUpdate` snaps Kami onto the page-edge bone and
   `PositionPlayerAtPoint` drops her on the new page; the runtime reads each jump as a huge translation.
-  `SkeletonAnimation.ResetLastPositionAndRotation()` right after the write fixes it (spec 012, task 1.B).
+  `SkeletonAnimation.ResetLastPositionAndRotation()` right after the write fixes it. Built 2026-10-08 (spec 012
+  task 1.B, compile-checked only): `Player.ResetSkeletonPhysicsMemory()` is called on the first ride frame in
+  `Player.LateUpdate` and in `PlayerPageSpawnManager.PositionPlayerAtPoint` (so respawns get it too). Any new code
+  that moves Kami by a teleport should call it.
+- **Main-menu Kami (spec 012 FR-010, 2026-10-08)**: Atlas 13's Libro 1 skin has no shoes, so naming one skin leaves
+  her barefoot. `Gear/LoadoutSkin` on `kami_spine_titlescreen` composes the skin in `Start` from a `GearLoadout`
+  (`Level1_StartLoadout`) with the same `SpineSkinComposer` Level 1 uses, so the menu can't drift from Level 1's look.
+  The scene's `initialSkinName` (`FullSkins/Kami Libro 1`) is only the first-frame fallback.
 - `Test/Cape Test` is a leftover test animation in the export. The `Run` animation keys physics values
   (inertia, strength, wind, gravity of the buns and bows): the run look is authored, not Unity-side.
 

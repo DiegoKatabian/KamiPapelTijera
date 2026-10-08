@@ -354,10 +354,23 @@ public class NPC : Entity
             return;
         }
 
-        //characters are not all drawn facing the same way, so which flipX means "walking right" is a
+        FaceDirection(navAgent.velocity.x > 0);
+    }
+
+    /// <summary>
+    /// Turns the sprite to face right or left. Also for code that moves the NPC without its agent
+    /// (a follower hanging from Kami during a page turn, PageRideFollowers).
+    /// </summary>
+    public void FaceDirection(bool right)
+    {
+        if (!_flipSpriteToMovement || _sr == null)
+        {
+            return;
+        }
+
+        //characters are not all drawn facing the same way, so which flipX means "facing right" is a
         //per-character fact about the art, not something the movement code can know
-        bool movingRight = navAgent.velocity.x > 0;
-        _sr.flipX = _invertFlip ? !movingRight : movingRight;
+        _sr.flipX = _invertFlip ? !right : right;
     }
 
     /// <summary>

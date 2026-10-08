@@ -33,6 +33,12 @@ object selected (scene root, Level2_Newspaper). Everything is a drag:
   **Keep `TurnPage` before the end of the last camera clip** — the timeline's length is its clips, and
   a marker past the end never fires.
 
+**Escort formation (spec 013, 2026-10-08, not playtested).** From `StartEscort` the cops lead: they walk the NavMesh to
+the car door and Kami is marched along their route, in front of them. Everything is a field on `ArrestCutscene`
+(`Escort formation`): `_girlsLookAhead`, `_maxGirlsAhead` (the girls wait for the cops beyond this), `_copsKeepBack`,
+`_copsSpeedFactor`, `_routeRefreshSeconds`, and `_escortWalkInput` for Kami's pace (0.3, clamped under
+`Player.walkThreshold`). Without a NavMesh route it falls back to the cops following Kami, with a warning.
+
 The only duration that is not on the timeline is the car's drive (`_driveOffSeconds` on
 `ArrestCutscene`, seconds-to-arrive like all traffic). The escort walk has no duration of its own: Kami
 walks until `BoardCar` fires; if she hasn't arrived by then, they board anyway (nothing can stall).

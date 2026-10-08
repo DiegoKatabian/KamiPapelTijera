@@ -102,6 +102,7 @@ public class PlayerPageSpawnManager : Singleton<PlayerPageSpawnManager>
         _playerCC.enabled = false;
         _player.transform.position = point;
         _playerCC.enabled = true;
+        _player.ResetSkeletonPhysicsMemory(); //the jump is not movement: keep it out of the hair/cape physics (spec 012)
         EventManager.Trigger(Evento.OnPlayerPlaced);
     }
     public Vector3 GetProjectedPositionInNewPage(Vector3 playerCurrentPosition, bool isNext)

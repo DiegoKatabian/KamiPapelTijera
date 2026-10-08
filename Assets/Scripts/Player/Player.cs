@@ -356,7 +356,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         Vector3 bonePos = _rideEdgeBone.position;
         Vector3 newPos = new Vector3(bonePos.x, bonePos.y, bonePos.z + _rideZOffset) + RideRootOffset;
 
-        if (!_rideLoggedFirstFrame)
+        bool firstRideFrame = !_rideLoggedFirstFrame;
+        if (firstRideFrame)
         {
             _rideLoggedFirstFrame = true;
             Debug.Log($"[Player] RidingPage LateUpdate arranco: hueso '{_rideEdgeBone.name}' en {bonePos}, kami va a {newPos}");
@@ -367,6 +368,28 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         }
 
         transform.position = newPos;
+
+        if (firstRideFrame)
+        {
+            //the snap onto the edge is a jump of many units: without this, spine-unity feeds it 1:1 into
+            //the hair/cape/skirt physics as one huge translation (spec 012 FR-009)
+            ResetSkeletonPhysicsMemory();
+        }
+    }
+
+    /// <summary>
+    /// Call right after moving Kami by a teleport (the page ride's edge snap, a placement on a new page):
+    /// makes the skeleton's physics forget her last position, so the jump isn't read as movement.
+    /// </summary>
+    public void ResetSkeletonPhysicsMemory()
+    {
+        if (SkeletonAnimation == null)
+        {
+            Debug.LogWarning("[Player] ResetSkeletonPhysicsMemory: no SkeletonAnimation, the hair/cape physics will read this teleport as movement");
+            return;
+        }
+
+        SkeletonAnimation.ResetLastPositionAndRotation();
     }
 
     public void SetRideRootOffsetAccordingToForcedFacing(bool faceRight)

@@ -14,20 +14,20 @@ writes a scene (2.A). The Rigidbody fix that started this is already done (see `
 
 ## Phase 1 — The four units (all `[P]`, disjoint files)
 
-- [ ] **1.A** `[P]` **`PageRideFollowers`** (FR-001..008, `Assets/Scripts/Level2/`): poll
+- [x] **1.A** `[P]` **`PageRideFollowers`** (FR-001..008, `Assets/Scripts/Level2/`): poll
   `Player.IsRidingPage`, board generic `NPC`s with `isFollowing`, ease + seat hold in `LateUpdate`
   (`[DefaultExecutionOrder]`), land with `SamplePosition` + `Warp` + `StartFollowingPlayer`, park-and-retry,
   `OnDisable` hands every agent back. All numbers in the Inspector with tooltips. `[PageRideFollowers]`
   logs at board, land and park. `.meta` with `python tools/make-meta.py`. Compile-check.
-- [ ] **1.B** `[P]` **Physics reset on teleports** (FR-009): `ResetLastPositionAndRotation()` on
+- [x] **1.B** `[P]` **Physics reset on teleports** (FR-009): `ResetLastPositionAndRotation()` on
   `Player.SkeletonAnimation` right after the ride's first snap onto the edge bone (in `Player.LateUpdate`,
   after `transform.position = newPos`, first ride frame only) and in
   `PlayerPageSpawnManager.PositionPlayerAtPoint` (after the CharacterController is re-enabled).
   Guard clauses with warnings for a missing `SkeletonAnimation`. Do NOT touch the `cc.Move` in
   `PlayerModel.ApplyPhysics` (issue #30). Compile-check.
-- [ ] **1.C** `[P]` **`LoadoutSkin`** (FR-010): the component on the main-menu Kami, composed from
+- [x] **1.C** `[P]` **`LoadoutSkin`** (FR-010): the component on the main-menu Kami, composed from
   `Level1_StartLoadout`, sorted by `GearItem.Slot`. Compile-check. (The scene wiring is 2.B.)
-- [ ] **1.D** `[P]` **Arrest walk** (FR-011): `_escortWalkInput` 0.6 -> 0.45 in
+- [x] **1.D** `[P]` **Arrest walk** (FR-011): `_escortWalkInput` 0.6 -> 0.45 in
   `Assets/Prefabs/Level2/ArrestCutscene.prefab` (and the scene instance if it overrides it), plus the guard in
   `ArrestCutscene.Update`: `Mathf.Min(_escortWalkInput, _player.walkThreshold - 0.05f)` with a one-time
   warning, and the field's tooltip says why. Compile-check. Diego checks the walk, the foot sliding and
@@ -35,11 +35,11 @@ writes a scene (2.A). The Rigidbody fix that started this is already done (see `
 
 ## Phase 2 — Wiring (depends on Phase 1; ONE agent writes the scenes)
 
-- [ ] **2.A** **Level 2 scene**: add `PageRideFollowers` to `Level2_Newspaper.unity` at the scene root
+- [x] **2.A** **Level 2 scene**: add `PageRideFollowers` to `Level2_Newspaper.unity` at the scene root
   (YAML surgery: read the area whole, unique fileIDs, preserve the file's line endings, count
   `--- !u!` blocks before and after, grep fileID uniqueness). Optionally drop the now-redundant
   `m_IsKinematic` override on the Kami instance.
-- [ ] **2.B** **MainMenu scene**: add `LoadoutSkin` to `kami_spine_titlescreen`, assign
+- [x] **2.B** **MainMenu scene**: add `LoadoutSkin` to `kami_spine_titlescreen`, assign
   `Level1_StartLoadout`, set `initialSkinName` to `FullSkins/Kami Libro 1`; ask Diego about the inactive
   Atlas 12 "The Paper Model". Same YAML rules.
 - [ ] **2.C** **Check every page's landing point**: log (temporarily) whether

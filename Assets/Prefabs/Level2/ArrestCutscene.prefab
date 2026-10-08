@@ -188,7 +188,7 @@ MonoBehaviour:
   _copsBehindDistance: 5
   _copsSpread: 3
   _carDoorMark: {fileID: 3077207004716546047}
-  _escortWalkInput: 0.6
+  _escortWalkInput: 0.3
   _arriveDistance: 1.5
   _policeCar: {fileID: 3932480393217793348}
   _driveOffTarget: {fileID: 3210841104876590505}

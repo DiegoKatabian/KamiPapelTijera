@@ -42,11 +42,11 @@ Mecanismo (agosto 2026): mientras la hoja gira, Kami queda visualmente agarrada 
 **Confirmado (agosto 2026)**: flujo completo probado en el editor (jump→ride, flip, sprint particles) — funciona en ambos sentidos. Si `HojaMaster_Rev` no tuviera la cadena `PN000pageJoint30`, `Hoja.cs` avisa con warning y Kami no se engancha en ese sentido, sin romper el resto.
 
 
-## Followers on page turns (spec 012, designed 2026-10-08, not built)
+## Followers on page turns (spec 012, built 2026-10-08, compile-checked, not playtested)
 
-Today nothing carries Natalia or the Abuela across a ridden turn: `PageNavMeshManager` swaps the NavMesh at
+Before spec 012 nothing carried Natalia or the Abuela across a ridden turn: `PageNavMeshManager` swaps the NavMesh at
 `OnNewPageOpen` (their agents go off-mesh and every move order is refused) and Kami lands at the new page's
-entry X while they stay at the old exit. Spec 012's `PageRideFollowers` (Level 2 scene root) edge-detects
+entry X while they stay at the old exit. `Level2/PageRideFollowers` (Level 2 scene root) edge-detects
 `Player.IsRidingPage` in `Update`, boards every `isFollowing` NPC onto a seat around Kami (the
 `PaperPlaneRide` technique), and lands them next to her with `agent.Warp` once the ride ends. It polls on
 purpose: the order of `OnPageFinishTurning` subscribers (`FinishRide` must place Kami first) is not

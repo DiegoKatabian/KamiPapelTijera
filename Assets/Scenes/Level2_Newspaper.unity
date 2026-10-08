@@ -2865,6 +2865,11 @@ PrefabInstance:
       propertyPath: _promptAutomatically
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5352563962349730642, guid: 4daee682af30a0d478a24755589a8b2d,
+        type: 3}
+      propertyPath: _openOnlyByCode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5352563962349730644, guid: 4daee682af30a0d478a24755589a8b2d,
         type: 3}
       propertyPath: m_IsActive
@@ -28689,6 +28694,103 @@ MonoBehaviour:
   questSlotPrefab: {fileID: 1791078335586841921, guid: afea58bc608cca84ba098822af68c1e1,
     type: 3}
   questSlotsParent: {fileID: 1394980289}
+--- !u!1 &1941092601
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1941092602}
+  - component: {fileID: 1941092603}
+  m_Layer: 0
+  m_Name: PageRideFollowers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1941092602
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941092601}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 999
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1941092603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941092601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 731eb9eadf779d64ea49d20bdadf9805, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _seats:
+  - {x: -2.5, y: -0.5, z: 0.6}
+  - {x: -5, y: -1.2, z: 0.6}
+  _bobAmplitude: 0.35
+  _bobSpeed: 6
+  _boardEaseSeconds: 0.35
+  _landingSpacing: 3
+  _landingSampleRadius: 5
+  _retryInterval: 0.5
+--- !u!1 &1941092611
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1941092612}
+  - component: {fileID: 1941092613}
+  m_Layer: 0
+  m_Name: PageExitLock
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1941092612
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941092611}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1000
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1941092613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941092611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d50e769985c4af099548f7e0c40263d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &481942791
 Mesh:
   m_ObjectHideFlags: 0

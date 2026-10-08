@@ -1,6 +1,15 @@
 # Spec 012: Followers ride the page turn with Kami (Level 2)
 
-Status: DRAFT 2026-10-08 (triaged and designed with Diego; nothing built yet apart from the Rigidbody fix below).
+Status: BUILT 2026-10-08, compile-checked only, NOT playtested. Phases 1 and 2 done (scenes wired); docs updated; the
+graphify refresh and Diego's playtest/tuning are open. Decisions taken with Diego's "defaults to everything": followers
+start moving when the ride starts (`IsRidingPage` rising edge, i.e. `StartRidingPage`), the seat numbers are
+`PaperPlaneRide`'s, and the dead Atlas 12 "The Paper Model" in `MainMenu` (nothing referenced it) was deleted.
+Deviations from the draft: `NPC.FaceDirection(bool)` was added (the flip logic of `UpdateSpriteFlip`, extracted, behavior
+unchanged); landing tries ahead of Kami, then behind, then under her, and takes a `_landingSampleRadius` field;
+`Player.ResetSkeletonPhysicsMemory()` wraps the Spine reset so both call sites share one guard.
+After Diego's first playtest (2026-10-08) three things landed alongside, outside this spec's original scope: the café
+fold is driven by Natalia's conversation (`TriggerOrigami._openOnlyByCode`), `PageExitLock` gates the next-page
+spheres, and the arrest escort was lowered in speed and handed to the cops (spec 013).
 Level 2 (`Level2_Newspaper.unity`). Tasks: `tasks.md`. Kickoff prompt for the implementation session: `kickoff-prompt.md`.
 Triage and evidence: `docs/triage/2026-10-07-followers-page-turn-and-kami-physics.md`.
 
