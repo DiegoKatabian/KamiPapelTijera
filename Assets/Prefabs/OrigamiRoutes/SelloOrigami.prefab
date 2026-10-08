@@ -61,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerBool: 0
   showTooltip: 1
-  tooltipTextToShow: "Manten\xE9 E para comenzar un origami"
+  tooltipTextToShow: origami_tooltip
   postItColor: 0
   _maxTooltipShows: 0
   origami: {fileID: 0}

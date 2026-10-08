@@ -37,6 +37,18 @@ object selected (scene root, Level2_Newspaper). Everything is a drag:
 marches along their route, ahead of them, at `_escortWalkInput` (0.3, clamped under `Player.walkThreshold`). Tuning is
 the `Escort formation` header on `ArrestCutscene`. No NavMesh route = the old behaviour (cops follow Kami), with a warning.
 
+**The escort walk waits for Kami (2026-10-08).** `BoardCar` holds the timeline (`CutsceneDirector.HoldTimeline`) until
+she is within `_arriveDistance` of the door (`_maxWaitForArrivalSeconds`, 40, then they board anyway), so the walk lasts as
+long as the street is long and the marker's time no longer has to match it. Her pace is `_escortWalkInput` (0.45, the top
+of the walk range: under `Player.walkThreshold` - 0.05). Scripted walks used to play the Skip animation at walking speed
+because `PlayerController.ApplyCutsceneMove` sign()ed the raw input; it is analog now, so the stick amount decides
+walk vs skip exactly as it does for the player.
+
+**The patrol car sits still until the girls are in (2026-10-08).** The car is the ambient-traffic prefab, whose "Andando"
+Animator slides the body down the street by itself, so `ArrestCutscene.ParkCar` turns its Animators off in `Start`: it rests
+at its authored pose and `DriveOff` moves it with `TrafficObstacle.Launch` alone. `TurnPage` holds the timeline until the car
+has reached `DriveOffTarget` (it destroys itself on arrival), so the CarFollow shot rides the whole drive.
+
 The only duration that is not on the timeline is the car's drive (`_driveOffSeconds` on
 `ArrestCutscene`, seconds-to-arrive like all traffic). The escort walk has no duration of its own: Kami
 walks until `BoardCar` fires; if she hasn't arrived by then, they board anyway (nothing can stall).

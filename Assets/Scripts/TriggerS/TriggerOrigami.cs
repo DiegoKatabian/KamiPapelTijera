@@ -30,6 +30,9 @@ public class TriggerOrigami : TriggerScript
     [Tooltip("The pedestal is never stepped on: no cost canvas, no tooltip, no 'step on it + Interact'. Something else opens it by calling PromptNow() (Natalia's conversation on page 1: the dialogue is the only thing that answers the Interact press, so the origami can't compete with it). Combine with 'Prompt Automatically' for the first prompt.")]
     [SerializeField] bool _openOnlyByCode = false;
 
+    [Tooltip("For a code-driven pedestal nobody re-prompts (e.g. the page 3 letter): when the player cancels the fold it opens again by itself once the screen is free. Without this a cancelled code-driven origami can never be reopened. Needs 'Open Only By Code'.")]
+    [SerializeField] bool _repromptAfterCancel = false;
+
     [Header("Particle Parameters When Step On")]
     public Color blueParticleActiveColor;
     public float activeSpeed = 1.5f;
@@ -196,7 +199,7 @@ public class TriggerOrigami : TriggerScript
     /// <summary>
     /// Opens the origami once the screen is free, whatever happened before (the auto prompt already
     /// ran, the player cancelled). For the code that owns this pedestal, e.g. Natalia re-prompting the
-    /// café fold after her reminder dialogue. A prompt that is already waiting is not stacked.
+    /// cafï¿½ fold after her reminder dialogue. A prompt that is already waiting is not stacked.
     /// </summary>
     public void PromptNow()
     {
@@ -314,6 +317,12 @@ public class TriggerOrigami : TriggerScript
         _autoCheckOwned = false;
         Destroy(currentCheck.gameObject);
         currentCheck = null;
+
+        //the fold ended without finishing it (cancelled or failed): ask again
+        if (_repromptAfterCancel && _openOnlyByCode && origami != null && !origami.wasUsed)
+        {
+            PromptNow();
+        }
     }
 
     public void SetParticleParameters()

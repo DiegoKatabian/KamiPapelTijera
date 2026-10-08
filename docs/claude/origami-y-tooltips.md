@@ -79,6 +79,13 @@ free screen, never stacks). Page 1's café pedestal uses it (scene instance only
 `NataliaDialogueTrigger` re-prompts it after her short reminder, and ignores Interact while Kami is in the origami or the
 frame it closed (the press that cancels the fold must not reopen her dialogue, same race as issue #41.2).
 
+**Page 3 letter (2026-10-08)**: `GiftBox.prefab`'s letter pedestal is now `_openOnlyByCode` + `_promptAutomatically` +
+`_repromptAfterCancel` (new `TriggerOrigami` flag: a cancelled code-driven fold opens again by itself once the screen is
+free, so the story-required letter can't be left unreachable). It had only the auto prompt, so Kami standing on it still got
+the pedestal tooltip, and the E that closed Natalia's reaction dialogue also answered the idle check. Page 5's ticket
+pedestal (`SelloOrigami CafeTicket`, scene instance) got the same three flags.
+**No pedestal says "Hold E" any more**: the five `SelloOrigami*.prefab` tooltips use the `origami_tooltip` key ("Press E to...").
+
 ## Canvas de costo en pedestales de origami
 
 `PedestalCanvasDisplay` (`Assets/Scripts/Origami/PedestalCanvasDisplay.cs`) va montado en el GO "Canvas" hijo de `Assets/Prefabs/OrigamiRoutes/PedestalParent.prefab`. Muestra costo de papel + ícono cuando el player pisa el trigger del sello.

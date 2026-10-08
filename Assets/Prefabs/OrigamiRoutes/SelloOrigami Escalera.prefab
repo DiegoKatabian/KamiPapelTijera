@@ -94,7 +94,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerBool: 0
   showTooltip: 1
-  tooltipTextToShow: "Manten\xE9 E para comenzar un origami"
+  tooltipTextToShow: origami_tooltip
   postItColor: 0
   origami: {fileID: 0}
   checkPrefab: {fileID: 5179789006546423716, guid: 60ad54eca839f334f9eb8baf62ee92cd,

@@ -600,6 +600,16 @@ PrefabInstance:
       propertyPath: _promptAutomatically
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7900591175090712496, guid: acc35696e5856b34a98adf62868cfcf0,
+        type: 3}
+      propertyPath: _openOnlyByCode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7900591175090712496, guid: acc35696e5856b34a98adf62868cfcf0,
+        type: 3}
+      propertyPath: _repromptAfterCancel
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: acc35696e5856b34a98adf62868cfcf0, type: 3}
 --- !u!4 &4775158145129092090 stripped

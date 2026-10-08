@@ -160,7 +160,10 @@ public class PlayerController
         _player.IsSprinting = false;
         Inputs.hor = _cutsceneMove.x;
         Inputs.ver = _cutsceneMove.y;
-        Inputs.horRaw = Mathf.Abs(_cutsceneMove.x) > 0.01f ? Mathf.Sign(_cutsceneMove.x) : 0f;
-        Inputs.verRaw = Mathf.Abs(_cutsceneMove.y) > 0.01f ? Mathf.Sign(_cutsceneMove.y) : 0f;
+        //analog on purpose: PlayerModel picks Walking vs Skipping from the magnitude of the raw input,
+        //and a sign()ed value is always magnitude >= 1, so every scripted walk used to skip (slowly,
+        //since the speed already followed the scaled hor/ver)
+        Inputs.horRaw = Mathf.Abs(_cutsceneMove.x) > 0.01f ? _cutsceneMove.x : 0f;
+        Inputs.verRaw = Mathf.Abs(_cutsceneMove.y) > 0.01f ? _cutsceneMove.y : 0f;
     }
 }

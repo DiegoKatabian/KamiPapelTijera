@@ -50,6 +50,9 @@ public class ArrestCutscene : MonoBehaviour
     [SerializeField, Tooltip("Kami stops walking this close to the car door.")]
     float _arriveDistance = 1.5f;
 
+    [SerializeField, Tooltip("When the BoardCar marker is reached and Kami is still walking, the timeline waits for her this many seconds at most, then everyone boards anyway.")]
+    float _maxWaitForArrivalSeconds = 40f;
+
     [Header("Escort formation (spec 013)")]
     [SerializeField, Tooltip("The cops walk the NavMesh to the car door and the girls are marched along THEIR route, in front of them. Off, or when there is no NavMesh route for the lead cop, the old behaviour: Kami walks a straight line and everybody follows her.")]
     bool _copsLeadTheEscort = true;
@@ -107,6 +110,7 @@ public class ArrestCutscene : MonoBehaviour
     bool _waitingForPage;
     bool _questsHandedOff;
     bool _warnedWalkClamp;
+    bool _carDrivingOff;
     bool _copsLead; //this escort runs with the cops leading (decided when it starts: needs a NavMesh route)
     NavMeshPath _copRoute; //created in Awake: NavMeshPath cannot be built in a field initializer
     float _nextRouteRefresh;
@@ -134,9 +138,28 @@ public class ArrestCutscene : MonoBehaviour
             }
         }
 
+        ParkCar();
+
         if (_natalia == null || _carDoorMark == null || _policeCar == null || _driveOffTarget == null || _kamiCell == null || _nataliaCell == null)
         {
             Debug.LogWarning($"[ArrestCutscene] {gameObject.name}: some references are not assigned (Natalia, car door, car, drive-off target or cells). The cutscene will skip whatever is missing.");
+        }
+    }
+
+    //The car prefab is the ambient-traffic one, whose Animator ("Andando") slides the body 70 units
+    //down the street and pops its scale by itself. That is a drive-by, not a parked car: with it on
+    //the patrol car rolled around before the girls ever got in. Off for good: it rests at its
+    //authored pose and CUE_DriveOff moves it with Launch alone (straight line to the drive-off mark).
+    void ParkCar()
+    {
+        if (_policeCar == null)
+        {
+            return;
+        }
+
+        foreach (Animator animator in _policeCar.GetComponentsInChildren<Animator>(true))
+        {
+            animator.enabled = false;
         }
     }
 
@@ -453,8 +476,54 @@ public class ArrestCutscene : MonoBehaviour
         Debug.Log($"[ArrestCutscene] the escort to the car starts ({(_copsLead ? $"cops lead on the NavMesh at {copSpeed:F1} units/s" : "cops follow Kami")})");
     }
 
-    /// <summary>Signal: everyone gets in the car (they vanish, the door slams).</summary>
+    bool KamiHasArrived()
+    {
+        if (_player == null || _carDoorMark == null)
+        {
+            return true;
+        }
+
+        Vector3 toDoor = _carDoorMark.position - _player.transform.position;
+        toDoor.y = 0f;
+        return toDoor.magnitude <= _arriveDistance;
+    }
+
+    /// <summary>
+    /// Signal: everyone gets in the car (they vanish, the door slams). If Kami is still walking
+    /// there, the timeline holds until she arrives, so the walk lasts as long as the street is long
+    /// instead of being cut off by wherever this marker was dropped.
+    /// </summary>
     public void CUE_BoardCar()
+    {
+        StartCoroutine(BoardWhenKamiArrives());
+    }
+
+    IEnumerator BoardWhenKamiArrives()
+    {
+        if (_escorting && !KamiHasArrived())
+        {
+            Debug.Log("[ArrestCutscene] Kami hasn't reached the car yet, holding the timeline");
+            _cutscene.HoldTimeline();
+
+            float waited = 0f;
+            while (_escorting && !KamiHasArrived() && waited < _maxWaitForArrivalSeconds)
+            {
+                waited += Time.deltaTime;
+                yield return null;
+            }
+
+            if (!KamiHasArrived())
+            {
+                Debug.LogWarning($"[ArrestCutscene] Kami did not reach the car in {_maxWaitForArrivalSeconds}s, boarding anyway (is the car door mark reachable?)");
+            }
+
+            _cutscene.ResumeTimeline();
+        }
+
+        BoardCar();
+    }
+
+    void BoardCar()
     {
         _escorting = false;
 
@@ -494,13 +563,45 @@ public class ArrestCutscene : MonoBehaviour
 
         //the lifetime is only a safety net; the car despawns itself on arrival
         _policeCar.Launch(_driveOffTarget.position, _driveOffSeconds, (_driveOffSeconds * 3f) + 1f);
+        _carDrivingOff = true;
         PlaySound(AudioId.CarEngine);
         PlaySound(AudioId.PoliceHorn);
         Debug.Log("[ArrestCutscene] the patrol car drives off");
     }
 
-    /// <summary>Signal: turn to page 4, dropping Kami in her cell.</summary>
+    /// <summary>
+    /// Signal: turn to page 4, dropping Kami in her cell. If the car is still on its way to the
+    /// drive-off mark, the timeline holds until it gets there, so the car-follow shot rides along
+    /// the whole drive instead of the page turning mid-way.
+    /// </summary>
     public void CUE_TurnPage()
+    {
+        StartCoroutine(TurnPageWhenCarArrives());
+    }
+
+    IEnumerator TurnPageWhenCarArrives()
+    {
+        //TrafficObstacle destroys itself on arrival, which is how we know it reached the mark
+        if (_carDrivingOff && _policeCar != null)
+        {
+            Debug.Log("[ArrestCutscene] the car is still driving, holding the timeline until it reaches the mark");
+            _cutscene.HoldTimeline();
+
+            float waited = 0f;
+            float maxWait = (_driveOffSeconds * 3f) + 1f; //the same safety net the car itself despawns with
+            while (_policeCar != null && waited < maxWait)
+            {
+                waited += Time.deltaTime;
+                yield return null;
+            }
+
+            _cutscene.ResumeTimeline();
+        }
+
+        TurnPage();
+    }
+
+    void TurnPage()
     {
         StopSiren();
 

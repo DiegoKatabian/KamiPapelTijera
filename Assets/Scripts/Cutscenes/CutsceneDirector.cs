@@ -149,6 +149,21 @@ public class CutsceneDirector : MonoBehaviour, INotificationReceiver
         }
     }
 
+    /// <summary>
+    /// Freezes the timeline in place (cameras and clips stay live) until <see cref="ResumeTimeline"/>.
+    /// For a signal handler that has to wait for gameplay (e.g. Kami still walking to the car). Do not
+    /// overlap it with a dialogue marker: both write the same speed.
+    /// </summary>
+    public void HoldTimeline()
+    {
+        SetTimelineSpeed(0);
+    }
+
+    public void ResumeTimeline()
+    {
+        SetTimelineSpeed(1);
+    }
+
     void SetTimelineSpeed(double speed)
     {
         if (_director.playableGraph.IsValid())
