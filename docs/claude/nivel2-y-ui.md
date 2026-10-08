@@ -245,22 +245,13 @@ if Kami lands off-NavMesh). 6.D: `Timeline_MuseumArrival` + `MuseumPage.CUE_Sire
 (car enters from the left of the page along the street lane). Patrolling cops are cuttable
 (`PoliceOfficerCortable`): knocked out 12s, then resume. `PageAmbience` is placed in the scene.
 
-**Page exits are earned (Diego, 2026-10-08, not playtested).** `Level2/PageExitLock` (scene root) keeps a page's next-page
-sphere off until its task is done, latched: page 1 until `OnCafeWrapperFolded`, page 2 `OnAllCluesFound`, page 3
-`OnArrestSequenceEnded`, page 4 `OnPoliceStationEscaped` (the table is an Inspector array of page + event). It calls
-`PageScrollerManager.SetNextLocked`, which `CheckSpheres` honours; the previous-page sphere is never locked, and Level 1
-never sets the lock. A forced turn (the arrest) does not use the sphere, so it is unaffected.
+**Page exits are earned (2026-10-08).** `Level2/PageExitLock` (scene root) keeps a page's next-page sphere off until its
+task is done, latched: page 1 `OnCafeWrapperFolded`, page 2 `OnAllCluesFound`, page 3 `OnArrestSequenceEnded`, page 4
+`OnPoliceStationEscaped` (an Inspector table of page + event). It calls `PageScrollerManager.SetNextLocked`; the previous
+sphere is never locked and the arrest's forced turn ignores spheres.
 
-**Followers ride page turns (spec 012, built 2026-10-08, not playtested).** `Level2/PageRideFollowers` (scene root of
-`Level2_Newspaper.unity`, `[DefaultExecutionOrder(100)]`) polls `Player.IsRidingPage`: on the rising edge every
-`NPC` with `isFollowing` (nearest to Kami = slot 1) stops following, its agent gets `updatePosition = false` and
-a `LateUpdate` holds it at a seat around Kami (eased in over 0.35s, small bob, sprite flipped with `NPC.FaceDirection`);
-on the falling edge (`FinishRide` has already placed Kami) each one `Warp`s next to her on the new page's NavMesh and
-follows again, or parks and retries every 0.5s with a warning if no mesh is within `_landingSampleRadius`. Seats, bob,
-ease, spacing and radius are Inspector fields read every frame (tune live during a turn). The arrest's forced turn
-(`ridePage: false`) never boards anyone. `PaperPlaneRide` is untouched: its riders are not `isFollowing`, so the
-two never own the same NPC. Also from spec 012: the arrest escort walk is clamped under `Player.walkThreshold`
-(`_escortWalkInput` 0.45) so Kami walks to the car instead of skipping.
+**Followers ride page turns (spec 012).** `Level2/PageRideFollowers`, see `paginas-y-hoja.md`. `PaperPlaneRide` is
+untouched: its riders are not `isFollowing`, so the two never own the same NPC.
 
 **The full 5-page narrative is now defined** (Diego, 2026-09-22): Kami meets Natalia,
 they investigate a stolen painting (the Pelusa), get framed by Ariel, end up

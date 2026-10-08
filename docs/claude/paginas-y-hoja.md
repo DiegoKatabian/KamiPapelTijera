@@ -42,13 +42,11 @@ Mecanismo (agosto 2026): mientras la hoja gira, Kami queda visualmente agarrada 
 **Confirmado (agosto 2026)**: flujo completo probado en el editor (jump→ride, flip, sprint particles) — funciona en ambos sentidos. Si `HojaMaster_Rev` no tuviera la cadena `PN000pageJoint30`, `Hoja.cs` avisa con warning y Kami no se engancha en ese sentido, sin romper el resto.
 
 
-## Followers on page turns (spec 012, built 2026-10-08, compile-checked, not playtested)
+## Followers on page turns (spec 012)
 
-Before spec 012 nothing carried Natalia or the Abuela across a ridden turn: `PageNavMeshManager` swaps the NavMesh at
-`OnNewPageOpen` (their agents go off-mesh and every move order is refused) and Kami lands at the new page's
-entry X while they stay at the old exit. `Level2/PageRideFollowers` (Level 2 scene root) edge-detects
-`Player.IsRidingPage` in `Update`, boards every `isFollowing` NPC onto a seat around Kami (the
-`PaperPlaneRide` technique), and lands them next to her with `agent.Warp` once the ride ends. It polls on
-purpose: the order of `OnPageFinishTurning` subscribers (`FinishRide` must place Kami first) is not
-guaranteed. Forced turns with `ridePage: false` (the arrest) never set `IsRidingPage`, so nobody boards.
-See `specs/012-page-turn-followers/spec.md`.
+`Level2/PageRideFollowers` (Level 2 scene root) polls `Player.IsRidingPage`: on the rising edge every `isFollowing` NPC
+grabs a seat around Kami (the `PaperPlaneRide` technique), on the falling edge it `Warp`s next to her on the new page's
+NavMesh and follows again (or parks and retries with a warning if there is no mesh near her). Polling is on purpose:
+the order of `OnPageFinishTurning` subscribers is not guaranteed and `FinishRide` must place Kami first. Forced turns
+with `ridePage: false` (the arrest) never set `IsRidingPage`, so nobody boards. Needs a baked NavMesh near each page's
+entry point. Seats and timings are Inspector fields; detail in `specs/012-page-turn-followers/spec.md`.

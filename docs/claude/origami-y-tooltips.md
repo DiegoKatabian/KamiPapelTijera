@@ -72,14 +72,12 @@ visible on a *fresh* start (`FailOrigami` only corrects it after a cancel). Whic
 sits at `origamiRoutes[0]` must be the active one, or the first fold of a new route shows the
 wrong art.
 
-## Code-driven pedestals (Natalia's café fold, 2026-10-08)
+## Code-driven pedestals (page 1 café fold, 2026-10-08)
 
-`TriggerOrigami._openOnlyByCode`: the pedestal ignores Kami stepping on it (no cost canvas, no tooltip, no
-step-on + Interact) and is only opened by `PromptNow()` (waits for a free screen, like the auto prompt, and never
-stacks). It exists so a conversation can own the origami: page 1's café pedestal is code-driven, `NataliaDialogueTrigger`
-re-prompts it after her short reminder (`Natalia_FoldTicket`), and her trigger ignores Interact while Kami is in the
-origami or the very frame it closed (otherwise the press that cancels the fold reopens her dialogue, issue #41.2's race).
-Set on the scene instance only; page 5's ticket pedestal and the Level 1 pedestals are classic.
+`TriggerOrigami._openOnlyByCode`: no stepping on it, no cost canvas, no tooltip; only `PromptNow()` opens it (waits for a
+free screen, never stacks). Page 1's café pedestal uses it (scene instance only) so Natalia's conversation owns the fold:
+`NataliaDialogueTrigger` re-prompts it after her short reminder, and ignores Interact while Kami is in the origami or the
+frame it closed (the press that cancels the fold must not reopen her dialogue, same race as issue #41.2).
 
 ## Canvas de costo en pedestales de origami
 
