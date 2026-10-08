@@ -27,8 +27,8 @@ Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del
 
 ## Skins: Kami Gear (spec 011, built and played 2026-10-05)
 
-**Atlas 13 (2026-10-06, the active skeleton for `Kami.prefab`, Level 1 and Level 2; MainMenu's two
-static skeletons are still on Atlas 12).** Skins: `FullSkins/Kami Libro 1` (default outfit, no shoes),
+**Atlas 13 (2026-10-06, the active skeleton for `Kami.prefab`, Level 1 and Level 2, and for the main
+menu's active title Kami; only the menu's inactive `The Paper Model` is still on Atlas 12).** Skins: `FullSkins/Kami Libro 1` (default outfit, no shoes),
 `FullSkins/Kami Diario` (detective, no shoes), `Tijeras/Tijera_Normal|Upgrade_1`,
 `Zapatos/Zapatos_Base|Detective|Upgrade_1`, and an EMPTY `default`. Slots are named `KamiLibro/...`
 (the `GearCatalog` owned-slot lists use that prefix). Consequences: shoes are a Feet item
@@ -126,6 +126,30 @@ Kami's export + a line in `GearCatalog`'s items + its bag item (the `ResourceTyp
 asset in BOTH InventoryManager lists and its `ItemTable` keys, the café ticket recipe in
 `nivel2-y-ui.md`). No code. The Wardrobe lists it by itself once Kami owns it. When Valen's renamed export lands (`scissors/normal`,
 `scissors/upgrade1`), only the two scissors items' skin fields change.
+
+## Physics constraints (Atlas 13, 2026-10-08)
+
+Atlas 13 is the first export with **Spine physics constraints**: 19 of them (hair buns `4_head_moño` /
+`10_head_moño_back` as x/y springs; bows, skirt `21_pollera*`, `hips1-4`, cape `tapado*`, `bone3/4`
+as rotate springs). Atlas 12 had none, which is why nothing ever noticed a moving root.
+
+- **spine-unity feeds the root's movement into them, 1:1.** `SkeletonRenderer.ApplyTransformMovementToPhysics`
+  turns each frame's world-position delta (divided by the skeleton transform's scale, 0.35) into
+  `Skeleton.PhysicsTranslate`. Skeleton units ARE local Unity units (`SkeletonDataAsset.scale` is applied at
+  JSON load), and the physics bones are only 1-3 units long, so a 0.02 u wobble of the root shakes them.
+  Tunable in the Inspector: `Physics Position Inheritance Factor` (x, y) and `Rotation Inheritance Factor`.
+- **The shaking Kami (2026-10-07/08, fixed):** `Kami.prefab` had a **non-kinematic `Rigidbody` with gravity**
+  on the same object as the `CharacterController`. It integrated gravity at the 50 Hz fixed step while
+  `cc.Move` wrote the transform at frame rate, so the root vibrated and the Y delta shook every physics
+  bone, always, in every skin and animation, only on `Player`-driven Kamis (the menu Kami has no root
+  motion). Fix: `m_IsKinematic: 1` on the prefab. **Don't turn it back on**: a kinematic Rigidbody still
+  gives trigger callbacks. Diego's bisect: X inheritance did nothing, Y inheritance 0 stopped the shaking
+  (and all physics), rotation did nothing.
+- **Teleports are a trap**: `Player.LateUpdate` snaps Kami onto the page-edge bone and
+  `PositionPlayerAtPoint` drops her on the new page; the runtime reads each jump as a huge translation.
+  `SkeletonAnimation.ResetLastPositionAndRotation()` right after the write fixes it (spec 012, task 1.B).
+- `Test/Cape Test` is a leftover test animation in the export. The `Run` animation keys physics values
+  (inertia, strength, wind, gravity of the buns and bows): the run look is authored, not Unity-side.
 
 ## Outline through walls (#36, built and played by Diego 2026-10-05, on in both levels)
 

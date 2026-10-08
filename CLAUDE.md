@@ -40,7 +40,7 @@ unless Diego asks for a translation.
 - `Assets/Prefabs/OrigamiRoutes/` — sellos, `PedestalParent.prefab` y rutas de origami
 - `Assets/Prefabs/UI/PostIt.prefab` — los post-its de escena son instancias de este
 - `Assets/Prefabs/Particulas/` — prefabs de partículas
-- `Assets/2D/Kami Spine/Atlas 13/skeleton.json` — the ACTIVE skeleton for gameplay Kami (`Kami.prefab`, Level 1 and Level 2) since 2026-10-06: skins `FullSkins/Kami Libro 1|Diario`, `Tijeras/*`, `Zapatos/*` and an empty `default`, slots named `KamiLibro/...`; its `default` is emptied by `tools/move-default-skin-into-diario.py` (re-run after a re-export). Details in `docs/claude/spine-kami.md`. MainMenu's two static skeletons are still on Atlas 12.
+- `Assets/2D/Kami Spine/Atlas 13/skeleton.json` — the ACTIVE skeleton for gameplay Kami (`Kami.prefab`, Level 1 and Level 2) since 2026-10-06: skins `FullSkins/Kami Libro 1|Diario`, `Tijeras/*`, `Zapatos/*` and an empty `default`, slots named `KamiLibro/...`; its `default` is emptied by `tools/move-default-skin-into-diario.py` (re-run after a re-export). Details in `docs/claude/spine-kami.md`. It has 19 physics constraints (hair buns, bows, cape, skirt). MainMenu's title Kami (`kami_spine_titlescreen`, the active one) is on Atlas 13 too; only its inactive `The Paper Model` is still on Atlas 12.
 - `Assets/2D/Kami Spine/Atlas 12 Spine4.2/skeleton.json` — the previous skeleton (Spine 4.2.43), used by MainMenu only now (Spine 4.2.43), referenced by `Kami.prefab` and both `MainMenu.unity` skeletons since 2026-10-05 (spec 011 F2/#140: they pointed at the 3.8 `Atlas 11`, which the 4.2 runtime can't load); the level scenes' own overrides to Atlas 12 are now redundant. Atlas 1-11 are old
 - Escena de trabajo Nivel 1: `Nivel1_KamiPapelTijera.unity` (activa desde fines de agosto 2026 — `Nivel1_LaRural SpineTest.unity` quedó vieja/stale, no confundir; puede tener referencias rotas)
 - Escena de trabajo Nivel 2: `Level2_Newspaper.unity` — ver `nivel2-y-ui.md` para estado actual (las 5 páginas armadas, pendientes de jugar/arte)
@@ -53,6 +53,9 @@ Active work branches:
 - `pages-blocking` — blocking for Level 2's 5 pages (`Level2_Newspaper.unity`), in progress. Branches from `Level2_Newspaper`.
 - `006-nivel2-detective-natalia` (design work started 2026-09-22) — Level 2's new mechanics: Natalia's detective story across the 5 pages (companion NPC, 3 chained quests, ambient traffic, a police vision cone, new Origami routes, a catapult level ending). Branches from `pages-blocking` (carries its in-progress blocking). See `specs/006-nivel2-detective-natalia/spec.md` and `tasks.md` for the phased breakdown meant for parallel work.
 - `007-jazz-bar-minigame` (designed 2026-09-28, not started) — Level 2 sidequest 2: the page 3 bar's free-play jazz jam (every key plays a sax note), won saxophone usable from the inventory (sax mode). See `specs/007-jazz-bar-minigame/spec.md` and `tasks.md`, epic #131.
+
+- `012-page-turn-followers` (designed 2026-10-08, not started) — Level 2: Natalia and the Abuela grab on to Kami and ride the page turn with her (reusing `PaperPlaneRide`'s technique), Kami's skeleton physics ignore the turn's teleports, and the main-menu Kami wears Libro 1 + base shoes. See `specs/012-page-turn-followers/spec.md`, `tasks.md` and `kickoff-prompt.md`; evidence in `docs/triage/2026-10-07-followers-page-turn-and-kami-physics.md`. Epic #156.
+- `013-arrest-escort` (draft 2026-10-08, #167) — Level 2 page 3: the cops walk the NavMesh to the patrol car and march Kami and Natalia in front of them (today Kami walks a scripted line and the rest follow her). See `specs/013-arrest-escort/spec.md`.
 
 Roadmap and future feature specs: `specs/` (Spec Kit) and `ROADMAP.md`.
 
