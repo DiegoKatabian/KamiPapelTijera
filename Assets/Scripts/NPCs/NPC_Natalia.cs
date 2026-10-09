@@ -26,9 +26,17 @@ public class NPC_Natalia : NPC
             Debug.LogWarning($"[NPC_Natalia] {gameObject.name}: no Player reference (neither in the Inspector nor on LevelManager). She will never be able to follow Kami.");
         }
 
-        if (_sr == null)
+        //she starts angry on page 1 (her SpineCharacter's initial rest pose) until her opening dialogue; a
+        //test started on a later page skips that dialogue, so she would stay angry for the whole test
+        if (Character != null && PageScrollerManager.Instance != null && PageScrollerManager.Instance.startingPage > 1)
         {
-            Debug.LogWarning($"[NPC_Natalia] {gameObject.name}: _sr (SpriteRenderer) is not assigned. Damage feedback would throw if anything ever hits her.");
+            Character.ClearRestPose();
+        }
+
+        //since spec 014 she is a Spine character: facing and animation go through SpineCharacter
+        if (_sr == null && Character == null)
+        {
+            Debug.LogWarning($"[NPC_Natalia] {gameObject.name}: neither a SpriteRenderer (_sr) nor a SpineCharacter: she can't face where she walks.");
         }
     }
 }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2951000000000000002}
   - component: {fileID: 2951000000000000003}
   - component: {fileID: 2951000000000000090}
+  - component: {fileID: 2155188443121853206}
   m_Layer: 0
   m_Name: Natalia
   m_TagString: Untagged
@@ -53,13 +54,20 @@ MonoBehaviour:
   _sr: {fileID: 0}
   isFollowing: 0
   player: {fileID: 0}
-  followStoppingDistance: 3
+  followStoppingDistance: 1
   repathInterval: 0.2
   anim: {fileID: 0}
   _walkAnimatorBool: IsWalking
   _flipSpriteToMovement: 1
   _invertFlip: 1
   _reparentToPlayerPageOnFollow: 1
+  _followSideOffset: 3.5
+  _matchKamiPace: 1
+  _paceFactor: 0.9
+  _arriveSpeed: 8
+  _catchUpDistance: 10
+  _catchUpFactor: 1.3
+  _maxFollowSpeed: 18
   _debugMovement: 0
   _debugInterval: 1
 --- !u!195 &2951000000000000090
@@ -76,7 +84,7 @@ NavMeshAgent:
   m_Acceleration: 20
   avoidancePriority: 50
   m_AngularSpeed: 360
-  m_StoppingDistance: 3
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -273,8 +281,8 @@ MonoBehaviour:
   physicsMovementRelativeTo: {fileID: 0}
   updateTiming: 1
   unscaledTime: 0
-  _animationName: Walk
-  loop: 0
+  _animationName: Idle
+  loop: 1
   timeScale: 1
 --- !u!33 &1076819967689586483
 MeshFilter:
@@ -284,3 +292,69 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4099372824477576471}
   m_Mesh: {fileID: 0}
+--- !u!114 &2155188443121853206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2951000000000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31b1904fbf2344e18b52dcfa953ec1ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _actorId: Natalia
+  _skeleton: {fileID: 6700342916539586240}
+  _idleAnimation: Idle
+  _walkAnimation: Walk
+  _runAnimation: Run
+  _movingSpeed: 1
+  _runSpeed: 12
+  _walkAnimationSpeed: 0
+  _runAnimationSpeed: 0
+  _mixSeconds: 0.2
+  _idleOverlay: 
+  _walkOverlay: 
+  _artFacesRight: 1
+  _faceMovement: 1
+  _faceKamiWhenIdle: 1
+  _facingDeadzone: 0.3
+  _poses:
+  - id: Angry
+    intro: 
+    main: Idle Enojada
+    loop: 1
+    next: 
+    overlay: 
+    endsWhenMoving: 1
+    clearOnPageTurn: 0
+  - id: Happy
+    intro: 
+    main: IdleHappy
+    loop: 1
+    next: 
+    overlay: 
+    endsWhenMoving: 1
+    clearOnPageTurn: 1
+  - id: Thinking
+    intro: IdleThinking
+    main: IdleThinkingLoop
+    loop: 1
+    next: 
+    overlay: 
+    endsWhenMoving: 1
+    clearOnPageTurn: 0
+  - id: Shock
+    intro: IdleToShock
+    main: Shock
+    loop: 1
+    next: 
+    overlay: 
+    endsWhenMoving: 0
+    clearOnPageTurn: 0
+  _initialRestPose: Angry
+  _idleBreakPose: Thinking
+  _idleBreakEverySeconds: {x: 8, y: 14}
+  _idleBreakSeconds: 4
+  _debugAnimations: 0

@@ -437,6 +437,12 @@ public class ArrestCutscene : MonoBehaviour
 
         if (_natalia != null)
         {
+            //out of the shock she has been in since the shout, and walked, never run, to the car (spec 014)
+            if (_natalia.Character != null)
+            {
+                _natalia.Character.EndPose();
+                _natalia.Character.CapGait(Gait.Walk);
+            }
             _natalia.StartFollowingPlayer();
         }
 
@@ -458,6 +464,12 @@ public class ArrestCutscene : MonoBehaviour
             if (cop == null || !cop.gameObject.activeInHierarchy)
             {
                 continue;
+            }
+
+            if (cop.Character != null)
+            {
+                cop.Character.EndPose();
+                cop.Character.CapGait(Gait.Walk);
             }
 
             if (_copsLead)
@@ -536,6 +548,10 @@ public class ArrestCutscene : MonoBehaviour
         if (_natalia != null)
         {
             _natalia.StopFollowingPlayer();
+            if (_natalia.Character != null)
+            {
+                _natalia.Character.ClearGaitCap(); //she runs again once she is out on page 4
+            }
             _hiddenNatalia = HiddenRenderers.Hide(_natalia.gameObject);
         }
 

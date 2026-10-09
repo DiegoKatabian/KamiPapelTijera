@@ -110,6 +110,7 @@ public class PaperPlaneRide : MonoBehaviour
         {
             agent.updatePosition = false; //the agent stays on the mesh internally, the LateUpdate drives the transform
         }
+        follower.SetRiding(true); //on the plane with Kami: walk cycle (spec 014)
 
         _riders.Add(new Rider { npc = follower, seat = seat, landingSlot = landingSlot, bobPhase = Random.value * Mathf.PI * 2f });
         Debug.Log($"[PaperPlaneRide] {follower.gameObject.name} climbs aboard the paper plane");
@@ -192,6 +193,7 @@ public class PaperPlaneRide : MonoBehaviour
             //no floor under Kami (the mezzanine): stay where she is standing, the Update keeps trying
             rider.parked = true;
             rider.parkedPosition = rider.npc.transform.position;
+            rider.npc.SetRiding(false);
             Debug.Log($"[PaperPlaneRide] no floor for {rider.npc.gameObject.name} where Kami landed: parked until she is back on walkable ground");
         }
     }
@@ -207,6 +209,10 @@ public class PaperPlaneRide : MonoBehaviour
             if (rider.npc != null && rider.npc.navAgent != null)
             {
                 rider.npc.navAgent.updatePosition = true;
+            }
+            if (rider.npc != null)
+            {
+                rider.npc.SetRiding(false);
             }
         }
 
@@ -232,6 +238,7 @@ public class PaperPlaneRide : MonoBehaviour
             {
                 rider.npc.navAgent.updatePosition = true;
             }
+            rider.npc.SetRiding(false);
 
             if (rider.npc.player == null)
             {
@@ -268,6 +275,8 @@ public class PaperPlaneRide : MonoBehaviour
         {
             rider.npc.transform.position = hit.position;
         }
+        rider.npc.SetRiding(false);
+        rider.npc.ResetSkeletonPhysics();
 
         if (rider.npc.player == null)
         {

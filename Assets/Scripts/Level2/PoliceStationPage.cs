@@ -49,6 +49,9 @@ public class PoliceStationPage : MonoBehaviour
     [SerializeField, Tooltip("What Natalia says when Kami frees her, the first time only: thanks, and the window + paper plane idea that points the player at the pedestal in her cell. Empty = no line.")]
     DialogueSO _nataliaFreedLine;
 
+    [SerializeField, Tooltip("Natalia's rest pose (mood) behind bars, a pose id from her SpineCharacter. Cleared when Kami frees her. Empty = plain idle.")]
+    string _nataliaInCellRestPose = "Angry";
+
     [Header("Abuela")]
     [SerializeField, Tooltip("The Abuela's fall onto Kami's cell.")]
     AbuelaEntrance _abuelaEntrance;
@@ -198,6 +201,10 @@ public class PoliceStationPage : MonoBehaviour
         {
             _natalia.StopFollowingPlayer();
             _natalia.WarpTo(_nataliaCell.position);
+            if (_natalia.Character != null && !string.IsNullOrEmpty(_nataliaInCellRestPose))
+            {
+                _natalia.Character.SetRestPose(_nataliaInCellRestPose);
+            }
         }
 
         if (_nataliaCellDoor != null)
@@ -294,6 +301,10 @@ public class PoliceStationPage : MonoBehaviour
 
         if (_natalia != null)
         {
+            if (_natalia.Character != null)
+            {
+                _natalia.Character.ClearRestPose();
+            }
             _natalia.StartFollowingPlayer();
         }
 

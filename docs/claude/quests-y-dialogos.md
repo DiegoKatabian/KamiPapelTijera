@@ -208,6 +208,17 @@ in a line instead of fighting for the same spot. Not seen in play yet.
 **On a capture both are reset** by `PoliceStationPage`: Natalia back in her closed cell, the Abuela
 gone until she falls again. After the escape both are warped outside below the window.
 
+### Spine animations and following (spec 014, 2026-10-09, not played yet)
+
+Natalia is a Spine character now (`SpineCharacter` on `Natalia.prefab`, actor `Natalia`): `Idle` / `Walk` / `Run` from
+her real speed, flipped toward where she walks and toward Kami when she stops, a thinking idle break, and the story
+beats as poses or moods: angry on page 1 until `Natalia_01` line 1 and in her page 4 cell, thinking during
+`Natalia_AfterTicket`, happy after all clues (until the page turns) and after the police apology on page 5, shocked at
+the arrest. `_sr` is empty on purpose; `NPC.FaceDirection` / damage tint go through the `SpineCharacter`.
+**Following changed**: she aims at a spot 3.5 units beside Kami on the side she is already on (stopping 1 unit from it)
+and matches Kami's pace (`NPC` "Following Kami" header, capped at 18 u/s, a bit under Kami's 20). The Abuela follower
+does the same at 7 units. Both play `Walk` while riding a page turn or the paper plane (`NPC.SetRiding`).
+
 ### Phase 6 additions (2026-09-29)
 
 `Natalia_Freed` plays when page 4's padlock is cut (first time only, `PoliceStationPage._nataliaFreedLine`).

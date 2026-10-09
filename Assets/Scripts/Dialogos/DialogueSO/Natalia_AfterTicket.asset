@@ -23,6 +23,10 @@ MonoBehaviour:
   - text: natalia_after_ticket_03
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: natalia_name
+    animationCues:
+    - actor: Natalia
+      action: 0
+      value: Thinking
   - text: natalia_after_ticket_04
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: natalia_name
@@ -35,3 +39,7 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: natalia_name
   currentText: 0
+  cuesOnEnd:
+  - actor: Natalia
+    action: 1
+    value: 

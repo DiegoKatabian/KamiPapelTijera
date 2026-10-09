@@ -44,6 +44,9 @@ public class PoliceOfficer : PatrollingAgent
     [SerializeField, Tooltip("Direction the officer faces before he first moves, in degrees around the vertical axis (0 = +Z, 90 = +X).")]
     float _startFacingDegrees = 90f;
 
+    [SerializeField, Tooltip("The waypoint he walks to first (0 = the first one). Two cops on the same route start at different corners so the room is never unwatched: place each one at his corner in the scene.")]
+    int _startWaypointIndex = 0;
+
     [Header("Catching (seconds)")]
     [SerializeField, Tooltip("Seconds Kami has to stay in plain view to get caught. Higher = more forgiving.")]
     float _secondsToCatch = 1.5f;
@@ -71,7 +74,7 @@ public class PoliceOfficer : PatrollingAgent
     [SerializeField, Tooltip("Sound played when the scissors knock him out. Leave empty for none.")]
     string _knockedOutSound = AudioId.CopKnockedOut;
 
-    [SerializeField, Tooltip("Tint of the placeholder sprite while he is out cold.")]
+    [SerializeField, Tooltip("Tint of the officer while he is out cold.")]
     Color _knockedOutTint = new Color(0.55f, 0.55f, 0.55f, 1f);
 
     [SerializeField, Tooltip("Where the sprite sits while he lies on the floor, relative to the officer (feet are baseOffset below). Placeholder for a real knocked-out pose.")]
@@ -81,7 +84,13 @@ public class PoliceOfficer : PatrollingAgent
     [SerializeField, Tooltip("Sound played when he first notices Kami. Leave empty for none.")]
     string _alertSound = AudioId.CopWhistle;
 
-    [SerializeField, Tooltip("The officer's sprite, flipped to face where he walks.")]
+    [SerializeField, Tooltip("The officer's Spine animation driver (spec 014): walk / idle + Lantern, the catch pose, facing. Empty = looked up on this object. Without one, the placeholder sprite below is used.")]
+    SpineCharacter _character;
+
+    [SerializeField, Tooltip("Pose (from his SpineCharacter) played when he catches Kami. Then he stands in idle + lantern.")]
+    string _catchPose = "Arrest";
+
+    [SerializeField, Tooltip("Placeholder only, for an officer without a SpineCharacter: the sprite flipped to face where he walks.")]
     SpriteRenderer _sprite;
 
     [SerializeField, Tooltip("Turn on if the art is drawn facing the opposite way (same knob as NPC._invertFlip).")]
@@ -107,6 +116,9 @@ public class PoliceOfficer : PatrollingAgent
     Vector3 _spriteStartLocalPosition;
     Quaternion _spriteStartLocalRotation;
     Color _spriteStartColor;
+    Transform _spineVisual;
+    Vector3 _spineStartLocalPosition;
+    Quaternion _spineStartLocalRotation;
 
     /// <summary>0 = hasn't noticed anything, 1 = caught.</summary>
     public float Awareness { get; private set; }
@@ -150,8 +162,20 @@ public class PoliceOfficer : PatrollingAgent
             _kamiBody = _kami.GetComponent<CharacterController>();
         }
 
-        if (_sprite == null)
+        if (_character == null)
         {
+            _character = GetComponent<SpineCharacter>();
+        }
+
+        if (_character != null && _character.SkeletonAnimation != null)
+        {
+            _spineVisual = _character.SkeletonAnimation.transform;
+            _spineStartLocalPosition = _spineVisual.localPosition;
+            _spineStartLocalRotation = _spineVisual.localRotation;
+        }
+        else if (_sprite == null)
+        {
+            //only without Spine: the vision cone child could otherwise be picked up as "his sprite"
             _sprite = GetComponentInChildren<SpriteRenderer>();
         }
 
@@ -165,11 +189,31 @@ public class PoliceOfficer : PatrollingAgent
         //PatrollingAgent.Start never sets a first destination: without this he would skip waypoint 0
         if (_startWaypoints.Length > 0)
         {
-            SetWaypoints(_startWaypoints);
+            StartRoute();
         }
         else
         {
             Debug.LogWarning($"[PoliceOfficer] {gameObject.name}: no waypoints, he will stand still");
+        }
+    }
+
+    /// <summary>The route from his starting corner (_startWaypointIndex), not always from waypoint 0.</summary>
+    void StartRoute()
+    {
+        SetWaypoints(_startWaypoints);
+
+        int index = Mathf.Clamp(_startWaypointIndex, 0, _startWaypoints.Length - 1);
+        if (index == 0)
+        {
+            return;
+        }
+
+        currentWaypointIdx = index;
+        currentWaypoint = waypoints[index];
+        if (navAgent.enabled && navAgent.isOnNavMesh && NavMesh.SamplePosition(currentWaypoint.position, out NavMeshHit hit, 5f, NavMesh.AllAreas))
+        {
+            navAgent.SetDestination(hit.position);
+            hasReachedWaypoint = false;
         }
     }
 
@@ -231,7 +275,15 @@ public class PoliceOfficer : PatrollingAgent
             navAgent.velocity = Vector3.zero;
         }
 
-        if (_sprite != null)
+        if (_spineVisual != null)
+        {
+            //lying down, facing the way he was looking (the skeleton's pivot is at his feet); a real pose replaces this
+            _character.EndPose();
+            float spineSide = _character.FacingRight ? 1f : -1f;
+            _spineVisual.localRotation = Quaternion.Euler(0f, 0f, 90f * spineSide);
+            _character.SetTint(_knockedOutTint);
+        }
+        else if (_sprite != null)
         {
             //lying down, facing the way he was looking; a real pose replaces this
             float side = _sprite.flipX ? -1f : 1f;
@@ -260,6 +312,13 @@ public class PoliceOfficer : PatrollingAgent
 
     void RestoreSprite()
     {
+        if (_spineVisual != null)
+        {
+            _spineVisual.localRotation = _spineStartLocalRotation;
+            _spineVisual.localPosition = _spineStartLocalPosition;
+            _character.SetTint(Color.white);
+        }
+
         if (_sprite == null)
         {
             return;
@@ -286,6 +345,11 @@ public class PoliceOfficer : PatrollingAgent
         _facing = _startFacing;
         state = AgentState.Patrolling;
 
+        if (_character != null)
+        {
+            _character.EndPose(); //out of the catch pose
+        }
+
         if (navAgent != null && navAgent.enabled && navAgent.isOnNavMesh)
         {
             navAgent.Warp(_startPosition);
@@ -299,7 +363,12 @@ public class PoliceOfficer : PatrollingAgent
 
         if (_startWaypoints.Length > 0)
         {
-            SetWaypoints(_startWaypoints);
+            StartRoute();
+        }
+
+        if (_character != null)
+        {
+            _character.ResetPhysics(); //he was warped back to his post
         }
 
         Debug.Log($"[PoliceOfficer] {gameObject.name}: reset to his starting post");
@@ -395,6 +464,13 @@ public class PoliceOfficer : PatrollingAgent
         {
             navAgent.isStopped = true;
         }
+
+        //he grabs her, then stands with his lantern up until the page restarts (spec 014)
+        if (_character != null && !string.IsNullOrEmpty(_catchPose))
+        {
+            _character.PlayPose(_catchPose);
+        }
+
         _kami.Die(DeathCause.Caught);
     }
 
@@ -485,7 +561,19 @@ public class PoliceOfficer : PatrollingAgent
 
     void UpdateSpriteFlip()
     {
-        if (_sprite == null || Mathf.Abs(_facing.x) < 0.1f)
+        if (Mathf.Abs(_facing.x) < 0.1f)
+        {
+            return;
+        }
+
+        //he turns with his vision cone, so the skeleton follows _facing, not his raw movement
+        if (_character != null)
+        {
+            _character.Face(_facing.x > 0f);
+            return;
+        }
+
+        if (_sprite == null)
         {
             return;
         }

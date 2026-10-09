@@ -68,6 +68,13 @@ out for `_knockedOutSeconds` (12), blind and still, cone hidden (`VisionConeView
 `IsKnockedOut`), sprite lying down as a placeholder, then he wakes and resumes his waypoint.
 `ResetToStart()` wakes him too. Any scissors work.
 
+**Spine and a second cop (spec 014, 2026-10-09, not played yet)**: the placeholder sprite is gone; the prefab has a
+`Policia` Spine child (skin `Policia 2`, the male) driven by a `SpineCharacter` (actor `Guard`, `Walk`/`Idle` +
+`Lantern` overlay). He turns with his cone (`_faceMovement` off, `PoliceOfficer` calls `Face`), plays `_catchPose`
+(`Arrest`) when he catches Kami, lies the Spine child down and greys it when knocked out. `PoliceOfficer Female
+Variant` (skin `Policia 3`) patrols the same route from corner B: `_startWaypointIndex` picks his first waypoint, and
+`ResetToStart` honours it. The sprite path still works for an officer without a `SpineCharacter`.
+
 Not done from spec 002: FR-007's separate test scene (Diego tests page 4 directly: start the scene
 with `PageScrollerManager.startingPage = 4`) and any hearing (v1 is vision only, as decided).
 

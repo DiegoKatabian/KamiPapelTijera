@@ -86,6 +86,15 @@ is moved by `MuseumPage` itself (not `TrafficObstacle.Launch`, which destroys th
 the car to where they are placed in the scene. Vcams: GroupNear and PullBack follow Kami (set in code by
 `MuseumPage`), StreetWide is static.
 
+## Character animation beats (spec 014)
+
+The characters' animations are NOT on the timelines (no Spine Timeline package): beats tied to a line live on that
+line of the `DialogueSO` (`Animation Cues`: actor id + PlayPose / EndPose / SetRestPose / ClearRestPose / overlay), so the
+cutscene's dialogue markers already time them. Arrest: `Arrest_Shout` (cops `Arrest`, Natalia `Shock`),
+`Arrest_Accusation` (Ariel `Point`, his arm aimed at Kami). Arrival: `Grace_Meeting` (Ariel `Point`, cops `Arrest`),
+then `Museum_Evidence` (Ariel `Angry`, Natalia `Happy`, cops lose the lantern). Beats that are not lines are in the
+cutscene scripts (`ArrestCutscene.CUE_StartEscort`: shock ends, everyone walks). Detail: `specs/014-level2-npc-animations/spec.md`.
+
 ## Gotchas
 
 - The cutscene lives at the **scene root**, not under Page 3: the page folder is switched off mid

@@ -173,8 +173,9 @@ sequence and is the only thing that restarts it:
    `_abuelaDelayAfterCaptureSeconds` (3), the cops return to their posts. The stash only grows:
    paper Kami gathered before being caught again is returned at the pickup too; the plane hat is lost.
 
-The cop is `PoliceOfficer.prefab` walking the four corners of Diego's "Poli Path" rectangle
-(`PoliceStation/PatrolRoute`); his blocking placeholder "Poli" (with the reference cone) is inactive.
+The cops are `PoliceOfficer.prefab` (male) and `PoliceOfficer Female Variant` (since spec 014, 2026-10-09) walking
+the four corners of Diego's "Poli Path" rectangle (`PoliceStation/PatrolRoute`), half a lap apart (the female starts
+at corner B, `_startWaypointIndex` 2); the blocking placeholder "Poli" (with the reference cone) is inactive.
 See `enemigos-e-ia.md`. The paper sources are the two desk typewriters (2 paper, respawn 30s); the
 stray Phase 0 typewriter at the page origin was deleted. **No NavMesh rebake was needed**: page
 NavMeshes are the classic bake of Navigation-Static objects, and every fence is non-static with a
@@ -202,8 +203,9 @@ always reaches page 5 with it.
    `GraceDialogueTrigger`, whose lines `MuseumPage` picks) needs the Pelusa, the café ticket and the
    three clues. Her meeting dialogue ends -> the ticket pedestal (`SelloOrigami CafeTicket`, a
    `SelloOrigami Cafe` instance pointed at `OrigamiRoute_Cafe_Unfold`, 0 paper, auto-prompt) appears.
-   **Ariel and a cop are there** (tinted placeholders, `Ariel_PLACEHOLDER_POSITION` /
-   `CopWitness_PLACEHOLDER_POSITION`): they chased the escapees from page 4. The meeting is where
+   **Ariel and two cops are there** (Spine since spec 014: `Ariel.prefab` + the Old Male / Femme `CopEscort`
+   variants, still named `Ariel_PLACEHOLDER_POSITION` / `CopWitness1|2_PLACEHOLDER_POSITION`): they chased the escapees
+   from page 4. The meeting is where
    Grace introduces herself, and Natalia introduces herself and Kami.
 2. The unfold shows the ticket (the girls' receipt from page 1: 2 hot chocolates, paid at 21:47) on
    the letter's `OrigamiTextRevealPanel`; closing it plays `Museum_Evidence`: both girls were at the

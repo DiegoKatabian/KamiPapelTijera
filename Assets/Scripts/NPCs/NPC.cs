@@ -44,6 +44,28 @@ public class NPC : Entity
     [SerializeField, Tooltip("Reparent this NPC under the player's parent when it starts following, so it travels with the active page. Turn off if it sits in a hierarchy that must not change.")]
     bool _reparentToPlayerPageOnFollow = true;
 
+    [Header("Following Kami (spec 014)")]
+    [SerializeField, Tooltip("While following, aim at a spot this many units beside Kami (on the screen's horizontal axis, on whichever side this NPC already is) instead of at Kami herself, so she parks beside her and not on top of her. 0 = walk straight at Kami (the old behaviour).")]
+    float _followSideOffset = 0f;
+
+    [SerializeField, Tooltip("Match Kami's pace while following instead of always moving at Max Speed: walks when she walks, runs when she runs.")]
+    bool _matchKamiPace = false;
+
+    [SerializeField, Tooltip("Follow speed = Kami's speed times this. Under 1 trails a little behind her.")]
+    float _paceFactor = 0.9f;
+
+    [SerializeField, Tooltip("Speed used to close the last stretch when Kami stands still or moves slower than this (units/s).")]
+    float _arriveSpeed = 8f;
+
+    [SerializeField, Tooltip("Further than this from the follow spot (units), the NPC hurries: speed times Catch Up Factor.")]
+    float _catchUpDistance = 10f;
+
+    [SerializeField, Tooltip("How much faster the NPC goes while catching up.")]
+    float _catchUpFactor = 1.3f;
+
+    [SerializeField, Tooltip("Never faster than this while following (units/s). Kami walks under 10, skips up to 20 and sprints at 28: under 20 = a bit slower than her full skip.")]
+    float _maxFollowSpeed = 18f;
+
     [Header("Debug")]
     [SerializeField, Tooltip("Log a periodic report of everything that decides whether this NPC can move: position, effective agent size, isOnNavMesh, path status, distance to the nearest NavMesh point. Turn on when an NPC refuses to move.")]
     bool _debugMovement = false;
@@ -53,12 +75,18 @@ public class NPC : Entity
 
     public NavMeshAgent navAgent { get; private set; }
 
+    /// <summary>The Spine animation driver, when the NPC has one (Natalia, the cops). Null = sprite/Animator NPC (the Abuela).</summary>
+    public SpineCharacter Character { get; private set; }
+
     float _repathTimer;
     float _debugTimer;
     float _nextUnusableWarning;
+    float _followSide = 1f;
+    CharacterController _kamiBody;
 
     protected virtual void Awake()
     {
+        Character = GetComponent<SpineCharacter>();
         navAgent = GetComponent<NavMeshAgent>();
 
         if (navAgent == null)
@@ -135,6 +163,7 @@ public class NPC : Entity
         }
 
         isFollowing = true;
+        _followSide = transform.position.x >= player.transform.position.x ? 1f : -1f;
         Debug.Log($"[{GetType().Name}] {gameObject.name} starts following Kami");
 
         if (_debugMovement)
@@ -154,7 +183,90 @@ public class NPC : Entity
         StopAgent();
         SetWalkAnimation(false);
 
+        //pace matching changed the agent's speed: give later scripted walks the NPC's own speed back
+        if (_matchKamiPace && navAgent != null)
+        {
+            navAgent.speed = _maxSpeed;
+        }
+
         Debug.Log($"[{GetType().Name}] {gameObject.name} stops following Kami");
+    }
+
+    /// <summary>
+    /// Where a following NPC heads: a spot beside Kami on the side it is already on, so it never walks
+    /// through her and parks next to her instead of on top of her. The side only switches once the NPC
+    /// is clearly on the other one (Kami walked past it), never back and forth.
+    /// </summary>
+    public Vector3 FollowTarget()
+    {
+        Vector3 kami = player.transform.position;
+        if (_followSideOffset <= 0f)
+        {
+            return kami;
+        }
+
+        float dx = transform.position.x - kami.x;
+        if (dx * _followSide < -_followSideOffset)
+        {
+            _followSide = -_followSide;
+        }
+
+        return kami + (Vector3.right * _followSide * _followSideOffset);
+    }
+
+    /// <summary>Sets the agent's speed from Kami's pace (when Match Kami Pace is on). Called every frame while following.</summary>
+    public void UpdateFollowPace()
+    {
+        if (!_matchKamiPace || navAgent == null || player == null)
+        {
+            return;
+        }
+
+        if (_kamiBody == null)
+        {
+            _kamiBody = player.GetComponent<CharacterController>();
+        }
+
+        Vector3 kamiVelocity = _kamiBody != null ? _kamiBody.velocity : Vector3.zero;
+        kamiVelocity.y = 0f;
+
+        float speed = Mathf.Max(kamiVelocity.magnitude * _paceFactor, _arriveSpeed);
+        Vector3 toSpot = FollowTarget() - transform.position;
+        toSpot.y = 0f;
+        if (toSpot.magnitude > _catchUpDistance)
+        {
+            speed *= _catchUpFactor;
+        }
+
+        navAgent.speed = Mathf.Min(speed, _maxFollowSpeed);
+    }
+
+    /// <summary>Hanging from Kami on a page turn or riding the paper plane: plays the walk cycle (Diego, spec 014).</summary>
+    public void SetRiding(bool riding)
+    {
+        if (Character != null)
+        {
+            if (riding)
+            {
+                Character.ForceGait(Gait.Walk);
+            }
+            else
+            {
+                Character.ClearForcedGait();
+            }
+            return;
+        }
+
+        SetWalkAnimation(riding);
+    }
+
+    /// <summary>After any teleport of this NPC: the skeleton's physics (hair) must not read it as movement.</summary>
+    public void ResetSkeletonPhysics()
+    {
+        if (Character != null)
+        {
+            Character.ResetPhysics();
+        }
     }
 
     /// <summary>Re-paths toward a moving target on an interval instead of every frame.</summary>
@@ -212,6 +324,7 @@ public class NPC : Entity
         {
             Debug.LogWarning($"[{GetType().Name}] {gameObject.name}: no enabled NavMeshAgent, moving the transform directly to {position}.");
             transform.position = position;
+            ResetSkeletonPhysics();
             return;
         }
 
@@ -219,10 +332,12 @@ public class NPC : Entity
         {
             Debug.LogWarning($"[{GetType().Name}] {gameObject.name}: {position} is not near the NavMesh (is this page baked and active?), moving the transform there anyway.");
             transform.position = position;
+            ResetSkeletonPhysics();
             return;
         }
 
         navAgent.Warp(hit.position);
+        ResetSkeletonPhysics();
     }
 
     /// <summary>True once the agent is close enough to its destination to count as arrived.</summary>
@@ -343,6 +458,12 @@ public class NPC : Entity
 
     public void UpdateSpriteFlip()
     {
+        //a Spine NPC faces where it moves by itself (SpineCharacter measures its real movement)
+        if (Character != null)
+        {
+            return;
+        }
+
         if (!_flipSpriteToMovement || _sr == null || navAgent == null)
         {
             return;
@@ -363,7 +484,19 @@ public class NPC : Entity
     /// </summary>
     public void FaceDirection(bool right)
     {
-        if (!_flipSpriteToMovement || _sr == null)
+        if (!_flipSpriteToMovement)
+        {
+            return;
+        }
+
+        //Spine art says which way it is drawn on the SpineCharacter itself, so _invertFlip doesn't apply
+        if (Character != null)
+        {
+            Character.Face(right);
+            return;
+        }
+
+        if (_sr == null)
         {
             return;
         }
@@ -390,6 +523,18 @@ public class NPC : Entity
     public IEnumerator EnrojecerSprite()
     {
         //print("enrojeci el sprite");
+        //Spine NPCs have no SpriteRenderer: tint the skeleton instead (it used to throw on a null _sr)
+        if (_sr == null)
+        {
+            if (Character != null)
+            {
+                Character.SetTint(Color.red);
+                yield return new WaitForSeconds(0.25f);
+                Character.SetTint(Color.white);
+            }
+            yield break;
+        }
+
         _sr.material.color = Color.red;
         yield return new WaitForSeconds(0.25f);
         _sr.material.color = Color.white;

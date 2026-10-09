@@ -142,6 +142,7 @@ public class DialogueManager : Singleton<DialogueManager>
         LevelManager.Instance.inDialogue = false;
         dialogueGlobe.SetActive(false);
         isShowing = false;
+        AnimationCue.RunAll(dialogue.cuesOnEnd, $"{dialogue.name} end");
         EventManager.Trigger(Evento.OnDialogueEnd, CameraMode.Normal, dialogue);
     }
 
@@ -165,6 +166,10 @@ public class DialogueManager : Singleton<DialogueManager>
             //per-line sound (Level 2 SFX pass): plays as the line starts being written, so a
             //cutscene beat like the handcuffs or the radio lands on the right sentence
             PlayLineSound(dialogue.events[i].soundOnLine);
+
+            //per-line animation beats (spec 014): same moment as the sound, so "Ariel points" lands
+            //on "Officers! There they are..."
+            AnimationCue.RunAll(dialogue.events[i].animationCues, $"{dialogue.name} line {i}");
 
             yield return new WaitForEndOfFrame();
             waitingForInput = true;

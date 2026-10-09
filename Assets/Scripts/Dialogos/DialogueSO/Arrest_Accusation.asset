@@ -17,6 +17,10 @@ MonoBehaviour:
   - text: arrest_ariel_01
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: ariel_name
+    animationCues:
+    - actor: Ariel
+      action: 0
+      value: Point
   - text: arrest_natalia_01
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: natalia_name

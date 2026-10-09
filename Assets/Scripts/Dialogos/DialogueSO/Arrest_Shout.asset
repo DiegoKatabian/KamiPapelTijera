@@ -17,4 +17,11 @@ MonoBehaviour:
   - text: arrest_police_01
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: police_name
+    animationCues:
+    - actor: Natalia
+      action: 0
+      value: Shock
+    - actor: Police
+      action: 0
+      value: Arrest
   currentText: 0

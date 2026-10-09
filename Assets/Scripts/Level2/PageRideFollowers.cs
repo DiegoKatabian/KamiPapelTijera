@@ -157,6 +157,7 @@ public class PageRideFollowers : MonoBehaviour
         {
             agent.updatePosition = false; //the agent keeps its internal position, the LateUpdate drives the transform
         }
+        follower.SetRiding(true); //hanging from the page edge with Kami: walk cycle (spec 014)
 
         _riders.Add(new Rider
         {
@@ -254,6 +255,7 @@ public class PageRideFollowers : MonoBehaviour
                 //no floor near Kami (the page's mesh isn't baked there, or she is still dropping in): wait where she landed
                 rider.parked = true;
                 rider.parkedPosition = rider.npc.transform.position;
+                rider.npc.SetRiding(false);
                 Debug.LogWarning($"[PageRideFollowers] no NavMesh within {_landingSampleRadius} units of where Kami landed for {rider.npc.gameObject.name}: parked, retrying every {_retryInterval}s. If this never resolves, the page needs a NavMesh bake near the entry point");
             }
         }
@@ -299,6 +301,8 @@ public class PageRideFollowers : MonoBehaviour
         {
             rider.npc.transform.position = hit.position;
         }
+        rider.npc.SetRiding(false);
+        rider.npc.ResetSkeletonPhysics();
 
         if (rider.npc.player == null)
         {
@@ -324,6 +328,7 @@ public class PageRideFollowers : MonoBehaviour
             {
                 rider.npc.navAgent.updatePosition = true;
             }
+            rider.npc.SetRiding(false);
 
             if (rider.npc.player == null)
             {

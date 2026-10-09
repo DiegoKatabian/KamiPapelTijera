@@ -17,6 +17,10 @@ MonoBehaviour:
   - text: natalia_all_clues_01
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: natalia_name
+    animationCues:
+    - actor: Natalia
+      action: 2
+      value: Happy
   - text: natalia_all_clues_02
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: natalia_name

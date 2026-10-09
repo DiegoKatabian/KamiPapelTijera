@@ -57,7 +57,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8621498527565570154, guid: 5242af2ee5dc6a74da62f7f53cb59575, type: 3}
       propertyPath: followStoppingDistance
-      value: 6
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8621498527565570154, guid: 5242af2ee5dc6a74da62f7f53cb59575, type: 3}
+      propertyPath: _followSideOffset
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8621498527565570154, guid: 5242af2ee5dc6a74da62f7f53cb59575, type: 3}
+      propertyPath: _matchKamiPace
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5357465104666805704, guid: 5242af2ee5dc6a74da62f7f53cb59575, type: 3}
       propertyPath: m_IsActive

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6620000000000000001}
   - component: {fileID: 6620000000000000002}
   - component: {fileID: 6620000000000000003}
+  - component: {fileID: 2816765393672416092}
   m_Layer: 0
   m_Name: PoliceOfficer
   m_TagString: Untagged
@@ -69,9 +70,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3861237099632830487}
-  - component: {fileID: 3023048329463033487}
+  - component: {fileID: 6917962254467604802}
+  - component: {fileID: 1676126247828167157}
+  - component: {fileID: 6587502011070970891}
   m_Layer: 0
-  m_Name: CopVisual_PLACEHOLDER
+  m_Name: Spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,15 +88,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6074696919226945287}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.12, y: 0.12, z: 0.12}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: -4.1469307, z: 0}
+  m_LocalScale: {x: 0.35, y: 0.35, z: 0.35}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5883891083393246008}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &3023048329463033487
-SpriteRenderer:
+--- !u!23 &6917962254467604802
+MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -107,12 +110,20 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
+  m_RayTracingMode: 2
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: be6fae3724036bc4abca1f6a3da23f90, type: 2}
+  - {fileID: 2100000, guid: a9234f2b1235b464f9ff5323e6e9a038, type: 2}
+  - {fileID: 2100000, guid: 33ff063efcef2a34ca607775a4a1dd3e, type: 2}
+  - {fileID: 2100000, guid: a9234f2b1235b464f9ff5323e6e9a038, type: 2}
+  - {fileID: 2100000, guid: 33ff063efcef2a34ca607775a4a1dd3e, type: 2}
+  - {fileID: 2100000, guid: a9234f2b1235b464f9ff5323e6e9a038, type: 2}
+  - {fileID: 2100000, guid: 33ff063efcef2a34ca607775a4a1dd3e, type: 2}
+  - {fileID: 2100000, guid: a9234f2b1235b464f9ff5323e6e9a038, type: 2}
+  - {fileID: 2100000, guid: 33ff063efcef2a34ca607775a4a1dd3e, type: 2}
+  - {fileID: 2100000, guid: a9234f2b1235b464f9ff5323e6e9a038, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,7 +136,7 @@ SpriteRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -133,17 +144,58 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
-  m_Color: {r: 0.35, g: 0.45, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1676126247828167157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6074696919226945287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skeletonDataAsset: {fileID: 11400000, guid: 3c06d48a015f67f4db0b3fc0da8b16d7, type: 2}
+  initialSkinName: Policia 2
+  fixPrefabOverrideViaMeshFilter: 2
+  initialFlipX: 0
+  initialFlipY: 0
+  updateWhenInvisible: 3
+  separatorSlotNames: []
+  zSpacing: 0
+  useClipping: 1
+  immutableTriangles: 0
+  pmaVertexColors: 1
+  clearStateOnDisable: 0
+  tintBlack: 0
+  singleSubmesh: 0
+  fixDrawOrder: 0
+  addNormals: 0
+  calculateTangents: 0
+  maskInteraction: 0
+  maskMaterials:
+    materialsMaskDisabled: []
+    materialsInsideMask: []
+    materialsOutsideMask: []
+  disableRenderingOnOverride: 1
+  physicsPositionInheritanceFactor: {x: 1, y: 1}
+  physicsRotationInheritanceFactor: 1
+  physicsMovementRelativeTo: {fileID: 0}
+  updateTiming: 1
+  unscaledTime: 0
+  _animationName: Idle
+  loop: 1
+  timeScale: 1
+--- !u!33 &6587502011070970891
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6074696919226945287}
+  m_Mesh: {fileID: 0}
 --- !u!1 &7000146364952304863
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,6 +322,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   _startFacingDegrees: 90
+  _startWaypointIndex: 0
   _secondsToCatch: 1.5
   _secondsToCalmDown: 2
   _secondsToGiveUp: 3
@@ -277,7 +330,9 @@ MonoBehaviour:
   _alertSpeedMultiplier: 1.25
   _turnDegreesPerSecond: 270
   _alertSound: CopWhistle
-  _sprite: {fileID: 3023048329463033487}
+  _character: {fileID: 2816765393672416092}
+  _catchPose: Arrest
+  _sprite: {fileID: 0}
   _invertFlip: 1
 --- !u!65 &6620000000000000001
 BoxCollider:
@@ -321,3 +376,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _officer: {fileID: 4671134549945796367}
+--- !u!114 &2816765393672416092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7313885251456778589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31b1904fbf2344e18b52dcfa953ec1ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _actorId: Guard
+  _skeleton: {fileID: 1676126247828167157}
+  _idleAnimation: Idle
+  _walkAnimation: Walk
+  _runAnimation: 
+  _movingSpeed: 1
+  _runSpeed: 12
+  _walkAnimationSpeed: 0
+  _runAnimationSpeed: 0
+  _mixSeconds: 0.2
+  _idleOverlay: Lantern
+  _walkOverlay: Lantern
+  _artFacesRight: 1
+  _faceMovement: 0
+  _faceKamiWhenIdle: 0
+  _facingDeadzone: 0.3
+  _poses:
+  - id: Arrest
+    intro: 
+    main: Arrest
+    loop: 0
+    next: 
+    overlay: 
+    endsWhenMoving: 1
+    clearOnPageTurn: 0
+  _initialRestPose: 
+  _idleBreakPose: 
+  _idleBreakEverySeconds: {x: 8, y: 14}
+  _idleBreakSeconds: 4
+  _debugAnimations: 0

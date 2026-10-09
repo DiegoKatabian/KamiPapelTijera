@@ -22,7 +22,9 @@ public class NPC_FollowPlayerState : IState
     }
     public void OnUpdate()
     {
-        _npc.MoveTowards(_npc.player.transform.position);
+        //a spot beside Kami, at her pace (spec 014): both are off by default, so NPCs that don't set them follow as before
+        _npc.UpdateFollowPace();
+        _npc.MoveTowards(_npc.FollowTarget());
         _npc.UpdateSpriteFlip();
 
         //stop the walk cycle once the agent is parked next to Kami, instead of moonwalking in place

@@ -124,7 +124,7 @@ MonoBehaviour:
   physicsMovementRelativeTo: {fileID: 0}
   updateTiming: 1
   unscaledTime: 0
-  _animationName: Arrest
+  _animationName: Idle
   loop: 1
   timeScale: 1
 --- !u!33 &8544156182724154826
@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 2815535780501127545}
   - component: {fileID: 3182721300099106662}
   - component: {fileID: 3479626782747727990}
+  - component: {fileID: 8122259666329185549}
   m_Layer: 0
   m_Name: CopEscort
   m_TagString: Untagged
@@ -218,3 +219,45 @@ NavMeshAgent:
   m_BaseOffset: 4
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &8122259666329185549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3708406621366645504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31b1904fbf2344e18b52dcfa953ec1ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _actorId: Police
+  _skeleton: {fileID: 9066045223372539024}
+  _idleAnimation: Idle
+  _walkAnimation: Walk
+  _runAnimation: 
+  _movingSpeed: 1
+  _runSpeed: 12
+  _walkAnimationSpeed: 0
+  _runAnimationSpeed: 0
+  _mixSeconds: 0.2
+  _idleOverlay: Lantern
+  _walkOverlay: 
+  _artFacesRight: 1
+  _faceMovement: 1
+  _faceKamiWhenIdle: 1
+  _facingDeadzone: 0.3
+  _poses:
+  - id: Arrest
+    intro: 
+    main: Arrest
+    loop: 0
+    next: 
+    overlay: 
+    endsWhenMoving: 1
+    clearOnPageTurn: 0
+  _initialRestPose: 
+  _idleBreakPose: 
+  _idleBreakEverySeconds: {x: 8, y: 14}
+  _idleBreakSeconds: 4
+  _debugAnimations: 0

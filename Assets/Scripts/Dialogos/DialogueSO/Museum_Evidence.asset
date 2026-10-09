@@ -29,6 +29,10 @@ MonoBehaviour:
   - text: museum_evidence_05
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: natalia_name
+    animationCues:
+    - actor: Ariel
+      action: 0
+      value: Angry
   - text: museum_evidence_06
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: grace_name
@@ -38,6 +42,16 @@ MonoBehaviour:
   - text: museum_evidence_08
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: police_name
+    animationCues:
+    - actor: Natalia
+      action: 2
+      value: Happy
+    - actor: Police
+      action: 4
+      value: 
+    - actor: Police
+      action: 5
+      value: 
   - text: museum_evidence_09
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: ariel_name

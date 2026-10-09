@@ -7,10 +7,10 @@ using UnityEngine;
 ///
 /// 1. Talking to Grace (the museum director) needs the evidence: the Pelusa, the café ticket and
 ///    the three page 2 clues. With it the ARRIVAL CUTSCENE plays (Timeline_MuseumArrival: Grace
-///    reacts to the Pelusa, sirens, a patrol car drives in, Ariel and a cop walk up, the camera pulls
+///    reacts to the Pelusa, sirens, a patrol car drives in, Ariel and two cops walk up, the camera pulls
 ///    back and returns) and then she hears the girls out (_graceMeeting); without the evidence she
 ///    asks for proof, which a normal playthrough never reaches.
-///    Ariel and a cop are NOT on the page until then: they chased the escapees from the police station.
+///    Ariel and the cops are NOT on the page until then: they chased the escapees from the police station.
 /// 2. When her meeting dialogue ends the café ticket's pedestal appears and auto-prompts the unfold.
 /// 3. Once the ticket's text is read and closed, _evidenceDialogue plays: Natalia's receipt is her
 ///    alibi, the hat and glove are Ariel's, the watch dates the robbery, the police apologize, and
@@ -53,7 +53,7 @@ public class MuseumPage : MonoBehaviour
     DialogueSO _graceCatapultReminder;
 
     [Header("Arrival cutscene")]
-    [SerializeField, Tooltip("Timeline_MuseumArrival. Played on the first talk with the evidence. Empty = no cutscene: Ariel and the cop are just there and Grace plays the meeting directly.")]
+    [SerializeField, Tooltip("Timeline_MuseumArrival. Played on the first talk with the evidence. Empty = no cutscene: Ariel and the cops are just there and Grace plays the meeting directly.")]
     CutsceneDirector _arrivalCutscene;
 
     [SerializeField, Tooltip("Shots that frame Kami: their Follow is set to her when the cutscene starts (a scene object cannot be assigned her prefab instance in the timeline).")]
@@ -62,8 +62,8 @@ public class MuseumPage : MonoBehaviour
     [SerializeField, Tooltip("Ariel. Hidden until the cutscene; where he is placed in the scene is where he ends up standing.")]
     Transform _ariel;
 
-    [SerializeField, Tooltip("The cop. Same as Ariel.")]
-    Transform _copWitness;
+    [SerializeField, Tooltip("The cops (Old Male + Femme). Same as Ariel: hidden until the cutscene, they end up where they are placed in the scene. Their NavMeshAgent is switched off: the walk-up slides them.")]
+    Transform[] _copWitnesses;
 
     [SerializeField, Tooltip("The patrol car. Hidden until it drives in.")]
     Transform _patrolCar;
@@ -71,13 +71,13 @@ public class MuseumPage : MonoBehaviour
     [SerializeField, Tooltip("Where the car comes from (out of frame).")]
     Transform _carStart;
 
-    [SerializeField, Tooltip("Where the car parks. Ariel and the cop step out here and walk to their spots.")]
+    [SerializeField, Tooltip("Where the car parks. Ariel and the cops step out here and walk to their spots.")]
     Transform _carStop;
 
     [SerializeField, Tooltip("Seconds the car takes to drive from its start to its stop (it slows down as it arrives).")]
     float _carArriveSeconds = 2.8f;
 
-    [SerializeField, Tooltip("Seconds Ariel and the cop take to walk from the car to their spots.")]
+    [SerializeField, Tooltip("Seconds Ariel and the cops take to walk from the car to their spots.")]
     float _walkUpSeconds = 2.5f;
 
     [Header("Evidence")]
@@ -132,7 +132,7 @@ public class MuseumPage : MonoBehaviour
     Phase _phase = Phase.Arrived;
     bool _questHandedOff;
     Vector3 _arielSpot;
-    Vector3 _copSpot;
+    Vector3[] _copSpots = new Vector3[0];
 
     NPC Abuela => _abuelaEntrance != null ? _abuelaEntrance.Abuela : null;
 
@@ -168,10 +168,17 @@ public class MuseumPage : MonoBehaviour
             _ariel.gameObject.SetActive(false);
         }
 
-        if (_copWitness != null)
+        _copSpots = new Vector3[_copWitnesses != null ? _copWitnesses.Length : 0];
+        for (int i = 0; i < _copSpots.Length; i++)
         {
-            _copSpot = _copWitness.position;
-            _copWitness.gameObject.SetActive(false);
+            Transform cop = _copWitnesses[i];
+            if (cop == null)
+            {
+                continue;
+            }
+
+            _copSpots[i] = cop.position;
+            cop.gameObject.SetActive(false);
         }
 
         if (_patrolCar != null)
@@ -226,7 +233,7 @@ public class MuseumPage : MonoBehaviour
 
         if (_arrivalCutscene == null)
         {
-            Debug.LogWarning("[MuseumPage] no arrival cutscene assigned: Ariel and the cop are just there and Grace plays the meeting directly");
+            Debug.LogWarning("[MuseumPage] no arrival cutscene assigned: Ariel and the cops are just there and Grace plays the meeting directly");
             ShowPeople();
             return _graceMeeting;
         }
@@ -253,10 +260,15 @@ public class MuseumPage : MonoBehaviour
             _ariel.gameObject.SetActive(true);
         }
 
-        if (_copWitness != null)
+        for (int i = 0; i < _copSpots.Length; i++)
         {
-            _copWitness.position = _copSpot;
-            _copWitness.gameObject.SetActive(true);
+            Transform cop = _copWitnesses[i];
+            if (cop != null)
+            {
+                StopAgent(cop);
+                cop.position = _copSpots[i];
+                cop.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -323,7 +335,7 @@ public class MuseumPage : MonoBehaviour
         _patrolCar.position = _carStop.position;
     }
 
-    /// <summary>Signal: the doors slam, Ariel and the cop get out and walk up to the group. The siren stops.</summary>
+    /// <summary>Signal: the doors slam, Ariel and the cops get out and walk up to the group. The siren stops.</summary>
     public void CUE_WalkUp()
     {
         if (AudioManager.instance != null)
@@ -335,7 +347,21 @@ public class MuseumPage : MonoBehaviour
 
         Vector3 door = _carStop != null ? _carStop.position : _arielSpot;
         StartCoroutine(WalkTo(_ariel, door, _arielSpot));
-        StartCoroutine(WalkTo(_copWitness, door, _copSpot));
+        for (int i = 0; i < _copSpots.Length; i++)
+        {
+            StartCoroutine(WalkTo(_copWitnesses[i], door, _copSpots[i]));
+        }
+    }
+
+    //the cops are NPC prefabs (CopEscort variants): an enabled NavMeshAgent would snap them back to the
+    //mesh every frame and undo the slide. They never walk on their own on this page, so it stays off.
+    static void StopAgent(Transform person)
+    {
+        UnityEngine.AI.NavMeshAgent agent = person.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.enabled = false;
+        }
     }
 
     //they keep their own height (the sprite's pivot is at its center), only X and Z travel
@@ -347,8 +373,16 @@ public class MuseumPage : MonoBehaviour
         }
 
         Vector3 start = new Vector3(from.x, to.y, from.z);
+        StopAgent(person);
         person.position = start;
         person.gameObject.SetActive(true);
+
+        //he appears at the car door: his physics must not read the jump from where he was hidden
+        SpineCharacter character = person.GetComponent<SpineCharacter>();
+        if (character != null)
+        {
+            character.ResetPhysics();
+        }
 
         float elapsed = 0f;
         while (elapsed < _walkUpSeconds)
@@ -581,6 +615,10 @@ public class MuseumPage : MonoBehaviour
             if (talk != null)
             {
                 talk.SetTalkable(false);
+            }
+            if (_natalia.Character != null)
+            {
+                _natalia.Character.ClearRestPose(); //not angry: page 1's opening was skipped
             }
             //follow first: it reparents her next to Kami, out of page 1's folder, which is
             //switched off when the scene starts on another page (an inactive agent can't warp)

@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2480326532459718946}
+  - component: {fileID: 1869176980756662840}
+  - component: {fileID: 2979200123547241794}
   m_Layer: 0
   m_Name: Ariel
   m_TagString: Untagged
@@ -160,7 +162,7 @@ MonoBehaviour:
   physicsMovementRelativeTo: {fileID: 0}
   updateTiming: 1
   unscaledTime: 0
-  _animationName: Point
+  _animationName: Idle
   loop: 1
   timeScale: 1
 --- !u!33 &9030056462102068136
@@ -171,3 +173,82 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8807969823101606881}
   m_Mesh: {fileID: 0}
+--- !u!114 &1869176980756662840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1085733838813006693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31b1904fbf2344e18b52dcfa953ec1ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _actorId: Ariel
+  _skeleton: {fileID: 9148719986539230705}
+  _idleAnimation: Idle
+  _walkAnimation: Walk
+  _runAnimation: 
+  _movingSpeed: 1
+  _runSpeed: 12
+  _walkAnimationSpeed: 0
+  _runAnimationSpeed: 0
+  _mixSeconds: 0.2
+  _idleOverlay: 
+  _walkOverlay: 
+  _artFacesRight: 1
+  _faceMovement: 1
+  _faceKamiWhenIdle: 1
+  _facingDeadzone: 0.3
+  _poses:
+  - id: Point
+    intro: 
+    main: Point
+    loop: 0
+    next: Smug
+    overlay: 
+    endsWhenMoving: 0
+    clearOnPageTurn: 0
+  - id: Smug
+    intro: 
+    main: 
+    loop: 1
+    next: 
+    overlay: Smug face
+    endsWhenMoving: 1
+    clearOnPageTurn: 0
+  - id: Angry
+    intro: 
+    main: Angry Idle
+    loop: 1
+    next: 
+    overlay: 
+    endsWhenMoving: 0
+    clearOnPageTurn: 0
+  _initialRestPose: 
+  _idleBreakPose: 
+  _idleBreakEverySeconds: {x: 8, y: 14}
+  _idleBreakSeconds: 4
+  _debugAnimations: 0
+--- !u!114 &2979200123547241794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1085733838813006693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0be3e1bc2f643248f035535588b4509, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skeleton: {fileID: 9148719986539230705}
+  _bone: brazo_front2
+  _tipBone: mano_back
+  _target: {fileID: 0}
+  _targetHeight: 2
+  _onlyDuring: Point
+  _weight: 1
+  _maxDegrees: 40
+  _blendSeconds: 0.25

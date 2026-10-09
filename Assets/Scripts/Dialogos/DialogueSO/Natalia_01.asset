@@ -20,6 +20,10 @@ MonoBehaviour:
   - text: natalia_01_02
     sprite: {fileID: 0}
     speakerName: natalia_name
+    animationCues:
+    - actor: Natalia
+      action: 3
+      value: 
   - text: natalia_01_03
     sprite: {fileID: 0}
     speakerName: natalia_name

@@ -17,9 +17,17 @@ MonoBehaviour:
   - text: grace_meeting_01
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: ariel_name
+    animationCues:
+    - actor: Ariel
+      action: 0
+      value: Point
   - text: grace_meeting_02
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: police_name
+    animationCues:
+    - actor: Police
+      action: 0
+      value: Arrest
   - text: grace_meeting_03
     sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
     speakerName: grace_name
