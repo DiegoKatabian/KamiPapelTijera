@@ -1,0 +1,39 @@
+newmtl Lit
+Kd 0.5 0.5 0.5
+d 1
+
+newmtl Tintero
+map_Pm Objetos_Escenarios_Kami_Tintero_MetallicSmoothness.png
+bump Objetos_Escenarios_Kami_Tintero_Normal.png
+map_Kd Objetos_Escenarios_Kami_Tintero_AlbedoTransparency.png
+Kd 1 1 1
+d 1
+
+newmtl casita_2
+Kd 0.5471698 0.3275997 0.219384
+d 1
+
+newmtl Madera_1
+map_Pm TCom_Wood_BambooSiding_1K_roughness.tif
+bump TCom_Wood_BambooSiding_1K_normal.tif
+disp TCom_Wood_BambooSiding_1K_height.tif
+map_Kd TCom_Wood_BambooSiding_1K_albedo.tif
+Kd 0.3962264 0.2934318 0.2934318
+d 1
+
+newmtl Mesa
+Kd 0.4811321 0.3277434 0.2201406
+d 1
+
+newmtl Pillar
+Kd 0.7381819 0.6416166 0.5718746
+d 1
+
+newmtl Material_#30
+Kd 1 1 1
+d 1
+
+newmtl oro
+Kd 0.9960784 0.8666667 0.4941176
+d 1
+
