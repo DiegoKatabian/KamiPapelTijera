@@ -15,20 +15,20 @@ MonoBehaviour:
   wasRead: 0
   events:
   - text: natalia_after_ticket_01
-    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
   - text: natalia_after_ticket_02
-    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    sprite: {fileID: 21300000, guid: 9793003222ce967428421660c968f02a, type: 3}
     speakerName: natalia_name
   - text: natalia_after_ticket_03
-    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    sprite: {fileID: 21300000, guid: 12ec3d9f382d88840b26afd24c74d88a, type: 3}
     speakerName: natalia_name
     animationCues:
     - actor: Natalia
       action: 0
       value: Thinking
   - text: natalia_after_ticket_04
-    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
     soundOnLine: RadioStatic
   - text: natalia_after_ticket_05
@@ -36,7 +36,7 @@ MonoBehaviour:
     speakerName: radio_name
     soundOnLine: NewsJingle
   - text: natalia_after_ticket_06
-    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    sprite: {fileID: 21300000, guid: 12ec3d9f382d88840b26afd24c74d88a, type: 3}
     speakerName: natalia_name
   currentText: 0
   cuesOnEnd:

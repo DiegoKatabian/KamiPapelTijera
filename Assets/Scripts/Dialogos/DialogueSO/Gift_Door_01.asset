@@ -15,9 +15,9 @@ MonoBehaviour:
   wasRead: 0
   events:
   - text: gift_door_01
-    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    sprite: {fileID: 21300000, guid: 9793003222ce967428421660c968f02a, type: 3}
     speakerName: natalia_name
   - text: gift_door_02
-    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
   currentText: 0

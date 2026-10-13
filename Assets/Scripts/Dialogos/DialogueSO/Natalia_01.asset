@@ -15,25 +15,25 @@ MonoBehaviour:
   wasRead: 0
   events:
   - text: natalia_01_01
-    sprite: {fileID: 0}
+    sprite: {fileID: 21300000, guid: 006be16fa8b91c74abbeeab1a5c4c680, type: 3}
     speakerName: natalia_name
   - text: natalia_01_02
-    sprite: {fileID: 0}
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
     animationCues:
     - actor: Natalia
       action: 3
       value: 
   - text: natalia_01_03
-    sprite: {fileID: 0}
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
   - text: natalia_01_04
-    sprite: {fileID: 0}
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
   - text: natalia_01_05
-    sprite: {fileID: 0}
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
   - text: natalia_01_06
-    sprite: {fileID: 0}
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
   currentText: 0
