@@ -111,7 +111,8 @@ design: `specs/006-nivel2-detective-natalia/`. The old spec
   access to the museum through his rich father (the museum's biggest patron). This makes the ticket
   mandatory for page 5. Nothing stops Kami from leaving page 1 without folding it (same as before,
   when nothing stopped her leaving without talking to Natalia).
-- **Page 5**: `MuseumPage` stops her follow and calls `StayBehind()`: talkable again, and every talk
+- **Page 5**: `MuseumPage` stops her follow, walks her to `Marks/NataliaStayMark` (a few units from Grace, so
+  their two talk triggers never overlap, #184) and then calls `StayBehind()`: talkable again, and every talk
   from then on is `_farewellDialogue` (`Natalia_Farewell`).
 - `Assets/Prefabs/NPCs/Natalia.prefab`, placed in Page 1. Visual is a placeholder
   `SpriteRenderer` child (`NataliaVisual_PLACEHOLDER`) until Valentino's Spine art;

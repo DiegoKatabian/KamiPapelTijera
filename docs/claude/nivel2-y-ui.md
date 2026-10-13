@@ -110,11 +110,14 @@ drive off after the second clue so the police tape can be cut, and the quest han
   pickups), `FindCluesTracker` (`Assets/Scripts/Level2/FindCluesTracker.cs`: counts clues,
   queues Natalia's comments, calls off the cops, fires `OnAllCluesFound` once, hands off the
   quest) and `GiftBox` (`GiftDialogueTrigger`, extended in Phase 3 — see above).
-- **Known gap: the museum fence has no colliders** (Diego does it by hand: #155, "Manually position
-  pages blocking"). `KamiMuseo.fbx` imports with
-  `addColliders: 0` and the scene adds none, so the gate's blocker only blocks the gap itself
-  — Kami can walk around it. Also positions of the gate, the gift and the hat are
-  placeholders (`_PLACEHOLDER_POSITION` in the names), to be dragged into place in the Editor.
+- **The museum's main gate is broken (#180, 2026-10-13)**: the robber got in and out through it. The fbx's two
+  `RejaCentral Puerta` doors are switched off in `Museum Page Parent.prefab` (shared by pages 2 and 5) and replaced
+  by `Prefabs/Level2/Reja Central Rota.prefab` (Diego posed the doors fallen and bent, convex MeshColliders), plus
+  extra fence pieces with MeshColliders. `CrimeSceneGate` (page 2 only) moved to that gate, its blocker resized to the
+  gap; on page 5 the gap is open. The yard slabs `Cube (11)` / `Cube (16)` use `Materials/Libro/Pasto.mat`. Page 5's
+  NavMesh must be rebaked through the gate (Ariel's arrest walks it).
+- **Page 2's catapult is scenery (#181)**: `Page 2/Catapult_Disarmed` is only art (base, post, the fired arm): no
+  `Catapult`, timeline, rope, seats or cameras. Page 5's is the working one.
 - Page 5 is page 2 after the clues (Diego): none of the page 2 gameplay objects live there.
 
 **Phase 3 (page 3, "The trap") built 2026-09-25, played in Diego's full playthrough (2026-09-28).** Chain: talk to
@@ -200,25 +203,27 @@ mandatory**: Natalia only joins Kami (Quest05 + follow) once the café ticket is
 always reaches page 5 with it.
 
 **Phase 5 (page 5, "Clearing their name") built 2026-09-28, played in Diego's full playthrough (2026-09-28).**
-`MuseumPage` (`Assets/Scripts/Level2/`, on `Page 5/Museum`) owns the page:
+`MuseumPage` (`Assets/Scripts/Level2/`, on `Page 5/Museum Sequence`) owns the page:
 
-1. Talking to **Grace** (the museum director, `Prefabs/NPCs/Grace.prefab`: a tinted Natalia sprite +
-   `GraceDialogueTrigger`, whose lines `MuseumPage` picks) needs the Pelusa, the café ticket and the
-   three clues. Her meeting dialogue ends -> the ticket pedestal (`SelloOrigami CafeTicket`, a
+1. Walking up to **Grace** (`_approachRadius`, 12) or talking to her (the museum director, `Prefabs/NPCs/Grace.prefab`:
+   a tinted Natalia sprite + `GraceDialogueTrigger`, whose lines `MuseumPage` picks) with the Pelusa, the café ticket
+   and the three clues starts the meeting (#182: no E press needed; without the evidence the approach does nothing and
+   E gets `Grace_NoProof`). Her meeting dialogue ends -> the ticket pedestal (`SelloOrigami CafeTicket`, a
    `SelloOrigami Cafe` instance pointed at `OrigamiRoute_Cafe_Unfold`, 0 paper, auto-prompt) appears.
    **Ariel and two cops are there** (Spine since spec 014: `Ariel.prefab` + the Old Male / Femme `CopEscort`
-   variants, still named `Ariel_PLACEHOLDER_POSITION` / `CopWitness1|2_PLACEHOLDER_POSITION`): they chased the escapees
-   from page 4. The meeting is where
+   variants, still named `Ariel_PLACEHOLDER_POSITION` / `CopWitness1|2_PLACEHOLDER_POSITION`) from the start, taking
+   Grace's statement about the robbery, their car (`PoliceCar_Parked`) parked in the street. The meeting is where
    Grace introduces herself, and Natalia introduces herself and Kami.
 2. The unfold shows the ticket (the girls' receipt from page 1: 2 hot chocolates, paid at 21:47) on
    the letter's `OrigamiTextRevealPanel`; closing it plays `Museum_Evidence`: both girls were at the
    café at 21:47 and heard of the robbery on its radio, Ariel's hat + glove, the watch stopped at
    21:47, Grace pointing out Ariel's access through his father, the police apology and arrest, Ariel's apology to Natalia, Grace's thanks, and **Grace's catapult offer in
    the same dialogue** (Diego, 2026-09-28: the player talks to Grace once).
-3. When that ends: the five items leave the inventory (handed over), `OnPaintingReturned` completes
-   Quest08 (removed a frame later), Natalia and the Abuela stop following where they stand,
-   Natalia becomes talkable with her farewell (`NataliaDialogueTrigger.StayBehind`), and the
-   **catapult** (`Catapult`, same object) unlocks.
+3. When that ends the cops march Ariel to their car and drive off (`MuseumArrest`, `Timeline_MuseumArrest`, #183,
+   see `cutscenes.md`). Then the five items leave the inventory (handed over), `OnPaintingReturned` completes
+   Quest08 (removed a frame later) and ends the story music, Natalia walks to `Marks/NataliaStayMark` (a few units
+   from Grace, #184) and only then becomes talkable with her farewell (`NataliaDialogueTrigger.StayBehind`), the
+   Abuela walks to `Marks/AbuelaStayMark` (Diego's) and waits there, and the **catapult** (`Catapult`) unlocks.
 4. Interact on the catapult = confirm -> short fade (`Canvas/ScreenFade`, `ScreenFader`), Kami lands in the
    bucket (walled in by `BucketWalls`, she can still attack), the Abuela next to her, her line, a
    "cut the rope" post-it. Only now is the rope's trigger on. Cutting it plays `Timeline_Catapult`
@@ -272,8 +277,8 @@ uses the new UITexts key `overlay_mainquest_level2` (scene override on the neste
 `PoliceStationPage` first time only via `_introCutscene`; cameras are static vcams under
 `PoliceStation/IntroCameras` (drag them). 6.C: `Natalia_Freed` on the padlock cut (first time only) and
 `PaperPlaneRide` (followers board on the hat fold, leave on the new `Evento.OnPaperPlaneHatLost`; parked
-if Kami lands off-NavMesh). 6.D: `Timeline_MuseumArrival` + `MuseumPage.CUE_Sirens/CarArrives/WalkUp`
-(car enters from the left of the page along the street lane). Patrolling cops are cuttable
+if Kami lands off-NavMesh). 6.D: `Timeline_MuseumArrival` (its car arrival was removed by #182: everyone is already
+there). Patrolling cops are cuttable
 (`PoliceOfficerCortable`): knocked out 12s, then resume. `PageAmbience` is placed in the scene.
 
 **Page exits are earned (2026-10-08).** `Level2/PageExitLock` (scene root) keeps a page's next-page sphere off until its

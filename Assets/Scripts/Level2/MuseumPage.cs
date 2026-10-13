@@ -5,19 +5,21 @@ using UnityEngine;
 /// <summary>
 /// Level 2 page 5, "Clearing their name" (spec 006 Phase 5): owns the page's story.
 ///
-/// 1. Talking to Grace (the museum director) needs the evidence: the Pelusa, the café ticket and
-///    the three page 2 clues. With it the ARRIVAL CUTSCENE plays (Timeline_MuseumArrival: Grace
-///    reacts to the Pelusa, sirens, a patrol car drives in, Ariel and two cops walk up, the camera pulls
-///    back and returns) and then she hears the girls out (_graceMeeting); without the evidence she
-///    asks for proof, which a normal playthrough never reaches.
-///    Ariel and the cops are NOT on the page until then: they chased the escapees from the police station.
+/// 1. Ariel and two cops are already with Grace (the museum director), taking her statement, their
+///    patrol car parked nearby (#182). Walking up to Grace (_approachRadius) or talking to her, with
+///    the evidence (the Pelusa, the café ticket and the three page 2 clues), plays the ARRIVAL
+///    CUTSCENE (Timeline_MuseumArrival: Grace reacts to the Pelusa, the camera pulls back and returns)
+///    and then she hears the girls out (_graceMeeting). Without the evidence the approach does nothing
+///    and talking gets her asking for proof, which a normal playthrough never reaches.
 /// 2. When her meeting dialogue ends the café ticket's pedestal appears and auto-prompts the unfold.
 /// 3. Once the ticket's text is read and closed, _evidenceDialogue plays: Natalia's receipt is her
 ///    alibi, the hat and glove are Ariel's, the watch dates the robbery, the police apologize, and
 ///    Grace offers the catapult to send Kami and the Abuela home (one talk, Diego 2026-09-28).
-/// 4. When it ends everything is handed over (it leaves the inventory), OnPaintingReturned completes
-///    Quest08, Natalia and the Abuela stop following Kami (Natalia is talkable again, farewell) and
-///    the catapult (Catapult), which ends the level, unlocks.
+/// 4. When it ends the cops march Ariel to the patrol car and drive off (MuseumArrest, #183).
+/// 5. Then everything is handed over (it leaves the inventory), OnPaintingReturned completes Quest08
+///    (and ends the story music), Natalia walks to her spot away from Grace and becomes talkable
+///    (farewell, #184), the Abuela stops following and the catapult (Catapult), which ends the level,
+///    unlocks.
 ///
 /// Starting the scene on this page (PageScrollerManager.startingPage) sets it up by itself: the
 /// items, Quest08 and both followers, as if Kami had just arrived from page 4.
@@ -30,6 +32,7 @@ public class MuseumPage : MonoBehaviour
         Meeting,
         WaitingForTicket,
         Evidence,
+        Arrest,
         CatapultReady
     }
 
@@ -52,33 +55,19 @@ public class MuseumPage : MonoBehaviour
     [SerializeField, Tooltip("Talking to her once the catapult is unlocked.")]
     DialogueSO _graceCatapultReminder;
 
+    [SerializeField, Tooltip("Walking within this distance of Grace (horizontal, world units) with the evidence starts the meeting by itself, once. 0 = only by talking to her.")]
+    float _approachRadius = 12f;
+
     [Header("Arrival cutscene")]
-    [SerializeField, Tooltip("Timeline_MuseumArrival. Played on the first talk with the evidence. Empty = no cutscene: Ariel and the cops are just there and Grace plays the meeting directly.")]
+    [SerializeField, Tooltip("Timeline_MuseumArrival. Played when the meeting starts. Empty = no cutscene: Grace plays the meeting directly.")]
     CutsceneDirector _arrivalCutscene;
 
     [SerializeField, Tooltip("Shots that frame Kami: their Follow is set to her when the cutscene starts (a scene object cannot be assigned her prefab instance in the timeline).")]
     CinemachineVirtualCamera[] _camerasFollowingKami;
 
-    [SerializeField, Tooltip("Ariel. Hidden until the cutscene; where he is placed in the scene is where he ends up standing.")]
-    Transform _ariel;
-
-    [SerializeField, Tooltip("The cops (Old Male + Femme). Same as Ariel: hidden until the cutscene, they end up where they are placed in the scene. Their NavMeshAgent is switched off: the walk-up slides them.")]
-    Transform[] _copWitnesses;
-
-    [SerializeField, Tooltip("The patrol car. Hidden until it drives in.")]
-    Transform _patrolCar;
-
-    [SerializeField, Tooltip("Where the car comes from (out of frame).")]
-    Transform _carStart;
-
-    [SerializeField, Tooltip("Where the car parks. Ariel and the cops step out here and walk to their spots.")]
-    Transform _carStop;
-
-    [SerializeField, Tooltip("Seconds the car takes to drive from its start to its stop (it slows down as it arrives).")]
-    float _carArriveSeconds = 2.8f;
-
-    [SerializeField, Tooltip("Seconds Ariel and the cops take to walk from the car to their spots.")]
-    float _walkUpSeconds = 2.5f;
+    [Header("Ariel's arrest")]
+    [SerializeField, Tooltip("Timeline_MuseumArrest: after the evidence dialogue the cops take Ariel to the patrol car. Empty = the case closes straight away and Ariel stays where he is.")]
+    MuseumArrest _arrest;
 
     [Header("Evidence")]
     [SerializeField, Tooltip("Kami needs at least one of each to be heard out.")]
@@ -112,6 +101,15 @@ public class MuseumPage : MonoBehaviour
     [SerializeField, Tooltip("Natalia (the one from page 1: there is only one in the level).")]
     NPC _natalia;
 
+    [SerializeField, Tooltip("Where Natalia waits once the case is closed: a few units from Grace, so talking to each of them is a separate spot. Empty = she stays where she is.")]
+    Transform _nataliaStayMark;
+
+    [SerializeField, Tooltip("Where the Abuela waits once the case is closed, until Kami boards the catapult. Empty = she stays where she is.")]
+    Transform _abuelaStayMark;
+
+    [SerializeField, Tooltip("Safety net: Natalia becomes talkable (and both stop trying to walk) after this many seconds even if they haven't reached their marks (unreachable mark?).")]
+    float _nataliaWalkMaxSeconds = 15f;
+
     [SerializeField, Tooltip("Page 4's Abuela entrance: the Abuela who follows Kami comes from there.")]
     AbuelaEntrance _abuelaEntrance;
 
@@ -131,8 +129,6 @@ public class MuseumPage : MonoBehaviour
 
     Phase _phase = Phase.Arrived;
     bool _questHandedOff;
-    Vector3 _arielSpot;
-    Vector3[] _copSpots = new Vector3[0];
 
     NPC Abuela => _abuelaEntrance != null ? _abuelaEntrance.Abuela : null;
 
@@ -159,31 +155,6 @@ public class MuseumPage : MonoBehaviour
         if (_ticketPedestal != null)
         {
             _ticketPedestal.SetActive(false);
-        }
-
-        //they arrive in the cutscene: remember where they were placed, and keep them off the page until then
-        if (_ariel != null)
-        {
-            _arielSpot = _ariel.position;
-            _ariel.gameObject.SetActive(false);
-        }
-
-        _copSpots = new Vector3[_copWitnesses != null ? _copWitnesses.Length : 0];
-        for (int i = 0; i < _copSpots.Length; i++)
-        {
-            Transform cop = _copWitnesses[i];
-            if (cop == null)
-            {
-                continue;
-            }
-
-            _copSpots[i] = cop.position;
-            cop.gameObject.SetActive(false);
-        }
-
-        if (_patrolCar != null)
-        {
-            _patrolCar.gameObject.SetActive(false);
         }
 
         if (PageScrollerManager.Instance != null && PageScrollerManager.Instance.startingPage == _pageNumber)
@@ -233,8 +204,7 @@ public class MuseumPage : MonoBehaviour
 
         if (_arrivalCutscene == null)
         {
-            Debug.LogWarning("[MuseumPage] no arrival cutscene assigned: Ariel and the cops are just there and Grace plays the meeting directly");
-            ShowPeople();
+            Debug.LogWarning("[MuseumPage] no arrival cutscene assigned: Grace plays the meeting directly");
             return _graceMeeting;
         }
 
@@ -252,161 +222,51 @@ public class MuseumPage : MonoBehaviour
         return null;
     }
 
-    void ShowPeople()
+    //#182: the meeting starts by itself when the girls walk up to Grace, the same as talking to her
+    void Update()
     {
-        if (_ariel != null)
+        if (_phase != Phase.Arrived || _approachRadius <= 0f || _grace == null || !ScreenIsFree())
         {
-            _ariel.position = _arielSpot;
-            _ariel.gameObject.SetActive(true);
-        }
-
-        for (int i = 0; i < _copSpots.Length; i++)
-        {
-            Transform cop = _copWitnesses[i];
-            if (cop != null)
-            {
-                StopAgent(cop);
-                cop.position = _copSpots[i];
-                cop.gameObject.SetActive(true);
-            }
-        }
-    }
-
-    /// <summary>Signal: the sirens start, from off the page.</summary>
-    public void CUE_Sirens()
-    {
-        if (AudioManager.instance != null)
-        {
-            AudioManager.instance.Play(AudioId.PoliceSirenLoop);
-        }
-    }
-
-    /// <summary>Signal: the patrol car drives in from off frame and parks.</summary>
-    public void CUE_CarArrives()
-    {
-        if (_patrolCar == null || _carStart == null || _carStop == null)
-        {
-            Debug.LogWarning("[MuseumPage] no patrol car or its marks: the car never arrives");
             return;
         }
 
-        StartCoroutine(DriveCarIn());
-    }
-
-    IEnumerator DriveCarIn()
-    {
-        Vector3 direction = _carStop.position - _carStart.position;
-        direction.y = 0f;
-
-        _patrolCar.position = _carStart.position;
-        if (direction.sqrMagnitude > 0.0001f)
+        Player player = LevelManager.Instance.player;
+        Vector3 toGrace = _grace.transform.position - player.transform.position;
+        toGrace.y = 0f;
+        if (toGrace.sqrMagnitude > _approachRadius * _approachRadius || !HasEvidence(false))
         {
-            _patrolCar.rotation = Quaternion.LookRotation(direction);
-        }
-        _patrolCar.gameObject.SetActive(true);
-
-        if (AudioManager.instance != null)
-        {
-            AudioManager.instance.Play(AudioId.PoliceHorn);
-            AudioManager.instance.Play(AudioId.CarEngine);
+            return;
         }
 
-        bool braked = false;
-        float elapsed = 0f;
-        while (elapsed < _carArriveSeconds)
+        Debug.Log("[MuseumPage] Kami walked up to Grace with the evidence: the meeting starts by itself");
+        DialogueSO meeting = StartArrival();
+        if (meeting != null)
         {
-            float t = elapsed / Mathf.Max(0.01f, _carArriveSeconds);
-            //ease out: a car pulling up to the kerb slows down as it arrives
-            _patrolCar.position = Vector3.Lerp(_carStart.position, _carStop.position, 1f - ((1f - t) * (1f - t)));
-
-            if (!braked && t > 0.7f)
-            {
-                braked = true;
-                if (AudioManager.instance != null)
-                {
-                    AudioManager.instance.Play(AudioId.CarBrake);
-                }
-            }
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        _patrolCar.position = _carStop.position;
-    }
-
-    /// <summary>Signal: the doors slam, Ariel and the cops get out and walk up to the group. The siren stops.</summary>
-    public void CUE_WalkUp()
-    {
-        if (AudioManager.instance != null)
-        {
-            AudioManager.instance.StopById(AudioId.PoliceSirenLoop);
-            AudioManager.instance.Play(AudioId.CarDoor);
-            AudioManager.instance.Play(AudioId.RunningFootsteps);
-        }
-
-        Vector3 door = _carStop != null ? _carStop.position : _arielSpot;
-        StartCoroutine(WalkTo(_ariel, door, _arielSpot));
-        for (int i = 0; i < _copSpots.Length; i++)
-        {
-            StartCoroutine(WalkTo(_copWitnesses[i], door, _copSpots[i]));
+            DialogueManager.Instance.ShowDialogue(meeting);
         }
     }
 
-    //the cops are NPC prefabs (CopEscort variants): an enabled NavMeshAgent would snap them back to the
-    //mesh every frame and undo the slide. They never walk on their own on this page, so it stays off.
-    static void StopAgent(Transform person)
+    //nothing else on screen and Kami free to walk, so the meeting never cuts into a dialogue, a fold or the menu
+    static bool ScreenIsFree()
     {
-        UnityEngine.AI.NavMeshAgent agent = person.GetComponent<UnityEngine.AI.NavMeshAgent>();
-        if (agent != null)
+        LevelManager levelManager = LevelManager.Instance;
+        if (levelManager == null || levelManager.player == null || levelManager.inDialogue || levelManager.inCutscene)
         {
-            agent.enabled = false;
-        }
-    }
-
-    //they keep their own height (the sprite's pivot is at its center), only X and Z travel
-    IEnumerator WalkTo(Transform person, Vector3 from, Vector3 to)
-    {
-        if (person == null)
-        {
-            yield break;
+            return false;
         }
 
-        Vector3 start = new Vector3(from.x, to.y, from.z);
-        StopAgent(person);
-        person.position = start;
-        person.gameObject.SetActive(true);
-
-        //he appears at the car door: his physics must not read the jump from where he was hidden
-        SpineCharacter character = person.GetComponent<SpineCharacter>();
-        if (character != null)
+        if (FlapManager.Instance != null && FlapManager.Instance.IsMenuOpen)
         {
-            character.ResetPhysics();
+            return false;
         }
 
-        float elapsed = 0f;
-        while (elapsed < _walkUpSeconds)
-        {
-            person.position = Vector3.Lerp(start, to, elapsed / Mathf.Max(0.01f, _walkUpSeconds));
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        person.position = to;
-    }
-
-    void OnDisable()
-    {
-        //the page is switched off mid-cutscene only by a test or a bug: never leave the siren looping
-        if (AudioManager.instance != null)
-        {
-            AudioManager.instance.StopById(AudioId.PoliceSirenLoop);
-        }
+        return DialogueManager.Instance != null && DialogueManager.Instance.CanShowDialogueNow;
     }
 
     // ---------------------------------------------------------------- Grace
 
-    bool HasEvidence()
+    //log = false for the approach check, which asks every frame Kami stands near Grace
+    bool HasEvidence(bool log = true)
     {
         LevelManager levelManager = LevelManager.Instance;
         if (levelManager == null)
@@ -418,7 +278,10 @@ public class MuseumPage : MonoBehaviour
         {
             if (!levelManager.recursosRecolectados.TryGetValue(item, out int held) || held <= 0)
             {
-                Debug.Log($"[MuseumPage] Kami has no {item}: Grace asks for proof");
+                if (log)
+                {
+                    Debug.Log($"[MuseumPage] Kami has no {item}: Grace asks for proof");
+                }
                 return false;
             }
         }
@@ -445,7 +308,7 @@ public class MuseumPage : MonoBehaviour
         }
         else if (_phase == Phase.Evidence && ended == _evidenceDialogue && _evidenceDialogue != null)
         {
-            CloseTheCase();
+            StartArrest();
         }
     }
 
@@ -479,11 +342,26 @@ public class MuseumPage : MonoBehaviour
 
         if (_evidenceDialogue == null)
         {
-            CloseTheCase();
+            StartArrest();
             yield break;
         }
 
         DialogueManager.Instance.ShowDialogue(_evidenceDialogue);
+    }
+
+    //#183: the cops take Ariel away first; the case closes once the patrol car has left
+    void StartArrest()
+    {
+        _phase = Phase.Arrest;
+
+        if (_arrest == null)
+        {
+            Debug.LogWarning("[MuseumPage] no _arrest assigned: the case closes with Ariel still standing there");
+            CloseTheCase();
+            return;
+        }
+
+        _arrest.Play(CloseTheCase);
     }
 
     void CloseTheCase()
@@ -496,20 +374,13 @@ public class MuseumPage : MonoBehaviour
         if (_natalia != null)
         {
             _natalia.StopFollowingPlayer();
-            NataliaDialogueTrigger talk = _natalia.GetComponentInChildren<NataliaDialogueTrigger>(true);
-            if (talk != null)
-            {
-                talk.StayBehind();
-            }
-            else
-            {
-                Debug.LogWarning("[MuseumPage] Natalia has no NataliaDialogueTrigger child, she stays mute");
-            }
+            StartCoroutine(NataliaStaysBehind());
         }
 
         if (Abuela != null)
         {
             Abuela.StopFollowingPlayer();
+            StartCoroutine(WalkToMark(Abuela, _abuelaStayMark));
         }
 
         if (_museumQuest != null && QuestManager.Instance != null && QuestManager.Instance.HasQuest(_museumQuest))
@@ -521,6 +392,71 @@ public class MuseumPage : MonoBehaviour
         if (_catapult != null)
         {
             _catapult.Unlock(Abuela);
+        }
+    }
+
+    //#184: stopping her where she stood often left her next to Grace, and their two talk triggers
+    //overlapped. She walks to her own spot first and only then becomes talkable.
+    IEnumerator NataliaStaysBehind()
+    {
+        yield return WalkToMark(_natalia, _nataliaStayMark);
+
+        NataliaDialogueTrigger talk = _natalia.GetComponentInChildren<NataliaDialogueTrigger>(true);
+        if (talk != null)
+        {
+            talk.StayBehind();
+        }
+        else
+        {
+            Debug.LogWarning("[MuseumPage] Natalia has no NataliaDialogueTrigger child, she stays mute");
+        }
+    }
+
+    //a follower who stopped following walks to her waiting spot on the NavMesh and faces Kami there
+    IEnumerator WalkToMark(NPC npc, Transform mark)
+    {
+        if (mark == null)
+        {
+            Debug.LogWarning($"[MuseumPage] {npc.name} has no stay mark: she stays where she stopped following");
+            yield break;
+        }
+
+        Debug.Log($"[MuseumPage] {npc.name} walks to {mark.name}");
+        npc.MoveTowards(mark.position, true);
+        yield return null; //the path request needs a frame before HasArrived means anything
+
+        float waited = 0f;
+        while (!npc.HasArrived() && waited < _nataliaWalkMaxSeconds)
+        {
+            //Kami boarded the catapult: it switched the Abuela's agent off and seated her by hand
+            if (npc.navAgent == null || !npc.navAgent.enabled)
+            {
+                yield break;
+            }
+
+            npc.MoveTowards(mark.position);
+            waited += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!npc.HasArrived())
+        {
+            Debug.LogWarning($"[MuseumPage] {npc.name} did not reach {mark.name} in {_nataliaWalkMaxSeconds}s (off the NavMesh?), she stays where she is");
+        }
+
+        npc.StopAgent();
+        if (npc.Character != null && LevelManager.Instance.player != null)
+        {
+            npc.Character.FaceTowards(LevelManager.Instance.player.transform.position);
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (_grace != null && _approachRadius > 0f)
+        {
+            Gizmos.color = new Color(1f, 0.8f, 0.2f, 0.6f);
+            Gizmos.DrawWireSphere(_grace.transform.position, _approachRadius);
         }
     }
 
