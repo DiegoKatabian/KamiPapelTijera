@@ -183,6 +183,13 @@ public class PoliceStationPage : MonoBehaviour
             QuestManager.Instance.AddQuest(_escapeQuest);
         }
 
+        //before StartSequence: the confiscation takes the Pelusa and the pickup gives it back, like
+        //after the real arrest (#187)
+        Level2TestStartItems.GrantItemsBefore(_pageNumber);
+
+        //the arrest's story music, as if it had played (PageMusicManager)
+        EventManager.Trigger(Evento.OnArrestStarted);
+
         StartSequence(firstTime: true);
     }
 

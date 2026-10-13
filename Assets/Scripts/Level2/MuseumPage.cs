@@ -606,6 +606,9 @@ public class MuseumPage : MonoBehaviour
             QuestManager.Instance.AddQuest(_museumQuest);
         }
 
+        //the case is still open: the arrest's story music plays until the painting is returned (PageMusicManager)
+        EventManager.Trigger(Evento.OnArrestStarted);
+
         Vector3 kami = player.transform.position;
         Vector3 side = player.transform.right * _followerSpacing;
 

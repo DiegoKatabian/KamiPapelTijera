@@ -239,6 +239,24 @@ Kami), page 3 `ArrestCutscene` (following, no Quest05), page 4 `PoliceStationPag
 her cell as before). It marks her page 1 conversation done (`NataliaDialogueTrigger.SkipToJoined`) and makes her not
 talkable, like a real join. Page 5 keeps `MuseumPage`'s own setup.
 
+**...and the items the earlier pages give (#187, 2026-10-13).** The same test starts call
+`Level2/Level2TestStartItems.GrantItemsBefore(page)`: one table in code (page 1 the café ticket, page 2 the three clues,
+page 3 the Pelusa), granted quietly (`ownedAtLevelStart`, no sticker), skipping what Kami holds. Page 4 grants them
+before `StartSequence`, so the confiscation takes the Pelusa and the pickup gives it back like in the real flow. Page 4
+and 5 test starts also raise `OnArrestStarted`, so the story music plays as it would after the arrest.
+
+**A sun per page (#179, 2026-10-13).** `LightCycler` on `Nivel (Mesa y Libro)/Luces/EL SOL` is on in Level 2 with
+5 states (index 0 = page 1), all at the light's authored rotation and position: page 1 is the authored warm 0.3, then
+cooler and dimmer (0.255 / 0.195 / night blue 0.135), page 5 = page 2. It eases position, rotation (slerp), colour and
+intensity over `_transitionDuration` on `OnPageTurnStart`, and applies the starting page instantly. Its old code
+snapped to the target and wrote the rotation into the position; Level 1's sun now eases its rotation too.
+
+**Page 3's traffic jam (#177).** Page 3's four stopped cars are `Prefabs/Traffic/Paper Car Idling.prefab`, a variant
+of `Paper Car Stationed Variant` (left untouched: pages 1 and 4 use it too) that switches the car's own exhaust
+(`HumoChimenea`) back on, in world space with a steady rate, and adds `Traffic/IdlingCar`: a positional engine loop
+(`CarEngineIdleLoop`) and a honk every `_hornMinSeconds`-`_hornMaxSeconds` (`CarHornIdling`). How far away they are
+heard is on the two AudioBank rows (see `audio-y-particulas.md`).
+
 `Level2_EndCutscene.unity` (`GameScene.Level2EndCutscene`, catalog + Build Settings) is a copy of
 `Nivel1_EndCutscene` running `Narrator_Level2Ending` (the flight, the Narrator's blue lamp, a third
 book) with empty portraits, then MainMenu: Valentino swaps the frames in the DialogueSO's sprites.
@@ -301,10 +319,13 @@ page-turn). `AddResource()` dispara `Evento.OnResourceUpdated`, consumido por
 (MemoFloraMainLoop en Nivel 1, BohrenDestroyingAngels en Nivel 2). **Level 2 music is per
 page since 2026-09-24**: `PageMusicManager` (`Assets/Scripts/Managers/`, instance of
 `Prefabs/Level2/PageMusicManager.prefab` at the scene root) holds one AudioId per page in the
-Inspector — Bohren on pages 1-2, silence on 3, **page 4 empty until its own track exists**
-(just type the id there), Bohren again on 5. It re-applies on `OnNewPageOpen` and one frame
-after start, so it wins over `LevelManager.Start` on a test started from page 3 y expone un sistema
-de cheats solo-editor gateado por flags.
+Inspector — Bohren on pages 1-2, silence on 3, `DeadEndAngels` on 4, Bohren again on 5. It re-applies
+on `OnNewPageOpen` and one frame after start, so it wins over `LevelManager.Start` on a test started from
+page 3. **Story music (#176, 2026-10-13)**: `_storyMusic` (`DeadEndAngels` in the prefab) overrides every page
+from `_storyMusicStartsOn` (`OnArrestStarted`, raised by the arrest) until `_storyMusicEndsOn`
+(`OnPaintingReturned`, page 5's evidence), latched: the tension track runs through the escape without
+restarting, pages 1-3 included, and page 5 goes back to Bohren when the case closes. LevelManager también expone
+un sistema de cheats solo-editor gateado por flags.
 
 **Verificado**: el flujo de page-turn documentado en `paginas-y-hoja.md` sigue
 coincidiendo con el código actual (PageScrollerManager → PlayerPageSpawnManager →

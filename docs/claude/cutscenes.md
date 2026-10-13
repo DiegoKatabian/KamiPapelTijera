@@ -23,15 +23,30 @@ input path as the stick, so Kami animates and collides normally.
 Open `Assets/Timelines/Level2/Timeline_Arrest.playable` with the `ArrestCutscene_PLACEHOLDER_POSITION`
 object selected (scene root, Level2_Newspaper). Everything is a drag:
 
-- **Cameras** track: three shots (`CM Arrest PullBack` / `Escort` / `CarFollow`, children of the
+- **Cameras** track: four shots (`CM Arrest PullBack` / `Ariel` / `Escort` / `CarFollow`, children of the
   prefab). Overlap two clips to blend. Framing = each vcam's Transposer `Follow Offset` + its X tilt.
-  PullBack/Escort follow Kami (assigned at runtime), CarFollow follows the patrol car.
+  PullBack/Escort follow Kami (assigned at runtime), Ariel follows Ariel (a prefab reference, he is inside
+  it), CarFollow follows the patrol car. PullBack is two clips (0-1.2s and 2.4-3.8s) around the Ariel clip
+  (0.7-2.9s, #175): a clip can't sit inside another on the same track. Ariel is fully framed by 1.2s, so the
+  whole `Arrest_Accusation` dialogue (Natalia's reply included) holds on him.
 - **Street (appears)** / **StreetCops (appears)**: when Ariel + the car, and the two street cops, are
-  visible. Both switch off when the timeline ends.
+  visible. Both switch off when the timeline ends. StreetCops ends at 3.05s, just after the
+  `CopsBehindGirls` signal, so the street cops vanish while the screen is black (below).
 - **Markers** row: 3 dialogue markers (`Arrest_Shout`, `Arrest_Accusation`, `Arrest_Cuffs`) and 5
   signals, in order: `CopsBehindGirls` → `StartEscort` → `BoardCar` → `DriveOff` → `TurnPage`.
   **Keep `TurnPage` before the end of the last camera clip** — the timeline's length is its clips, and
   a marker past the end never fires.
+
+**The escort cops appear behind a fade (#174, built 2026-10-13, not playtested).** `CopsBehindGirls` holds the
+timeline, fades to black (`Canvas/ScreenFade`, `ScreenFader`, `_screenFader` on `ArrestCutscene`), puts cop 1 behind
+Kami and cop 2 behind Natalia (`_copsBehindDistance` away from the car door, each from her own girl), resumes the
+timeline while still black (so the StreetCops clip ends unseen), holds black and fades back in. Seconds are the
+`Cops appear behind a fade` header on `ArrestCutscene`. The `Arrest_Cuffs` marker (3.4s) fires during the fade-in.
+
+**The arrest cuts the jazz (#176).** When the cutscene starts (about 0.5s before the shout line), `ArrestCutscene`
+stops page 3's band (`_bandMusic`, the `Live Music - Alone Together` AudioSource, disabled so it stays off if Kami
+walks back to page 3) and raises `Evento.OnArrestStarted`, which starts `PageMusicManager`'s story music (see
+`nivel2-y-ui.md`).
 
 **Escort formation (spec 013, not playtested).** From `StartEscort` the cops walk the NavMesh to the car door and Kami
 marches along their route, ahead of them, at `_escortWalkInput` (0.3, clamped under `Player.walkThreshold`). Tuning is

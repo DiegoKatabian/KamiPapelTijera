@@ -77,6 +77,12 @@ out for `_knockedOutSeconds` (12), blind and still, cone hidden (`VisionConeView
 Variant` (skin `Policia 3`) patrols the same route from corner B: `_startWaypointIndex` picks his first waypoint, and
 `ResetToStart` honours it. The sprite path still works for an officer without a `SpineCharacter`.
 
+**The cone's spot light (#178, 2026-10-13, not played)**: `VisionCone.prefab` has a spot `Light` child, which
+`VisionConeView` drives every frame from the officer's numbers: `_lightHeight` (4) above his feet, aimed along `Facing`
+tilted down `_lightPitch` (15), spot angle = vision angle + `_lightAngleMargin` (49.5), range = vision range x
+`_lightRangeMultiplier` (2) (both defaults reproduce the hand-tuned 94.5 / 20 at today's 45 / 10 cone), colour = the
+fan's colour without its alpha, off while he is knocked out. Its intensity stays whatever the prefab says.
+
 Not done from spec 002: FR-007's separate test scene (Diego tests page 4 directly: start the scene
 with `PageScrollerManager.startingPage = 4`) and any hearing (v1 is vision only, as decided).
 

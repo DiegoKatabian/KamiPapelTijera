@@ -32,6 +32,18 @@ public class SoundEntry
     [Tooltip("0 = 2D (the default for almost everything here), 1 = fully positional.")]
     [Range(0f, 1f)] public float spatialBlend = 0f;
 
+    [Tooltip("Positional sounds only: full volume within this distance of the listener. The " +
+             "listener is on the camera, 13-45 units from Kami, so a 3D sound meant to be heard " +
+             "near her needs a min distance around that size. Default = Unity's AudioSource default.")]
+    public float minDistance = 1f;
+
+    [Tooltip("Positional sounds only: with linear rolloff, silent past this distance.")]
+    public float maxDistance = 500f;
+
+    [Tooltip("Positional sounds only: fade linearly from min to max distance. Off = Unity's " +
+             "logarithmic rolloff, which is nearly silent at camera distance with a small min.")]
+    public bool linearRolloff;
+
     [Range(0, 256)] public int priority = 128;
 
     [Tooltip("If already at maxSimultaneous, stop the oldest instance of this id instead of " +

@@ -89,6 +89,8 @@ public class FindCluesTracker : MonoBehaviour
         yield return null;
         yield return null;
 
+        Level2TestStartItems.GrantItemsBefore(_pageNumber); //the café ticket (#187)
+
         if (_natalia == null)
         {
             Debug.LogWarning("[FindCluesTracker] _natalia is not assigned: she is not brought along for this test start");

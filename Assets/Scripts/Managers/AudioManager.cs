@@ -158,6 +158,10 @@ public class AudioManager : MonoBehaviour
         source.pitch = finalPitch;
         source.priority = entry.priority;
         source.spatialBlend = positional ? Mathf.Max(entry.spatialBlend, 1f) : entry.spatialBlend;
+        //set on every play (not reset on release): a pooled source must not keep the last sound's rolloff
+        source.minDistance = entry.minDistance;
+        source.maxDistance = entry.maxDistance;
+        source.rolloffMode = entry.linearRolloff ? AudioRolloffMode.Linear : AudioRolloffMode.Logarithmic;
         source.volume = entry.volume * _globalVolume * BusVolume(entry.bus);
         source.mute = !_soundOn;
         source.transform.position = positional ? position : Vector3.zero;

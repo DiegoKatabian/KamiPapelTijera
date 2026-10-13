@@ -33,11 +33,28 @@ public class ArrestCutscene : MonoBehaviour
     [SerializeField, Tooltip("The cops that pop up behind the girls and escort them. Start inactive.")]
     NPC[] _escortCops;
 
-    [SerializeField, Tooltip("How far behind the girls the escort cops appear, away from the car.")]
+    [SerializeField, Tooltip("How far behind each girl her escort cop appears, away from the car (cop 1 behind Kami, cop 2 behind Natalia).")]
     float _copsBehindDistance = 5f;
 
-    [SerializeField, Tooltip("Sideways spacing between the escort cops.")]
+    [SerializeField, Tooltip("Sideways spacing when more than one cop stands behind the same girl (a third cop, or no Natalia).")]
     float _copsSpread = 3f;
+
+    [Header("Cops appear behind a fade (#174)")]
+    [SerializeField, Tooltip("The full-screen fader (Canvas/ScreenFade). Found in the scene if empty. Without one the cops pop in on screen.")]
+    ScreenFader _screenFader;
+
+    [SerializeField, Tooltip("Seconds to fade to black before the cops appear (the timeline holds meanwhile).")]
+    float _copsFadeOutSeconds = 0.35f;
+
+    [SerializeField, Tooltip("Seconds the screen stays black once the cops are placed. The timeline runs again during it, so the street cops' clip ends while it is black.")]
+    float _copsBlackHoldSeconds = 0.3f;
+
+    [SerializeField, Tooltip("Seconds to fade back in.")]
+    float _copsFadeInSeconds = 0.4f;
+
+    [Header("Music (#176)")]
+    [SerializeField, Tooltip("Page 3's live jazz band (an AudioSource in the scene). Stopped when the police show up, and kept off for the rest of the level.")]
+    AudioSource _bandMusic;
 
     [Header("Escort walk")]
     [SerializeField, Tooltip("Where Kami walks to during the escort: the patrol car's door.")]
@@ -162,6 +179,8 @@ public class ArrestCutscene : MonoBehaviour
         yield return null;
         yield return null;
 
+        Level2TestStartItems.GrantItemsBefore(_pageNumber); //the café ticket and the clues (#187)
+
         if (_natalia is NPC_Natalia natalia)
         {
             natalia.SetUpForTestStart(_pageNumber, followKami: true);
@@ -222,7 +241,24 @@ public class ArrestCutscene : MonoBehaviour
         }
 
         Debug.Log("[ArrestCutscene] the letter was read, the police arrive");
+        StopBand();
+        EventManager.Trigger(Evento.OnArrestStarted); //PageMusicManager: the story music takes over
         _cutscene.Play();
+    }
+
+    //disabled, not only stopped: a play-on-awake source would start again when Kami walks back to
+    //page 3 and its folder is switched on
+    void StopBand()
+    {
+        if (_bandMusic == null)
+        {
+            Debug.LogWarning("[ArrestCutscene] no _bandMusic assigned, the jazz band keeps playing through the arrest");
+            return;
+        }
+
+        _bandMusic.Stop();
+        _bandMusic.enabled = false;
+        Debug.Log($"[ArrestCutscene] the band stops ({_bandMusic.name})");
     }
 
     void Update()
@@ -415,7 +451,10 @@ public class ArrestCutscene : MonoBehaviour
 
     // ---------------------------------------------------------------- timeline signals
 
-    /// <summary>Signal: the escort cops appear right behind the girls, wherever Kami is standing.</summary>
+    /// <summary>
+    /// Signal: the escort cops appear, one behind each girl, while the screen is black, so the
+    /// player never sees them pop in.
+    /// </summary>
     public void CUE_CopsBehindGirls()
     {
         if (_player == null)
@@ -423,11 +462,50 @@ public class ArrestCutscene : MonoBehaviour
             return;
         }
 
-        Vector3 kami = _player.transform.position;
-        Vector3 away = _carDoorMark != null ? kami - _carDoorMark.position : -_player.transform.forward;
-        away.y = 0f;
-        away = away.sqrMagnitude > 0.0001f ? away.normalized : Vector3.back;
-        Vector3 side = Vector3.Cross(Vector3.up, away);
+        StartCoroutine(CopsAppearBehindFade());
+    }
+
+    IEnumerator CopsAppearBehindFade()
+    {
+        if (_screenFader == null)
+        {
+            _screenFader = FindObjectOfType<ScreenFader>();
+            if (_screenFader == null)
+            {
+                Debug.LogWarning("[ArrestCutscene] no ScreenFader in the scene: the cops appear without a fade");
+            }
+        }
+
+        if (_screenFader != null)
+        {
+            _cutscene.HoldTimeline();
+            yield return _screenFader.FadeOut(_copsFadeOutSeconds);
+        }
+
+        PlaceCopsBehindGirls();
+
+        //the squad rolls in: brakes, a horn beep, running boots, and the siren stays on until the
+        //car leaves (stopped in CUE_TurnPage/WrapUp/OnDestroy)
+        PlaySound(AudioId.CarBrake);
+        PlaySound(AudioId.PoliceHorn);
+        PlaySound(AudioId.RunningFootsteps);
+        PlaySound(AudioId.PoliceSirenLoop);
+
+        if (_screenFader != null)
+        {
+            //resumed while still black: the street cops' Timeline clip ends just after this signal,
+            //and they must vanish where nobody sees it
+            _cutscene.ResumeTimeline();
+            yield return new WaitForSeconds(_copsBlackHoldSeconds);
+            yield return _screenFader.FadeIn(_copsFadeInSeconds);
+        }
+    }
+
+    void PlaceCopsBehindGirls()
+    {
+        bool nataliaHere = _natalia != null && _natalia.gameObject.activeInHierarchy;
+        int behindKami = 0;
+        int behindNatalia = 0;
 
         for (int i = 0; i < _escortCops.Length; i++)
         {
@@ -437,23 +515,25 @@ public class ArrestCutscene : MonoBehaviour
                 continue;
             }
 
-            //spread the cops evenly across the line behind the girls
-            float slot = _escortCops.Length == 1 ? 0f : (i / (float)(_escortCops.Length - 1)) - 0.5f;
-            Vector3 position = kami + (away * _copsBehindDistance) + (side * slot * _copsSpread * 2f);
+            //the second cop takes Natalia; any other cop (or the second one, without her) lines up behind Kami
+            bool forNatalia = i == 1 && nataliaHere;
+            Vector3 girl = forNatalia ? _natalia.transform.position : _player.transform.position;
+            int slot = forNatalia ? behindNatalia++ : behindKami++;
+
+            Vector3 away = _carDoorMark != null ? girl - _carDoorMark.position : -_player.transform.forward;
+            away.y = 0f;
+            away = away.sqrMagnitude > 0.0001f ? away.normalized : Vector3.back;
+            Vector3 side = Vector3.Cross(Vector3.up, away);
+            //0, +1, -1, +2...: the first cop behind a girl stands right behind her
+            float sideSteps = slot == 0 ? 0f : (slot % 2 == 1 ? 1f : -1f) * ((slot + 1) / 2);
+            Vector3 position = girl + (away * _copsBehindDistance) + (side * sideSteps * _copsSpread);
 
             cop.gameObject.SetActive(true);
             cop.player = _player;
             cop.WarpTo(position);
         }
 
-        //the squad rolls in: brakes, a horn beep, running boots, and the siren stays on until the
-        //car leaves (stopped in CUE_TurnPage/WrapUp/OnDestroy)
-        PlaySound(AudioId.CarBrake);
-        PlaySound(AudioId.PoliceHorn);
-        PlaySound(AudioId.RunningFootsteps);
-        PlaySound(AudioId.PoliceSirenLoop);
-
-        Debug.Log("[ArrestCutscene] the cops appear behind the girls");
+        Debug.Log($"[ArrestCutscene] the cops appear behind the girls ({behindKami} behind Kami, {behindNatalia} behind Natalia)");
     }
 
     /// <summary>Signal: Kami walks to the car door, Natalia and the cops follow her.</summary>

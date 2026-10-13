@@ -60,6 +60,15 @@ bus unless noted; all 2D. Ids and where they fire:
   play-if-not-already-playing rule). Drop `Prefabs/Level2/PageAmbience.prefab` into the scene; the
   prefab is pre-filled for Level 2.
 - `CopKnockedOut` plays when a patrol cop is cut and knocked out (`PoliceOfficer._knockedOutSound`, since 2026-09-29).
+- Page 3's traffic jam (#177, 2026-10-13): `CarEngineIdleLoop` (loop, `CarEngine`'s clip) and `CarHornIdling`
+  (`CarHorn`'s clip), both positional, played by `Traffic/IdlingCar` on the `Paper Car Idling` prefab. The jazz band
+  (`Live Music - Alone Together`, a scene AudioSource, not the bank) is stopped by the arrest (#176, `cutscenes.md`).
+
+**Positional sounds and distance (#177).** The AudioListener is on the camera, 13-45 units from Kami. With Unity's
+default rolloff (logarithmic, full volume only within 1 unit) a `PlayAt` sound is nearly silent at that distance,
+which is why `SoundEntry` has `minDistance` / `maxDistance` / `linearRolloff` (defaults = Unity's, so the chickens'
+rows are unchanged). The idling cars use linear 25-75 (engine) and 30-110 (horn). `AudioManager` applies them on every
+play, so a pooled source never keeps the last sound's rolloff.
 
 **Per-line dialogue sounds**: `DialogueEvent.soundOnLine` (an AudioId, empty = none) is played by
 `DialogueManager.WriteText` when that line starts being written. Set today: `Arrest_Cuffs` line 1

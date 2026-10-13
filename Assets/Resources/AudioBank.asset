@@ -1229,6 +1229,36 @@ MonoBehaviour:
     spatialBlend: 0
     priority: 128
     interruptSelf: 0
+  - id: CarEngineIdleLoop
+    clips:
+    - {fileID: 8300000, guid: 1a7b33ca8967feb4fb64d352ef6e3d4c, type: 3}
+    volume: 0.1
+    pitch: 0.45
+    pitchVariation: 0.05
+    loop: 1
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 1
+    minDistance: 25
+    maxDistance: 75
+    linearRolloff: 1
+    priority: 128
+    interruptSelf: 0
+  - id: CarHornIdling
+    clips:
+    - {fileID: 8300000, guid: 8d681e10a3e1cb84297a1167db0cb5e0, type: 3}
+    volume: 0.15
+    pitch: 0.9
+    pitchVariation: 0.15
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
+    spatialBlend: 1
+    minDistance: 30
+    maxDistance: 110
+    linearRolloff: 1
+    priority: 128
+    interruptSelf: 0
   musicGroup: {fileID: 9197432607514441226, guid: 1e1b55ab68c5e16499c7e1b105afabc6,
     type: 2}
   sfxGroup: {fileID: 5805384339254084397, guid: 1e1b55ab68c5e16499c7e1b105afabc6,
