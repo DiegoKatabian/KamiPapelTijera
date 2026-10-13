@@ -482,6 +482,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         _rideEdgeBone = edgeBone;
         _rideZOffset = transform.position.z - edgeBone.position.z;
         _rideLoggedFirstFrame = false;
+        TriggerScript.ExitAll(); //switching her collider off sends no OnTriggerExit (#168)
         cc.enabled = false;
         IsRidingPage = true;
 

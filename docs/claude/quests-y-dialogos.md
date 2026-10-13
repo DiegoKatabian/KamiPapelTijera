@@ -147,6 +147,8 @@ picks her up on page 1 and she follows (reparenting to each page) until she is d
 page 5. The extra full instances that sat on pages 2 and 5 were deleted — each one would have
 re-run her opening dialogue, added Quest05 a second time and started a second follower. Don't
 place Natalia on other pages to "stage" her; page 5's drop-off (task 5.C) acts on the same one.
+A test started on a later page brings that same instance along (`NPC_Natalia.SetUpForTestStart`, #170): see
+"Test starts on pages 2-4" in `nivel2-y-ui.md`.
 
 ### Quests without a delivering NPC: Quest05 → Quest06 (2026-09-24)
 

@@ -43,6 +43,7 @@ public class OrigamiTextRevealDisplay : MonoBehaviour
 
     bool _visible;
     bool _canBeDismissed;
+    bool _lockedKami; //this panel took LevelManager.inCutscene, so only it gives it back
     Coroutine _fadeCoroutine;
     Coroutine _readDelayCoroutine;
 
@@ -103,6 +104,7 @@ public class OrigamiTextRevealDisplay : MonoBehaviour
 
         _visible = true;
         _canBeDismissed = false;
+        SetKamiLocked(true);
         Debug.Log($"[OrigamiTextRevealDisplay] {gameObject.name}: showing '{localizationKey}' from table '{_tableName}', readable in {_readDelay:F1}s");
 
         StartCoroutine(LocalizedText.Escribir(_revealedText, localizationKey, _tableName, new LocalizedText.Opciones
@@ -131,6 +133,7 @@ public class OrigamiTextRevealDisplay : MonoBehaviour
 
         _visible = false;
         _canBeDismissed = false;
+        SetKamiLocked(false);
 
         if (_readDelayCoroutine != null)
         {
@@ -144,6 +147,45 @@ public class OrigamiTextRevealDisplay : MonoBehaviour
         }
 
         StartFade(0f, _fadeOutDuration);
+    }
+
+    //Kami stays put while she reads (#172), like in a dialogue. inCutscene, the lock AbuelaEntrance and the
+    //cutscenes use, not inDialogue: DialogueManager clears that one whenever any dialogue ends. The dismiss
+    //press still works, it is read straight from InputHub in Update. Same "only release what I took" rule
+    //as AbuelaEntrance, so a cutscene that locked her first is never cut short.
+    void SetKamiLocked(bool locked)
+    {
+        LevelManager levelManager = LevelManager.Instance;
+        if (levelManager == null)
+        {
+            Debug.LogWarning($"[OrigamiTextRevealDisplay] {gameObject.name}: no LevelManager, Kami is not locked while reading");
+            return;
+        }
+
+        if (locked)
+        {
+            if (!levelManager.inCutscene)
+            {
+                levelManager.inCutscene = true;
+                _lockedKami = true;
+            }
+            return;
+        }
+
+        if (_lockedKami)
+        {
+            levelManager.inCutscene = false;
+            _lockedKami = false;
+        }
+    }
+
+    void OnDisable()
+    {
+        //switched off mid-read: never leave Kami frozen
+        if (_lockedKami)
+        {
+            SetKamiLocked(false);
+        }
     }
 
     IEnumerator AllowDismissAfterReadDelay()

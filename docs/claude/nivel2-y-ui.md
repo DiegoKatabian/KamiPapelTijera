@@ -154,10 +154,11 @@ sequence and is the only thing that restarts it:
    and the Pelusa.
 2. The narrator's line (`Narrator_JailIntro`, `_introLine`, first time only) plays half a second
    after the girls land — the dialogue itself keeps Kami still. `_abuelaDelaySeconds` (3) after it
-   closes (Kami can walk around her closed cell meanwhile) `AbuelaEntrance`
-   drops the Abuela (`Abuela_Follower` prefab variant) next to the fence: Kami is locked only for the
-   fall and her two lines (`Abuela_JailLanding`), the fence disappears (reveal, not destruction), she
-   follows Kami.
+   closes `AbuelaEntrance`
+   drops the Abuela (`Abuela_Follower` prefab variant) next to the fence: Kami is locked (`inCutscene`)
+   from the start of that countdown until her two lines (`Abuela_JailLanding`) end (#172, 2026-10-13: it
+   used to be only the fall and the lines, and the free wait read as "go explore"); the fence disappears
+   (reveal, not destruction), she follows Kami. After a capture the same lock covers the shorter countdown.
 3. `ConfiscatedGearPickup` (where Diego had placed the TijeraPickup, just east of the cell) gives
    everything back. Kami cuts the `CandadoCortable` on Natalia's door (moved there, 1 paper as
    before) -> the door opens and Natalia follows. Freeing her also opens the pedestal:
@@ -168,6 +169,8 @@ sequence and is the only thing that restarts it:
    `EscapeWindow` completes `Quest07_EscapeThePoliceStation`, starts `Quest08_ReturnThePelusa`, warps
    both followers to `OutsideLanding` below the window, makes that Kami's respawn point and blinds
    the cops. The page is then left the normal way (edge of the book), no forced turn.
+   `OnPoliceStationEscaped` (what `PageExitLock` opens page 4's next sphere on) fires on every crossing,
+   with or without Quest07 held (#169, 2026-10-13): a lost Quest07 used to keep the sphere locked for good.
 5. **Getting caught restarts the whole page** (Diego): on the respawn after a `DeathCause.Caught`,
    everything above goes back to step 1, the Abuela falls again after only
    `_abuelaDelayAfterCaptureSeconds` (3), the cops return to their posts. The stash only grows:
@@ -227,6 +230,14 @@ sits 3.5 to Kami's right at seat height: her scissor hitbox (3.16 +- 4.27 ahead 
 Everything is placeholder cubes/sprites and `_PLACEHOLDER_POSITION` objects (Grace, Ariel, the cop
 witness, the pedestal, the catapult). Starting the scene with `startingPage = 5` gives Kami the five items,
 Quest08 and both followers.
+
+**Test starts on pages 2-4 bring Natalia along (#170, 2026-10-13).** Diego tests a page by switching on only that
+page's folder, so Natalia (under `Page 1 Objects`) is off and none of her scripts run; before this fix she only woke
+up on page 4 when the padlock made her follow, still on her page 1 opening and talkable. Each page owner now calls
+`NPC_Natalia.SetUpForTestStart` on its own test start: page 2 `FindCluesTracker` (her and Quest05, following beside
+Kami), page 3 `ArrestCutscene` (following, no Quest05), page 4 `PoliceStationPage` (out of page 1's folder, then into
+her cell as before). It marks her page 1 conversation done (`NataliaDialogueTrigger.SkipToJoined`) and makes her not
+talkable, like a real join. Page 5 keeps `MuseumPage`'s own setup.
 
 `Level2_EndCutscene.unity` (`GameScene.Level2EndCutscene`, catalog + Build Settings) is a copy of
 `Nivel1_EndCutscene` running `Narrator_Level2Ending` (the flight, the Narrator's blue lamp, a third

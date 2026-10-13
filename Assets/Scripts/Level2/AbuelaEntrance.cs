@@ -7,8 +7,8 @@ using UnityEngine;
 /// starts following Kami.
 ///
 /// PoliceStationPage decides WHEN (Schedule) and puts everything back after a capture (ResetEntrance):
-/// this only knows how to perform the entrance. Kami is locked only for the fall itself and the
-/// line; the wait before it is free time in a closed cell.
+/// this only knows how to perform the entrance. Kami is locked from the start of the countdown until
+/// the Abuela's line ends (#172, 2026-10-13; it used to be only the fall and the line).
 /// </summary>
 public class AbuelaEntrance : MonoBehaviour
 {
@@ -94,21 +94,23 @@ public class AbuelaEntrance : MonoBehaviour
 
     IEnumerator EntranceRoutine(float delaySeconds)
     {
-        yield return new WaitForSeconds(delaySeconds);
-
         if (_abuela == null || _landingPoint == null)
         {
             _running = null;
             yield break;
         }
 
-        //wait for a calm moment: never drop her in the middle of a dialogue, overlay or page turn
-        while (LevelManager.Instance == null || LevelManager.Instance.inDialogue || LevelManager.Instance.inCutscene)
-        {
-            yield return null;
-        }
-
+        //Kami waits for her from the start of the countdown (#172), not from the fall: walking around the
+        //closed cell for a few seconds read as "nothing happens, go explore". A lock is only taken on a
+        //calm screen, so it never sits on top of a dialogue, overlay, page turn or another cutscene's lock
+        yield return WaitForCalmMoment();
         SetKamiLocked(true);
+
+        yield return new WaitForSeconds(delaySeconds);
+
+        //something may have opened during the wait (a dialogue): never drop her in the middle of it
+        yield return WaitForCalmMoment();
+        SetKamiLocked(true); //again: a cutscene that ended meanwhile cleared the shared flag
         Debug.Log("[AbuelaEntrance] the Abuela falls");
 
         _abuela.gameObject.SetActive(true);
@@ -198,10 +200,22 @@ public class AbuelaEntrance : MonoBehaviour
         AudioManager.instance.Play(id);
     }
 
-    //only ever releases a lock this component took, so it can't cut another cutscene short
+    //a dialogue, overlay or page turn (inDialogue), or a cutscene that is not our own lock
+    IEnumerator WaitForCalmMoment()
+    {
+        while (LevelManager.Instance == null
+               || LevelManager.Instance.inDialogue
+               || (LevelManager.Instance.inCutscene && !_lockedKami))
+        {
+            yield return null;
+        }
+    }
+
+    //only ever releases a lock this component took, so it can't cut another cutscene short. Locking
+    //always writes the flag, so a re-lock restores it if something else cleared it in between.
     void SetKamiLocked(bool locked)
     {
-        if (LevelManager.Instance == null || locked == _lockedKami)
+        if (LevelManager.Instance == null || (!locked && !_lockedKami))
         {
             return;
         }

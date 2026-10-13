@@ -103,6 +103,10 @@ public class ArrestCutscene : MonoBehaviour
     [SerializeField, Tooltip("Quest07_EscapeThePoliceStation: started when the girls reach the station.")]
     QuestSO _escapeQuest;
 
+    [Header("Testing")]
+    [SerializeField, Tooltip("Starting the scene on this page (PageScrollerManager.startingPage) brings Natalia along as if pages 1-2 were played.")]
+    int _pageNumber = 3;
+
     CutsceneDirector _cutscene;
     Player _player;
     bool _started;
@@ -143,6 +147,28 @@ public class ArrestCutscene : MonoBehaviour
         if (_natalia == null || _carDoorMark == null || _policeCar == null || _driveOffTarget == null || _kamiCell == null || _nataliaCell == null)
         {
             Debug.LogWarning($"[ArrestCutscene] {gameObject.name}: some references are not assigned (Natalia, car door, car, drive-off target or cells). The cutscene will skip whatever is missing.");
+        }
+
+        if (PageScrollerManager.Instance != null && PageScrollerManager.Instance.startingPage == _pageNumber)
+        {
+            StartCoroutine(BeginForTest());
+        }
+    }
+
+    //a test started on this page skips pages 1-2: Natalia is already with Kami (#170)
+    IEnumerator BeginForTest()
+    {
+        //two frames, like the other page owners' test starts: the Player and the managers set up first
+        yield return null;
+        yield return null;
+
+        if (_natalia is NPC_Natalia natalia)
+        {
+            natalia.SetUpForTestStart(_pageNumber, followKami: true);
+        }
+        else
+        {
+            Debug.LogWarning("[ArrestCutscene] _natalia is not an NPC_Natalia: she is not brought along for this test start");
         }
     }
 

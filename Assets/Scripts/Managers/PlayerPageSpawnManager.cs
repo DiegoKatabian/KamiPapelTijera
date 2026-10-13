@@ -99,6 +99,7 @@ public class PlayerPageSpawnManager : Singleton<PlayerPageSpawnManager>
     //utilities
     public void PositionPlayerAtPoint(Vector3 point)
     {
+        TriggerScript.ExitAll(); //switching her collider off sends no OnTriggerExit (#168)
         _playerCC.enabled = false;
         _player.transform.position = point;
         _playerCC.enabled = true;

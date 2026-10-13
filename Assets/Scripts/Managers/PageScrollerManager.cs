@@ -70,6 +70,14 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
 
     public void TriggerPageScroll(params object[] parameters) //cuando tocas E
     {
+        //the E that advances a dialogue line (a cutscene's too) is the same press: it must never also
+        //turn the page Kami happens to stand next to (#168). The dialogue is still open when the
+        //press is handled (it closes later that frame, in its coroutine), so the flag covers its last line.
+        if (LevelManager.Instance != null && (LevelManager.Instance.inDialogue || LevelManager.Instance.inCutscene))
+        {
+            return;
+        }
+
         if (!OverlayManager.Instance.isLocked)
         {
             if (esferaNext.triggerBool 

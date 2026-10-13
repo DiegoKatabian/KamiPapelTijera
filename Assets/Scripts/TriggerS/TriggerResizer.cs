@@ -17,6 +17,13 @@ public class TriggerResizer : TriggerScript
     public override void OnExitBehaviour()
     {
         base.OnExitBehaviour();
+
+        //the exit also runs from OnDisable (its page switching off), where a coroutine can't start
+        if (!isActiveAndEnabled)
+        {
+            targetTransform.localScale = originalScale;
+            return;
+        }
         StartCoroutine(Resize(targetTransform.localScale, originalScale));
     }
 

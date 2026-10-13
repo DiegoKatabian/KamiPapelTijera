@@ -62,7 +62,7 @@ public class PoliceStationPage : MonoBehaviour
     [SerializeField, Tooltip("Seconds between the girls landing in their cells and the intro cutscene starting.")]
     float _introDelaySeconds = 0.5f;
 
-    [SerializeField, Tooltip("Seconds between the intro ending and the Abuela crashing down (Kami can move inside her closed cell meanwhile).")]
+    [SerializeField, Tooltip("Seconds between the intro ending and the Abuela crashing down. Kami waits, locked, from the start of it until the Abuela's line ends.")]
     float _abuelaDelaySeconds = 3f;
 
     [SerializeField, Tooltip("The same wait after a capture restarts the page: shorter, the player already saw it.")]
@@ -149,6 +149,17 @@ public class PoliceStationPage : MonoBehaviour
     //a test started on this page skips the arrest: put everyone where the arrest would have
     IEnumerator BeginForTest()
     {
+        //right away, before the waits: she lives under page 1's folder (off on this test), and her own
+        //Start (which runs once she is out of it) must not undo the cell's mood set below (#170)
+        if (_natalia is NPC_Natalia natalia)
+        {
+            natalia.SetUpForTestStart(_pageNumber, followKami: false);
+        }
+        else
+        {
+            Debug.LogWarning("[PoliceStationPage] _natalia is not an NPC_Natalia: her page 1 lines stay on for this test start");
+        }
+
         //two frames: Player gives Kami her starting scissors one frame late, and they must be
         //confiscated like in the real flow
         yield return null;
@@ -390,12 +401,12 @@ public class PoliceStationPage : MonoBehaviour
             }
         }
 
-        if (_escapeQuest != null && QuestManager.Instance != null && QuestManager.Instance.HasQuest(_escapeQuest))
-        {
-            //QuestManager completes it and raises OnQuestCompleted, which hands off below
-            EventManager.Trigger(Evento.OnPoliceStationEscaped);
-        }
-        else
+        //always: PageExitLock opens page 4's next sphere on this event, and the way out must not depend
+        //on quest bookkeeping (#169: a lost Quest07 kept the sphere locked for good)
+        EventManager.Trigger(Evento.OnPoliceStationEscaped);
+
+        //with Quest07 held, QuestManager completes it and raises OnQuestCompleted, which hands off below
+        if (_escapeQuest == null || QuestManager.Instance == null || !QuestManager.Instance.HasQuest(_escapeQuest))
         {
             StartCoroutine(HandOffQuestNextFrame());
         }

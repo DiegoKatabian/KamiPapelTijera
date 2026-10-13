@@ -60,7 +60,9 @@ BaseOffset 4). The project's first detection system. Played by Diego (full playt
   same blockers, and colours it by awareness (calm -> alert -> caught). What the player sees and
   what he detects can't disagree (FR-006). Gizmo when the officer is selected.
 - `ResetToStart()` / `SetDetectionEnabled()` are for the page owner (`PoliceStationPage`): back to
-  his post on a restart, blind after the escape.
+  his post on a restart, blind after the escape. An officer switched off in the scene but still in
+  `_officers` (the female guard since 2026-10-12) never ran `Awake`: `ResetToStart` skips him (2026-10-13).
+  It used to throw there, which aborted the arrest's wrap-up: Quest06 never closed and Quest07 never started.
 
 **Cuttable (Diego, 2026-09-28/29)**: `PoliceOfficerCortable` (`Cortables/`) on the cop's trigger
 collider (plus a kinematic Rigidbody, or two triggers never report) calls `PoliceOfficer.KnockOut()`:

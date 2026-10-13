@@ -179,7 +179,13 @@ Where to tune (all Inspector, nothing in code):
 - **Which animation, which pose**: the `SpineCharacter` on `Natalia.prefab`, `Ariel.prefab`, `CopEscort.prefab` (its three
   variants inherit it) and `PoliceOfficer.prefab`. Poses: Natalia `Angry` / `Happy` / `Thinking` / `Shock`, Ariel
   `Point` (-> `Smug`) / `Smug` / `Angry`, cops `Arrest`. Actor ids: `Natalia`, `Ariel`, `Police` (pages 2, 3, 5),
-  `Guard` (page 4).
+  `Guard` (page 4), `PoliceFemme` (the two women `CopEscort` variants, Femme on pages 3 and 5 and Female on page 2;
+  #173, 2026-10-13).
+- **Only the old male cop plays the `Police` beats** (#173): every `CopEscort` variant inherited `_actorId: Police`, so
+  `Arrest_Shout`, `Grace_Meeting` and `Museum_Evidence`'s cues ran on both cops of a scene. The women variants override
+  the id to `PoliceFemme`, which no cue addresses: they keep the default `Idle` + `Lantern`, never play `Arrest` and keep
+  the lantern on page 5. They still walk the escorts (that is locomotion, not a cue). To give her a beat, add a cue for
+  `PoliceFemme` on the line.
 - **When**: the `Animation Cues` list on each dialogue line, and `Cues On End` on the dialogue (`Natalia_01`,
   `Natalia_AfterTicket`, `Natalia_AllClues`, `Arrest_Shout`, `Arrest_Accusation`, `Grace_Meeting`, `Museum_Evidence`).
   The rest is code-owned: escort start (`ArrestCutscene.CUE_StartEscort`), cell mood (`PoliceStationPage`,

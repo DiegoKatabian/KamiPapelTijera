@@ -98,7 +98,11 @@ cutscene scripts (`ArrestCutscene.CUE_StartEscort`: shock ends, everyone walks).
 ## Gotchas
 
 - The cutscene lives at the **scene root**, not under Page 3: the page folder is switched off mid
-  page-turn, and the wrap-up (cells, quests) runs after that. Its vcams are always on at priority 0,
+  page-turn, and the wrap-up (cells, quests) runs after that. **This already broke once** (#169): an
+  Editor commit (46ba596d) parented it under Page 3, the wrap-up's `StartCoroutine` failed on the inactive
+  object ("Coroutine couldn't be started"), Quest07 was never added, and page 4's next sphere stayed locked.
+  Moved back to the root on 2026-10-13 at the same world position. If you reorganise the hierarchy, keep it
+  (and any other cutscene whose wrap-up outlives its page) at the root. Its vcams are always on at priority 0,
   so they only go live through the Cameras track and never compete with `CameraManager` (priority 10).
 - Cutscene cameras are **not** `CameraMode`s: `CameraManager` owns one vcam per mode and the player
   cycles through the pickable ones (#43 made cycling skip the game-driven `OrigamiCasting`/`ReceiveReward`),

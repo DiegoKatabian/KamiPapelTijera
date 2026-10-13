@@ -48,6 +48,13 @@ public class FindCluesTracker : MonoBehaviour
     [SerializeField, Tooltip("Quest06_GoBackToNataliasHouse: started once every clue is found.")]
     QuestSO _nextQuest;
 
+    [Header("Testing")]
+    [SerializeField, Tooltip("Natalia (the one from page 1). Only used by a test started on this page, to bring her along.")]
+    NPC_Natalia _natalia;
+
+    [SerializeField, Tooltip("Starting the scene on this page (PageScrollerManager.startingPage) brings Natalia along and gives Kami the find clues quest, as if page 1 was played.")]
+    int _pageNumber = 2;
+
     readonly HashSet<ResourceType> _found = new HashSet<ResourceType>();
     readonly Queue<DialogueSO> _pendingComments = new Queue<DialogueSO>();
     bool _copsCalledOff;
@@ -68,6 +75,27 @@ public class FindCluesTracker : MonoBehaviour
 
         EventManager.Subscribe(Evento.OnResourceUpdated, OnResourceUpdated);
         EventManager.Subscribe(Evento.OnQuestCompleted, OnQuestCompleted);
+
+        if (PageScrollerManager.Instance != null && PageScrollerManager.Instance.startingPage == _pageNumber)
+        {
+            StartCoroutine(BeginForTest());
+        }
+    }
+
+    //a test started on this page skips page 1: Natalia is already with Kami, on the find clues quest (#170)
+    IEnumerator BeginForTest()
+    {
+        //two frames, like the other page owners' test starts: the Player and the managers set up first
+        yield return null;
+        yield return null;
+
+        if (_natalia == null)
+        {
+            Debug.LogWarning("[FindCluesTracker] _natalia is not assigned: she is not brought along for this test start");
+            yield break;
+        }
+
+        _natalia.SetUpForTestStart(_pageNumber, followKami: true);
     }
 
     void OnResourceUpdated(params object[] parameters)
