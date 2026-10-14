@@ -17,6 +17,13 @@ public class GearLoadout : ScriptableObject
              "holds those through Player's 'Start With Tijera'.")]
     [SerializeField] List<GearItem> _alsoOwned = new List<GearItem>();
 
+    [Tooltip("Off for a level where Kami has no clothes to choose between (the Level 1 demo has one outfit): " +
+             "the Flap hides its Wardrobe tab and the worn outfit isn't added to the bag as an item. " +
+             "Shoes, scissors and boots are unaffected.")]
+    [SerializeField] bool _hasWardrobe = true;
+
+    public bool HasWardrobe => _hasWardrobe;
+
     public IReadOnlyList<GearItem> Equipped => _equipped;
     public IReadOnlyList<GearItem> AlsoOwned => _alsoOwned;
 

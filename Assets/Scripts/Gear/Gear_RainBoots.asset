@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Gear_RainBoots
   m_EditorClassIdentifier: 
   _slot: 2
-  _spineSkin: feet/rain-boots
+  _spineSkin: Zapatos/Zapatos_RainBoots_Placeholder
   _grantedByResource: 1
   _resource: 3
   _displayNameKey: boots_rain_title

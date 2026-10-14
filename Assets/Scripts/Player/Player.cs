@@ -31,6 +31,9 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     [Tooltip("What Kami wears when this level starts (outfit, scissors...). Items gained later are equipped on top of it.")]
     [SerializeField] GearLoadout _startingLoadout;
 
+    /// <summary>The loadout this level starts with (the Flap asks it whether to show the Wardrobe tab).</summary>
+    public GearLoadout StartingLoadout => _startingLoadout;
+
     [Header("Respawn")]
     [Tooltip("donde respawnea kami al morir ahogada. las demas muertes usan siempre el respawn comun (entrada de la pagina)")]
     [SerializeField] RespawnBehavior drowningRespawnMode = RespawnBehavior.LastSafePosition;
@@ -311,6 +314,12 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         foreach (GearItem item in _startingLoadout.AllOwned())
         {
             if (item == null || !item.TryGetResource(out ResourceType resource))
+            {
+                continue;
+            }
+
+            //no wardrobe (Level 1 demo): the one outfit she wears is not a bag item, there is nothing to swap it for
+            if (item.Slot == GearSlot.Outfit && !_startingLoadout.HasWardrobe)
             {
                 continue;
             }

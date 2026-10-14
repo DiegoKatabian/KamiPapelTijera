@@ -180,6 +180,12 @@ public class FlapManager : Singleton<FlapManager>
         //modulo "a mano" porque el % de C# puede devolver negativo con direccion=-1
         int nuevoIndex = ((_currentDisplayIndex + direccion) % _flapDisplays.Length + _flapDisplays.Length) % _flapDisplays.Length;
 
+        //a level without a wardrobe (Level 1 demo) has no such tab: step over it
+        if (nuevoIndex == WARDROBE_INDEX && !WardrobeAvailable)
+        {
+            nuevoIndex = ((nuevoIndex + direccion) % _flapDisplays.Length + _flapDisplays.Length) % _flapDisplays.Length;
+        }
+
         Debug.Log($"[FlapManager] cambio de tab con joystick: {_currentDisplayIndex} -> {nuevoIndex}");
         AudioManager.instance.Play(AudioId.PageTurn02, 2.6f, 0.01f);
         ShowDesiredDisplay(_flapDisplays[nuevoIndex]);
@@ -394,14 +400,30 @@ public class FlapManager : Singleton<FlapManager>
     //clicked or reached by navigation.
     void SetTabsVisible(bool visible)
     {
-        foreach (FlapDisplay d in _flapDisplays)
+        for (int i = 0; i < _flapDisplays.Length; i++)
         {
+            FlapDisplay d = _flapDisplays[i];
             if (d.flapButton == null)
             {
                 Debug.LogWarning($"[FlapManager] display {d.number} has no tab button: nothing to show or hide");
                 continue;
             }
-            d.flapButton.gameObject.SetActive(visible);
+            bool show = visible && (i != WARDROBE_INDEX || WardrobeAvailable);
+            d.flapButton.gameObject.SetActive(show);
+        }
+    }
+
+    //the Wardrobe tab is the last display (see the index list above). A level whose starting loadout says
+    //HasWardrobe = false (the Level 1 demo, one outfit) never shows it: no tab button, and R1/L1 skip it
+    const int WARDROBE_INDEX = 4;
+
+    bool WardrobeAvailable
+    {
+        get
+        {
+            Player player = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+            GearLoadout loadout = player != null ? player.StartingLoadout : null;
+            return loadout == null || loadout.HasWardrobe;
         }
     }
 
@@ -494,7 +516,7 @@ public class FlapManager : Singleton<FlapManager>
     }
     public void BTN_Wardrobe()
     {
-        const int wardrobeIndex = 4;
+        const int wardrobeIndex = WARDROBE_INDEX;
         if (_flapDisplays == null || _flapDisplays.Length <= wardrobeIndex)
         {
             Debug.LogWarning("[FlapManager] BTN_Wardrobe: no Wardrobe display at index 4 of _flapDisplays");

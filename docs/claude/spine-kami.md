@@ -34,9 +34,8 @@ menu's title Kami, dressed by `LoadoutSkin`: see below).** Skins: `FullSkins/Kam
 (the `GearCatalog` owned-slot lists use that prefix). Consequences: shoes are a Feet item
 (`Gear_ShoesBase` in Level 1, `Gear_ShoesDetective` in Level 2, both without a bag resource, so they only
 come from the loadout and aren't in the Wardrobe); the gaiters (`polaina`) are NOT in the owned-slot list
-because the outfits draw them and the shoes skins don't. The old `feet/rain-boots` placeholder is gone, so
-`Gear_RainBoots` is skipped with one warning until Valen's real skin lands; taking boots off leaves her
-barefoot (the outfit has no shoes), a known gap. `default` used to hold the detective coat and thighs,
+because the outfits draw them and the shoes skins don't. The Atlas 12 `feet/rain-boots` placeholder is gone; `Gear_RainBoots` uses the Atlas 13 placeholder
+`Zapatos/Zapatos_RainBoots_Placeholder` (below) until Valen's real skin lands. `default` used to hold the detective coat and thighs,
 which every outfit then drew: `tools/move-default-skin-into-diario.py` moves them into Diario (re-run it
 if a re-export brings them back). Atlas 12 notes below are history:
 
@@ -96,15 +95,15 @@ default skin (Spine's fallback, never touched)
   quest still lists them, but Chino is a stub), and `Gear_SprintBoots` was deleted. The Lightfall winged
   boots replace them later as a new Feet item.
 
-**Placeholder `feet/rain-boots` (2026-10-05, until Valen's #83)**: a skin added by hand to the Atlas 12
-`skeleton.json`, built only from images already in the atlas: each shoe's white `_OL_` silhouette drawn
-at the shoe's own size and tinted yellow (a flat rubber boot inside its paper border), the gaiters
-(`polaina`) tinted yellow as the shaft, and the buckle + its outline overridden by transparent copies.
-The transparent buckle is a placeholder-only trick: the shoes still live in `default`, where the
-owned-slot clearing can't reach them. Valen's real skin leaves the buckle out. **A re-export of Kami
-overwrites this skin**: if #83 isn't in that export yet, the rain boots just go back to one missing-skin
-warning. Recipe: `tools/add-placeholder-rain-boots.py` (re-run it on a new export to bring the
-placeholder back).
+**Placeholder rain boots (Atlas 13, 2026-10-13, spec 015 A.4, until Valen's real boots, #202)**: the skin
+`Zapatos/Zapatos_RainBoots_Placeholder`, added to `Atlas 13/skeleton.json` by `tools/add-placeholder-rain-boots.py` and
+pointed at by `Gear_RainBoots._spineSkin`. Built only from images already in the atlas: each shoe's white `_OL_` silhouette
+drawn at the shoe's own size and tinted yellow (a flat rubber boot inside its paper border), the `_OL_` border slots copied
+from `Zapatos_Base` (Feet owns them, so the skin must bring them back), and the gaiter meshes (`polaina`, copied from
+`FullSkins/Kami Libro 1`) tinted yellow as the shaft. The buckles are simply left out (Feet owns those slots, so equipping
+clears them). `Zapatos/Zapatos_Upgrade_1` is NOT rain boots: it is the dark base shoes with a yellow multiply tint.
+**A re-export of Kami overwrites the skin**: run the script again on the new export. Not seen in the Editor when written.
+The Atlas 12 version of the recipe is gone (nothing references Atlas 12).
 
 **Owned Spine slots** (`Resources/GearCatalog.asset`, Spine slot dropdowns): equipping an item first
 clears whatever the outfit put in its gear slot's Spine slots, then adds the item. An empty gear slot
