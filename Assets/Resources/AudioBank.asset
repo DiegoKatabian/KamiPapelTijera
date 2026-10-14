@@ -44,8 +44,7 @@ MonoBehaviour:
     priority: 128
     interruptSelf: 0
   - id: QuestCompleted
-    clips:
-    - {fileID: 8300000, guid: ee4629f9fba8bb34aae6c99b575accd9, type: 3}
+    clips: []
     volume: 0.4
     pitch: 1
     pitchVariation: 0
@@ -929,8 +928,7 @@ MonoBehaviour:
     priority: 128
     interruptSelf: 0
   - id: BohrenDestroyingAngels
-    clips:
-    - {fileID: 8300000, guid: 8e5ab12689b88834da8b27318ffdd246, type: 3}
+    clips: []
     volume: 0.03
     pitch: 1
     pitchVariation: 0
@@ -1104,8 +1102,7 @@ MonoBehaviour:
     priority: 128
     interruptSelf: 0
   - id: DeadEndAngels
-    clips:
-    - {fileID: 8300000, guid: 1618f0a50970837439307faadcef262d, type: 3}
+    clips: []
     volume: 0.03
     pitch: 1
     pitchVariation: 0
@@ -1379,8 +1376,7 @@ MonoBehaviour:
     priority: 128
     interruptSelf: 0
   - id: NewsJingle
-    clips:
-    - {fileID: 8300000, guid: ee4629f9fba8bb34aae6c99b575accd9, type: 3}
+    clips: []
     volume: 0.35
     pitch: 1.3
     pitchVariation: 0
