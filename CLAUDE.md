@@ -156,6 +156,8 @@ La causa de muerte (`DeathCause`: Generic/Drowning/Rocoso/**Caught**/**Car**) de
 
 ## Detalle fino (leer según la tarea)
 
+- How a phase session runs (start, rules, runtime evidence, YAML surgery, committing the scene, close-out): `docs/claude/session-playbook.md`. Kickoff prompts point there and only add phase-specific content.
+
 - Spine/skeleton/animaciones de Kami: @docs/claude/spine-kami.md
 - Audio y partículas: @docs/claude/audio-y-particulas.md
 - Canvas de costo de origami y tooltips/post-its: @docs/claude/origami-y-tooltips.md
