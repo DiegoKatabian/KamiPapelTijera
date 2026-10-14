@@ -30,6 +30,8 @@ call site.
 `UIVolume`, `AmbienceVolume`). Bus volume is still applied per source in code; moving it onto the
 mixer parameters is Task 23 of the refactor plan.
 
+**Music is Estampes Pagodes (public domain) since 2026-10-14 (spec 015, A.7).** The `MemoFlora*` ids (main loop, battle loop, post-battle, `GameOverOrchestral`, `MagicSuccess`, `PickupSpecial`, `QuestCompleted02`, `Receive_Reward`) kept their names but play the Estampes clips; volumes were matched by integrated loudness (the old clips were 10-14 dB quieter). The boss theme is `EstampesPagodes_Battle_Intro` then `MemoFloraBattleLoop01` (`EncounterManager`). `Assets/Sounds/MemoFlora/` is gone. The Level 1 demo build also empties the Level 2 music entries and the Sims-named clip while it builds (`SteamDemoBuild`), because the bank is in Resources and ships every clip it references.
+
 **Placeholder sounds** (the Level 2 pass above added 27 more rows): `CarDoor` (the patrol car door in page 3's arrest, added 2026-09-25) reuses
 `PaperFold02`'s clip until a real door slam exists; swap the clip in the bank row, nothing else. Its
 `AudioId` constant was added by hand in the generator's format (running Regenerate AudioId keeps it).

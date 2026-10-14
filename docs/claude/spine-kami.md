@@ -102,6 +102,7 @@ drawn at the shoe's own size and tinted yellow (a flat rubber boot inside its pa
 from `Zapatos_Base` (Feet owns them, so the skin must bring them back), and the gaiter meshes (`polaina`, copied from
 `FullSkins/Kami Libro 1`) tinted yellow as the shaft. The buckles are simply left out (Feet owns those slots, so equipping
 clears them). `Zapatos/Zapatos_Upgrade_1` is NOT rain boots: it is the dark base shoes with a yellow multiply tint.
+**Colour (2026-10-14, Diego: matte duck yellow, not bright: bloom made brighter ones glow)**: the `color` of its four attachments in `skeleton.json` (`c9a53aff` shoes, `ffe646ff` gaiters; RGBA hex, the gaiters are brighter because they multiply over beige), mirrored by `YELLOW_FLAT` / `YELLOW_ON_GAITER` in the script. Tweak them in either place; Spine reads the JSON on reimport. **Taking the boots off** (`PlayerGear.Unequip`) puts back the loadout's Feet item (the base shoes), not an empty slot: Atlas 13's outfits have no shoes of their own, so an empty Feet slot left Kami footless.
 **A re-export of Kami overwrites the skin**: run the script again on the new export. Not seen in the Editor when written.
 The Atlas 12 version of the recipe is gone (nothing references Atlas 12).
 

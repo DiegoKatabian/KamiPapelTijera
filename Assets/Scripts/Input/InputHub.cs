@@ -17,13 +17,14 @@ public static class InputHub
     const string EJE_INTERACT = "Interact";           //E / Enter / boton B del joystick
     const string EJE_FIRE1 = "Fire1";                 //click izq / ctrl (solo teclado+mouse)
     const string EJE_JUMP = "Jump";                   //espacio / boton A del joystick
-    const string EJE_RUN = "Run";                     //shift / L1
+    const string EJE_RUN = "Run";                     //shift / L1 / R1
     const string EJE_ACCION_GAMEPAD = "GamepadAction";//SOLO el boton A del joystick: hace falta
                                                       //distinguirlo de E/Espacio para resolver el
                                                       //A contextual (ver PlayerController)
     const string EJE_ATAQUE_GAMEPAD = "GamepadAttack";//boton B: atacar, siempre
-    const string EJE_CAMARA = "CameraToggle";         //click del medio / R1
-    const string EJE_CAMARA_TRIGGER = "CameraTrigger";//L2 (gatillo, es un EJE y no un boton)
+    const string EJE_CAMARA = "CameraToggle";         //click del medio (camara siguiente)
+    const string EJE_CAMARA_TRIGGER = "CameraTrigger";//L2 (gatillo, es un EJE y no un boton): camara ANTERIOR
+    const string EJE_CAMARA_TRIGGER_DERECHO = "CameraTriggerRight";//R2 (gatillo, eje): camara SIGUIENTE
     const string EJE_TAB_SIGUIENTE = "TabSiguiente";  //R1 (boton 5): solo para ciclar tabs del Flap
     const string EJE_TAB_ANTERIOR = "TabAnterior";    //L1 (boton 4, mismo fisico que Correr): idem
     const string EJE_MUTE = "Mute";                   //M (solo teclado: en el joystick no hay boton de sobra)
@@ -79,8 +80,11 @@ public static class InputHub
     /// <summary>Atacar con cualquier device: click/ctrl del teclado, o boton B del joystick.</summary>
     public static bool AtaqueDown => AtaqueTecladoDown || AtaqueGamepadDown;
 
-    /// <summary>Cambiar de camara: click del medio, R1, o el gatillo L2.</summary>
-    public static bool CambiarCamaraDown => GetButtonDownSeguro(EJE_CAMARA) || GatilloIzquierdoDown;
+    /// <summary>Camara SIGUIENTE: click del medio o el gatillo R2.</summary>
+    public static bool CambiarCamaraDown => GetButtonDownSeguro(EJE_CAMARA) || _gatilloDerecho.Down;
+
+    /// <summary>Camara ANTERIOR: el gatillo L2.</summary>
+    public static bool CambiarCamaraAtrasDown => _gatilloIzquierdo.Down;
 
     /// <summary>
     /// R1 del joystick. Solo lo lee el Flap (menu abierto) para ciclar de tab; R1 no tiene ningun
@@ -106,7 +110,8 @@ public static class InputHub
     public static bool InteractHeld => GetButtonSeguro(EJE_INTERACT) || AccionGamepadHeld;
     public static bool AtaqueHeld => GetButtonSeguro(EJE_FIRE1) || GetButtonSeguro(EJE_ATAQUE_GAMEPAD);
     public static bool CorrerHeld => GetButtonSeguro(EJE_RUN);
-    public static bool CamaraHeld => GetButtonSeguro(EJE_CAMARA) || GatilloIzquierdoHeld;
+    public static bool CamaraHeld => GetButtonSeguro(EJE_CAMARA) || _gatilloDerecho.Held;
+    public static bool CamaraAtrasHeld => _gatilloIzquierdo.Held;
     public static bool MenuHeld => GetButtonSeguro(EJE_OPCIONES);
     public static bool TabSiguienteHeld => GetButtonSeguro(EJE_TAB_SIGUIENTE);
     public static bool TabAnteriorHeld => GetButtonSeguro(EJE_TAB_ANTERIOR);
@@ -132,49 +137,62 @@ public static class InputHub
         }
     }
 
-    // ------------------------------------------------- gatillo L2 (es un eje)
+    // ------------------------------------------------- gatillos L2 / R2 (son ejes)
 
-    // L2 no es un boton: es un eje analogico, asi que el "recien apretado" lo detectamos a mano
+    // Un gatillo no es un boton: es un eje analogico, asi que el "recien apretado" lo detectamos a mano
     // comparando contra el valor de la ultima vez que alguien pregunto. Cacheamos por frame para
-    // que dos consultas en el mismo cuadro no se coman el flanco entre ellas.
-    static bool _gatilloEstabaApretado = false;
-    static int _frameGatillo = -1;
-    static bool _gatilloDownEsteFrame = false;
-
-    static bool GatilloIzquierdoDown
+    // que dos consultas en el mismo cuadro no se coman el flanco entre ellas. Uno por gatillo.
+    sealed class Gatillo
     {
-        get
+        readonly string _eje;
+        bool _estabaApretado;
+        int _frame = -1;
+        bool _downEsteFrame;
+
+        public Gatillo(string eje)
         {
-            if (_frameGatillo == Time.frameCount)
-            {
-                return _gatilloDownEsteFrame;
-            }
-
-            _frameGatillo = Time.frameCount;
-
-            float valor = Mathf.Abs(GetAxisRawSeguro(EJE_CAMARA_TRIGGER));
-            if (!_gatilloEstabaApretado && valor >= UMBRAL_GATILLO)
-            {
-                _gatilloEstabaApretado = true;
-                _gatilloDownEsteFrame = true;
-            }
-            else
-            {
-                if (_gatilloEstabaApretado && valor <= UMBRAL_GATILLO_SUELTO)
-                {
-                    _gatilloEstabaApretado = false;
-                }
-                _gatilloDownEsteFrame = false;
-            }
-
-            return _gatilloDownEsteFrame;
+            _eje = eje;
         }
+
+        public bool Down
+        {
+            get
+            {
+                if (_frame == Time.frameCount)
+                {
+                    return _downEsteFrame;
+                }
+
+                _frame = Time.frameCount;
+
+                float valor = Mathf.Abs(GetAxisRawSeguro(_eje));
+                if (!_estabaApretado && valor >= UMBRAL_GATILLO)
+                {
+                    _estabaApretado = true;
+                    _downEsteFrame = true;
+                }
+                else
+                {
+                    if (_estabaApretado && valor <= UMBRAL_GATILLO_SUELTO)
+                    {
+                        _estabaApretado = false;
+                    }
+                    _downEsteFrame = false;
+                }
+
+                return _downEsteFrame;
+            }
+        }
+
+        // Held doesn't need the edge cache above: it's just "is it past the release threshold
+        // right now", so it reuses the same thresholds.
+        public bool Held => Mathf.Abs(GetAxisRawSeguro(_eje)) > UMBRAL_GATILLO_SUELTO;
+
+        public bool Pressed => Mathf.Abs(GetAxisRawSeguro(_eje)) >= UMBRAL_GATILLO;
     }
 
-    // Held state for the trigger doesn't need the edge cache above: it's just "is it past the
-    // release threshold right now", so it reuses the existing axis constant and threshold instead
-    // of adding a third one.
-    static bool GatilloIzquierdoHeld => Mathf.Abs(GetAxisRawSeguro(EJE_CAMARA_TRIGGER)) > UMBRAL_GATILLO_SUELTO;
+    static readonly Gatillo _gatilloIzquierdo = new Gatillo(EJE_CAMARA_TRIGGER);
+    static readonly Gatillo _gatilloDerecho = new Gatillo(EJE_CAMARA_TRIGGER_DERECHO);
 
     // ------------------------------------------------------ deteccion de device
 
@@ -202,6 +220,7 @@ public static class InputHub
 
             _hayJoystickConectado = false;
             string[] nombres = Input.GetJoystickNames();
+            LoguearNombresSiCambiaron(nombres);
             for (int i = 0; i < nombres.Length; i++)
             {
                 //Unity deja el slot con string vacio cuando el joystick se desconecto
@@ -213,6 +232,30 @@ public static class InputHub
             }
             return _hayJoystickConectado;
         }
+    }
+
+    static string _ultimosNombresLogueados = "";
+
+    //Which controller(s) Windows reports, logged only when the list changes. Third-party adapters
+    //(GameCube ones especially) report their own names and button numbering, and the legacy Input Manager
+    //maps by number: this line in Player.log is how a controller that "does nothing" gets diagnosed.
+    static void LoguearNombresSiCambiaron(string[] nombres)
+    {
+        string resumen = "";
+        for (int i = 0; i < nombres.Length; i++)
+        {
+            if (!string.IsNullOrEmpty(nombres[i]))
+            {
+                resumen += $"[{i}] '{nombres[i]}' ";
+            }
+        }
+
+        if (resumen == _ultimosNombresLogueados)
+        {
+            return;
+        }
+        _ultimosNombresLogueados = resumen;
+        Debug.Log($"[InputHub] joysticks reported by the system: {(resumen.Length > 0 ? resumen : "none")}");
     }
 
     static bool _ultimoDeviceFueJoystick = false;
@@ -299,7 +342,8 @@ public static class InputHub
         //tambien devuelven valor cuando el jugador camina con WASD
         return Mathf.Abs(GetAxisRawSeguro(EJE_DETECCION_X)) >= ZONA_MUERTA_STICK
             || Mathf.Abs(GetAxisRawSeguro(EJE_DETECCION_Y)) >= ZONA_MUERTA_STICK
-            || Mathf.Abs(GetAxisRawSeguro(EJE_CAMARA_TRIGGER)) >= UMBRAL_GATILLO;
+            || _gatilloIzquierdo.Pressed
+            || _gatilloDerecho.Pressed;
     }
 
     // ------------------------------------------------------------- envoltorios

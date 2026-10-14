@@ -63,7 +63,13 @@ public static class InputPromptSystem
             case Accion.Interactuar: return IconosDeBoton.Tag("a");
             case Accion.Atacar: return IconosDeBoton.Tag("b");
             case Accion.Correr: return IconosDeBoton.Tag("l1");
-            case Accion.Camara: return IconosDeBoton.Tag("l2");
+            //R2 = camara siguiente, L2 = anterior: un solo "control" conceptual, los dos iconos como en CambiarTab
+            case Accion.Camara:
+            {
+                string l2 = IconosDeBoton.Tag("l2");
+                string r2 = IconosDeBoton.Tag("r2");
+                return string.IsNullOrEmpty(l2) || string.IsNullOrEmpty(r2) ? "" : l2 + " / " + r2;
+            }
             case Accion.Menu: return IconosDeBoton.Tag("start");
             case Accion.Mover: return IconosDeBoton.Tag("stick");
 
@@ -140,7 +146,7 @@ public static class InputPromptSystem
             case Accion.Interactuar: return "(A)";
             case Accion.Atacar: return "(B)";
             case Accion.Correr: return "(L1)";
-            case Accion.Camara: return "(L2)";
+            case Accion.Camara: return "(L2) / (R2)";
             case Accion.Menu: return "(Start)";
             case Accion.Mover: return "stick";
             case Accion.CambiarTab: return "L1 / R1";

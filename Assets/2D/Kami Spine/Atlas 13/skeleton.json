@@ -1547,10 +1547,10 @@
 		"name": "Zapatos/Zapatos_RainBoots_Placeholder",
 		"attachments": {
 			"KamiLibro/25_leg_zapato_front": {
-				"25_leg_zapato_front": {"x": 45.21, "y": -49.99, "rotation": 8.22, "width": 305, "height": 209, "path": "25_OL_leg_zapato_front", "color": "ffd23cff"}
+				"25_leg_zapato_front": {"x": 45.21, "y": -49.99, "rotation": 8.22, "width": 305, "height": 209, "path": "25_OL_leg_zapato_front", "color": "c9a53aff"}
 			},
 			"KamiLibro/30_leg_zapato_back": {
-				"30_leg_zapato_back": {"x": 36.02, "y": -44.57, "rotation": 12.82, "width": 306, "height": 213, "path": "30_OL_leg_zapato_back", "color": "ffd23cff"}
+				"30_leg_zapato_back": {"x": 36.02, "y": -44.57, "rotation": 12.82, "width": 306, "height": 213, "path": "30_OL_leg_zapato_back", "color": "c9a53aff"}
 			},
 			"KamiLibro/25_OL_leg_zapato_front": {
 				"25_OL_leg_zapato_front": {"x": 45.21, "y": -49.99, "rotation": 8.22, "width": 339, "height": 243}

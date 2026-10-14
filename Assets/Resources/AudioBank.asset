@@ -23,18 +23,24 @@ MonoBehaviour:
     bus: 0
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: MemoFloraMainLoop01
     clips:
-    - {fileID: 8300000, guid: 0119eecc77d1ff94f9f0989ec1b6e3bc, type: 3}
-    volume: 0.3
+    - {fileID: 8300000, guid: 89748a4792793204cbb3dfe50cf763ff, type: 3}
+    volume: 0.072
     pitch: 1
     pitchVariation: 0
     loop: 1
     bus: 0
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: QuestCompleted
@@ -47,18 +53,24 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: GameOverOrchestral
     clips:
-    - {fileID: 8300000, guid: ab7a7541182170549abdb364acb00d31, type: 3}
-    volume: 0.25
+    - {fileID: 8300000, guid: 41d1d1cc317da0941a4a41daa140a3fe, type: 3}
+    volume: 0.311
     pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 0
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PageTurn01
@@ -71,6 +83,9 @@ MonoBehaviour:
     bus: 2
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PageTurn02
@@ -83,6 +98,9 @@ MonoBehaviour:
     bus: 2
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: TijeraHit01
@@ -95,6 +113,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: TijeraHit02
@@ -107,6 +128,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: TijeraMiss
@@ -119,6 +143,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PaperCut01
@@ -131,6 +158,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PaperCut02
@@ -143,6 +173,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: MagicChannelingLoop02
@@ -155,6 +188,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: MagicChannelingLoop01
@@ -167,18 +203,24 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: MagicSuccess
     clips:
-    - {fileID: 8300000, guid: 136f8e657d8a096488b73ffa859e900a, type: 3}
-    volume: 0.5
+    - {fileID: 8300000, guid: 46c369ecaa3382d43b86b8ce926bb60c, type: 3}
+    volume: 0.477
     pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: MagicFail
@@ -191,6 +233,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PaperFold01
@@ -203,6 +248,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PaperFold02
@@ -215,6 +263,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PaperFoldLoop
@@ -227,6 +278,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: BridgeCompleted
@@ -239,6 +293,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: ShipSpawn
@@ -251,6 +308,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PickupSFX
@@ -263,30 +323,39 @@ MonoBehaviour:
     bus: 2
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: MemoFloraBattleLoop01
     clips:
-    - {fileID: 8300000, guid: 397a577d8347d8a4797c9289aa710d5e, type: 3}
-    volume: 0.5
+    - {fileID: 8300000, guid: 1b56b72035a8e6d40a411d5a9bec0702, type: 3}
+    volume: 0.177
     pitch: 1
     pitchVariation: 0
     loop: 1
     bus: 0
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: MemoFloraPostBattle01
     clips:
-    - {fileID: 8300000, guid: b7a01152dfdc9e04681a561d7eeb335a, type: 3}
-    volume: 0.3
+    - {fileID: 8300000, guid: 08dafce7c47403e41b6eee9a526658b4, type: 3}
+    volume: 0.062
     pitch: 1
     pitchVariation: 0
-    loop: 1
+    loop: 0
     bus: 0
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Death
@@ -299,18 +368,39 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: QuestCompleted02
     clips:
-    - {fileID: 8300000, guid: 7e3174b338a97df459f38e5440a04d7a, type: 3}
-    volume: 0.4
+    - {fileID: 8300000, guid: a345a89d2d3af63499c353bf4882f439, type: 3}
+    volume: 0.252
     pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
+    priority: 128
+    interruptSelf: 0
+  - id: QuestCompleted02Pitched
+    clips:
+    - {fileID: 8300000, guid: a345a89d2d3af63499c353bf4882f439, type: 3}
+    volume: 0.178
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PickupReversedSFX
@@ -323,6 +413,9 @@ MonoBehaviour:
     bus: 2
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: IntroStoryboardLoop
@@ -335,6 +428,9 @@ MonoBehaviour:
     bus: 0
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: BigWaterSplash
@@ -347,6 +443,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: RockSmash
@@ -359,6 +458,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: AxeHit
@@ -371,6 +473,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: TreeFall
@@ -383,6 +488,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: BootsOff
@@ -395,6 +503,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: BootsOn
@@ -407,6 +518,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: JumpStart
@@ -419,6 +533,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: JumpLand
@@ -431,18 +548,24 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PickupSpecial
     clips:
-    - {fileID: 8300000, guid: 7551d73a646c7bd4f8d0dcb6bd93de37, type: 3}
-    volume: 1
+    - {fileID: 8300000, guid: 4ea6b923c1d65bd4d9ebcebe8f410980, type: 3}
+    volume: 0.299
     pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: HurtPaper
@@ -455,6 +578,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Tijera_Miss_Roca
@@ -467,6 +593,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: ActionWind
@@ -479,6 +608,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: RocosoHeadbutt
@@ -491,6 +623,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: RocosoMojado
@@ -503,6 +638,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: RocosoPaso
@@ -515,6 +653,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: RocosoWakeUp
@@ -527,6 +668,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: RepresaFall
@@ -539,6 +683,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_Kami_01
@@ -551,6 +698,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_Kami_02
@@ -563,6 +713,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_Kami_03
@@ -575,6 +728,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_Kami_04
@@ -587,6 +743,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Origami_Fail_Crumble
@@ -599,18 +758,24 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Receive_Reward
     clips:
-    - {fileID: 8300000, guid: f8ae727add1b99f4780e9d74c8ce93bb, type: 3}
-    volume: 0.5
+    - {fileID: 8300000, guid: 277418252f8cdd94abb2f70aeccc6022, type: 3}
+    volume: 0.698
     pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Jump_Paperplane
@@ -623,6 +788,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Action_Hover
@@ -635,6 +803,9 @@ MonoBehaviour:
     bus: 2
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_KamiMojados_01
@@ -647,6 +818,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_KamiMojados_02
@@ -659,6 +833,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_KamiMojados_03
@@ -671,6 +848,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_KamiMojados_04
@@ -683,6 +863,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: ForestAtDay
@@ -695,6 +878,9 @@ MonoBehaviour:
     bus: 3
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: ForestAtNight
@@ -707,6 +893,9 @@ MonoBehaviour:
     bus: 3
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Gallina_Evade_VolumeTest
@@ -719,18 +908,24 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: EstampesPagodes_Battle_Intro
     clips:
     - {fileID: 8300000, guid: 39090915ed8cbfb4bb30a801a045fd97, type: 3}
-    volume: 0.4
+    volume: 0.15
     pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 0
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: BohrenDestroyingAngels
@@ -743,6 +938,9 @@ MonoBehaviour:
     bus: 0
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Dialogue_PencilWrite
@@ -756,6 +954,9 @@ MonoBehaviour:
     bus: 2
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Dialogue_Sigh
@@ -767,6 +968,9 @@ MonoBehaviour:
     bus: 2
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: TijeraHit
@@ -780,6 +984,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PaperCut
@@ -793,6 +1000,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PaperFold
@@ -806,6 +1016,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_Kami_A
@@ -819,6 +1032,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_Kami_B
@@ -832,6 +1048,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_Kami
@@ -847,6 +1066,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_KamiMojados_A
@@ -860,6 +1082,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Pasos_KamiMojados_B
@@ -873,6 +1098,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: DeadEndAngels
@@ -885,6 +1113,9 @@ MonoBehaviour:
     bus: 0
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CarDoor
@@ -897,6 +1128,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PoliceSirenLoop
@@ -909,6 +1143,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PoliceHorn
@@ -921,6 +1158,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CarBrake
@@ -933,6 +1173,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: RunningFootsteps
@@ -948,6 +1191,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 4
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: Handcuffs
@@ -960,6 +1206,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CellBarsSlam
@@ -972,6 +1221,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: PadlockClank
@@ -984,6 +1236,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: FenceRattle
@@ -997,6 +1252,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: AbuelaFall
@@ -1009,6 +1267,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: AbuelaCrash
@@ -1021,6 +1282,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CopWhistle
@@ -1033,6 +1297,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CaughtSting
@@ -1045,6 +1312,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: TypewriterClack
@@ -1058,6 +1328,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: ClothRip
@@ -1070,6 +1343,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CafeAmbience
@@ -1082,6 +1358,9 @@ MonoBehaviour:
     bus: 3
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: RadioStatic
@@ -1094,6 +1373,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: NewsJingle
@@ -1106,6 +1388,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: ManholeClank
@@ -1118,18 +1403,24 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: ClueFound
     clips:
-    - {fileID: 8300000, guid: 7551d73a646c7bd4f8d0dcb6bd93de37, type: 3}
-    volume: 0.5
+    - {fileID: 8300000, guid: 4ea6b923c1d65bd4d9ebcebe8f410980, type: 3}
+    volume: 0.149
     pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CarEngine
@@ -1142,6 +1433,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CarHorn
@@ -1154,6 +1448,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: GiftBoxOpen
@@ -1167,6 +1464,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: BarAmbience
@@ -1179,6 +1479,9 @@ MonoBehaviour:
     bus: 3
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: RopeCreak
@@ -1191,6 +1494,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CatapultThud
@@ -1203,6 +1509,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CatapultWhoosh
@@ -1215,6 +1524,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 1
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CopKnockedOut
@@ -1227,6 +1539,9 @@ MonoBehaviour:
     bus: 1
     maxSimultaneous: 2
     spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
     priority: 128
     interruptSelf: 0
   - id: CarEngineIdleLoop

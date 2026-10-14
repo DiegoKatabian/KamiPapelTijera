@@ -29,6 +29,7 @@ public static class AudioId
     public const string MemoFloraPostBattle01 = "MemoFloraPostBattle01";
     public const string Death = "Death";
     public const string QuestCompleted02 = "QuestCompleted02";
+    public const string QuestCompleted02Pitched = "QuestCompleted02Pitched";
     public const string PickupReversedSFX = "PickupReversedSFX";
     public const string IntroStoryboardLoop = "IntroStoryboardLoop";
     public const string BigWaterSplash = "BigWaterSplash";

@@ -89,16 +89,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 5736808169472
-    m_Localized: "Arrastr\xE1 la flecha verde hasta el objetivo. \nNo te salgas del
-      camino!"
+    m_Localized: "Arrastr\xE1 hasta el final y solt\xE1. \nNo te salgas del camino!"
     m_Metadata:
       m_Items: []
   - m_Id: 7000000000001
-    m_Localized: "{INPUT:accion} para espiar adentro"
+    m_Localized: '{INPUT:accion} para espiar adentro'
     m_Metadata:
       m_Items: []
   - m_Id: 7000000000002
-    m_Localized: "{INPUT:accion} para subir a la catapulta"
+    m_Localized: '{INPUT:accion} para subir a la catapulta'
     m_Metadata:
       m_Items: []
   - m_Id: 7000000000003

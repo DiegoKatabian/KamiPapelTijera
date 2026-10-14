@@ -17,13 +17,14 @@ from Level 2 reachable, and nothing visibly unfinished in Level 1.
 
 ## 2. Decisions (Diego, 2026-10-13)
 
-- **D1** It is a **demo, Level 1 only**, on its **own Steam demo app**. The full game keeps App ID 3284350.
+- **D1** It is a **demo, Level 1 only**, on its **own Steam demo app**. **The demo's App ID is 3284350** (Diego, 2026-10-14; also `steam_appid.txt`). The full game's own app does not exist yet.
 - **D2** The full game's store page is submitted and working.
 - **D3** No Rocoso cutscenes (#35) in the demo.
 - **D4** No Wardrobe tab (and no blank default-outfit bag item) in this build.
 - **D5** Company name `kimmiarts`; version bumped to **0.2.0**, shown as small text bottom-left of the main menu.
 - Existing GitHub issues are not part of this work (Diego: ignore them). No save system needed.
-- **Open: the demo app's App ID** (B.1). `SteamAppIds.Demo` is 0 until then and the build menu refuses to run.
+- Resolved 2026-10-14: `SteamAppIds.Demo = 3284350`. `FullGame = 0` (no such app yet): any non-demo build falls back to the demo id.
+- Depot ID **3284353** ("Kami Paper Scissors - November Demo Depot", Diego 2026-10-14), set in `tools/steam/`.
 
 ### How the two Steam apps relate (so the code is right)
 
@@ -62,12 +63,13 @@ a scene list plus a define, not a branch, so Build Settings and Level 2 developm
 
 | Issue | Change |
 |---|---|
-| #191 A.1 | `SteamManager` GameObject in `MainMenu.unity` (appended; scene 294 -> 300 blocks); `SteamAppIds.cs` (`FullGame = 3284350`, `Demo = 0`, `Current` by `KAMI_STEAM_DEMO`); `SteamManager.cs` passes `SteamAppIds.Current` |
+| #191 A.1 | `SteamManager` GameObject in `MainMenu.unity` (appended; scene 294 -> 300 blocks); `SteamAppIds.cs` (`Demo = 3284350`, `FullGame = 0` = not created, `Current` by `KAMI_STEAM_DEMO`); `SteamManager.cs` passes `SteamAppIds.Current` |
 | #192 A.2 | `Assets/Editor/SteamDemoBuild.cs`, menu **Kami > Build > Steam Demo (Level 1)** -> `Builds/SteamDemo/` |
 | #193 A.3 | `m_BuildAddressablesWithPlayerBuild: 1` |
 | #206 A.4 | `tools/add-placeholder-rain-boots.py` rewritten for Atlas 13; skin `Zapatos/Zapatos_RainBoots_Placeholder` added to `Atlas 13/skeleton.json`; `Gear_RainBoots._spineSkin` repointed |
 | #194 A.5 | `GearLoadout._hasWardrobe` (Level 1 = off); `FlapManager` hides tab index 4 and R1/L1 skip it; `Player.GrantStartingLoadout` skips the worn outfit; `Player.StartingLoadout` property |
 | #195 A.6 | `companyName: kimmiarts`, `bundleVersion: 0.2.0`, `VersionLabel` (+ GameObject in `MainMenu.unity`) |
+| #197 B.2 | `tools/steam/`: `app_build_demo.vdf`, `app_build_demo_preview.vdf` (Preview 1), `depot_build_demo.vdf` (depot id **3284353**), `upload-demo.bat [preview]`; the SDK is at `..\steamworks sdk` (outside the repo). No `SetLive`: pick the branch in Steamworks after the upload. |
 
 Verification so far: `tools/compile-check.py` clean (the two baseline warnings); the Editor assembly (`SteamDemoBuild.cs`)
 compiled by hand against Unity's references (one CS0162 warning that disappears once `Demo` is non-zero); skeleton JSON still
@@ -78,13 +80,18 @@ Note for later: `FlapManager.cs`, `Player.cs`, `Level2_Newspaper.unity` etc. als
 When committing, stage the Steam demo files separately (the list is in the table above plus `ProjectSettings`,
 `AddressableAssetSettings.asset`, `Level1_StartLoadout.asset`, `Gear_RainBoots.asset`, `skeleton.json`, `tools/`).
 
+### Added 2026-10-14
+
+- **A.7 (#208) Licensed music out.** MemoFlora -> Estampes Pagodes in the AudioBank (loudness-matched volumes), boss theme plays intro then loop, `Assets/Sounds/MemoFlora/` deleted. Details in the issue.
+- **Licensed clips never ship in the demo.** The AudioBank is in Resources, so everything it references ships. The build menu item empties the Level 2 music entries (`BohrenDestroyingAngels`, `DeadEndAngels`) and the Sims-named `QuestCompleted`/`NewsJingle` clip for the length of the build, then restores them. The provenance of the Level 1 clips (menu music, ambience, UI piano, Cathedral) is Diego's to confirm (#209).
+- **Testing the build locally.** Double-clicking the exe from `Builds/SteamDemo` hands the launch to Steam (`RestartAppIfNecessary`, no `steam_appid.txt` next to the exe), which starts the version installed in the library: the old build. Use `tools/steam/run-local.bat` (copies `steam_appid.txt` in and starts the exe); `upload-demo.bat` removes it again before uploading.
+
 ## 5. What is left
 
 ### Phase B — outside the project (Diego)
 
-- **B.1 (#196) Demo app.** On the partner site create/confirm the demo app (type **Demo**, base game 3284350), one Windows
-  depot, launch option `KamiPapelTijera.exe` (Windows 64-bit), the app in a package, a private beta branch. **Give me the demo's
-  App ID**: it goes into `SteamAppIds.Demo`. Blocks everything below.
+- **B.1 (#196) Demo app.** On the partner site create/confirm the demo app (type **Demo**, base game = the full game's app, when it exists), one Windows
+  depot, launch option `KamiPapelTijera.exe` (Windows 64-bit), the app in a package, a private beta branch. **Done: demo App ID 3284350, depot 3284353.**
 - **B.2 (#197) SDK and scripts.** Download the Steamworks SDK (partner site, login) to a short path, use `tools\ContentBuilder`:
   `app_build_<demoAppId>.vdf` (ContentRoot = `Builds/SteamDemo`, SetLive = the beta branch) and `depot_build_<depotId>.vdf`
   (exclude `*.pdb`, `*_BurstDebugInformation*`, `steam_appid.txt`); a `Preview 1` run first, then

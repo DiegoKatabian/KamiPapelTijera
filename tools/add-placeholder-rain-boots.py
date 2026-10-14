@@ -23,7 +23,7 @@ Usage:  python tools/add-placeholder-rain-boots.py "Assets/2D/Kami Spine/Atlas 1
 import io, json, sys
 
 SKIN = "Zapatos/Zapatos_RainBoots_Placeholder"
-YELLOW_FLAT = "ffd23cff"       # over a white silhouette: bright rubber yellow
+YELLOW_FLAT = "c9a53aff"       # over a white silhouette: muted, matte duck yellow (a brighter one blooms and glows)
 YELLOW_ON_GAITER = "ffe646ff"  # over the light-beige gaiter texture: lands close to the shoes' yellow
 
 SLOT_PREFIX = "KamiLibro/"

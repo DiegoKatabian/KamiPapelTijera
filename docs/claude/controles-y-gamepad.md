@@ -16,8 +16,8 @@ origami) — nunca qué se puede hacer.
 | Saltar | Espacio | **A** (botón 0), contextual |
 | Interactuar (hablar, solapas, pasar página, origami) | E, Enter | **A** (botón 0), contextual |
 | Atacar / cortar | Click izq, Ctrl | **B** (botón 1) |
-| Correr | Shift | **L1** (botón 4) |
-| Cambiar cámara | Click del medio | **L2** (9no eje) |
+| Correr | Shift | **L1** (botón 4) o **R1** (botón 5, desde 2026-10-14) |
+| Cambiar cámara | Click del medio | **R2** (10mo eje) = siguiente, **L2** (9no eje) = anterior (desde 2026-10-14, spec 016) |
 | Menú Flap | Esc, O | **Start** (botón 7) |
 | Inventario / Quests directo | I / U | — (se llega por el menú con Start) |
 | Mutear | M | — |

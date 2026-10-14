@@ -12,6 +12,12 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] protected TextMeshProUGUI nameTextComponent;
     [SerializeField] protected TextMeshProUGUI amountTextComponent;
 
+    [Header("Worn badge (gear items only)")]
+    [Tooltip("Small square in the slot's corner, shown only for gear (outfits, boots, scissors): filled when Kami wears the item, pale when she owns it but doesn't. Empty = no badge.")]
+    [SerializeField] Image _wornBadge;
+    [SerializeField] Color _wornBadgeOnColor = new Color(1f, 0.72f, 0.2f, 1f);
+    [SerializeField] Color _wornBadgeOffColor = new Color(1f, 1f, 1f, 0.55f);
+
     protected Color _originalTextColor, _originalSlotColor, _originalIconColor;
     public float upwardsSpeed = 100;
 
@@ -26,11 +32,65 @@ public class InventorySlot : MonoBehaviour
 
     private void OnEnable()
     {
+        Player player = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+        if (player != null && _gearPlayer != player)
+        {
+            _gearPlayer = player;
+            _gearPlayer.OnGearChanged += RefreshWornBadge;
+        }
+        RefreshWornBadge();
+
         if (setNamePromised)
         {
             StartCoroutine(SetLocalizedText(currentItem.itemName, nameTextComponent));
             setNamePromised = false;
         }
+    }
+
+    private void OnDisable()
+    {
+        if (_gearPlayer != null)
+        {
+            _gearPlayer.OnGearChanged -= RefreshWornBadge;
+            _gearPlayer = null;
+        }
+    }
+
+    Player _gearPlayer;
+    bool? _inFlap;
+
+    //Whether the gear this slot shows is on Kami right now: the bag's only "equipped" signal (the
+    //Wardrobe scales its buttons instead, and it is hidden in the Level 1 demo).
+    void RefreshWornBadge()
+    {
+        if (_wornBadge == null)
+        {
+            return;
+        }
+
+        //Only the bag and the Wardrobe live under the Flap. The reward stickers and pickup stickers are
+        //copies of this same prefab and must never carry the badge.
+        if (!_inFlap.HasValue)
+        {
+            _inFlap = GetComponentInParent<FlapManager>(true) != null;
+        }
+        if (!_inFlap.Value)
+        {
+            _wornBadge.gameObject.SetActive(false);
+            return;
+        }
+
+        GearCatalog catalog = GearCatalog.Instance;
+        GearItem gear = (currentItem != null && catalog != null) ? catalog.ForResource(currentItem.resourceType) : null;
+        _wornBadge.gameObject.SetActive(gear != null);
+        if (gear == null)
+        {
+            return;
+        }
+
+        Player player = _gearPlayer != null ? _gearPlayer : (LevelManager.Instance != null ? LevelManager.Instance.player : null);
+        bool worn = player != null && player.Gear != null && player.Gear.GetEquipped(gear.Slot) == gear;
+        _wornBadge.color = worn ? _wornBadgeOnColor : _wornBadgeOffColor;
     }
 
     public void SetTransparency(float alpha)
@@ -77,6 +137,8 @@ public class InventorySlot : MonoBehaviour
         {
             amountTextComponent.text = InventoryManager.Instance.itemsAmount[currentItem].ToString();
         }
+
+        RefreshWornBadge();
     }
 
     public virtual void ClearSlot()
@@ -89,6 +151,7 @@ public class InventorySlot : MonoBehaviour
         nameTextComponent.text = "";
         amountTextComponent.text = "";
         slotStickerImageComponent.color = Color.white;
+        RefreshWornBadge();
     }
 
     public virtual void BUTTON_OnHover()

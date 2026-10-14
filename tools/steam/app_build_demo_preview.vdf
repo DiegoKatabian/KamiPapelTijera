@@ -1,0 +1,15 @@
+"AppBuild"
+{
+	"AppID" "3284350" // the Level 1 DEMO app (not the full game)
+	"Desc" "Level 1 demo build" // internal description, shown in Steamworks > SteamPipe > Builds
+	"Preview" "1" // 1 = only write logs and a file manifest, upload nothing
+	"ContentRoot" "C:\Users\Diego\OneDrive\Documents\GitHub\KamiPapelTijera\Builds\SteamDemo\" // the folder Kami > Build > Steam Demo (Level 1) fills
+	"BuildOutput" "C:\Users\Diego\OneDrive\Documents\GitHub\KamiPapelTijera\Builds\SteamPipeOutput\" // logs and cache (Builds/ is git-ignored)
+	"verbose" "0"
+	// No "SetLive": after the upload, pick the build's branch in Steamworks > SteamPipe > Builds.
+	// (A SetLive naming a branch that does not exist yet fails at the very end of the upload.)
+	"Depots"
+	{
+		"3284353" "depot_build_demo.vdf" // CHECK this id in Steamworks > SteamPipe > Depots (the app's first depot is usually appid + 1)
+	}
+}

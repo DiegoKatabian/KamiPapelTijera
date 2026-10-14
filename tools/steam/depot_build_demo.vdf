@@ -1,0 +1,18 @@
+"DepotBuild"
+{
+	// CHECK against Steamworks > SteamPipe > Depots
+	"DepotID" "3284353"
+
+	"FileMapping"
+	{
+		"LocalPath" "*"
+		"DepotPath" "."
+		"Recursive" "1"
+	}
+
+	// Belt and braces: the build menu item already deletes these
+	"FileExclusion" "*.pdb"
+	"FileExclusion" "*_BurstDebugInformation_DoNotShip*"
+	"FileExclusion" "*_BackUpThisFolder_ButDontShipItWithYourGame*"
+	"FileExclusion" "steam_appid.txt"
+}

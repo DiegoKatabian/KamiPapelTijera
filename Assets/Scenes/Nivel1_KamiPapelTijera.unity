@@ -123,7 +123,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 23800000, guid: 9d716217b718d1b48861abee72a24b74, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 686bd306fd5aef24aad90629ca9e30fe, type: 2}
 --- !u!1 &1758180
 GameObject:
   m_ObjectHideFlags: 0
@@ -47758,24 +47758,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 556473287}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1089432682 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5521060155048732188, guid: 633cd82ef18ce4f40919d006d55197d0,
-    type: 3}
-  m_PrefabInstance: {fileID: 5521060154922636461}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1089432684
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089432682}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 513bdfd244d147a29393681a7ea4dba3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1094082689
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65753,7 +65735,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1738310970}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.6625004, y: -2.2, z: -36.22}
+  m_LocalPosition: {x: 1.6625004, y: -1.49, z: -36.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -77174,7 +77156,7 @@ PrefabInstance:
     - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
         type: 3}
       propertyPath: startingPage
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
         type: 3}
@@ -79681,6 +79663,11 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0.505
       objectReference: {fileID: 0}
+    - target: {fileID: 7960216399587978326, guid: 633cd82ef18ce4f40919d006d55197d0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 842.3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 633cd82ef18ce4f40919d006d55197d0, type: 3}
 --- !u!95 &5549367393259815876
@@ -79719,7 +79706,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5549367393259815879
 Transform:
   m_ObjectHideFlags: 0
@@ -79789,7 +79776,7 @@ PrefabInstance:
     - target: {fileID: 5549367394310565229, guid: b10d773730f3e814c80e3450cd124562,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5549367394491038700, guid: b10d773730f3e814c80e3450cd124562,
         type: 3}
@@ -81852,9 +81839,41 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
         type: 3}
+      propertyPath: _paginasConNavMesh.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
+        type: 3}
+      propertyPath: _paginasConNavMesh.Array.data[0].pageIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
+        type: 3}
+      propertyPath: _paginasConNavMesh.Array.data[1].pageIndex
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
+        type: 3}
+      propertyPath: _paginasConNavMesh.Array.data[2].pageIndex
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
+        type: 3}
       propertyPath: _paginasConNavMesh.Array.data[0].navMeshData
       value: 
+      objectReference: {fileID: 23800000, guid: ebf68720ac4c6774a9290ed5e50d82df,
+        type: 2}
+    - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
+        type: 3}
+      propertyPath: _paginasConNavMesh.Array.data[1].navMeshData
+      value: 
       objectReference: {fileID: 23800000, guid: 9d716217b718d1b48861abee72a24b74,
+        type: 2}
+    - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
+        type: 3}
+      propertyPath: _paginasConNavMesh.Array.data[2].navMeshData
+      value: 
+      objectReference: {fileID: 23800000, guid: 30712e901f3ff1d4aa5a98231632a321,
         type: 2}
     - target: {fileID: 8848336253380897679, guid: 19855524bfe83fb43a93c02223306e2b,
         type: 3}

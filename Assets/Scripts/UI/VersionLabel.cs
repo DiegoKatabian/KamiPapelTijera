@@ -3,64 +3,62 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// The build's version number (Player Settings > Version) as small, quiet text in the bottom-left corner.
-/// It builds its own overlay canvas, so dropping this component on an empty GameObject in the main menu is
-/// all the setup it needs, and it can't disturb the menu's own canvas layout. Plain text on purpose: a
-/// version string is not localized and must not go through the text-highlight/prompt funnel.
+/// The build's version number (Player Settings > Version) as small, quiet text in the bottom-left corner,
+/// shown only while the kimmiarts logo is: its alpha follows the logo image, so it fades in and dissolves
+/// with it, and once the logo is gone the label switches itself off for good (never over Kami or the intro
+/// dialogue). Both references are authored in the main menu scene. Plain text on purpose: a version string
+/// is not localized and must not go through the text-highlight/prompt funnel.
 /// </summary>
 public class VersionLabel : MonoBehaviour
 {
-    [Tooltip("Written before the version number.")]
-    [SerializeField] string _prefix = "v";
+    [SerializeField, Tooltip("The label itself (the TextMeshPro on this GameObject).")]
+    TMP_Text _text;
 
-    [Tooltip("Font size in canvas units (the canvas scales to a 1920x1080 reference).")]
-    [SerializeField] float _fontSize = 16f;
+    [SerializeField, Tooltip("The kimmiarts logo image: the label is exactly as visible as this is.")]
+    Graphic _followLogo;
 
-    [Tooltip("Distance from the left and bottom edges, in canvas units.")]
-    [SerializeField] Vector2 _margin = new Vector2(14f, 10f);
+    [SerializeField, Tooltip("Written before the version number.")]
+    string _prefix = "v";
 
     [Range(0f, 1f)]
-    [Tooltip("How visible the text is. Low on purpose: it is there for bug reports, not for the player to read.")]
-    [SerializeField] float _opacity = 0.55f;
+    [SerializeField, Tooltip("How visible the label is while the logo is fully visible. Low on purpose: it is there for bug reports.")]
+    float _opacity = 0.55f;
 
-    [Tooltip("Optional. Empty = TextMeshPro's default font.")]
-    [SerializeField] TMP_FontAsset _font;
+    bool _wasVisible;
 
-    void Start()
+    void Awake()
     {
-        GameObject canvasObject = new GameObject("Version Canvas");
-        canvasObject.transform.SetParent(transform, false);
-
-        Canvas canvas = canvasObject.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 100;
-
-        CanvasScaler scaler = canvasObject.AddComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920f, 1080f);
-        scaler.matchWidthOrHeight = 0.5f;
-
-        GameObject textObject = new GameObject("Version Text");
-        textObject.transform.SetParent(canvasObject.transform, false);
-
-        TextMeshProUGUI text = textObject.AddComponent<TextMeshProUGUI>();
-        if (_font != null)
+        if (_text == null || _followLogo == null)
         {
-            text.font = _font;
+            Debug.LogWarning("[VersionLabel] _text or _followLogo is not assigned: the version label stays hidden");
+            enabled = false;
+            if (_text != null)
+            {
+                _text.alpha = 0f;
+            }
+            return;
         }
-        text.text = _prefix + Application.version;
-        text.fontSize = _fontSize;
-        text.color = new Color(1f, 1f, 1f, _opacity);
-        text.alignment = TextAlignmentOptions.BottomLeft;
-        text.raycastTarget = false; //never in the way of a menu button
 
-        RectTransform rect = text.rectTransform;
-        rect.anchorMin = Vector2.zero;
-        rect.anchorMax = Vector2.zero;
-        rect.pivot = Vector2.zero;
-        rect.anchoredPosition = _margin;
-        rect.sizeDelta = new Vector2(400f, _fontSize * 2f);
+        _text.text = _prefix + Application.version;
+        _text.alpha = 0f;
+        Debug.Log($"[VersionLabel] '{_text.text}', follows '{_followLogo.name}'");
+    }
 
-        Debug.Log($"[VersionLabel] showing '{text.text}'");
+    //after the logo's own fade scripts have written this frame's alpha
+    void LateUpdate()
+    {
+        float logoAlpha = _followLogo.color.a;
+        _text.alpha = logoAlpha * _opacity;
+
+        //the logo's two fade scripts fight for its first frame (one sets alpha 1, the other restarts the
+        //fade-in from 0), so "it has been visible" only counts once it is clearly up, after that first moment
+        if (logoAlpha > 0.5f && Time.timeSinceLevelLoad > 0.5f)
+        {
+            _wasVisible = true;
+        }
+        else if (_wasVisible && logoAlpha < 0.05f)
+        {
+            gameObject.SetActive(false); //the logo has dissolved: done for this session
+        }
     }
 }

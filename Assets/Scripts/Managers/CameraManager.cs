@@ -49,11 +49,15 @@ public class CameraManager : Singleton<CameraManager>
 
     void Update()
     {
-        //click del medio (como siempre), R1 o el gatillo L2 del joystick. Los tres nombres de
-        //botones viven en InputHub, no aca.
+        //click del medio (como siempre) o el gatillo R2 = camara siguiente; el gatillo L2 = la anterior.
+        //Los nombres de los ejes viven en InputHub, no aca.
         if (InputHub.CambiarCamaraDown)
         {
             ToggleNextCamera();
+        }
+        else if (InputHub.CambiarCamaraAtrasDown)
+        {
+            TogglePreviousCamera();
         }
     }
 
@@ -69,15 +73,28 @@ public class CameraManager : Singleton<CameraManager>
 
     public void ToggleNextCamera()
     {
+        CycleCamera(1);
+    }
+
+    public void TogglePreviousCamera()
+    {
+        CycleCamera(-1);
+    }
+
+    //direction is +1 (next) or -1 (previous); both skip the game-driven modes and wrap around
+    void CycleCamera(int direction)
+    {
         if (!IsPlayerSelectable(CurrentMode))
         {
             Debug.Log($"[CameraManager] Cycle ignored: {CurrentMode} is game-driven");
             return;
         }
 
-        for (int step = 1; step < _virtualCameras.Length; step++)
+        int count = _virtualCameras.Length;
+        for (int step = 1; step < count; step++)
         {
-            CameraMode candidate = (CameraMode)((currentCamera + step) % _virtualCameras.Length);
+            int index = ((currentCamera + direction * step) % count + count) % count;
+            CameraMode candidate = (CameraMode)index;
             if (IsPlayerSelectable(candidate))
             {
                 SetCamera(candidate);

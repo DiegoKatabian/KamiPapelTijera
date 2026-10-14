@@ -200,6 +200,7 @@ public static class IconosDeBoton
         new Definicion("l1",    "btn_l1",    64, Forma.Bumper, "L1", 3f),
         new Definicion("l2",    "btn_l2",    64, Forma.Bumper, "L2", 3f),
         new Definicion("r1",    "btn_r1",    64, Forma.Bumper, "R1", 3f),
+        new Definicion("r2",    "btn_r2",    64, Forma.Bumper, "R2", 3f),
         new Definicion("start", "btn_start", 64, Forma.Start),
         new Definicion("stick", "stick_izq", 64, Forma.Stick),
 

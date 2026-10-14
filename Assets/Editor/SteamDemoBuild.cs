@@ -2,6 +2,7 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 /// <summary>
 /// One click: Kami > Build > Steam Demo (Level 1). Builds a 64-bit Windows player with only the Level 1
@@ -15,19 +16,17 @@ public static class SteamDemoBuild
 {
     const string OUTPUT_FOLDER = "Builds/SteamDemo";
     const string DEMO_DEFINE = "KAMI_STEAM_DEMO";
+    const string AUDIO_BANK_PATH = "Assets/Resources/AudioBank.asset";
+
+    //Not for the demo: Level 2's music is commercially licensed (Bohren & Der Club Of Gore, and the
+    //"DeadEndAngels" track next to it) and the QuestCompleted/NewsJingle clip is named after The Sims' build
+    //mode. The demo has no Level 2, but the AudioBank sits in Resources, so every clip it references ships
+    //whether or not anything plays it: those entries lose their clips for the length of the build.
+    static readonly string[] DEMO_EXCLUDED_AUDIO_IDS = { "BohrenDestroyingAngels", "DeadEndAngels", "QuestCompleted", "NewsJingle" };
 
     [MenuItem("Kami/Build/Steam Demo (Level 1)")]
     public static void Build()
     {
-        if (SteamAppIds.Demo == 0)
-        {
-            EditorUtility.DisplayDialog("Steam demo build",
-                "SteamAppIds.Demo is 0. Put the demo app's App ID in Assets/Scripts/Steamworks.NET/SteamAppIds.cs " +
-                "(Steamworks > All Associated Software, the demo is a separate app from the full game).", "OK");
-            Debug.LogError("[SteamDemoBuild] SteamAppIds.Demo is 0: the demo's App ID is missing, not building");
-            return;
-        }
-
         string[] scenes = ResolveScenes();
         if (scenes == null)
         {
@@ -51,10 +50,19 @@ public static class SteamDemoBuild
             extraScriptingDefines = new[] { DEMO_DEFINE }
         };
 
-        Debug.Log($"[SteamDemoBuild] building version {PlayerSettings.bundleVersion} as Steam app {SteamAppIds.Demo}: " +
+        Debug.Log($"[SteamDemoBuild] building version {PlayerSettings.bundleVersion} as Steam app {SteamAppIds.Demo} (KAMI_STEAM_DEMO): " +
                   string.Join(", ", scenes));
 
-        UnityEditor.Build.Reporting.BuildReport report = BuildPipeline.BuildPlayer(options);
+        List<KeyValuePair<int, Object[]>> strippedAudio = StripExcludedAudio();
+        UnityEditor.Build.Reporting.BuildReport report;
+        try
+        {
+            report = BuildPipeline.BuildPlayer(options);
+        }
+        finally
+        {
+            RestoreExcludedAudio(strippedAudio); //the AudioBank must never stay stripped, whatever the build did
+        }
         if (report.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             Debug.LogError($"[SteamDemoBuild] build {report.summary.result}: {report.summary.totalErrors} error(s), see the console above");
@@ -66,6 +74,67 @@ public static class SteamDemoBuild
         Debug.Log($"[SteamDemoBuild] done: {Path.GetFullPath(OUTPUT_FOLDER)} " +
                   $"({report.summary.totalSize / (1024 * 1024)} MB). This folder is the SteamPipe ContentRoot.");
         EditorUtility.RevealInFinder(Path.GetFullPath(executable));
+    }
+
+    static List<KeyValuePair<int, Object[]>> StripExcludedAudio()
+    {
+        List<KeyValuePair<int, Object[]>> stripped = new List<KeyValuePair<int, Object[]>>();
+        AudioBank bank = AssetDatabase.LoadAssetAtPath<AudioBank>(AUDIO_BANK_PATH);
+        if (bank == null)
+        {
+            Debug.LogWarning($"[SteamDemoBuild] no AudioBank at {AUDIO_BANK_PATH}: nothing to strip from it");
+            return stripped;
+        }
+
+        SerializedObject bankObject = new SerializedObject(bank);
+        SerializedProperty entries = bankObject.FindProperty("entries");
+        for (int i = 0; i < entries.arraySize; i++)
+        {
+            SerializedProperty entry = entries.GetArrayElementAtIndex(i);
+            string id = entry.FindPropertyRelative("id").stringValue;
+            if (System.Array.IndexOf(DEMO_EXCLUDED_AUDIO_IDS, id) < 0)
+            {
+                continue;
+            }
+
+            SerializedProperty clips = entry.FindPropertyRelative("clips");
+            Object[] saved = new Object[clips.arraySize];
+            for (int c = 0; c < saved.Length; c++)
+            {
+                saved[c] = clips.GetArrayElementAtIndex(c).objectReferenceValue;
+            }
+            stripped.Add(new KeyValuePair<int, Object[]>(i, saved));
+            clips.ClearArray();
+            Debug.Log($"[SteamDemoBuild] audio '{id}' has no clips in this build ({saved.Length} taken out until it ends)");
+        }
+
+        bankObject.ApplyModifiedPropertiesWithoutUndo();
+        AssetDatabase.SaveAssets();
+        return stripped;
+    }
+
+    static void RestoreExcludedAudio(List<KeyValuePair<int, Object[]>> stripped)
+    {
+        if (stripped == null || stripped.Count == 0)
+        {
+            return;
+        }
+
+        AudioBank bank = AssetDatabase.LoadAssetAtPath<AudioBank>(AUDIO_BANK_PATH);
+        SerializedObject bankObject = new SerializedObject(bank);
+        SerializedProperty entries = bankObject.FindProperty("entries");
+        foreach (KeyValuePair<int, Object[]> pair in stripped)
+        {
+            SerializedProperty clips = entries.GetArrayElementAtIndex(pair.Key).FindPropertyRelative("clips");
+            clips.arraySize = pair.Value.Length;
+            for (int c = 0; c < pair.Value.Length; c++)
+            {
+                clips.GetArrayElementAtIndex(c).objectReferenceValue = pair.Value[c];
+            }
+        }
+        bankObject.ApplyModifiedPropertiesWithoutUndo();
+        AssetDatabase.SaveAssets();
+        Debug.Log($"[SteamDemoBuild] AudioBank restored ({stripped.Count} entries got their clips back)");
     }
 
     static string[] ResolveScenes()

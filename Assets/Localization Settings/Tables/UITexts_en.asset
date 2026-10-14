@@ -161,7 +161,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 244717555555000000
-    m_Localized: '{INPUT:cambiarseccion} to switch section'
+    m_Localized: '< {INPUT:cambiarseccion} >'
     m_Metadata:
       m_Items: []
   - m_Id: 244717600000000002

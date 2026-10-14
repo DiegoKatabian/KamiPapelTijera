@@ -66,9 +66,10 @@ public class EncounterManager : MonoBehaviour
             return;
         }
 
-        AudioManager.instance.Play(AudioId.MemoFloraBattleLoop01);
+        //the battle theme's own intro, then its loop (the ids keep their old MemoFlora names: the clips are Estampes Pagodes now)
+        AudioManager.instance.Play(AudioId.EstampesPagodes_Battle_Intro);
+        AudioManager.instance.PlayOnEnd(AudioId.EstampesPagodes_Battle_Intro, AudioId.MemoFloraBattleLoop01);
         AngryParticlesGameObject.SetActive(true);   
-        //AudioManager.instance.PlayOnEnd("EstampesPagodes_Battle_Intro", "MemoFloraBattleLoop01");
         firstTime = false;
     }
 
@@ -79,9 +80,9 @@ public class EncounterManager : MonoBehaviour
         //outside StopAllCoroutines cannot strand a source it already handed out.
         AudioManager.instance.StopAllCoroutines();
         AudioManager.instance.StopById(AudioId.MemoFloraBattleLoop01);
-        //AudioManager.instance.StopByName("EstampesPagodes_Battle_Intro");
+        AudioManager.instance.StopById(AudioId.EstampesPagodes_Battle_Intro);
         AudioManager.instance.Play(AudioId.MemoFloraPostBattle01);
-        AudioManager.instance.Play(AudioId.QuestCompleted02, 2f);
+        AudioManager.instance.Play(AudioId.QuestCompleted02Pitched, 2f);
         AudioManager.instance.PlayOnEnd("MemoFloraPostBattle01", "MemoFloraMainLoop01");
         AngryParticlesGameObject.SetActive(false);
 

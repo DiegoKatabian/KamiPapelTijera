@@ -354,6 +354,7 @@ Hoja/EdgeBone → RidingPage) — no se encontraron discrepancias.
   al nombre del asset si la carga async todavía no resolvió) + cantidad si es &gt;1;
   sonidos de hover/click; fade in/out para el "sticker" de recompensa nueva. Los slots
   se reacomodan sin huecos cuando se quita un ítem.
+- **Worn badge (2026-10-14)**: `InventorySlot._wornBadge` (`WornBadge` child of `InventorySlot.prefab`, a small `Dialogov3` square top-right) shows on gear items only: orange-yellow while Kami wears the item, pale white when she owns it but doesn't. It refreshes on `SetItem`/`ClearSlot` and `Player.OnGearChanged`; colours are fields on the slot. The Level 1 demo has no Wardrobe tab, so this is the bag's only equipped signal.
 - **A tap on a gear item also wears it** (spec 011, 2026-10-05): with the Flap fully open (`IsFullyOpen`, Q16), `BUTTON_OnPress`
   showcases the item as always and then calls `Player.TryToggleGear` (outfits and boots; see
   `spine-kami.md`). The showcase slot's own click is emptied in the prefab, so it never toggles.

@@ -87,20 +87,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 5736808169472
-    m_Localized: Drag the green arrow towards the end and release. Be mindful not
-      to stray out of the path!
+    m_Localized: Drag towards the end and release. Stay inside the path!
     m_Metadata:
       m_Items: []
   - m_Id: 7000000000001
-    m_Localized: "{INPUT:accion} to peek inside"
+    m_Localized: '{INPUT:accion} to peek inside'
     m_Metadata:
       m_Items: []
   - m_Id: 7000000000002
-    m_Localized: "{INPUT:accion} to get on the catapult"
+    m_Localized: '{INPUT:accion} to get on the catapult'
     m_Metadata:
       m_Items: []
   - m_Id: 7000000000003
-    m_Localized: "Cut the rope to launch!"
+    m_Localized: Cut the rope to launch!
     m_Metadata:
       m_Items: []
   references:

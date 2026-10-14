@@ -13,6 +13,11 @@ public class PlayerGear
     readonly GearItem[] _equipped = new GearItem[Enum.GetValues(typeof(GearSlot)).Length];
     readonly Action _onChanged;
 
+    //What the starting loadout put in each slot. Taking an item off puts this back instead of leaving the
+    //slot empty: an empty slot "shows the outfit's own version", and Atlas 13's outfits have no shoes
+    //(the base shoes are a Feet item), so an empty Feet slot would leave Kami barefoot and footless.
+    readonly GearItem[] _loadoutItems = new GearItem[Enum.GetValues(typeof(GearSlot)).Length];
+
     public PlayerGear(Action onChanged)
     {
         _onChanged = onChanged;
@@ -55,6 +60,7 @@ public class PlayerGear
     public void ApplyLoadout(GearLoadout loadout)
     {
         Array.Clear(_equipped, 0, _equipped.Length);
+        Array.Clear(_loadoutItems, 0, _loadoutItems.Length);
 
         if (loadout == null)
         {
@@ -77,6 +83,7 @@ public class PlayerGear
                                      $"in {item.Slot}: '{item.name}' wins");
                 }
                 _equipped[(int)item.Slot] = item;
+                _loadoutItems[(int)item.Slot] = item;
             }
 
             if (_equipped[(int)GearSlot.Outfit] == null)
@@ -115,7 +122,10 @@ public class PlayerGear
         _onChanged?.Invoke();
     }
 
-    /// <summary>Empties a slot so the outfit's own version shows. The outfit can only be swapped.</summary>
+    /// <summary>
+    /// Takes the item off its slot: back to what the level's loadout had there (the base shoes), or
+    /// empty if the loadout had nothing so the outfit's own version shows. The outfit can only be swapped.
+    /// </summary>
     public void Unequip(GearSlot slot)
     {
         if (slot == GearSlot.Outfit)
@@ -130,8 +140,14 @@ public class PlayerGear
             return;
         }
 
-        _equipped[(int)slot] = null;
-        Debug.Log($"[PlayerGear] unequipped '{previous.name}' from {slot}");
+        GearItem fallback = _loadoutItems[(int)slot];
+        if (fallback == previous)
+        {
+            fallback = null; //the loadout's own item: nothing to go back to
+        }
+
+        _equipped[(int)slot] = fallback;
+        Debug.Log($"[PlayerGear] unequipped '{previous.name}' from {slot}, now {(fallback != null ? fallback.name : "empty")}");
         _onChanged?.Invoke();
     }
 
