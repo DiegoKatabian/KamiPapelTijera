@@ -13672,6 +13672,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Kami's Spot Light
       objectReference: {fileID: 0}
+    - target: {fileID: 2879679848917777235, guid: 69337c14c49af6840878d84e2b132dbb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2879679848917777244, guid: 69337c14c49af6840878d84e2b132dbb,
         type: 3}
       propertyPath: m_RootOrder

@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: scissors_title
   itemDescription: scissors_text
-  itemSprite: {fileID: 21300000, guid: 66ede4baab097c94ba408f332f0c841e, type: 3}
+  itemSprite: {fileID: 21300000, guid: 20e4083f1b88d534e985c8f1c93d0ef2, type: 3}
   itemColor: {r: 1, g: 1, b: 1, a: 1}
-  amount: 1
   resourceType: 5
