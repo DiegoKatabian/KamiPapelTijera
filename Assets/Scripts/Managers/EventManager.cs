@@ -95,7 +95,10 @@ public enum Evento //LOS EVENTOS SE AGREGAN AL FINAL. NO EN EL MEDIO, PORQUE ARR
     OnPoliceStationEscaped,
     //the paper plane hat is gone (its augmented jump was used up, or the police took it). Page 4's
     //PaperPlaneRide answers it by getting the followers off the plane. Appended last (enum ints stored)
-    OnPaperPlaneHatLost
+    OnPaperPlaneHatLost,
+    //page 3's arrest cutscene starts (the police show up). PageMusicManager starts the story music
+    //on it; page 4/5 test starts raise it too. Appended last (enum ints stored)
+    OnArrestStarted
 }
 
 public class EventManager

@@ -110,11 +110,14 @@ drive off after the second clue so the police tape can be cut, and the quest han
   pickups), `FindCluesTracker` (`Assets/Scripts/Level2/FindCluesTracker.cs`: counts clues,
   queues Natalia's comments, calls off the cops, fires `OnAllCluesFound` once, hands off the
   quest) and `GiftBox` (`GiftDialogueTrigger`, extended in Phase 3 — see above).
-- **Known gap: the museum fence has no colliders** (Diego does it by hand: #155, "Manually position
-  pages blocking"). `KamiMuseo.fbx` imports with
-  `addColliders: 0` and the scene adds none, so the gate's blocker only blocks the gap itself
-  — Kami can walk around it. Also positions of the gate, the gift and the hat are
-  placeholders (`_PLACEHOLDER_POSITION` in the names), to be dragged into place in the Editor.
+- **The museum's main gate is broken (#180, 2026-10-13)**: the robber got in and out through it. The fbx's two
+  `RejaCentral Puerta` doors are switched off in `Museum Page Parent.prefab` (shared by pages 2 and 5) and replaced
+  by `Prefabs/Level2/Reja Central Rota.prefab` (Diego posed the doors fallen and bent, convex MeshColliders), plus
+  extra fence pieces with MeshColliders. `CrimeSceneGate` (page 2 only) moved to that gate, its blocker resized to the
+  gap; on page 5 the gap is open. The yard slabs `Cube (11)` / `Cube (16)` use `Materials/Libro/Pasto.mat`. Page 5's
+  NavMesh must be rebaked through the gate (Ariel's arrest walks it).
+- **Page 2's catapult is scenery (#181)**: `Page 2/Catapult_Disarmed` is only art (base, post, the fired arm): no
+  `Catapult`, timeline, rope, seats or cameras. Page 5's is the working one.
 - Page 5 is page 2 after the clues (Diego): none of the page 2 gameplay objects live there.
 
 **Phase 3 (page 3, "The trap") built 2026-09-25, played in Diego's full playthrough (2026-09-28).** Chain: talk to
@@ -154,10 +157,11 @@ sequence and is the only thing that restarts it:
    and the Pelusa.
 2. The narrator's line (`Narrator_JailIntro`, `_introLine`, first time only) plays half a second
    after the girls land — the dialogue itself keeps Kami still. `_abuelaDelaySeconds` (3) after it
-   closes (Kami can walk around her closed cell meanwhile) `AbuelaEntrance`
-   drops the Abuela (`Abuela_Follower` prefab variant) next to the fence: Kami is locked only for the
-   fall and her two lines (`Abuela_JailLanding`), the fence disappears (reveal, not destruction), she
-   follows Kami.
+   closes `AbuelaEntrance`
+   drops the Abuela (`Abuela_Follower` prefab variant) next to the fence: Kami is locked (`inCutscene`)
+   from the start of that countdown until her two lines (`Abuela_JailLanding`) end (#172, 2026-10-13: it
+   used to be only the fall and the lines, and the free wait read as "go explore"); the fence disappears
+   (reveal, not destruction), she follows Kami. After a capture the same lock covers the shorter countdown.
 3. `ConfiscatedGearPickup` (where Diego had placed the TijeraPickup, just east of the cell) gives
    everything back. Kami cuts the `CandadoCortable` on Natalia's door (moved there, 1 paper as
    before) -> the door opens and Natalia follows. Freeing her also opens the pedestal:
@@ -168,6 +172,8 @@ sequence and is the only thing that restarts it:
    `EscapeWindow` completes `Quest07_EscapeThePoliceStation`, starts `Quest08_ReturnThePelusa`, warps
    both followers to `OutsideLanding` below the window, makes that Kami's respawn point and blinds
    the cops. The page is then left the normal way (edge of the book), no forced turn.
+   `OnPoliceStationEscaped` (what `PageExitLock` opens page 4's next sphere on) fires on every crossing,
+   with or without Quest07 held (#169, 2026-10-13): a lost Quest07 used to keep the sphere locked for good.
 5. **Getting caught restarts the whole page** (Diego): on the respawn after a `DeathCause.Caught`,
    everything above goes back to step 1, the Abuela falls again after only
    `_abuelaDelayAfterCaptureSeconds` (3), the cops return to their posts. The stash only grows:
@@ -197,25 +203,27 @@ mandatory**: Natalia only joins Kami (Quest05 + follow) once the café ticket is
 always reaches page 5 with it.
 
 **Phase 5 (page 5, "Clearing their name") built 2026-09-28, played in Diego's full playthrough (2026-09-28).**
-`MuseumPage` (`Assets/Scripts/Level2/`, on `Page 5/Museum`) owns the page:
+`MuseumPage` (`Assets/Scripts/Level2/`, on `Page 5/Museum Sequence`) owns the page:
 
-1. Talking to **Grace** (the museum director, `Prefabs/NPCs/Grace.prefab`: a tinted Natalia sprite +
-   `GraceDialogueTrigger`, whose lines `MuseumPage` picks) needs the Pelusa, the café ticket and the
-   three clues. Her meeting dialogue ends -> the ticket pedestal (`SelloOrigami CafeTicket`, a
+1. Walking up to **Grace** (`_approachRadius`, 12) or talking to her (the museum director, `Prefabs/NPCs/Grace.prefab`:
+   a tinted Natalia sprite + `GraceDialogueTrigger`, whose lines `MuseumPage` picks) with the Pelusa, the café ticket
+   and the three clues starts the meeting (#182: no E press needed; without the evidence the approach does nothing and
+   E gets `Grace_NoProof`). Her meeting dialogue ends -> the ticket pedestal (`SelloOrigami CafeTicket`, a
    `SelloOrigami Cafe` instance pointed at `OrigamiRoute_Cafe_Unfold`, 0 paper, auto-prompt) appears.
    **Ariel and two cops are there** (Spine since spec 014: `Ariel.prefab` + the Old Male / Femme `CopEscort`
-   variants, still named `Ariel_PLACEHOLDER_POSITION` / `CopWitness1|2_PLACEHOLDER_POSITION`): they chased the escapees
-   from page 4. The meeting is where
+   variants, still named `Ariel_PLACEHOLDER_POSITION` / `CopWitness1|2_PLACEHOLDER_POSITION`) from the start, taking
+   Grace's statement about the robbery, their car (`PoliceCar_Parked`) parked in the street. The meeting is where
    Grace introduces herself, and Natalia introduces herself and Kami.
 2. The unfold shows the ticket (the girls' receipt from page 1: 2 hot chocolates, paid at 21:47) on
    the letter's `OrigamiTextRevealPanel`; closing it plays `Museum_Evidence`: both girls were at the
    café at 21:47 and heard of the robbery on its radio, Ariel's hat + glove, the watch stopped at
    21:47, Grace pointing out Ariel's access through his father, the police apology and arrest, Ariel's apology to Natalia, Grace's thanks, and **Grace's catapult offer in
    the same dialogue** (Diego, 2026-09-28: the player talks to Grace once).
-3. When that ends: the five items leave the inventory (handed over), `OnPaintingReturned` completes
-   Quest08 (removed a frame later), Natalia and the Abuela stop following where they stand,
-   Natalia becomes talkable with her farewell (`NataliaDialogueTrigger.StayBehind`), and the
-   **catapult** (`Catapult`, same object) unlocks.
+3. When that ends the cops march Ariel to their car and drive off (`MuseumArrest`, `Timeline_MuseumArrest`, #183,
+   see `cutscenes.md`). Then the five items leave the inventory (handed over), `OnPaintingReturned` completes
+   Quest08 (removed a frame later) and ends the story music, Natalia walks to `Marks/NataliaStayMark` (a few units
+   from Grace, #184) and only then becomes talkable with her farewell (`NataliaDialogueTrigger.StayBehind`), the
+   Abuela walks to `Marks/AbuelaStayMark` (Diego's) and waits there, and the **catapult** (`Catapult`) unlocks.
 4. Interact on the catapult = confirm -> short fade (`Canvas/ScreenFade`, `ScreenFader`), Kami lands in the
    bucket (walled in by `BucketWalls`, she can still attack), the Abuela next to her, her line, a
    "cut the rope" post-it. Only now is the rope's trigger on. Cutting it plays `Timeline_Catapult`
@@ -227,6 +235,32 @@ sits 3.5 to Kami's right at seat height: her scissor hitbox (3.16 +- 4.27 ahead 
 Everything is placeholder cubes/sprites and `_PLACEHOLDER_POSITION` objects (Grace, Ariel, the cop
 witness, the pedestal, the catapult). Starting the scene with `startingPage = 5` gives Kami the five items,
 Quest08 and both followers.
+
+**Test starts on pages 2-4 bring Natalia along (#170, 2026-10-13).** Diego tests a page by switching on only that
+page's folder, so Natalia (under `Page 1 Objects`) is off and none of her scripts run; before this fix she only woke
+up on page 4 when the padlock made her follow, still on her page 1 opening and talkable. Each page owner now calls
+`NPC_Natalia.SetUpForTestStart` on its own test start: page 2 `FindCluesTracker` (her and Quest05, following beside
+Kami), page 3 `ArrestCutscene` (following, no Quest05), page 4 `PoliceStationPage` (out of page 1's folder, then into
+her cell as before). It marks her page 1 conversation done (`NataliaDialogueTrigger.SkipToJoined`) and makes her not
+talkable, like a real join. Page 5 keeps `MuseumPage`'s own setup.
+
+**...and the items the earlier pages give (#187, 2026-10-13).** The same test starts call
+`Level2/Level2TestStartItems.GrantItemsBefore(page)`: one table in code (page 1 the café ticket, page 2 the three clues,
+page 3 the Pelusa), granted quietly (`ownedAtLevelStart`, no sticker), skipping what Kami holds. Page 4 grants them
+before `StartSequence`, so the confiscation takes the Pelusa and the pickup gives it back like in the real flow. Page 4
+and 5 test starts also raise `OnArrestStarted`, so the story music plays as it would after the arrest.
+
+**A sun per page (#179, 2026-10-13).** `LightCycler` on `Nivel (Mesa y Libro)/Luces/EL SOL` is on in Level 2 with
+5 states (index 0 = page 1), all at the light's authored rotation and position: page 1 is the authored warm 0.3, then
+cooler and dimmer (0.255 / 0.195 / night blue 0.135), page 5 = page 2. It eases position, rotation (slerp), colour and
+intensity over `_transitionDuration` on `OnPageTurnStart`, and applies the starting page instantly. Its old code
+snapped to the target and wrote the rotation into the position; Level 1's sun now eases its rotation too.
+
+**Page 3's traffic jam (#177).** Page 3's four stopped cars are `Prefabs/Traffic/Paper Car Idling.prefab`, a variant
+of `Paper Car Stationed Variant` (left untouched: pages 1 and 4 use it too) that switches the car's own exhaust
+(`HumoChimenea`) back on, in world space with a steady rate, and adds `Traffic/IdlingCar`: a positional engine loop
+(`CarEngineIdleLoop`) and a honk every `_hornMinSeconds`-`_hornMaxSeconds` (`CarHornIdling`). How far away they are
+heard is on the two AudioBank rows (see `audio-y-particulas.md`).
 
 `Level2_EndCutscene.unity` (`GameScene.Level2EndCutscene`, catalog + Build Settings) is a copy of
 `Nivel1_EndCutscene` running `Narrator_Level2Ending` (the flight, the Narrator's blue lamp, a third
@@ -243,8 +277,8 @@ uses the new UITexts key `overlay_mainquest_level2` (scene override on the neste
 `PoliceStationPage` first time only via `_introCutscene`; cameras are static vcams under
 `PoliceStation/IntroCameras` (drag them). 6.C: `Natalia_Freed` on the padlock cut (first time only) and
 `PaperPlaneRide` (followers board on the hat fold, leave on the new `Evento.OnPaperPlaneHatLost`; parked
-if Kami lands off-NavMesh). 6.D: `Timeline_MuseumArrival` + `MuseumPage.CUE_Sirens/CarArrives/WalkUp`
-(car enters from the left of the page along the street lane). Patrolling cops are cuttable
+if Kami lands off-NavMesh). 6.D: `Timeline_MuseumArrival` (its car arrival was removed by #182: everyone is already
+there). Patrolling cops are cuttable
 (`PoliceOfficerCortable`): knocked out 12s, then resume. `PageAmbience` is placed in the scene.
 
 **Page exits are earned (2026-10-08).** `Level2/PageExitLock` (scene root) keeps a page's next-page sphere off until its
@@ -290,10 +324,13 @@ page-turn). `AddResource()` dispara `Evento.OnResourceUpdated`, consumido por
 (MemoFloraMainLoop en Nivel 1, BohrenDestroyingAngels en Nivel 2). **Level 2 music is per
 page since 2026-09-24**: `PageMusicManager` (`Assets/Scripts/Managers/`, instance of
 `Prefabs/Level2/PageMusicManager.prefab` at the scene root) holds one AudioId per page in the
-Inspector — Bohren on pages 1-2, silence on 3, **page 4 empty until its own track exists**
-(just type the id there), Bohren again on 5. It re-applies on `OnNewPageOpen` and one frame
-after start, so it wins over `LevelManager.Start` on a test started from page 3 y expone un sistema
-de cheats solo-editor gateado por flags.
+Inspector — Bohren on pages 1-2, silence on 3, `DeadEndAngels` on 4, Bohren again on 5. It re-applies
+on `OnNewPageOpen` and one frame after start, so it wins over `LevelManager.Start` on a test started from
+page 3. **Story music (#176, 2026-10-13)**: `_storyMusic` (`DeadEndAngels` in the prefab) overrides every page
+from `_storyMusicStartsOn` (`OnArrestStarted`, raised by the arrest) until `_storyMusicEndsOn`
+(`OnPaintingReturned`, page 5's evidence), latched: the tension track runs through the escape without
+restarting, pages 1-3 included, and page 5 goes back to Bohren when the case closes. LevelManager también expone
+un sistema de cheats solo-editor gateado por flags.
 
 **Verificado**: el flujo de page-turn documentado en `paginas-y-hoja.md` sigue
 coincidiendo con el código actual (PageScrollerManager → PlayerPageSpawnManager →

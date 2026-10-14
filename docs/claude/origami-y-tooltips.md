@@ -31,6 +31,10 @@ reason: the button that completes the fold is the same button that dismisses, so
 the player's own last press would eat the text they just earned (the same class of
 same-frame input collision as issues #41.2/#41.14).
 
+**Kami can't move while the panel is up** (#172, 2026-10-13): `ShowText` sets `LevelManager.inCutscene`
+and `Hide` (or the panel switching off) gives it back, only if the panel was the one that set it. The
+dismiss press still works because the panel reads `InputHub.InteractDown` itself.
+
 **Placeholder art (Diego's call, 2026-09-22)**: the café wrapper is a **2-step fold using
 `OSU-Avion`** (the paper plane, mirroring `OrigamiRoute Avion`) and the trap letter is a
 **1-step fold using `OSU-Puente`** (the puentecito, mirroring **`OrigamiRoute 1-Easy`** —

@@ -204,6 +204,33 @@ public class NataliaDialogueTrigger : TriggerDialogue
     }
 
     /// <summary>
+    /// A test started past page 1 (#170): her page 1 conversation counts as done and she is not
+    /// talkable, as after a real join. Callable before this component ever ran (her page 1 folder is
+    /// off on such a test). The follow itself is NPC_Natalia.SetUpForTestStart's job.
+    /// </summary>
+    public void SkipToJoined(bool addFindCluesQuest)
+    {
+        if (_joined)
+        {
+            return;
+        }
+
+        _openingDialogueDone = true;
+        _joined = true;
+        //the same two steps the real flow takes: opening -> reminder, then reminder -> after the join
+        PasarAlSiguienteDialogo();
+        PasarAlSiguienteDialogo();
+
+        if (addFindCluesQuest)
+        {
+            StartFindCluesQuest();
+        }
+
+        SetTalkable(false);
+        Debug.Log($"[NataliaDialogueTrigger] {gameObject.name}: page 1 skipped for a test start (find clues quest {(addFindCluesQuest ? "added" : "not added")})");
+    }
+
+    /// <summary>
     /// Page 5: she stops travelling with Kami. Talkable again, with her farewell from now on. The
     /// caller stops her follow (NPC.StopFollowingPlayer); this only handles the talking side.
     /// </summary>

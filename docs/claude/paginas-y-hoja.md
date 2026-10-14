@@ -8,7 +8,7 @@
 
 ## Flujo de eventos de un page-turn
 
-1. `Evento.OnPlayerPressedE` → `PageScrollerManager.TriggerPageScroll` (gateado por `esferaNext.triggerBool`/`esferaPrev.triggerBool`, o sea, el player ya tiene que estar parado en el trigger de borde).
+1. `Evento.OnPlayerPressedE` → `PageScrollerManager.TriggerPageScroll` (gateado por `esferaNext.triggerBool`/`esferaPrev.triggerBool`, o sea, el player ya tiene que estar parado en el trigger de borde). Ignores the press during a dialogue or a cutscene (`inDialogue`/`inCutscene`, #168), and a teleport no longer leaves a sphere's flag on (`TriggerScript.ExitAll`, see gotcha 7 in `controles-y-gamepad.md`).
 2. `ChangeToNextPage`/`ChangeToPrevPage`: incrementa `activePageIndex`, dispara `Evento.OnPageTurnStart(activePageIndex, isNext)` — lo consume `PlayerPageSpawnManager.SetPlayerTargetPosition` (sólo precalcula y guarda `targetPos`, no mueve todavía).
 3. `CerrarPaginaCoroutine` (tras `delayTime`): `LevelManager.inDialogue = true` (freeze), `CreateHoja(isNext)` instancia `HojaMaster`/`HojaMaster_Rev`, y engancha a Kami al borde (`StartPlayerRide`, ver abajo).
 4. `AbrirPaginaCoroutine` (tras `popupDelayTime`): dispara `Evento.OnNewPageOpen` (consumido por `PlayerPageSpawnManager.PlacePlayerInNewPage` y `PositionMarker.OnChangePage`), abre PUBs, activa la carpeta de la nueva página.
@@ -50,3 +50,8 @@ NavMesh and follows again (or parks and retries with a warning if there is no me
 the order of `OnPageFinishTurning` subscribers is not guaranteed and `FinishRide` must place Kami first. Forced turns
 with `ridePage: false` (the arrest) never set `IsRidingPage`, so nobody boards. Needs a baked NavMesh near each page's
 entry point. Seats and timings are Inspector fields; detail in `specs/012-page-turn-followers/spec.md`.
+
+**Landing spots (#171, 2026-10-13)**: only toward the middle of the page (`_landingSpacing` x slot, then twice that), never
+outward: Kami lands at the book's edge, and the floor's NavMesh continues past the book's invisible walls, so an outer spot
+sampled fine and stranded the follower outside. A spot is taken only if `NavMesh.CalculatePath` from it to Kami's own
+NavMesh point is `PathComplete`; if neither is, the follower lands on Kami's point.

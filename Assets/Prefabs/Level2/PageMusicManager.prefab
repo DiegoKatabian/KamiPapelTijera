@@ -50,3 +50,6 @@ MonoBehaviour:
   - 
   - DeadEndAngels
   - BohrenDestroyingAngels
+  _storyMusic: DeadEndAngels
+  _storyMusicStartsOn: 56
+  _storyMusicEndsOn: 53

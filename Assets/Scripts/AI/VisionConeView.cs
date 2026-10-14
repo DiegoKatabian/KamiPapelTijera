@@ -7,6 +7,9 @@ using UnityEngine;
 /// sight, so what the player sees and what the officer can detect never disagree.
 ///
 /// Colour follows his awareness: calm -> alert -> caught.
+///
+/// An optional spot light (#178) is driven from the same numbers: it points where he looks, its
+/// angle and range follow his cone, its colour follows the fan's, and it is off while he is out.
 /// </summary>
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class VisionConeView : MonoBehaviour
@@ -34,6 +37,22 @@ public class VisionConeView : MonoBehaviour
 
     [SerializeField, Tooltip("Optional material. Empty = a plain transparent one made at runtime.")]
     Material _material;
+
+    [Header("Spot light (optional)")]
+    [SerializeField, Tooltip("The spot light that lights what he sees. Found among the children if empty; none = no light.")]
+    Light _light;
+
+    [SerializeField, Tooltip("Height of the light above the officer's feet, in world units.")]
+    float _lightHeight = 4f;
+
+    [SerializeField, Tooltip("Degrees the light tilts down from his facing.")]
+    float _lightPitch = 15f;
+
+    [SerializeField, Tooltip("Degrees added to his vision angle for the spot angle. A spot only lights a circle, so it has to be wider than the fan to cover its corners (49.5 = the hand-tuned 94.5 at a 45 degree cone).")]
+    float _lightAngleMargin = 49.5f;
+
+    [SerializeField, Tooltip("Light range as a multiple of his vision range. Above 1 because the light starts above him and points down at a slant (2 = the hand-tuned 20 at a range of 10).")]
+    float _lightRangeMultiplier = 2f;
 
     Mesh _mesh;
     Vector3[] _vertices;
@@ -64,6 +83,11 @@ public class VisionConeView : MonoBehaviour
         meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         meshRenderer.receiveShadows = false;
 
+        if (_light == null)
+        {
+            _light = GetComponentInChildren<Light>(true);
+        }
+
         _segments = Mathf.Max(2, _segments);
         _mesh = new Mesh { name = "VisionCone" };
         _mesh.MarkDynamic();
@@ -88,6 +112,10 @@ public class VisionConeView : MonoBehaviour
         if (_officer.IsKnockedOut)
         {
             _mesh.Clear();
+            if (_light != null)
+            {
+                _light.enabled = false;
+            }
             return;
         }
 
@@ -126,10 +154,38 @@ public class VisionConeView : MonoBehaviour
             _vertices[i] = transform.InverseTransformPoint(_vertices[i]);
         }
 
+        UpdateLight(feet, color);
+
         _mesh.Clear();
         _mesh.vertices = _vertices;
         _mesh.colors = _colors;
         _mesh.triangles = _triangles;
         _mesh.RecalculateBounds();
+    }
+
+    void UpdateLight(Vector3 feet, Color coneColor)
+    {
+        if (_light == null)
+        {
+            return;
+        }
+
+        Vector3 facing = _officer.Facing;
+        facing.y = 0f;
+        if (facing.sqrMagnitude < 0.0001f)
+        {
+            return; //no facing yet: keep the last aim
+        }
+
+        _light.enabled = true;
+        _light.transform.SetPositionAndRotation(
+            feet + Vector3.up * _lightHeight,
+            Quaternion.LookRotation(facing.normalized) * Quaternion.Euler(_lightPitch, 0f, 0f));
+        _light.spotAngle = Mathf.Clamp(_officer.VisionAngle + _lightAngleMargin, 1f, 179f);
+        _light.range = _officer.VisionRange * _lightRangeMultiplier;
+
+        //the fan's colour is see-through; the light only takes its hue
+        coneColor.a = 1f;
+        _light.color = coneColor;
     }
 }

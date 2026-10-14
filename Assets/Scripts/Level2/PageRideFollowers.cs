@@ -45,7 +45,7 @@ public class PageRideFollowers : MonoBehaviour
     float _boardEaseSeconds = 0.35f;
 
     [Header("Getting off")]
-    [SerializeField, Tooltip("Distance between landed followers, in world units, along the way Kami faces (into the page). Slot 1 is the nearest to her.")]
+    [SerializeField, Tooltip("Distance between landed followers, in world units, from Kami toward the middle of the page (never outward, past the book's edge). Slot 1 is the nearest to her. A spot with no walkable path to her is skipped (then twice as far, then her own spot).")]
     float _landingSpacing = 3f;
 
     [SerializeField, Tooltip("How far from the landing spot the NavMesh is searched, in world units. Kami drops onto the page from a spawn height, so too small a radius parks the followers until she touches the floor.")]
@@ -69,6 +69,7 @@ public class PageRideFollowers : MonoBehaviour
     bool _wasRiding;
     float _nextRetry;
     bool _warnedNoSeats;
+    NavMeshPath _landingPath;
 
     Player Kami => LevelManager.Instance != null ? LevelManager.Instance.player : null;
 
@@ -263,32 +264,34 @@ public class PageRideFollowers : MonoBehaviour
 
     bool TryLand(Rider rider, Player player)
     {
-        float facing = player.SkeletonAnimation != null && player.SkeletonAnimation.Skeleton.ScaleX < 0f ? -1f : 1f;
         Vector3 feet = player.FeetPosition;
         float offset = _landingSpacing * (rider.slot + 1);
 
-        //into the page first, then behind her, then right under her
-        Vector3[] candidates =
-        {
-            feet + (Vector3.right * facing * offset),
-            feet - (Vector3.right * facing * offset),
-            feet,
-        };
-
-        NavMeshHit hit = default;
-        bool found = false;
-        foreach (Vector3 candidate in candidates)
-        {
-            if (NavMesh.SamplePosition(candidate, out hit, _landingSampleRadius, NavMesh.AllAreas))
-            {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found)
+        //Kami's own point on the mesh: every landing spot must be able to walk to her
+        if (!NavMesh.SamplePosition(feet, out NavMeshHit kamiHit, _landingSampleRadius, NavMesh.AllAreas))
         {
             return false;
+        }
+
+        //Toward the middle of the page only (#171): she lands at the book's edge (x about -42 or +42),
+        //and the floor's NavMesh goes on past the book's invisible walls, so a spot on the outer side
+        //sampled fine and stranded the follower out there. The page is centred near x = 0.
+        float inward = feet.x > 0f ? -1f : 1f;
+        Vector3[] candidates =
+        {
+            feet + (Vector3.right * inward * offset),
+            feet + (Vector3.right * inward * offset * 2f),
+        };
+
+        NavMeshHit hit = kamiHit; //last resort: right where she is
+        foreach (Vector3 candidate in candidates)
+        {
+            if (NavMesh.SamplePosition(candidate, out NavMeshHit candidateHit, _landingSampleRadius, NavMesh.AllAreas)
+                && ReachesKami(candidateHit.position, kamiHit.position))
+            {
+                hit = candidateHit;
+                break;
+            }
         }
 
         NavMeshAgent agent = rider.npc.navAgent;
@@ -311,6 +314,18 @@ public class PageRideFollowers : MonoBehaviour
         rider.npc.StartFollowingPlayer();
         Debug.Log($"[PageRideFollowers] {rider.npc.gameObject.name} lands next to Kami at {hit.position}");
         return true;
+    }
+
+    //a spot walled off from Kami (the other side of the book's edge) has no complete path to her
+    bool ReachesKami(Vector3 from, Vector3 kami)
+    {
+        if (_landingPath == null)
+        {
+            _landingPath = new NavMeshPath(); //not in a field initializer: Unity throws building one there
+        }
+
+        return NavMesh.CalculatePath(from, kami, NavMesh.AllAreas, _landingPath)
+               && _landingPath.status == NavMeshPathStatus.PathComplete;
     }
 
     /// <summary>Everyone off where they are and following again (the component is going away mid-ride).</summary>

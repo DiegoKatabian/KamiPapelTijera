@@ -15,6 +15,6 @@ MonoBehaviour:
   wasRead: 0
   events:
   - text: jail_reply_01
-    sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
+    sprite: {fileID: 21300000, guid: 006be16fa8b91c74abbeeab1a5c4c680, type: 3}
     speakerName: natalia_name
   currentText: 0

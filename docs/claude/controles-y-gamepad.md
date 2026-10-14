@@ -545,6 +545,21 @@ pueden validar jugando.
    principio de fondo que el punto 5: un input que dispara dos sistemas sin coordinarse necesita un
    arbitraje explícito, no asumir que el orden de `Update()` va a ser el mismo siempre.
 
+7. **A teleported Kami stays "inside" the trigger she left** (#168, fixed 2026-10-13). `triggerBool` is only
+   cleared by `OnTriggerExit`, and Unity sends none when a collider is switched off: every teleport switches
+   Kami's `CharacterController` off (`PlayerPageSpawnManager.PositionPlayerAtPoint`: page turns, respawns, test
+   starts, the catapult; `Player.StartRidingPage`), and a page folder switching off does the same to its
+   triggers. Symptom: E far from everything still talked to an NPC or turned the page (started on page 4, the
+   intro's E turned back to page 3, because Kami's scene start is inside `esferaPrev`). Fix: `TriggerScript`
+   keeps a static set of triggers whose flag is on, `TriggerScript.ExitAll()` runs their exit on both teleports
+   (Unity re-sends `OnTriggerEnter` wherever she lands), and `OnDisable` runs the exit too (not while the scene
+   unloads). **Any new code that moves Kami by writing her transform with the controller off must call
+   `ExitAll()`** (or go through `PositionPlayerAtPoint`). An exit override that starts a coroutine must
+   check `isActiveAndEnabled` (`TriggerResizer`). Also: `PageScrollerManager.TriggerPageScroll` ignores E
+   while `inDialogue` or `inCutscene`, so the press that advances a line never turns the page. No per-frame
+   guard is needed for a dialogue's last line: the E is handled in `PlayerController.Update`, and the
+   dialogue only closes later that frame (its coroutine), so `inDialogue` is still on.
+
 ## Cómo arrancar en la próxima sesión
 
 **Si tocas input, controles o joystick**:

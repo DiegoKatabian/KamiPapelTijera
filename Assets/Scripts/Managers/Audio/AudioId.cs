@@ -103,4 +103,6 @@ public static class AudioId
     public const string CatapultThud = "CatapultThud";
     public const string CatapultWhoosh = "CatapultWhoosh";
     public const string CopKnockedOut = "CopKnockedOut";
+    public const string CarEngineIdleLoop = "CarEngineIdleLoop";
+    public const string CarHornIdling = "CarHornIdling";
 }

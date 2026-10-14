@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
@@ -14,6 +15,12 @@ public abstract class TriggerScript : MonoBehaviour
 
     bool _triggerBool = false;
 
+    //Every trigger that currently believes Kami is inside (issue #168). Unity sends no OnTriggerExit when
+    //a collider is switched off, and every teleport of Kami switches her CharacterController off, so
+    //whatever she stood in kept its flag on after she was moved away: E far from it still talked or
+    //turned the page. ExitAll() is called on each teleport.
+    static readonly HashSet<TriggerScript> _inside = new HashSet<TriggerScript>();
+
     //Propiedad y no campo publico A PROPOSITO: setearla es lo que registra/desregistra este
     //trigger en InteractionContext, que es lo que hace contextual al boton B del joystick.
     //Con un campo suelto era imposible no olvidarselo: hay subclases que setean triggerBool
@@ -27,6 +34,15 @@ public abstract class TriggerScript : MonoBehaviour
         set
         {
             _triggerBool = value;
+
+            if (value)
+            {
+                _inside.Add(this);
+            }
+            else
+            {
+                _inside.Remove(this);
+            }
 
             if (!EsInteractuable)
             {
@@ -164,17 +180,60 @@ public abstract class TriggerScript : MonoBehaviour
         //print("trigger script interact");
     }
 
+    /// <summary>
+    /// Kami was teleported (page turn, respawn, a scripted placement): every trigger she was in runs
+    /// its exit now, since Unity won't. Wherever she lands, Unity sends OnTriggerEnter again once her
+    /// collider is back on, so nothing she is really standing in is lost.
+    /// </summary>
+    public static void ExitAll()
+    {
+        if (_inside.Count == 0)
+        {
+            return;
+        }
+
+        //copy: each exit removes itself from the set
+        List<TriggerScript> inside = new List<TriggerScript>(_inside);
+        Debug.Log($"[TriggerScript] Kami was teleported: leaving {inside.Count} trigger(s) by hand");
+
+        foreach (TriggerScript trigger in inside)
+        {
+            if (trigger == null)
+            {
+                _inside.Remove(trigger);
+                continue;
+            }
+
+            trigger.OnExitBehaviour();
+
+            //some overrides don't reach the base exit in every branch (TriggerOrigami without a check)
+            if (trigger.triggerBool)
+            {
+                trigger.triggerBool = false;
+            }
+        }
+    }
+
     //Red de seguridad: hay triggers que se destruyen o se apagan con el player adentro (pickups
     //consumidos, cambio de pagina, SetActive(false) por quest). Sin esto quedarian registrados
     //como interaccion disponible para siempre y el boton B del joystick dejaria de atacar ahi.
     protected virtual void OnDisable()
     {
         InteractionContext.Desregistrar(this);
+
+        //a switched-off trigger gets no OnTriggerExit either: leave by hand, so the flag doesn't come
+        //back on together with its page (#168) and its post-it is hidden. Not while the scene unloads:
+        //the exits touch other objects that may already be gone
+        if (triggerBool && gameObject.scene.isLoaded)
+        {
+            OnExitBehaviour();
+        }
     }
 
     protected virtual void OnDestroy()
     {
         InteractionContext.Desregistrar(this);
+        _inside.Remove(this);
 
         if (!gameObject.scene.isLoaded)
         {

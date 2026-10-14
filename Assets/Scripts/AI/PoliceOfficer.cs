@@ -332,6 +332,15 @@ public class PoliceOfficer : PatrollingAgent
     /// <summary>Back to where the page started him, calm, walking his route from waypoint 0.</summary>
     public void ResetToStart()
     {
+        //a guard switched off in the scene never ran Awake, so there is no post to send him back to. He
+        //is already at it, untouched. Throwing here aborted the arrest's wrap-up (Quest06 never closed,
+        //Quest07 never started and page 4's next sphere stayed locked; 2026-10-13 playthrough)
+        if (_startWaypoints == null)
+        {
+            Debug.Log($"[PoliceOfficer] {gameObject.name}: never been active (switched off in the scene?), nothing to reset");
+            return;
+        }
+
         if (_knockedOut)
         {
             _knockedOut = false;

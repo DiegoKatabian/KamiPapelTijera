@@ -60,7 +60,9 @@ BaseOffset 4). The project's first detection system. Played by Diego (full playt
   same blockers, and colours it by awareness (calm -> alert -> caught). What the player sees and
   what he detects can't disagree (FR-006). Gizmo when the officer is selected.
 - `ResetToStart()` / `SetDetectionEnabled()` are for the page owner (`PoliceStationPage`): back to
-  his post on a restart, blind after the escape.
+  his post on a restart, blind after the escape. An officer switched off in the scene but still in
+  `_officers` (the female guard since 2026-10-12) never ran `Awake`: `ResetToStart` skips him (2026-10-13).
+  It used to throw there, which aborted the arrest's wrap-up: Quest06 never closed and Quest07 never started.
 
 **Cuttable (Diego, 2026-09-28/29)**: `PoliceOfficerCortable` (`Cortables/`) on the cop's trigger
 collider (plus a kinematic Rigidbody, or two triggers never report) calls `PoliceOfficer.KnockOut()`:
@@ -74,6 +76,12 @@ out for `_knockedOutSeconds` (12), blind and still, cone hidden (`VisionConeView
 (`Arrest`) when he catches Kami, lies the Spine child down and greys it when knocked out. `PoliceOfficer Female
 Variant` (skin `Policia 3`) patrols the same route from corner B: `_startWaypointIndex` picks his first waypoint, and
 `ResetToStart` honours it. The sprite path still works for an officer without a `SpineCharacter`.
+
+**The cone's spot light (#178, 2026-10-13, not played)**: `VisionCone.prefab` has a spot `Light` child, which
+`VisionConeView` drives every frame from the officer's numbers: `_lightHeight` (4) above his feet, aimed along `Facing`
+tilted down `_lightPitch` (15), spot angle = vision angle + `_lightAngleMargin` (49.5), range = vision range x
+`_lightRangeMultiplier` (2) (both defaults reproduce the hand-tuned 94.5 / 20 at today's 45 / 10 cone), colour = the
+fan's colour without its alpha, off while he is knocked out. Its intensity stays whatever the prefab says.
 
 Not done from spec 002: FR-007's separate test scene (Diego tests page 4 directly: start the scene
 with `PageScrollerManager.startingPage = 4`) and any hearing (v1 is vision only, as decided).

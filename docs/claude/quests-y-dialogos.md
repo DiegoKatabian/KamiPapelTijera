@@ -111,7 +111,8 @@ design: `specs/006-nivel2-detective-natalia/`. The old spec
   access to the museum through his rich father (the museum's biggest patron). This makes the ticket
   mandatory for page 5. Nothing stops Kami from leaving page 1 without folding it (same as before,
   when nothing stopped her leaving without talking to Natalia).
-- **Page 5**: `MuseumPage` stops her follow and calls `StayBehind()`: talkable again, and every talk
+- **Page 5**: `MuseumPage` stops her follow, walks her to `Marks/NataliaStayMark` (a few units from Grace, so
+  their two talk triggers never overlap, #184) and then calls `StayBehind()`: talkable again, and every talk
   from then on is `_farewellDialogue` (`Natalia_Farewell`).
 - `Assets/Prefabs/NPCs/Natalia.prefab`, placed in Page 1. Visual is a placeholder
   `SpriteRenderer` child (`NataliaVisual_PLACEHOLDER`) until Valentino's Spine art;
@@ -147,6 +148,8 @@ picks her up on page 1 and she follows (reparenting to each page) until she is d
 page 5. The extra full instances that sat on pages 2 and 5 were deleted — each one would have
 re-run her opening dialogue, added Quest05 a second time and started a second follower. Don't
 place Natalia on other pages to "stage" her; page 5's drop-off (task 5.C) acts on the same one.
+A test started on a later page brings that same instance along (`NPC_Natalia.SetUpForTestStart`, #170): see
+"Test starts on pages 2-4" in `nivel2-y-ui.md`.
 
 ### Quests without a delivering NPC: Quest05 → Quest06 (2026-09-24)
 
