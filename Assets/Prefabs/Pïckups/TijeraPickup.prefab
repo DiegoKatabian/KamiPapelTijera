@@ -211,7 +211,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 381bc497d9c196d488cd31f98f712114, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f1e28e7bf0bc931428f12f7ae2c6b28a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -283,7 +283,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c04e74433806e7947ae917630fc8e19f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerBool: 0
   showTooltip: 1
   tooltipTextToShow: scissors_pickup
   postItColor: 0
