@@ -23,8 +23,8 @@ public class TriggerOrigami : TriggerScript
     [Tooltip("Open the origami by itself as soon as this pedestal appears and nothing else is on screen (dialogue, cutscene, menu), without Kami stepping on it. Only once: if the player cancels, the pedestal keeps working the normal way (step on it + Interact). Off = the classic pedestal.")]
     [SerializeField] bool _promptAutomatically = false;
 
-    [Tooltip("Seconds the screen has to stay free before the auto prompt opens. Keeps the button press that closed the previous dialogue from also cancelling the origami it opens.")]
-    [SerializeField] float _autoPromptDelay = 0.5f;
+    [Tooltip("Seconds the screen has to stay free before the auto prompt opens. Keeps the button press that closed the previous dialogue from also cancelling the origami it opens. Keep it at 0.15 or more.")]
+    [SerializeField] float _autoPromptDelay = 0.2f;
 
     [Header("Code-driven")]
     [Tooltip("The pedestal is never stepped on: no cost canvas, no tooltip, no 'step on it + Interact'. Something else opens it by calling PromptNow() (Natalia's conversation on page 1: the dialogue is the only thing that answers the Interact press, so the origami can't compete with it). Combine with 'Prompt Automatically' for the first prompt.")]
@@ -38,6 +38,20 @@ public class TriggerOrigami : TriggerScript
     public float activeSpeed = 1.5f;
     public float activeSize = 2f;
     public float orbitalZ = 2f;
+
+    //Every pedestal whose prompt is waiting for the screen to be free (#190). While one waits, the dialogue
+    //triggers ignore Interact: reopening a dialogue made the screen busy again, which restarted the wait,
+    //so mashing Interact replayed the dialogue forever and the fold never opened.
+    static readonly HashSet<TriggerOrigami> _waitingToPrompt = new HashSet<TriggerOrigami>();
+
+    public static bool AnyPromptWaiting
+    {
+        get
+        {
+            _waitingToPrompt.RemoveWhere(t => t == null);
+            return _waitingToPrompt.Count > 0;
+        }
+    }
 
     //auxiliares
     MultipleRectCheck currentCheck;
@@ -186,11 +200,21 @@ public class TriggerOrigami : TriggerScript
         }
     }
 
+    //SetActive(false) kills the waiting coroutine before it can take itself off the list
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        _waitingToPrompt.Remove(this);
+    }
+
     //runs every time the pedestal appears until it has prompted once; a page turn that hides the
     //pedestal mid-wait kills the coroutine, and the next OnEnable re-arms it
     IEnumerator AutoPromptWhenFree()
     {
+        //before the first yield: it counts from the very frame the pedestal appears
+        _waitingToPrompt.Add(this);
         yield return WaitUntilScreenIsFree();
+        _waitingToPrompt.Remove(this);
 
         _autoPromptDone = true;
         OpenCheckFromCode();
@@ -220,7 +244,9 @@ public class TriggerOrigami : TriggerScript
     IEnumerator PromptNowRoutine()
     {
         _promptPending = true;
+        _waitingToPrompt.Add(this);
         yield return WaitUntilScreenIsFree();
+        _waitingToPrompt.Remove(this);
         _promptPending = false;
         OpenCheckFromCode();
     }

@@ -79,7 +79,7 @@ public class NataliaDialogueTrigger : TriggerDialogue
 
         if (_stayedBehind && _farewellDialogue != null)
         {
-            if (triggerBool)
+            if (triggerBool && !TalkIsBlocked())
             {
                 DialogueManager.Instance.ShowDialogue(_farewellDialogue);
             }

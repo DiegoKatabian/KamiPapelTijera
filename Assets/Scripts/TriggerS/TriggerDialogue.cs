@@ -16,6 +16,11 @@ public class TriggerDialogue : TriggerScript
     {
         if (triggerBool)
         {
+            if (TalkIsBlocked())
+            {
+                return;
+            }
+
             //guard: un NPC a medio configurar (sin dialogos, o con el indice pasado del array)
             //tiraba excepcion y dejaba al jugador sin poder interactuar. Mejor avisar quien es
             if (_dialogues == null || _dialogues.Length == 0)
@@ -44,6 +49,22 @@ public class TriggerDialogue : TriggerScript
             Destroy(this);
         }
     }
+    /// <summary>
+    /// An origami the story opens by itself is waiting for a free screen (#190): talking now would put a
+    /// dialogue on screen, which restarts that wait, so mashing Interact replayed the dialogue forever.
+    /// Subclasses that skip base.Interact on some path (Natalia's farewell, Grace) check it themselves.
+    /// </summary>
+    protected bool TalkIsBlocked()
+    {
+        if (!TriggerOrigami.AnyPromptWaiting)
+        {
+            return false;
+        }
+
+        Debug.Log($"[TriggerDialogue] {gameObject.name}: an origami is about to open, ignoring the talk");
+        return true;
+    }
+
     protected virtual void PasarAlSiguienteDialogo(params object[] parameter)
     {
         if (currentDialogue < _dialogues.Length)

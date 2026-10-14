@@ -46,8 +46,10 @@ text-reveal prefabs is unassigned by design (scene-specific placement).
 **Auto prompt (Diego, 2026-09-25)**: `TriggerOrigami._promptAutomatically` (off by default, so
 every existing pedestal is unchanged). When on, the origami opens by itself as soon as the pedestal
 becomes active and the screen has been free (no dialogue, cutscene, overlay, menu, casting) for
-`_autoPromptDelay` seconds (0.5, so the press that closed the previous dialogue can't also cancel
-the fold). It fires once; if the player cancels, the pedestal keeps working the classic way (step
+`_autoPromptDelay` seconds (0.2 since #189, was 0.5: the press that closed the previous dialogue must
+not also cancel the fold, keep it at 0.15 or more). While any pedestal waits like this
+(`TriggerOrigami.AnyPromptWaiting`, the auto prompt and `PromptNow` both count), dialogue triggers ignore
+Interact (#190, see gotcha 8 in `controles-y-gamepad.md`). It fires once; if the player cancels, the pedestal keeps working the classic way (step
 on it + Interact). A check opened this way while Kami is off the pedestal is destroyed on
 `OnOrigamiEnd`, otherwise it would keep listening for Interact and reopen the fold from anywhere.
 **Origamis that give an item (2026-09-27)**: `OrigamiItemGiver` (subclass of `OrigamiEventTriggerer`)

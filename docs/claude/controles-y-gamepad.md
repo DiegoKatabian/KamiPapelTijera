@@ -560,6 +560,17 @@ pueden validar jugando.
    guard is needed for a dialogue's last line: the E is handled in `PlayerController.Update`, and the
    dialogue only closes later that frame (its coroutine), so `inDialogue` is still on.
 
+8. **A forced origami's wait can be reset forever by talking** (#190, fixed 2026-10-13). An auto-prompted or
+   `PromptNow` origami opens once the screen has been free for `_autoPromptDelay`. Kami still stands in the
+   dialogue trigger that led to it (Natalia's reminder on page 1, Grace's ticket reminder on page 5), so E in that
+   window reopened the dialogue, the screen got busy, the wait restarted, and mashing E never reached the fold.
+   Fix: `TriggerOrigami` keeps a static set of pedestals waiting to prompt (`AnyPromptWaiting`, filled before the
+   coroutine's first yield, so it is on the very frame the dialogue ends, whatever the `Update` order), and
+   `TriggerDialogue.TalkIsBlocked()` turns talking down while it is non-empty. The base `Interact` checks it;
+   `NataliaDialogueTrigger` (farewell) and `GraceDialogueTrigger` skip `base.Interact`, so they check it too. A new
+   dialogue trigger that overrides `Interact` without calling the base must do the same. Advancing a line, page
+   turns, solapas and the origami's own Interact are not gated.
+
 ## Cómo arrancar en la próxima sesión
 
 **Si tocas input, controles o joystick**:

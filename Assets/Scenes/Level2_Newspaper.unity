@@ -271,7 +271,7 @@ PrefabInstance:
     - target: {fileID: 7567128661433650934, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
       propertyPath: m_RootOrder
-      value: 21
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 7567128661433650934, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
@@ -1684,27 +1684,27 @@ PrefabInstance:
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -39.65
+      value: -39.86
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -159.356
+      value: -161.12001
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 169.1
+      value: 181.85
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9881183
+      value: 0.9914449
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.15369537
+      value: 0.13052616
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022668, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
@@ -49822,7 +49822,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &620715591
 Transform:
   m_ObjectHideFlags: 0
@@ -49838,7 +49838,7 @@ Transform:
   - {fileID: 2684831585979483659}
   - {fileID: 5418614913724247735}
   m_Father: {fileID: 0}
-  m_RootOrder: 24
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &620715592
 Animator:
@@ -65121,6 +65121,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Museum Page Parent
       objectReference: {fileID: 0}
+    - target: {fileID: 500595552337783281, guid: 50cb1c9233edefa4daf77f7c5a602644,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3390189917825849728, guid: 50cb1c9233edefa4daf77f7c5a602644,
         type: 3}
       propertyPath: m_RootOrder
@@ -65174,6 +65179,11 @@ PrefabInstance:
     - target: {fileID: 3390189917825849728, guid: 50cb1c9233edefa4daf77f7c5a602644,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8111498492028135782, guid: 50cb1c9233edefa4daf77f7c5a602644,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -67722,7 +67732,7 @@ MonoBehaviour:
   - {fileID: 1552561451}
   - {fileID: 965064140}
   - {fileID: 620715592}
-  startingPage: 5
+  startingPage: 1
   activePageIndex: 0
   esferaPrev: {fileID: 1768877052}
   esferaNext: {fileID: 344292683}
@@ -83162,7 +83172,7 @@ Transform:
   - {fileID: 2054691795252384818}
   - {fileID: 498337541}
   m_Father: {fileID: 0}
-  m_RootOrder: 22
+  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &965064140
 Animator:
@@ -129709,7 +129719,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1552561450
 Transform:
   m_ObjectHideFlags: 0
@@ -136504,7 +136514,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1657797273
 Transform:
   m_ObjectHideFlags: 0
@@ -141906,7 +141916,7 @@ PrefabInstance:
     - target: {fileID: 7913219594761203981, guid: 7750c786a1ad4311876a771b8a754017,
         type: 3}
       propertyPath: m_RootOrder
-      value: 23
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 7913219594761203981, guid: 7750c786a1ad4311876a771b8a754017,
         type: 3}

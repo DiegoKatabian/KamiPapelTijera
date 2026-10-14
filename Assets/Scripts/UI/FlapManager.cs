@@ -31,6 +31,15 @@ public class FlapManager : Singleton<FlapManager>
     [SerializeField] FlapDisplay[] _flapDisplays;
     [SerializeField] Image _tiritaPull, _tiritaPush;
 
+    [Header("Cutscenes (#188)")]
+    [SerializeField, Tooltip("The CanvasGroup on this prefab's root. Faded out while something owns Kami (LevelManager.inCutscene: Timeline cutscenes, the Abuela's landing, the origami text panel) and the Flap is closed, so the HUD strip (pull tab, health, paper, page) leaves the screen. Opening the Flap shows it at once.")]
+    CanvasGroup _hudGroup;
+
+    [SerializeField, Tooltip("Seconds the HUD takes to fade out when Kami is locked, and back in when she is free.")]
+    float _hudFadeSeconds = 0.25f;
+
+    bool _hudHidden;
+
     float _posYClosed = 0;
     FlapState _state = FlapState.Closed;
     float _valueBeforeMute = 1;
@@ -70,6 +79,11 @@ public class FlapManager : Singleton<FlapManager>
         }
 
         AddMenuGroups();
+
+        if (_hudGroup == null)
+        {
+            Debug.LogWarning("[FlapManager] _hudGroup is not assigned: the HUD stays on screen during cutscenes");
+        }
     }
 
     private void Start()
@@ -115,6 +129,8 @@ public class FlapManager : Singleton<FlapManager>
     /// </summary>
     private void Update()
     {
+        UpdateHudVisibility();
+
         //FR-302: not during the slides either. While closing, L1 is also sprint, and "close the menu
         //and start running" used to switch tabs and select inside a menu that was going away (F6).
         if (!IsFullyOpen)
@@ -338,6 +354,37 @@ public class FlapManager : Singleton<FlapManager>
             }
         }
         return false;
+    }
+
+    //#188: inCutscene is the one "something else owns Kami" flag, so following it brings the HUD back exactly
+    //when she can move. Alpha and raycasts only, never SetActive (the state machine above runs on these
+    //objects) and never interactable (Selectables cache it, see "Fugas de foco"). Polled in Update, not a
+    //coroutine: OpenFlap/CloseFlap StopAllCoroutines. Unscaled time: the Flap pauses the game.
+    void UpdateHudVisibility()
+    {
+        if (_hudGroup == null)
+        {
+            return;
+        }
+
+        bool locked = LevelManager.Instance != null && LevelManager.Instance.inCutscene;
+        bool hide = locked && _state == FlapState.Closed;
+
+        if (hide != _hudHidden)
+        {
+            _hudHidden = hide;
+            _hudGroup.blocksRaycasts = !hide;
+            Debug.Log($"[FlapManager] HUD {(hide ? "hidden: Kami is locked by a cutscene" : "shown")}");
+        }
+
+        if (_state != FlapState.Closed)
+        {
+            _hudGroup.alpha = 1f; //the player opened the menu: no fading in behind it
+            return;
+        }
+
+        float step = _hudFadeSeconds > 0f ? Time.unscaledDeltaTime / _hudFadeSeconds : 1f;
+        _hudGroup.alpha = Mathf.MoveTowards(_hudGroup.alpha, hide ? 0f : 1f, step);
     }
 
     //Spec 011 task 4.A: the tab buttons only exist while the Flap is showing. Closed, the paper sits

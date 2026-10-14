@@ -1788,6 +1788,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5233239164944141716}
   - component: {fileID: 5233239164944141717}
+  - component: {fileID: 5233239164944141718}
   m_Layer: 5
   m_Name: FlapManager
   m_TagString: Untagged
@@ -1869,6 +1870,20 @@ MonoBehaviour:
     flapButton: {fileID: 2441728024968207517}
   _tiritaPull: {fileID: 342370285677487412}
   _tiritaPush: {fileID: 342370284743282895}
+  _hudGroup: {fileID: 5233239164944141718}
+  _hudFadeSeconds: 0.25
+--- !u!225 &5233239164944141718
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5233239164944141723}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5233239164995536252
 GameObject:
   m_ObjectHideFlags: 0

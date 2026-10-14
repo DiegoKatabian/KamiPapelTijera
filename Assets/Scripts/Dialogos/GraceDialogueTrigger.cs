@@ -17,7 +17,7 @@ public class GraceDialogueTrigger : TriggerDialogue
 
     public override void Interact(params object[] parameter)
     {
-        if (!triggerBool)
+        if (!triggerBool || TalkIsBlocked())
         {
             return;
         }

@@ -116,6 +116,15 @@ drive off after the second clue so the police tape can be cut, and the quest han
   extra fence pieces with MeshColliders. `CrimeSceneGate` (page 2 only) moved to that gate, its blocker resized to the
   gap; on page 5 the gap is open. The yard slabs `Cube (11)` / `Cube (16)` use `Materials/Libro/Pasto.mat`. Page 5's
   NavMesh must be rebaked through the gate (Ariel's arrest walks it).
+- **The museum fence is bars (#155, 2026-10-13)**: every fence panel (`RejasYColumnas/Reja1-8` in
+  `Museum Page Parent.prefab`, and both fallen doors in `Reja Central Rota.prefab`) is an instance of
+  `Prefabs/Level2/Reja/`: one base `Reja.prefab` (root + `Panel` with the BoxCollider, Navigation Static) and one
+  variant per fbx mesh, named after it: `Reja_3/4/5/6/8/9`, `Reja_PuertaDer/Izq` (scene Reja1 and Reja8 use
+  `Reja_8`, Reja2 and Reja6 use `Reja_6`, Reja7 uses `Reja_9`). Each variant's `Panel` sits on its old mesh's plane,
+  and its cubes (bars every ~1 unit, a bottom rail, a rail at the old rectangle's top, arch segments following the
+  old top edge) use the cell fences' `Newspaper 4 Dark`, the same recipe as `CellFence`. The bars are visual only:
+  the Panel's box is the collision. Built by a script from the fbx meshes' outlines; the columns (`Columna*`) still
+  have their fbx MeshColliders.
 - **Page 2's catapult is scenery (#181)**: `Page 2/Catapult_Disarmed` is only art (base, post, the fired arm): no
   `Catapult`, timeline, rope, seats or cameras. Page 5's is the working one.
 - Page 5 is page 2 after the clues (Diego): none of the page 2 gameplay objects live there.
@@ -384,6 +393,11 @@ and the HUD strip hanging under it (pull tab, health, paper ammo) is always on s
 HUD strip, so since 2026-10-05 (spec 011 task 4.A) **every tab button is inactive while the Flap is closed**
 (`FlapManager.SetTabsVisible`: on in `OpenFlap`, off when the closing slide ends). Anything new that must
 not show or be clicked during gameplay has to sit above the paper's bottom edge or be hidden the same way.
+**The HUD leaves during cutscenes (#188, 2026-10-13)**: the prefab root has a `CanvasGroup` (`_hudGroup`, authored
+in the prefab) that `FlapManager.UpdateHudVisibility` fades to 0 over `_hudFadeSeconds` (0.25, unscaled) and stops
+raycasts while `LevelManager.inCutscene` is on and the Flap is `Closed`, so it follows every lock: Timeline
+cutscenes, the Abuela's landing, the catapult boarding and the origami text panel. Opening the Flap shows it at
+once. Alpha and raycasts only: never `SetActive`, never `interactable` (the Selectable cache, "Fugas de foco").
 `WardrobeDisplay` (`Assets/Scripts/UI/`) holds one row per gear slot (Outfit, Scissors, Feet), authored in
 `FlapManager.prefab` as `Row_*` = a `Label` (TMP + `LocalizeStringEvent`, UITexts `wardrobe_*`) and a
 `Slots` container (GridLayoutGroup, one row). The buttons are `InventorySlot.prefab` copies spawned at

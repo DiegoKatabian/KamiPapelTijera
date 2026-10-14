@@ -134,6 +134,11 @@ cutscene's dialogue markers already time them. Arrest: `Arrest_Shout` (cops `Arr
 then `Museum_Evidence` (Ariel `Angry`, Natalia `Happy`, cops lose the lantern). Beats that are not lines are in the
 cutscene scripts (`ArrestCutscene.CUE_StartEscort`: shock ends, everyone walks). Detail: `specs/014-level2-npc-animations/spec.md`.
 
+## The HUD during cutscenes (#188)
+
+Nothing on the timeline: the HUD strip fades out whenever `LevelManager.inCutscene` is on (so also during the
+non-Timeline locks) and comes back when Kami is free. See "The HUD leaves during cutscenes" in `nivel2-y-ui.md`.
+
 ## Gotchas
 
 - The cutscene lives at the **scene root**, not under Page 3: the page folder is switched off mid
