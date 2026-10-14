@@ -14164,6 +14164,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6800743492167793166, guid: 55968c0be0eae574cac6fbf9493c0537,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7311175191671350372, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
       propertyPath: lengthInSec
@@ -77169,7 +77174,7 @@ PrefabInstance:
     - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
         type: 3}
       propertyPath: startingPage
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
         type: 3}
@@ -79147,17 +79152,17 @@ PrefabInstance:
     - target: {fileID: 5357465105482584965, guid: 5242af2ee5dc6a74da62f7f53cb59575,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 5357465105482584965, guid: 5242af2ee5dc6a74da62f7f53cb59575,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 5357465105482584965, guid: 5242af2ee5dc6a74da62f7f53cb59575,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.6
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 5357465105482584965, guid: 5242af2ee5dc6a74da62f7f53cb59575,
         type: 3}
@@ -79208,6 +79213,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5357465105482584965, guid: 5242af2ee5dc6a74da62f7f53cb59575,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5357465105482584966, guid: 5242af2ee5dc6a74da62f7f53cb59575,
         type: 3}
@@ -79709,7 +79719,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5549367393259815879
 Transform:
   m_ObjectHideFlags: 0
@@ -79779,7 +79789,7 @@ PrefabInstance:
     - target: {fileID: 5549367394310565229, guid: b10d773730f3e814c80e3450cd124562,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5549367394491038700, guid: b10d773730f3e814c80e3450cd124562,
         type: 3}
