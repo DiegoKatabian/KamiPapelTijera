@@ -70,8 +70,9 @@ walks until `BoardCar` fires; if she hasn't arrived by then, they board anyway (
 
 ## Tuning the catapult ending (Level 2 page 5, 2026-09-28)
 
-`Assets/Timelines/Level2/Timeline_Catapult.playable`, on `Page 5/Museum Sequence/Catapult_PLACEHOLDER_POSITION`
-(`Catapult` + `CutsceneDirector`). It starts when Kami cuts the rope from the bucket (the boarding
+`Assets/Timelines/Level2/Timeline_Catapult.playable`, on the `Gameplay` child of `Catapulta.prefab` (nested in
+`Museum Page Parent`, page 5; `Catapult` + `CutsceneDirector`). The `Launch` signal also fires the `Shoot` trigger of the
+prefab's Animator: the arm snaps up (`Catapulta_Shoot`, 0.46s, overshoots and settles; tune it in the Animation window). It starts when Kami cuts the rope from the bucket (the boarding
 before it is gameplay, see `nivel2-y-ui.md`). One camera shot, `CM Catapult Hold` (child of the
 catapult, CarFollow's recipe: Transposer in world space following the catapult, so it holds still;
 framing = its `Follow Offset` + X tilt), and three signals: `Launch` (0.6s: the loaded art swaps for

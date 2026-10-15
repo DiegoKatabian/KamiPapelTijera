@@ -9,10 +9,11 @@ using UnityEngine;
 /// reminder that it is still wrapped. It does NOT touch any quest: Quest06 closes when the arrest
 /// that follows is over (ArrestCutscene), per Diego's 2026-09-25 design pass.
 ///
-/// Opening: the ribbon can be cut at any time, talked to or not. Cutting it swaps the closed art
-/// for the open one, reveals what's inside (the Pelusa pickup, the letter pedestal), stops the box
-/// from being talkable, and queues Natalia's reaction. The letter pedestal auto-prompts its own
-/// origami once that reaction is over (TriggerOrigami._promptAutomatically).
+/// Opening: the ribbon can be cut at any time, talked to or not. Cutting it plays the lid animation
+/// (Animator trigger), reveals what's inside (the Pelusa pickup, which collects itself a few seconds
+/// later so the player sees it) and stops the box from being talkable. Only after _revealSeconds does
+/// Natalia react and the letter pedestal appear, so nothing covers the Pelusa while it is on show. The
+/// pedestal auto-prompts its own origami once that reaction is over (TriggerOrigami._promptAutomatically).
 ///
 /// Inherits TriggerDialogue, not QuestDialogueTrigger: there is no item handover and no reward.
 /// </summary>
@@ -22,14 +23,23 @@ public class GiftDialogueTrigger : TriggerDialogue
     [SerializeField, Tooltip("The ribbon tied around the box. Cutting it opens the box.")]
     CuttableTwoPieces _ribbon;
 
-    [SerializeField, Tooltip("Turned on when the box opens: the open-box art, the Pelusa pickup, the letter pedestal.")]
+    [SerializeField, Tooltip("The Animator that opens the lid.")]
+    Animator _animator;
+
+    [SerializeField, Tooltip("Animator trigger that opens the lid.")]
+    string _openTrigger = "Open";
+
+    [SerializeField, Tooltip("Turned on the moment the box opens: the Pelusa pickup (it waits its own _collectDelay before it is collected).")]
     GameObject[] _showOnOpen;
 
-    [SerializeField, Tooltip("Turned off when the box opens: the closed-box art.")]
-    GameObject[] _hideOnOpen;
+    [SerializeField, Tooltip("Seconds after opening before Natalia reacts and _showAfterReveal turns on. Should cover the lid animation plus the Pelusa's collect delay and pop.")]
+    float _revealSeconds = 5f;
 
-    [SerializeField, Tooltip("What Natalia says when the box opens. Optional.")]
+    [SerializeField, Tooltip("What Natalia says once the reveal is over. Optional.")]
     DialogueSO _openedComment;
+
+    [SerializeField, Tooltip("Turned on after _revealSeconds, once Natalia's reaction is up: the letter pedestal.")]
+    GameObject[] _showAfterReveal;
 
     bool _opened;
 
@@ -77,12 +87,28 @@ public class GiftDialogueTrigger : TriggerDialogue
         Debug.Log($"[GiftDialogueTrigger] {gameObject.name}: the ribbon was cut, the box opens");
 
         SetTalkable(false);
-        SetAllActive(_hideOnOpen, false);
+
+        if (_animator != null)
+        {
+            _animator.SetTrigger(_openTrigger);
+        }
+        else
+        {
+            Debug.LogWarning($"[GiftDialogueTrigger] {gameObject.name}: _animator is not assigned, the lid will not move.");
+        }
 
         if (AudioManager.instance != null)
         {
             AudioManager.instance.Play(AudioId.GiftBoxOpen);
         }
+
+        SetAllActive(_showOnOpen, true);
+        StartCoroutine(RevealRoutine());
+    }
+
+    IEnumerator RevealRoutine()
+    {
+        yield return new WaitForSeconds(_revealSeconds);
 
         //the reaction goes first so it is already on screen when the letter pedestal appears and
         //starts waiting for the screen to be free
@@ -91,7 +117,7 @@ public class GiftDialogueTrigger : TriggerDialogue
             StartCoroutine(ShowWhenFree(_openedComment));
         }
 
-        SetAllActive(_showOnOpen, true);
+        SetAllActive(_showAfterReveal, true);
     }
 
     //a talk that was already open when the ribbon got cut must not swallow Natalia's reaction:
@@ -133,7 +159,7 @@ public class GiftDialogueTrigger : TriggerDialogue
         {
             if (target == null)
             {
-                Debug.LogWarning($"[GiftDialogueTrigger] {gameObject.name}: an empty slot in the open/close lists, skipping it.");
+                Debug.LogWarning($"[GiftDialogueTrigger] {gameObject.name}: an empty slot in the show lists, skipping it.");
                 continue;
             }
 

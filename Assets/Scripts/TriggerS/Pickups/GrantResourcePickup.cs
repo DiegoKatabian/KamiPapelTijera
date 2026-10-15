@@ -37,14 +37,33 @@ public class GrantResourcePickup : MonoBehaviour
     [SerializeField, Tooltip("Seconds the pop-and-shrink takes before the object is destroyed.")]
     float _popSeconds = 0.6f;
 
+    [SerializeField, Tooltip("Revealed mode only: seconds to wait after being activated before it is collected, so the player gets to see it (the Pelusa in the gift box). 0 = at once.")]
+    float _collectDelay;
+
     bool _collected;
 
     void OnEnable()
     {
-        if (_collectMode == CollectMode.Revealed)
+        if (_collectMode != CollectMode.Revealed)
+        {
+            return;
+        }
+
+        //a re-enable mid-pop (trash can) must still finish disappearing, so only the first collect waits
+        if (_collectDelay > 0f && !_collected)
+        {
+            StartCoroutine(CollectAfterDelay());
+        }
+        else
         {
             Collect();
         }
+    }
+
+    IEnumerator CollectAfterDelay()
+    {
+        yield return new WaitForSeconds(_collectDelay);
+        Collect();
     }
 
     void OnTriggerEnter(Collider other)

@@ -5,13 +5,16 @@ using UnityEngine;
 /// Level 2's ending (spec 006, 5.D): the museum's old catapult sends Kami and the Abuela back to
 /// their book. Hard-animated, no physics.
 ///
+/// 0. The model rests disarmed (arm up, same pose as page 2's scenery copy). Everything below lives on
+///    the prefab's Gameplay child, which page 2's instance switches off.
 /// 1. Locked until MuseumPage calls Unlock() (the evidence dialogue, which ends with Grace's offer, is over).
+///    Unlock plays the arming animation (the arm comes down); the catapult can be boarded once it is armed.
 /// 2. Interact on the catapult = the confirm: a quick fade, Kami lands in the bucket (walled in by
 ///    _enableOnBoard so she can't wander off, but she can still attack) and the Abuela next to her.
 ///    Only now does the rope become cuttable, so an early swing can't waste it.
 /// 3. Cutting the rope plays the timeline (CutsceneDirector). Its signals call the CUE_ methods:
-///    the launch (the girls vanish, a placeholder of them arcs off-frame), the fade to black and
-///    the scene change. The holds between them are the gaps between the signals: drag them in the
+///    the launch (the arm snaps up, the girls vanish, a placeholder of them arcs off-frame), the fade to
+///    black and the scene change. The holds between them are the gaps between the signals: drag them in the
 ///    Timeline window. The flight is the only duration that lives here (_flightSeconds), the same
 ///    as the arrest's car drive.
 /// </summary>
@@ -47,13 +50,20 @@ public class Catapult : TriggerScript
     [SerializeField, Tooltip("The rope holding the arm down. Cutting it launches.")]
     CuttableTwoPieces _rope;
 
+    [Header("Arm animation")]
+    [SerializeField, Tooltip("The Animator on the prefab root that swings the arm (states Disarmed / Arming / Armed / Shooting).")]
+    Animator _animator;
+
+    [SerializeField, Tooltip("Animator trigger that lowers the arm (Disarmed -> Armed).")]
+    string _armTrigger = "Arm";
+
+    [SerializeField, Tooltip("Animator trigger that snaps the arm up (Armed -> Disarmed). Fired by the launch signal.")]
+    string _shootTrigger = "Shoot";
+
+    [SerializeField, Tooltip("Name of the Animator state that means the arm is down and loaded. The catapult can be boarded once it is reached.")]
+    string _armedStateName = "Armed";
+
     [Header("Launch")]
-    [SerializeField, Tooltip("Turned off at the launch: the loaded catapult art.")]
-    GameObject[] _hideOnLaunch;
-
-    [SerializeField, Tooltip("Turned on at the launch: the fired (empty) catapult art.")]
-    GameObject[] _showOnLaunch;
-
     [SerializeField, Tooltip("A stand-in for the two girls in flight. Starts inactive; flies from the bucket to _flightTarget.")]
     Transform _flyingGirls;
 
@@ -80,10 +90,11 @@ public class Catapult : TriggerScript
     Collider _ropeTrigger;
     NPC _abuela;
     bool _unlocked;
+    bool _armed;
     bool _boarded;
     bool _launched;
 
-    public override bool EsInteractuable => _unlocked && !_boarded;
+    public override bool EsInteractuable => _unlocked && _armed && !_boarded;
 
     void Awake()
     {
@@ -104,6 +115,14 @@ public class Catapult : TriggerScript
             _rope.OnCut.AddListener(OnRopeCut);
             _ropeTrigger = _rope.GetComponent<Collider>();
             SetRopeCuttable(false);
+
+            //the rope holds the arm down: it only exists once the catapult is armed (ArmRoutine)
+            _rope.gameObject.SetActive(false);
+        }
+
+        if (_animator == null)
+        {
+            Debug.LogWarning($"[Catapult] {gameObject.name}: _animator is not assigned, the arm will not move");
         }
 
         SetAllActive(_enableOnBoard, false);
@@ -124,7 +143,42 @@ public class Catapult : TriggerScript
 
         _unlocked = true;
         _abuela = abuela;
-        Debug.Log("[Catapult] unlocked, waiting for Kami to board");
+        Debug.Log("[Catapult] unlocked, arming it");
+        StartCoroutine(ArmRoutine());
+    }
+
+    //the arm comes down first, so Kami never boards a bucket that is still in the air
+    IEnumerator ArmRoutine()
+    {
+        if (_animator != null)
+        {
+            _animator.SetTrigger(_armTrigger);
+
+            //the trigger is consumed on the next animator update: wait until the Arming state is left.
+            //Capped so a misnamed state can't leave the catapult unboardable forever
+            yield return null;
+            float waited = 0f;
+            while (!IsInState(_armedStateName))
+            {
+                waited += Time.unscaledDeltaTime;
+                if (waited > 10f)
+                {
+                    Debug.LogWarning($"[Catapult] the Animator never reached state '{_armedStateName}', arming it anyway");
+                    break;
+                }
+
+                yield return null;
+            }
+        }
+
+        _armed = true;
+        Debug.Log("[Catapult] armed, waiting for Kami to board");
+
+        //still not cuttable: the trigger only turns on when Kami boards
+        if (_rope != null)
+        {
+            _rope.gameObject.SetActive(true);
+        }
 
         //Kami may already be standing in the trigger: register and prompt her now
         if (triggerBool)
@@ -134,11 +188,17 @@ public class Catapult : TriggerScript
         }
     }
 
+    bool IsInState(string stateName)
+    {
+        AnimatorStateInfo info = _animator.GetCurrentAnimatorStateInfo(0);
+        return info.IsName(stateName) && !_animator.IsInTransition(0);
+    }
+
     public override void OnEnterBehaviour(Collider other)
     {
         triggerBool = true;
 
-        if (_unlocked && !_boarded)
+        if (_unlocked && _armed && !_boarded)
         {
             TryShowTooltip();
         }
@@ -146,7 +206,7 @@ public class Catapult : TriggerScript
 
     public override void Interact(params object[] parameter)
     {
-        if (!triggerBool || !_unlocked || _boarded)
+        if (!triggerBool || !_unlocked || !_armed || _boarded)
         {
             return;
         }
@@ -278,7 +338,7 @@ public class Catapult : TriggerScript
 
     // ---------------------------------------------------------------- timeline signals
 
-    /// <summary>Signal: the arm swings, the girls leave the bucket and fly off-frame.</summary>
+    /// <summary>Signal: the arm snaps up, the girls leave the bucket and fly off-frame.</summary>
     public void CUE_Launch()
     {
         Vector3 start = _kamiSeat != null ? _kamiSeat.position : transform.position;
@@ -293,8 +353,11 @@ public class Catapult : TriggerScript
             HiddenRenderers.Hide(_abuela.gameObject);
         }
 
-        SetAllActive(_hideOnLaunch, false);
-        SetAllActive(_showOnLaunch, true);
+        if (_animator != null)
+        {
+            _animator.SetTrigger(_shootTrigger);
+        }
+
         //the arm hitting its stop, then the girls whooshing away (replaces Jump_Paperplane)
         AudioManager.instance.Play(AudioId.CatapultThud);
         AudioManager.instance.Play(AudioId.CatapultWhoosh);

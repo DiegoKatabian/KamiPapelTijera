@@ -16,6 +16,9 @@ MonoBehaviour:
   - {fileID: 1100000001, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
   - {fileID: 3197921192100531425, guid: fa997775dadba1f4aaf60b04c5e863b2, type: 3}
   - {fileID: 3197921192100531425, guid: 079c3c9e47dce8e4b9e27df09d165caa, type: 3}
+  - {fileID: 3817483668954363550, guid: 928c1b4a654f8125e33fcca66c2aaff5, type: 3}
+  - {fileID: 4512044626340359593, guid: e8016b4eda3eab41afc725d37f66a51a, type: 3}
+  - {fileID: 3403031560844029488, guid: 2d1874c9640e77fc9e607c80452118b5, type: 3}
   travelDurationRange: {x: 3, y: 4}
   spawnIntervalRange: {x: 2, y: 3}
   maxAlive: 5

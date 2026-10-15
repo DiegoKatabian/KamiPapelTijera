@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &3817483667856530847
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1100000001, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_Name
+      value: TrafficObstacle_Car Variacion 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3415647682651422808, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3415647682651422808, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3415647682651422808, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3415647682651422808, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3415647682651422808, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.457271
+      objectReference: {fileID: 0}
+    - target: {fileID: 3415647682651422808, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.92025
+      objectReference: {fileID: 0}
+    - target: {fileID: 8785813429137475827, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 7301192081552313719, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2, type: 3}
+    - target: {fileID: 3360701253140781714, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 7301192081552313719, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2, type: 3}
+    - target: {fileID: 3500211530551713712, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.13845
+      objectReference: {fileID: 0}
+    - target: {fileID: 3500211530551713712, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.440347
+      objectReference: {fileID: 0}
+    - target: {fileID: 3500211530551713712, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.12475
+      objectReference: {fileID: 0}
+    - target: {fileID: 4896272903291044042, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.137581
+      objectReference: {fileID: 0}
+    - target: {fileID: 4896272903291044042, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.440347
+      objectReference: {fileID: 0}
+    - target: {fileID: 4896272903291044042, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.12475
+      objectReference: {fileID: 0}
+    - target: {fileID: 2214812036647668942, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 3740193550752800412, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2, type: 3}
+    - target: {fileID: 4721293914662106727, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -8181369683151272063, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2, type: 3}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}

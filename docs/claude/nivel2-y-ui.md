@@ -20,6 +20,14 @@ now, ready for pages 1-5 to wire up:
   `TrafficSpawner.prefab` into a scene, reposition its `SpawnPoint`/`DespawnPoint`
   children, assign a `TrafficObstacleSet` asset.
 
+  **Car and poster variants (2026-10-15)**: Valentino's `Assets/3D/Cars/PaperCar variacion 1-3.fbx` and `PaperCar Policia.fbx` are
+  wired as prefab variants in `Prefabs/Traffic/CarVariants/`: `Paper Car Stationed Variacion 1-3` (of `Paper Car Stationed Variant`),
+  `Paper Car Idling Variacion 1-3`, `TrafficObstacle_Car Variacion 1-3` (also in `TrafficObstacleSet_StreetCars`, so moving traffic
+  mixes six cars) and `TrafficObstacle_PoliceCar` (the three patrol cars: `PoliceCar_Parked`, `CrimeSceneGate`, `ArrestCutscene`).
+  The new meshes are in metres (the old mesh asset is in cm), so each variant sets the `Mesh` child's scale to 1.5 (was 0.015),
+  moves it so the body is centred like the old one (their pivot sits ~0.3 m above the body's centre) and repositions the windows.
+  Scene cars were re-pointed with `tools/replace-prefab-instance.py` (variant ids = base id XOR the variant's PrefabInstance id).
+  The 8 `CuttablePoster` instances use `CuttablePoster 2-5` in rotation. Page 4's `Paper Car Stationed (9)` stays the original car.
   **Tuning is travel duration (seconds to cross), never speed** — that's the fix for the
   first playtest bug (2026-09-22): a default of 2-4 units/second meant cars needed 20-40s
   to cross an 80-unit street while spawning every 5-10s, so they piled up at the spawn
@@ -104,7 +112,7 @@ drive off after the second clue so the police tape can be cut, and the quest han
   destroys itself, so later opens find the can empty. The per-can "Newspaper 1" material
   override the old instances had was carried over. The model sits under a `Wobble` pivot at
   scale 0.012876 so the placeholder open/close squash (`Assets/Animations/TrashCan/`) has
-  something scale-1 to animate; Valentino's lid animation replaces those two clips.
+  something scale-1 to animate; Valentino's lid animation replaces those two clips (done 2026-10-15: `Trashcan.fbx` with a separate lid, clips `TrashCan_Opening`/`Closing` swing `Trashcan_Tapa` on a back hinge, position + rotation, and `TrashCan_Open` holds the opened pose because an empty Animator state would snap the lid back shut; transitions are instant).
 - `Assets/Prefabs/Level2/`: `CrimeSceneGate` (tape + blocker + cops + car,
   `Assets/Scripts/Level2/CrimeSceneGate.cs`), `CluePickup_Hat`/`CluePickup_Watch` (walk-into
   pickups), `FindCluesTracker` (`Assets/Scripts/Level2/FindCluesTracker.cs`: counts clues,
@@ -125,8 +133,18 @@ drive off after the second clue so the police tape can be cut, and the quest han
   old top edge) use the cell fences' `Newspaper 4 Dark`, the same recipe as `CellFence`. The bars are visual only:
   the Panel's box is the collision. Built by a script from the fbx meshes' outlines; the columns (`Columna*`) still
   have their fbx MeshColliders.
-- **Page 2's catapult is scenery (#181)**: `Page 2/Catapult_Disarmed` is only art (base, post, the fired arm): no
-  `Catapult`, timeline, rope, seats or cameras. Page 5's is the working one.
+- **The catapult is one prefab for pages 2 and 5 (2026-10-15)**: `Prefabs/Level2/Catapulta.prefab` = Pochi's
+  `Catapulta.fbx` (posed by Diego in `Museum Page Parent`) + an Animator on the root (`Animations/Catapulta/`: states
+  Disarmed (default, arm up) -> `Arm` trigger -> Arming -> Armed -> `Shoot` trigger -> Shooting -> Disarmed; clips animate
+  `Palo_Catapulta`'s z rotation, so the pose is edited in the Animation window) + a solid `BaseCollider` + a `Gameplay`
+  child holding everything the placeholder had (`Catapult`, trigger, `CutsceneDirector`, `PlayableDirector`,
+  `SignalReceiver`, rope, seats, walls, floor, flying girls, flight target, `CM Catapult Hold`). Page 2's museum instance
+  overrides `Gameplay` inactive (#181's scenery: stays disarmed); page 5's overrides `_fader` with the scene's
+  `Canvas/ScreenFade`. `MuseumPage._catapult` points at the nested component through a stripped block.
+  `Catapult.Unlock` plays the arming animation and the catapult can be boarded once it reaches `Armed`; `CUE_Launch`
+  fires `Shoot`. `BucketFrame` and `BaseCollider` are yawed 157.4 deg to match the model's override in the museum
+  prefab: if the model is rotated again, rotate those two with it. The old `Catapult_PLACEHOLDER_POSITION` stays in the
+  scene switched off (safe to delete).
 - Page 5 is page 2 after the clues (Diego): none of the page 2 gameplay objects live there.
 
 **Phase 3 (page 3, "The trap") built 2026-09-25, played in Diego's full playthrough (2026-09-28).** Chain: talk to
@@ -136,8 +154,13 @@ itself → reading it and closing the text starts the arrest cutscene → the pa
 with Kami and Natalia in separate cells → Quest06 closes and `Quest07_EscapeAndReturnThePainting`
 starts. Where things are:
 
-- `GiftBox.prefab` now holds everything: the nested `CuttableRibbon`, closed/open placeholder
-  cubes, `PelusaPickup` (a `GrantResourcePickup` in Revealed mode, `pelusaPainting`) and a
+- `GiftBox.prefab` now holds everything: the nested `CuttableRibbon`, the real model (`Caja de Regalo.prefab`,
+  2026-10-15: cutting the ribbon fires the `Open` trigger of the Animator on the GiftBox root, whose clip
+  `Animations/GiftBox/GiftBox_Open` swings `Caja_Regalo_Tapa` up on a back hinge, position + rotation, tunable in the
+  Animation window; the old closed/open cubes and `PelusaVisual_PLACEHOLDER` are left inactive and unused),
+  `PelusaPickup` (a `GrantResourcePickup` in Revealed mode, `pelusaPainting`, `_collectDelay` 3s so the Pelusa is on
+  show before it flies to the inventory; `GiftDialogueTrigger._revealSeconds` 5s holds Natalia's reaction and the letter
+  pedestal back until then) and a
   nested `SelloOrigami Letter` pedestal with `_promptAutomatically` on. The scene wires that
   pedestal's `origami` to `Canvas/Origamis/OrigamiRoute_Letter`, which shows its text on the new
   `Canvas/OrigamiTextRevealPanel` (`Assets/Prefabs/UI/`). The loose Phase 0 ribbon and a leftover
@@ -238,8 +261,8 @@ always reaches page 5 with it.
    "cut the rope" post-it. Only now is the rope's trigger on. Cutting it plays `Timeline_Catapult`
    (see `cutscenes.md`): launch, hold on the empty catapult, fade, `Level2_EndCutscene`.
 
-The rope is the old loose root `CuttableRope` instance, moved under the catapult. Its 21-unit trigger
-sits 3.5 to Kami's right at seat height: her scissor hitbox (3.16 +- 4.27 ahead of her body center,
+The rope is a `CuttableRope` instance inside the catapult prefab (`Gameplay`), switched off until the catapult is armed (`Catapult.ArmRoutine` turns it on; its trigger stays off until Kami boards). Its 21-unit trigger
+sits 3.5 to Kami's right and 5 above her seat (the same offset the placeholder had): her scissor hitbox (3.16 +- 4.27 ahead of her body center,
 1.15 +- 2.32 above it, +-1.74 deep) reaches it from anywhere in the 5x5 bucket, facing right.
 Everything is placeholder cubes/sprites and `_PLACEHOLDER_POSITION` objects (Grace, Ariel, the cop
 witness, the pedestal, the catapult). Starting the scene with `startingPage = 5` gives Kami the five items,
