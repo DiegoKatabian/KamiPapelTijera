@@ -2,7 +2,8 @@ using System;
 using UnityEngine;
 
 //como se pinta a kami cuando recibe daño:
-//SpineFill: flash de color solido via shader Spine/Skeleton Fill (_FillColor/_FillPhase). los materiales del skeleton tienen que usar ese shader.
+//SpineFill: flash de color solido via _FillColor/_FillPhase. los materiales del skeleton tienen que usar un shader que los tenga:
+//Kami/Spine/Sprite Fill URP (el de Kami, con luces y sombras) o Spine/Skeleton Fill (built-in, sin luces).
 //VertexTint: multiplica el color del skeleton (skeleton.R/G/B). no necesita shader especial, pero rojo = kami rojiza/oscura, no flash pleno.
 public enum HitFlashMode
 {
