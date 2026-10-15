@@ -1,8 +1,9 @@
 # Spec 015 — Steam demo: Level 1 only
 
 Epic: [#207](https://github.com/DiegoKatabian/KamiPapelTijera/issues/207), milestone **M8 — Steam demo (Level 1)**.
-Status: **Phase A built 2026-10-13 (uncommitted, compile-checked only, nothing run in the Editor or a player build).
-Phases B and C are Diego's.** Written from a read-only audit, then implemented after Diego's answers.
+Status: **Phase A built 2026-10-13. First player build run by Diego and the first upload done 2026-10-14
+(BuildID 25945178, depot 3284353, not set live). Choosing the branch, the store page and the release are Diego's.**
+Written from a read-only audit, then implemented after Diego's answers.
 
 ## 1. Goal
 
@@ -85,6 +86,13 @@ When committing, stage the Steam demo files separately (the list is in the table
 - **A.7 (#208) Licensed music out.** MemoFlora -> Estampes Pagodes in the AudioBank (loudness-matched volumes), boss theme plays intro then loop, `Assets/Sounds/MemoFlora/` deleted. Details in the issue.
 - **Licensed clips never ship in the demo.** The AudioBank is in Resources, so everything it references ships. The build menu item empties the Level 2 music entries (`BohrenDestroyingAngels`, `DeadEndAngels`) and the Sims-named `QuestCompleted`/`NewsJingle` clip for the length of the build, then restores them. The provenance of the Level 1 clips (menu music, ambience, UI piano, Cathedral) is Diego's to confirm (#209).
 - **Testing the build locally.** Double-clicking the exe from `Builds/SteamDemo` hands the launch to Steam (`RestartAppIfNecessary`, no `steam_appid.txt` next to the exe), which starts the version installed in the library: the old build. Use `tools/steam/run-local.bat` (copies `steam_appid.txt` in and starts the exe); `upload-demo.bat` removes it again before uploading.
+
+### First upload, 2026-10-14 (evening)
+
+- Diego ran **Kami > Build > Steam Demo (Level 1)** (0.2.0) and played it from `Builds/SteamDemo`. The upload ran from a Claude session: `steamcmd +login kimmiarts +run_app_build tools\steam\app_build_demo.vdf +quit` with steamcmd's **cached login** (no password or Steam Guard needed), about one minute for 776 MB changed / 22 MB added. **BuildID 25945178**, manifest 7001580440474039875. No SetLive, by design: Diego assigns the branch in Steamworks > SteamPipe > Builds (plan: a password-protected `playtest` branch, install it from Properties > Betas, then the same build on `default`).
+- The build's `steam_appid.txt` was absent when uploading (checked), and the depot also excludes it.
+- **The `AudioBank` stayed stripped in a commit.** `60581935` held the Level 2 entries with `clips: []` (the build menu empties them while building and restores them afterwards, but the file had been committed in the stripped state). The working tree has them restored, and that restoration is committed together with the Level 1 menu, tree-shadow and post-process changes made before the build.
+- Left out of that commit on purpose: the working-tree deletion of `Assets/StreamingAssets/UnityServicesProjectConfiguration.json` (+ metas), which `60581935` had just added for the build.
 
 ## 5. What is left
 
