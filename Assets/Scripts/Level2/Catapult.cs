@@ -28,7 +28,7 @@ public class Catapult : TriggerScript
     [SerializeField, Tooltip("Where the Abuela sits once they board (her feet), next to Kami.")]
     Transform _abuelaSeat;
 
-    [SerializeField, Tooltip("Turned on when Kami boards: the invisible walls around the bucket that keep her in it.")]
+    [SerializeField, Tooltip("Turned on when Kami boards: the invisible walls around the bucket that keep her in it, and the rope's sparkles (it only glints once it can be cut).")]
     GameObject[] _enableOnBoard;
 
     [SerializeField, Tooltip("Covers the teleport into the bucket. Optional: without it Kami just pops in.")]

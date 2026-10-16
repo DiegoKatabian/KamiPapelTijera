@@ -275,6 +275,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PoliceCar_PLACEHOLDER
       objectReference: {fileID: 0}
+    - target: {fileID: 5068223085301349471, guid: f0722929d091aa6eb006b9c20ba36864,
+        type: 3}
+      propertyPath: _onAtStart
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0722929d091aa6eb006b9c20ba36864, type: 3}
 --- !u!4 &7154845970867963834 stripped

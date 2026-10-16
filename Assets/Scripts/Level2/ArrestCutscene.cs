@@ -204,6 +204,12 @@ public class ArrestCutscene : MonoBehaviour
 
         foreach (Animator animator in _policeCar.GetComponentsInChildren<Animator>(true))
         {
+            //the siren's spin lives on the car too: PoliceLights runs it, not the drive-by
+            if (animator.GetComponent<PoliceLights>() != null)
+            {
+                continue;
+            }
+
             animator.enabled = false;
         }
     }
@@ -490,6 +496,7 @@ public class ArrestCutscene : MonoBehaviour
         PlaySound(AudioId.PoliceHorn);
         PlaySound(AudioId.RunningFootsteps);
         PlaySound(AudioId.PoliceSirenLoop);
+        SetCarSiren(true);
 
         if (_screenFader != null)
         {
@@ -751,6 +758,16 @@ public class ArrestCutscene : MonoBehaviour
             return;
         }
         AudioManager.instance.Play(id);
+    }
+
+    //the patrol car's flashing lights (PoliceLights, nested in the car prefab); a car without them just stays dark
+    void SetCarSiren(bool on)
+    {
+        PoliceLights lights = _policeCar != null ? _policeCar.GetComponentInChildren<PoliceLights>(true) : null;
+        if (lights != null)
+        {
+            lights.SetSiren(on);
+        }
     }
 
     static void StopSiren()

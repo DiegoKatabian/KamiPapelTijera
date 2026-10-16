@@ -118,6 +118,12 @@ public class MuseumArrest : MonoBehaviour
 
         foreach (Animator animator in _patrolCar.GetComponentsInChildren<Animator>(true))
         {
+            //the siren's spin lives on the car too: PoliceLights runs it, not the drive-by
+            if (animator.GetComponent<PoliceLights>() != null)
+            {
+                continue;
+            }
+
             animator.enabled = false;
         }
     }
@@ -201,6 +207,7 @@ public class MuseumArrest : MonoBehaviour
         _patrolCar.Launch(_driveOffTarget.position, _driveOffSeconds, (_driveOffSeconds * 3f) + 1f);
         _carDrivingOff = true;
         PlaySound(AudioId.PoliceSirenLoop);
+        SetCarSiren(true);
         PlaySound(AudioId.CarEngine);
         PlaySound(AudioId.PoliceHorn);
         Debug.Log("[MuseumArrest] the patrol car drives off");
@@ -400,6 +407,16 @@ public class MuseumArrest : MonoBehaviour
             return;
         }
         AudioManager.instance.Play(id);
+    }
+
+    //the patrol car's flashing lights (PoliceLights, nested in the car prefab); a car without them just stays dark
+    void SetCarSiren(bool on)
+    {
+        PoliceLights lights = _patrolCar != null ? _patrolCar.GetComponentInChildren<PoliceLights>(true) : null;
+        if (lights != null)
+        {
+            lights.SetSiren(on);
+        }
     }
 
     static void StopSiren()

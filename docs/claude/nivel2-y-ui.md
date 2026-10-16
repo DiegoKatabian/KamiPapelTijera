@@ -79,6 +79,12 @@ now, ready for pages 1-5 to wire up:
   trigger `BoxCollider` **plus a kinematic `Rigidbody`** — two triggers only report a hit
   if one side carries a Rigidbody, so without it the scissors would silently never cut
   them. Sprites are bush stand-ins until Valentino draws the real art.
+  **Sparkles (#228, 2026-10-16, not played)**: the Level 2 cuttables (tape, ribbon, rope, drapes, typewriter, posters 1-5 through their
+  base) nest a `Brillitos Mágicos` instance under their `SpriteWhole`, so the glint switches off with the whole sprite when
+  the object is cut and returns on `RestoreUncut` (the typewriters), with no code. The circle shape is stretched per prefab with
+  `ShapeModule.m_Scale` to about the trigger's size, and the child's scale cancels the parent's (posters 0.6, drapes 3.4 x 7.2);
+  retune either on the nested instance. The rope's sparkles are in `Catapult._enableOnBoard`, so they come on when Kami boards,
+  with the trigger. Level 1's cuttables, and the padlock, flowers and dam that already had sparkles, are untouched.
 - **Evidence items**: 4 new `ResourceType` values (`caughtBelonging` — the hat,
   `brokenWatch`, `arielScarfCap` (**retired 2026-09-28**: Ariel's evidence is the hat + glove; the
   enum slot stays as `unusedArielScarfCap` so the later ints keep their meaning, its item asset and
@@ -162,7 +168,9 @@ starts. Where things are:
   Animation window; the old closed/open cubes and `PelusaVisual_PLACEHOLDER` are left inactive and unused),
   `PelusaPickup` (a `GrantResourcePickup` in Revealed mode, `pelusaPainting`, `_collectDelay` 3s so the Pelusa is on
   show before it flies to the inventory; `GiftDialogueTrigger._revealSeconds` 5s holds Natalia's reaction and the letter
-  pedestal back until then) and a
+  pedestal back until then) The Pelusa model sits under a `PelusaFloat` pivot (Animator `Animations/Pelusa/PelusaFloat`: a 2.5 s loop, bob 0.4 up and
+  down, sway +-4 deg, #229) next to a nested `Brillitos Mágicos`; the pivot is a child on purpose, `GrantResourcePickup.PopAndHide` moves and scales
+  the pickup root for the fly-off and a
   nested `SelloOrigami Letter` pedestal with `_promptAutomatically` on. The scene wires that
   pedestal's `origami` to `Canvas/Origamis/OrigamiRoute_Letter`, which shows its text on the new
   `Canvas/OrigamiTextRevealPanel` (`Assets/Prefabs/UI/`). The loose Phase 0 ribbon and a leftover
@@ -304,6 +312,15 @@ of `Paper Car Stationed Variant` (left untouched: pages 1 and 4 use it too) that
 (`HumoChimenea`) back on, in world space with a steady rate, and adds `Traffic/IdlingCar`: a positional engine loop
 (`CarEngineIdleLoop`) and a honk every `_hornMinSeconds`-`_hornMaxSeconds` (`CarHornIdling`). How far away they are
 heard is on the two AudioBank rows (see `audio-y-particulas.md`).
+
+**Police car siren (#230, 2026-10-16, not played).** `TrafficObstacle_PoliceCar.prefab` has a `Police Lights` object (red and
+blue-white spots, both intensity 100, range 6.9, no shadows) with an Animator (`Animations/PoliceLights/PoliceLights_Spin`, one
+turn per second on Y, linear loop) and `Traffic/PoliceLights`: no `Update` at all, it only sets the Animator speed from
+`_spinSeconds` and `SetSiren(bool)` switches the lights and the Animator. `_onAtStart` is off in the prefab and on in
+`CrimeSceneGate`'s car (page 2: spinning from the start). Page 3's `ArrestCutscene.CUE_CopsBehindGirls` and page 5's
+`MuseumArrest.CUE_DriveOff` turn it on beside the siren sound; the car destroys itself on arrival, so nothing turns it off.
+Both cutscenes' `ParkCar` disable every Animator on the car except the one on a `PoliceLights`. Optional polish not done:
+keying each light's intensity so each beam peaks when it points forward.
 
 `Level2_EndCutscene.unity` (`GameScene.Level2EndCutscene`, catalog + Build Settings) is a copy of
 `Nivel1_EndCutscene` running `Narrator_Level2Ending` (the flight, the Narrator's blue lamp, a third

@@ -90,7 +90,7 @@ skippable). Cameras track: KamiCell, PatrolRoute, NataliaCell, Window (static vc
 `PoliceStation/IntroCameras`: drag the vcam itself to reframe), then CopFollow (Transposer following the
 patrolling cop) and NataliaCell again. Three dialogue markers: `Jail_CopTaunt` (9.2s), `Jail_NataliaReply`
 (12.8s), `Narrator_JailIntro` (13.9s). No signals: the cell-bars sound comes from
-`PoliceStationPage.StartSequence`. The Abuela is scheduled once the timeline ends.
+`PoliceStationPage.StartSequence`. Once the timeline is over and the Abuela has landed and spoken (Kami is free again) `PoliceStationPage` switches the live camera to `BookCenter` (the whole station in view; `_cameraAfterIntro`, the player cycles or picks as usual afterwards; first time only, a capture restart leaves the camera alone, 2026-10-16, not played). The Abuela is scheduled when the timeline ends.
 
 ## Tuning the page 5 meeting (Phase 6.D, reworked by #182 on 2026-10-13)
 

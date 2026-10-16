@@ -25,8 +25,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4740702025616389741}
-  m_LocalRotation: {x: -0.0070878253, y: 0.34201887, z: -0.9396628, w: -0.002579981}
-  m_LocalPosition: {x: -0.039999925, y: 5.9375, z: 0.6729997}
+  m_LocalRotation: {x: -0.85776246, y: -0.06253833, z: 0.40404934, w: -0.3115712}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -124,6 +124,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7228572340247136008}
+  - component: {fileID: 5068223085301349470}
+  - component: {fileID: 5068223085301349471}
   m_Layer: 0
   m_Name: Police Lights
   m_TagString: Untagged
@@ -139,15 +141,53 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5068223085301349463}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.38081917, y: 5.9009914, z: 0.6971034}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4816507757978203414}
   - {fileID: 433808898890532361}
-  m_Father: {fileID: 2414032683908872675}
-  m_RootOrder: 1
+  m_Father: {fileID: 8840741752150657521}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &5068223085301349470
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5068223085301349463}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b42272872e244cc881b81cc37252d546, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &5068223085301349471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5068223085301349463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc5f8060c9664c72950fe6694bfa56e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 5068223085301349470}
+  _lights:
+  - {fileID: 3874697863349488742}
+  - {fileID: 4640725428293429944}
+  _spinSeconds: 1
+  _onAtStart: 0
 --- !u!1 &6817692648802049674
 GameObject:
   m_ObjectHideFlags: 0
@@ -173,8 +213,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6817692648802049674}
-  m_LocalRotation: {x: 0.93659, y: 0.0026431226, z: -0.007064468, w: 0.35034594}
-  m_LocalPosition: {x: -0.03999998, y: 5.9375, z: 0.6729989}
+  m_LocalRotation: {x: -0.34782067, y: 0.3202945, z: -0.8545434, w: -0.21491337}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -193,7 +233,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 0.6745283, g: 0.6962264, b: 1, a: 1}
-  m_Intensity: 50
+  m_Intensity: 100
   m_Range: 6.9
   m_SpotAngle: 70
   m_InnerSpotAngle: 60
@@ -390,9 +430,9 @@ PrefabInstance:
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5cd0433dab3340ba8ac1257e2095c47e, type: 3}
---- !u!4 &2414032683908872675 stripped
+--- !u!4 &8840741752150657521 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 1100000002, guid: 5cd0433dab3340ba8ac1257e2095c47e,
+  m_CorrespondingSourceObject: {fileID: 6570965330685139728, guid: 5cd0433dab3340ba8ac1257e2095c47e,
     type: 3}
   m_PrefabInstance: {fileID: 2414032684989977313}
   m_PrefabAsset: {fileID: 0}

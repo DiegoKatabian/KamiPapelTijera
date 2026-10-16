@@ -59,6 +59,9 @@ public class PoliceStationPage : MonoBehaviour
     [SerializeField, Tooltip("The intro cutscene (Timeline_PoliceIntro), played the first time only and not skippable: camera tour, the cop's taunt, Natalia's reply, the narrator. Empty = no intro.")]
     CutsceneDirector _introCutscene;
 
+    [SerializeField, Tooltip("The camera the player starts with once the intro is over and the Abuela has landed (Kami is free), so the whole station is in view. The player changes it as usual afterwards. Only after the intro (first time), not after a capture.")]
+    CameraMode _cameraAfterIntro = CameraMode.BookCenter;
+
     [SerializeField, Tooltip("Seconds between the girls landing in their cells and the intro cutscene starting.")]
     float _introDelaySeconds = 0.5f;
 
@@ -306,8 +309,25 @@ public class PoliceStationPage : MonoBehaviour
             yield return null;
         }
 
-        _introRoutine = null;
         _abuelaEntrance.Schedule(_abuelaDelaySeconds);
+
+        //Kami is locked until the Abuela has landed and spoken (HasLanded is set the moment she gets control
+        //back): that is when the player gets the wide shot of the whole station
+        while (!_abuelaEntrance.HasLanded)
+        {
+            yield return null;
+        }
+
+        _introRoutine = null;
+
+        if (CameraManager.Instance != null)
+        {
+            CameraManager.Instance.SetCamera(_cameraAfterIntro);
+        }
+        else
+        {
+            Debug.LogWarning("[PoliceStationPage] no CameraManager: the camera stays as it was after the intro");
+        }
     }
 
     // ---------------------------------------------------------------- during the page

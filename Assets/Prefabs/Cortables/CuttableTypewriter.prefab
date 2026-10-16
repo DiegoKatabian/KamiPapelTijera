@@ -118,7 +118,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 765441331962318928}
   m_Father: {fileID: 7000002}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -342,3 +343,63 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &7100001
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 7000011}
+    m_Modifications:
+    - target: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: ShapeModule.m_Scale.x
+      value: 2.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: cf25ee50074cd3744888d54f5597b419,
+        type: 3}
+      propertyPath: ShapeModule.m_Scale.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cf25ee50074cd3744888d54f5597b419, type: 3}
+--- !u!4 &765441331962318928 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 765441331968886321, guid: cf25ee50074cd3744888d54f5597b419,
+    type: 3}
+  m_PrefabInstance: {fileID: 7100001}
+  m_PrefabAsset: {fileID: 0}

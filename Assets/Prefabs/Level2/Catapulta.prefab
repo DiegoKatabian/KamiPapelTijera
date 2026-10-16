@@ -899,6 +899,7 @@ MonoBehaviour:
   _abuelaSeat: {fileID: 4116366406734505522}
   _enableOnBoard:
   - {fileID: 3379475766086751233}
+  - {fileID: 8982563942199422229}
   _fader: {fileID: 0}
   _boardFadeSeconds: 0.3
   _boardedLine: {fileID: 11400000, guid: b1b728c83fda438d8b03e022019189c1, type: 2}
@@ -1171,6 +1172,12 @@ MonoBehaviour:
 --- !u!4 &2313026362640087317 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7000002, guid: b820e05fb4384b9aba898e87ffa59b2d,
+    type: 3}
+  m_PrefabInstance: {fileID: 2313026362638366423}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8982563942199422229 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6679400547162463170, guid: b820e05fb4384b9aba898e87ffa59b2d,
     type: 3}
   m_PrefabInstance: {fileID: 2313026362638366423}
   m_PrefabAsset: {fileID: 0}
