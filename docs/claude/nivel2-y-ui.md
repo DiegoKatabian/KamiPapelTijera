@@ -109,7 +109,9 @@ drive off after the second clue so the police tape can be cut, and the quest han
   gesture) and gives 2 paper once. `TrashCan_ClueGlove.prefab` is a variant that gives the
   glove (page 2's `TrashCan_ClueGlove`). The contents are a `GrantResourcePickup`
   (`Assets/Scripts/TriggerS/Pickups/`) in Revealed mode: opening = collecting, and it
-  destroys itself, so later opens find the can empty. The per-can "Newspaper 1" material
+  switches itself off (shrunk to nothing; it used to destroy itself), so later opens find the can
+  empty. `TriggerSolapa.ResetToFresh()` closes a can silently and refills it (`Solapa.ResetClosed`,
+  `GrantResourcePickup.ResetPickup`); only page 4's restart calls it (#219). The per-can "Newspaper 1" material
   override the old instances had was carried over. The model sits under a `Wobble` pivot at
   scale 0.012876 so the placeholder open/close squash (`Assets/Animations/TrashCan/`) has
   something scale-1 to animate; Valentino's lid animation replaces those two clips (done 2026-10-15: `Trashcan.fbx` with a separate lid, clips `TrashCan_Opening`/`Closing` swing `Trashcan_Tapa` on a back hinge, position + rotation, and `TrashCan_Open` holds the opened pose because an empty Animator state would snap the lid back shut; transitions are instant).
@@ -210,6 +212,9 @@ sequence and is the only thing that restarts it:
    everything above goes back to step 1, the Abuela falls again after only
    `_abuelaDelayAfterCaptureSeconds` (3), the cops return to their posts. The stash only grows:
    paper Kami gathered before being caught again is returned at the pickup too; the plane hat is lost.
+   The page's three trash cans (`PoliceStationPage._trashCans`) close and fill up again (#219,
+   2026-10-15): the paper spent on the fold and the padlock is gone and both must be redone, so without
+   it a capture could leave Kami waiting on the typewriters' 30 s respawn.
 
 The cops are `PoliceOfficer.prefab` (male) and `PoliceOfficer Female Variant` (since spec 014, 2026-10-09) walking
 the four corners of Diego's "Poli Path" rectangle (`PoliceStation/PatrolRoute`), half a lap apart (the female starts

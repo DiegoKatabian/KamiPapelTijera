@@ -84,10 +84,10 @@ public class MuseumArrest : MonoBehaviour
     void Awake()
     {
         _cutscene = GetComponent<CutsceneDirector>();
-    }
 
-    void Start()
-    {
+        //Awake, not Start (#220): when a page turn switches page 5 on, the car's Animator gets one
+        //animation pass before Start runs, and that first "Andando" frame leaves the car under the
+        //road, shrunk; disabling the Animator afterwards keeps it there
         ParkCar();
     }
 

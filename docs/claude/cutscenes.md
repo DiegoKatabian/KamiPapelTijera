@@ -123,7 +123,10 @@ holds until Ariel is at `Marks/CarDoor`) -> `DriveOff` (3.6s, siren on, `Traffic
 - No NavMesh near Ariel or the door = a warning, and they board where they stand.
 - The car never turns (`faceMovementDirection` is off on the traffic prefab), so `DriveOffTarget` sits 80 units ahead
   of the parked car's nose. If the car drives backwards, drag the mark behind it instead.
-- The car's "Andando" Animator is switched off in `MuseumArrest.Start` (same as page 3's `ParkCar`).
+- The car's "Andando" Animator is switched off in `MuseumArrest.Awake` (same as page 3's `ParkCar`). **Awake, not Start**
+  (#220, 2026-10-15): page 5 is switched on by a page turn's coroutine, after Update, so the car's Animator got one pass
+  before `Start`; Andando's first frame puts the car 4.2 under the road, 39 down the street and shrunk to ~0.2, and a
+  disabled Animator leaves it there. Any script that parks an animated object on a page must do it in `Awake`.
 - `ArielArrest` lives under page 5 (unlike page 3's arrest at the scene root): the page never turns away during it.
 
 ## Character animation beats (spec 014)

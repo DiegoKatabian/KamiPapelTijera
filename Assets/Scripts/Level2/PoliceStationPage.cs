@@ -79,6 +79,9 @@ public class PoliceStationPage : MonoBehaviour
     [SerializeField, Tooltip("The drapes over the escape window. Whole again on a restart.")]
     CuttableDrapes _windowDrapes;
 
+    [SerializeField, Tooltip("The page's trash cans: closed and full again after a capture, so Kami can always gather the paper the page asks for (#219).")]
+    TriggerSolapa[] _trashCans;
+
     [SerializeField, Tooltip("Outside, below the window: Natalia and the Abuela are brought here when Kami escapes, and it becomes her respawn point.")]
     Transform _outsideLanding;
 
@@ -238,6 +241,18 @@ public class PoliceStationPage : MonoBehaviour
         if (_windowDrapes != null)
         {
             _windowDrapes.RestoreUncut();
+        }
+
+        //the paper she spent on the fold and the padlock is gone, and both have to be redone (#219)
+        if (!firstTime && _trashCans != null)
+        {
+            foreach (TriggerSolapa trashCan in _trashCans)
+            {
+                if (trashCan != null)
+                {
+                    trashCan.ResetToFresh();
+                }
+            }
         }
 
         if (_introRoutine != null)

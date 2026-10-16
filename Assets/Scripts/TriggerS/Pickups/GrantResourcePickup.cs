@@ -11,8 +11,9 @@ using UnityEngine;
 ///   as TriggerSolapa's objetoParaMostrar: opening the can reveals it, and revealing IS
 ///   collecting, so the can and its contents never fight over the same button press either.
 ///
-/// It destroys itself after collecting, so TriggerSolapa's toggle finds nothing on later
-/// opens: a trash can is emptied once, not farmed.
+/// It switches itself off after collecting (shrunk to nothing), so TriggerSolapa's toggle finds
+/// nothing on later opens: a trash can is emptied once, not farmed. ResetPickup refills it (page 4's
+/// cans after a capture, #219).
 /// </summary>
 public class GrantResourcePickup : MonoBehaviour
 {
@@ -41,6 +42,32 @@ public class GrantResourcePickup : MonoBehaviour
     float _collectDelay;
 
     bool _collected;
+    bool _restPoseKnown;
+    Vector3 _restLocalPosition;
+    Vector3 _restLocalScale;
+
+    void Awake()
+    {
+        _restLocalPosition = transform.localPosition;
+        _restLocalScale = transform.localScale;
+        _restPoseKnown = true;
+    }
+
+    /// <summary>Full again and hidden, as if it had never been collected (TriggerSolapa.ResetToFresh).</summary>
+    public void ResetPickup()
+    {
+        StopAllCoroutines();
+        _collected = false;
+
+        //never switched on = never moved (and Awake never ran, so there is no rest pose to restore)
+        if (_restPoseKnown)
+        {
+            transform.localPosition = _restLocalPosition;
+            transform.localScale = _restLocalScale;
+        }
+
+        gameObject.SetActive(false);
+    }
 
     void OnEnable()
     {
@@ -84,8 +111,9 @@ public class GrantResourcePickup : MonoBehaviour
         if (_collected)
         {
             //a trash can closed mid-pop deactivates us and kills the coroutine; the next open
-            //re-enables us, so finish disappearing instead of lingering (and never grant twice)
-            StartCoroutine(PopAndDestroy());
+            //re-enables us, so finish disappearing instead of lingering (and never grant twice).
+            //Already finished = scale 0, so this pop is invisible and just switches us off again
+            StartCoroutine(PopAndHide());
             return;
         }
 
@@ -103,10 +131,10 @@ public class GrantResourcePickup : MonoBehaviour
         LevelManager.Instance.AddResource(_resource, _amount);
         AudioManager.instance.Play(AudioId.PickupSFX);
 
-        StartCoroutine(PopAndDestroy());
+        StartCoroutine(PopAndHide());
     }
 
-    IEnumerator PopAndDestroy()
+    IEnumerator PopAndHide()
     {
         Vector3 startPosition = transform.localPosition;
         Vector3 startScale = transform.localScale;
@@ -121,6 +149,8 @@ public class GrantResourcePickup : MonoBehaviour
             yield return null;
         }
 
-        Destroy(gameObject);
+        //switched off, not destroyed: ResetPickup can bring it back
+        transform.localScale = Vector3.zero;
+        gameObject.SetActive(false);
     }
 }

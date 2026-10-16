@@ -14,6 +14,7 @@ public class TriggerSolapa : TriggerScript
     [SerializeField] GameObject objetoParaMostrar;
     [SerializeField] float tiempoHastaMostrarObjeto;
     bool isShowing;
+    Coroutine _toggleRoutine;
 
     public override void Interact(params object[] parameter)
     {
@@ -36,8 +37,45 @@ public class TriggerSolapa : TriggerScript
             bool estabaAbierta = solapaAfectada.IsOpen;
             LevelManager.Instance.player.PlayPullSolapa(estabaAbierta);
             solapaAfectada.CambiarEstado();
-            StartCoroutine(ToggleObject(objetoParaMostrar));
+            _toggleRoutine = StartCoroutine(ToggleObject(objetoParaMostrar));
         }
+    }
+
+    /// <summary>
+    /// Closed and full again (page 4's trash cans after a capture, #219): the flap shuts silently, a
+    /// pending reveal is cancelled and the contents are refilled and hidden.
+    /// </summary>
+    public void ResetToFresh()
+    {
+        if (_toggleRoutine != null)
+        {
+            StopCoroutine(_toggleRoutine);
+            _toggleRoutine = null;
+        }
+        isShowing = false;
+
+        if (solapaAfectada != null)
+        {
+            solapaAfectada.ResetClosed();
+        }
+        else
+        {
+            Debug.LogWarning($"[TriggerSolapa] {gameObject.name}: no solapaAfectada to close on reset");
+        }
+
+        if (objetoParaMostrar == null)
+        {
+            return;
+        }
+
+        GrantResourcePickup pickup = objetoParaMostrar.GetComponentInChildren<GrantResourcePickup>(true);
+        if (pickup != null)
+        {
+            pickup.ResetPickup();
+        }
+
+        objetoParaMostrar.SetActive(false);
+        Debug.Log($"[TriggerSolapa] {gameObject.name}: closed and refilled");
     }
 
     public IEnumerator ToggleObject(GameObject objeto)

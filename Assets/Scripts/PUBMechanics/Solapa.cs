@@ -47,4 +47,14 @@ public class Solapa : MonoBehaviour
 
         AudioManager.instance.Play(AudioId.PaperFold01, 1.5f, 0.1f);
     }
+
+    /// <summary>Closed again with no sparkles or sound: a reset behind the defeat overlay (#219), not the player's action.</summary>
+    public void ResetClosed()
+    {
+        isOn = false;
+        if (anim != null)
+        {
+            anim.SetBool("isOpen", false);
+        }
+    }
 }
