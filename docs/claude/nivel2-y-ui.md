@@ -210,7 +210,11 @@ sequence and is the only thing that restarts it:
    with or without Quest07 held (#169, 2026-10-13): a lost Quest07 used to keep the sphere locked for good.
 5. **Getting caught restarts the whole page** (Diego): on the respawn after a `DeathCause.Caught`,
    everything above goes back to step 1, the Abuela falls again after only
-   `_abuelaDelayAfterCaptureSeconds` (3), the cops return to their posts. The stash only grows:
+   `_abuelaDelayAfterCaptureSeconds` (3), the cops return to their posts. Her crash shakes the camera
+   (`AbuelaEntrance._shake`, a `CinemachineImpulseSource` with the package's `6D Shake` signal; #227, 2026-10-16, not played):
+   Amplitude Gain and Impulse Duration on that component are the knobs, and the four pickable vcams in
+   `Camara Main and Set.prefab` carry a `CinemachineImpulseListener`. The page 4 intro vcams do not: the crash happens after the
+   intro timeline. The stash only grows:
    paper Kami gathered before being caught again is returned at the pickup too; the plane hat is lost.
    The page's three trash cans (`PoliceStationPage._trashCans`) close and fill up again (#219,
    2026-10-15): the paper spent on the fold and the padlock is gone and both must be redone, so without
@@ -254,10 +258,12 @@ always reaches page 5 with it.
 2. The unfold shows the ticket (the girls' receipt from page 1: 2 hot chocolates, paid at 21:47) on
    the letter's `OrigamiTextRevealPanel`; closing it plays `Museum_Evidence`: both girls were at the
    café at 21:47 and heard of the robbery on its radio, Ariel's hat + glove, the watch stopped at
-   21:47, Grace pointing out Ariel's access through his father, the police apology and arrest, Ariel's apology to Natalia, Grace's thanks, and **Grace's catapult offer in
-   the same dialogue** (Diego, 2026-09-28: the player talks to Grace once).
+   21:47, Grace pointing out Ariel's access through his father, the police apology and arrest, Ariel's apology to Natalia and Grace's thanks.
 3. When that ends the cops march Ariel to their car and drive off (`MuseumArrest`, `Timeline_MuseumArrest`, #183,
-   see `cutscenes.md`). Then the five items leave the inventory (handed over), `OnPaintingReturned` completes
+   see `cutscenes.md`). Once the car has left and Kami is free, **Grace offers the catapult** (`Grace_CatapultOffer`,
+   `MuseumPage._catapultOffer`, phase `Offer`; #223, 2026-10-16: it used to be the end of `Museum_Evidence`, so she
+   helped while Ariel was still free; keys `grace_catapult_offer_01-04` in `DialogueTable`, formerly
+   `museum_evidence_11-14`). When it ends the case closes: the five items leave the inventory (handed over), `OnPaintingReturned` completes
    Quest08 (removed a frame later) and ends the story music, Natalia walks to `Marks/NataliaStayMark` (a few units
    from Grace, #184) and only then becomes talkable with her farewell (`NataliaDialogueTrigger.StayBehind`), the
    Abuela walks to `Marks/AbuelaStayMark` (Diego's) and waits there, and the **catapult** (`Catapult`) unlocks.
@@ -427,6 +433,9 @@ in the prefab) that `FlapManager.UpdateHudVisibility` fades to 0 over `_hudFadeS
 raycasts while `LevelManager.inCutscene` is on and the Flap is `Closed`, so it follows every lock: Timeline
 cutscenes, the Abuela's landing, the catapult boarding and the origami text panel. Opening the Flap shows it at
 once. Alpha and raycasts only: never `SetActive`, never `interactable` (the Selectable cache, "Fugas de foco").
+**The camera selector follows the same rule (#226, 2026-10-16, not played)**: `CamWheelManager.prefab`'s root has its own
+`CanvasGroup` (`_hudGroup`, `_hudFadeSeconds`), faded by `CamWheelManager.Update` on `inCutscene` alone (it has no
+closed/open exception: an open wheel is closed with `CloseFlap()` the moment a cutscene starts).
 `WardrobeDisplay` (`Assets/Scripts/UI/`) holds one row per gear slot (Outfit, Scissors, Feet), authored in
 `FlapManager.prefab` as `Row_*` = a `Label` (TMP + `LocalizeStringEvent`, UITexts `wardrobe_*`) and a
 `Slots` container (GridLayoutGroup, one row). The buttons are `InventorySlot.prefab` copies spawned at

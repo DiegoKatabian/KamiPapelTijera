@@ -13,10 +13,12 @@ using UnityEngine;
 ///    and talking gets her asking for proof, which a normal playthrough never reaches.
 /// 2. When her meeting dialogue ends the café ticket's pedestal appears and auto-prompts the unfold.
 /// 3. Once the ticket's text is read and closed, _evidenceDialogue plays: Natalia's receipt is her
-///    alibi, the hat and glove are Ariel's, the watch dates the robbery, the police apologize, and
-///    Grace offers the catapult to send Kami and the Abuela home (one talk, Diego 2026-09-28).
+///    alibi, the hat and glove are Ariel's, the watch dates the robbery, the police apologize.
 /// 4. When it ends the cops march Ariel to the patrol car and drive off (MuseumArrest, #183).
-/// 5. Then everything is handed over (it leaves the inventory), OnPaintingReturned completes Quest08
+/// 5. Once the car has left, Grace offers the catapult to send Kami and the Abuela home
+///    (_catapultOffer, #223: it used to be the end of the evidence dialogue, so she helped while
+///    Ariel was still free).
+/// 6. Then everything is handed over (it leaves the inventory), OnPaintingReturned completes Quest08
 ///    (and ends the story music), Natalia walks to her spot away from Grace and becomes talkable
 ///    (farewell, #184), the Abuela stops following and the catapult (Catapult), which ends the level,
 ///    unlocks.
@@ -33,6 +35,7 @@ public class MuseumPage : MonoBehaviour
         WaitingForTicket,
         Evidence,
         Arrest,
+        Offer,
         CatapultReady
     }
 
@@ -49,8 +52,11 @@ public class MuseumPage : MonoBehaviour
     [SerializeField, Tooltip("Talking to her again before the ticket is unfolded.")]
     DialogueSO _graceTicketReminder;
 
-    [SerializeField, Tooltip("Plays by itself once the ticket's text is closed: the alibi, Ariel's hat and glove, the watch, the apology, the catapult offer. When it ends the quest closes and the catapult unlocks.")]
+    [SerializeField, Tooltip("Plays by itself once the ticket's text is closed: the alibi, Ariel's hat and glove, the watch, the apology. When it ends the cops take Ariel away.")]
     DialogueSO _evidenceDialogue;
+
+    [SerializeField, Tooltip("Plays by itself once Ariel's patrol car has left: Grace offers the catapult. When it ends the quest closes and the catapult unlocks. Empty = the case closes straight away.")]
+    DialogueSO _catapultOffer;
 
     [SerializeField, Tooltip("Talking to her once the catapult is unlocked.")]
     DialogueSO _graceCatapultReminder;
@@ -310,6 +316,10 @@ public class MuseumPage : MonoBehaviour
         {
             StartArrest();
         }
+        else if (_phase == Phase.Offer && ended == _catapultOffer && _catapultOffer != null)
+        {
+            CloseTheCase();
+        }
     }
 
     // ---------------------------------------------------------------- the ticket and the evidence
@@ -349,19 +359,48 @@ public class MuseumPage : MonoBehaviour
         DialogueManager.Instance.ShowDialogue(_evidenceDialogue);
     }
 
-    //#183: the cops take Ariel away first; the case closes once the patrol car has left
+    //#183: the cops take Ariel away first; Grace makes her offer once the patrol car has left (#223)
     void StartArrest()
     {
         _phase = Phase.Arrest;
 
         if (_arrest == null)
         {
-            Debug.LogWarning("[MuseumPage] no _arrest assigned: the case closes with Ariel still standing there");
+            Debug.LogWarning("[MuseumPage] no _arrest assigned: Grace makes her offer with Ariel still standing there");
+            OfferTheCatapult();
+            return;
+        }
+
+        _arrest.Play(OfferTheCatapult);
+    }
+
+    void OfferTheCatapult()
+    {
+        _phase = Phase.Offer;
+
+        if (_catapultOffer == null)
+        {
+            Debug.LogWarning("[MuseumPage] no _catapultOffer assigned: the case closes without Grace's offer");
             CloseTheCase();
             return;
         }
 
-        _arrest.Play(CloseTheCase);
+        StartCoroutine(OfferWhenFree());
+    }
+
+    //the arrest calls back about half a second before its timeline ends and gives Kami back, so wait for
+    //her to be free; a stuck lock must not strand the page, hence the cap
+    IEnumerator OfferWhenFree()
+    {
+        float waited = 0f;
+        while (waited < 10f && (LevelManager.Instance.inCutscene || DialogueManager.Instance == null || !DialogueManager.Instance.CanShowDialogueNow))
+        {
+            waited += Time.deltaTime;
+            yield return null;
+        }
+
+        Debug.Log("[MuseumPage] Ariel is gone: Grace offers the catapult");
+        DialogueManager.Instance.ShowDialogue(_catapultOffer);
     }
 
     void CloseTheCase()

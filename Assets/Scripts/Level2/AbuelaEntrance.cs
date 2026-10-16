@@ -1,4 +1,5 @@
 using System.Collections;
+using Cinemachine;
 using UnityEngine;
 
 /// <summary>
@@ -40,6 +41,9 @@ public class AbuelaEntrance : MonoBehaviour
 
     [SerializeField, Tooltip("Rattle of the cell fence giving way, played on impact. Leave empty for none.")]
     string _fenceSound = AudioId.FenceRattle;
+
+    [SerializeField, Tooltip("Camera shake on impact (#227). Amplitude Gain and Impulse Duration on this component are the knobs; every pickable camera carries a CinemachineImpulseListener, so it shakes whichever one is live. Optional.")]
+    CinemachineImpulseSource _shake;
 
     [SerializeField, Tooltip("What she says after landing (optional).")]
     DialogueSO _landingLine;
@@ -184,6 +188,15 @@ public class AbuelaEntrance : MonoBehaviour
 
         PlaySound(_crashSound);
         PlaySound(_fenceSound);
+
+        if (_shake != null)
+        {
+            _shake.GenerateImpulse();
+        }
+        else
+        {
+            Debug.LogWarning($"[AbuelaEntrance] {gameObject.name}: _shake is not assigned, the crash has no camera shake");
+        }
     }
 
     static void PlaySound(string id)

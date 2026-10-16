@@ -47,27 +47,12 @@ MonoBehaviour:
       action: 2
       value: Happy
     - actor: Police
-      action: 4
-      value: 
-    - actor: Police
       action: 5
       value: 
   - text: museum_evidence_09
     sprite: {fileID: 21300000, guid: 1f6da964cb28bb142969bda904a9bb5e, type: 3}
     speakerName: ariel_name
   - text: museum_evidence_10
-    sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
-    speakerName: grace_name
-  - text: museum_evidence_11
-    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
-    speakerName: natalia_name
-  - text: museum_evidence_12
-    sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
-    speakerName: grace_name
-  - text: museum_evidence_13
-    sprite: {fileID: 21300000, guid: ea1a7dd0265051e45abee668b2136ef9, type: 3}
-    speakerName: Abuela
-  - text: museum_evidence_14
     sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
     speakerName: grace_name
   currentText: 0

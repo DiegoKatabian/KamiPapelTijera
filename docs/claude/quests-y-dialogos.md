@@ -177,7 +177,7 @@ Two traps found building these, both relevant to any future quest that is closed
 2. **Don't fire `OnQuestDelivered` for a quest with no reward.** `ResourceParticleManager`
    answers it by showing the quest's `rewardRt` sticker, and `rewardRt` defaults to 0 =
    `hongos`: you'd get a mushroom. The NPC-less quests just `RemoveQuest` + play
-   `QuestCompleted02`.
+   `QuestCompleted02` (all but Quest06 at the arrest: no fanfare there since #224, the cell bars mark the moment).
 
 `DialogueManager.ShowDialogue` silently drops a request while another dialogue is open, so
 anything that wants a line to be heard for sure (the clue comments, "the cops left", "let's

@@ -103,7 +103,8 @@ dialogue markers `Grace_Reaction` (0.4s) and `Grace_Meeting` (6.4s). It starts w
 ## Tuning Ariel's arrest (page 5, #183, 2026-10-13, not playtested)
 
 `Timeline_MuseumArrest.playable`, on `Page 5/Museum Sequence/ArielArrest` (`MuseumArrest` + `CutsceneDirector`), played
-by `MuseumPage` when `Museum_Evidence` ends; the case closes (`CloseTheCase`) once it is over. Cameras: `CM MuseumArrest
+by `MuseumPage` when `Museum_Evidence` ends; once it is over `MuseumPage` waits for Kami to be free and plays Grace's
+catapult offer (`Grace_CatapultOffer`, #223), and the case closes (`CloseTheCase`) when that dialogue ends. Cameras: `CM MuseumArrest
 Ariel` (0-3.8s, follows Ariel) then `CM MuseumArrest CarFollow` (3.2-6.5s, follows the car), both CarFollow's recipe
 (Transposer in world space: framing = `Follow Offset` + X tilt). Signals: `StartEscort` (0.3s) -> `BoardCar` (3.0s,
 holds until Ariel is at `Marks/CarDoor`) -> `DriveOff` (3.6s, siren on, `TrafficObstacle.Launch` to
@@ -135,7 +136,8 @@ The characters' animations are NOT on the timelines (no Spine Timeline package):
 line of the `DialogueSO` (`Animation Cues`: actor id + PlayPose / EndPose / SetRestPose / ClearRestPose / overlay), so the
 cutscene's dialogue markers already time them. Arrest: `Arrest_Shout` (cops `Arrest`, Natalia `Shock`),
 `Arrest_Accusation` (Ariel `Point`, his arm aimed at Kami). Meeting: `Grace_Meeting` (Ariel `Point`, cops `Arrest`),
-then `Museum_Evidence` (Ariel `Angry`, Natalia `Happy`, cops lose the lantern). Beats that are not lines are in the
+then `Museum_Evidence` (Ariel `Angry`, Natalia `Happy`, cops lose the walking lantern; the page 5 witnesses never hold the idle
+lantern since #225: their `_idleOverlay` is empty in the scene). Beats that are not lines are in the
 cutscene scripts (`ArrestCutscene.CUE_StartEscort`: shock ends, everyone walks). Detail: `specs/014-level2-npc-animations/spec.md`.
 
 ## The HUD during cutscenes (#188)

@@ -847,8 +847,9 @@ public class ArrestCutscene : MonoBehaviour
 
         if (_goHomeQuest != null && QuestManager.Instance.HasQuest(_goHomeQuest))
         {
+            //no fanfare (#224): it landed right as page 4's intro began and read as a reward for being
+            //arrested; the cell bars slamming (PoliceStationPage.StartSequence) marks the moment
             QuestManager.Instance.RemoveQuest(_goHomeQuest);
-            AudioManager.instance.Play(AudioId.QuestCompleted02);
         }
 
         if (_escapeQuest != null)

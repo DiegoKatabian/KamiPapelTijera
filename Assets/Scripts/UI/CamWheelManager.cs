@@ -10,7 +10,15 @@ public class CamWheelManager : Singleton<CamWheelManager>, IFlap
     [SerializeField] float _posYOpen;
     [SerializeField] float _transitionDuration;
 
+    [Header("Cutscenes (#226)")]
+    [SerializeField, Tooltip("The CanvasGroup on this prefab's root. Faded out while something owns Kami (LevelManager.inCutscene), the same rule as the Flap's HUD strip (#188), and an open wheel is closed first.")]
+    CanvasGroup _hudGroup;
+
+    [SerializeField, Tooltip("Seconds the wheel takes to fade out when Kami is locked, and back in when she is free.")]
+    float _hudFadeSeconds = 0.25f;
+
     bool _isOpen = false;
+    bool _hudHidden;
     float _posXClosed, _posYClosed;
     CamWheelButton[] _buttons;
 
@@ -25,6 +33,38 @@ public class CamWheelManager : Singleton<CamWheelManager>, IFlap
         _buttons = GetComponentsInChildren<CamWheelButton>();
 
         EventManager.Subscribe(Evento.OnCameraChange, FakeSelectButton);
+
+        if (_hudGroup == null)
+        {
+            Debug.LogWarning("[CamWheelManager] _hudGroup is not assigned: the camera selector stays on screen during cutscenes");
+        }
+    }
+
+    //#226: alpha + raycasts only, never SetActive (the wheel's coroutines live here) and never
+    //interactable (Selectable caches it, see "Fugas de foco" in controles-y-gamepad.md)
+    void Update()
+    {
+        if (_hudGroup == null)
+        {
+            return;
+        }
+
+        bool hide = LevelManager.Instance != null && LevelManager.Instance.inCutscene;
+
+        if (hide != _hudHidden)
+        {
+            _hudHidden = hide;
+            _hudGroup.blocksRaycasts = !hide;
+            Debug.Log($"[CamWheelManager] camera selector {(hide ? "hidden: Kami is locked by a cutscene" : "shown")}");
+
+            if (hide && _isOpen)
+            {
+                CloseFlap();
+            }
+        }
+
+        float step = _hudFadeSeconds > 0f ? Time.unscaledDeltaTime / _hudFadeSeconds : 1f;
+        _hudGroup.alpha = Mathf.MoveTowards(_hudGroup.alpha, hide ? 0f : 1f, step);
     }
     public void OpenFlap()
     {
