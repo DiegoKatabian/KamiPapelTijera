@@ -74,7 +74,7 @@ play, so a pooled source never keeps the last sound's rolloff.
 
 **Per-line dialogue sounds**: `DialogueEvent.soundOnLine` (an AudioId, empty = none) is played by
 `DialogueManager.WriteText` when that line starts being written. Set today: `Arrest_Cuffs` line 1
--> `Handcuffs`; `Natalia_AfterTicket` line 4 -> `RadioStatic`, line 5 (the radio announcement) ->
+-> `Handcuffs`; `Natalia_01` line 7 -> `RadioStatic`, line 8 (the radio announcement) ->
 `NewsJingle`. New sounds tied to a sentence are one YAML/Inspector field, not a Timeline signal.
 
 **Gotchas worth knowing:**

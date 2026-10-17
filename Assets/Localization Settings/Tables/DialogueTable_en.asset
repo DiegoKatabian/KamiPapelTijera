@@ -295,30 +295,27 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000001
-    m_Localized: ...and if that Ariel follows me one more time, I'm fining him myself.
+    m_Localized: "[Kami runs into a girl with a worried look on her face.]"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000002
-    m_Localized: Oh! Sorry, didn't see you there. Natalia. Detective. Well... almost.
+    m_Localized: "...between Ariel never leaving me alone, the museum robberies, and this caf\xE9 being so expensive, I don't know what I'm going to do. I'm so fed up-"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000003
-    m_Localized: Things keep disappearing from the museum. A whole series of robberies,
-      and everyone's acting like nothing happened.
+    m_Localized: "Oh, sorry, I didn't see you there. What do you need?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000004
-    m_Localized: And on top of that, Ariel has been on my back all day at work, asking
-      questions. He only just left me alone.
+    m_Localized: "[...]"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000005
-    m_Localized: You've got scissors and a face that doesn't scare easy. Fancy a
-      hot chocolate while I tell you about the case?
+    m_Localized: "So they brought you here from another book? No wonder your ink looks so different!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000006
-    m_Localized: "Come on, the caf\xE9 is right here."
+    m_Localized: "My name is Natalia, I'm a private detective. I was just having a coffee while trying to solve a case."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000007
@@ -507,16 +504,6 @@ MonoBehaviour:
     m_Localized: Radio
     m_Metadata:
       m_Items: []
-  - m_Id: 661900000000170
-    m_Localized: '...breaking news: another incident at the city museum, just minutes
-      ago. The Pelusa, its most treasured painting, has disappeared...'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000171
-    m_Localized: The Pelusa?! Another one, and right now! Come on, Kami, to the museum.
-      Clues don't wait!
-    m_Metadata:
-      m_Items: []
   - m_Id: 661900000000172
     m_Localized: "See the time? 21:47, the exact minute the Pelusa disappeared. We
       were both at the caf\xE9, having a hot chocolate."
@@ -597,6 +584,38 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 661900000000189
     m_Localized: May I help you...? Is that... the Pelusa?!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000190
+    m_Localized: "There's been a string of robberies at the museum, and nobody can find the thief."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000191
+    m_Localized: "...breaking news: another incident at the city museum! An original Pelusa has reportedly been stolen, valued at 20 million dollars..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000192
+    m_Localized: "Another one? Right now?! That artist's works are worth a fortune, we have to go and investigate right away!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000193
+    m_Localized: "Tell you what: help me solve this case, and I'll help you get back to your book."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000194
+    m_Localized: "Keep this ticket, it might come in handy."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000195
+    m_Localized: "Alright, let's go!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000196
+    m_Localized: "Narrator"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000197
+    m_Localized: "???"
     m_Metadata:
       m_Items: []
   references:

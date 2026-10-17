@@ -15,25 +15,50 @@ MonoBehaviour:
   wasRead: 0
   events:
   - text: natalia_01_01
-    sprite: {fileID: 21300000, guid: 006be16fa8b91c74abbeeab1a5c4c680, type: 3}
-    speakerName: natalia_name
+    sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
+    speakerName: narrator_name
   - text: natalia_01_02
+    sprite: {fileID: 21300000, guid: 006be16fa8b91c74abbeeab1a5c4c680, type: 3}
+    speakerName: unknown_name
+  - text: natalia_01_03
     sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
-    speakerName: natalia_name
+    speakerName: unknown_name
     animationCues:
     - actor: Natalia
       action: 3
       value: 
-  - text: natalia_01_03
-    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
-    speakerName: natalia_name
   - text: natalia_01_04
-    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
-    speakerName: natalia_name
+    sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
+    speakerName: 
   - text: natalia_01_05
     sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
-    speakerName: natalia_name
+    speakerName: unknown_name
   - text: natalia_01_06
     sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
+  - text: natalia_01_07
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
+    speakerName: natalia_name
+    soundOnLine: RadioStatic
+  - text: natalia_01_08
+    sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
+    speakerName: radio_name
+    soundOnLine: NewsJingle
+  - text: natalia_01_09
+    sprite: {fileID: 21300000, guid: 12ec3d9f382d88840b26afd24c74d88a, type: 3}
+    speakerName: natalia_name
+  - text: natalia_01_10
+    sprite: {fileID: 21300000, guid: 9793003222ce967428421660c968f02a, type: 3}
+    speakerName: natalia_name
+    animationCues:
+    - actor: Natalia
+      action: 0
+      value: Thinking
+  - text: natalia_01_11
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
+    speakerName: natalia_name
+    animationCues:
+    - actor: Natalia
+      action: 1
+      value: 
   currentText: 0

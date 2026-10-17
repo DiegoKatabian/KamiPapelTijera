@@ -106,8 +106,8 @@ into something broken). Works flipped. Forearm and hand keep Valen's pose.
 | Default, standing still | `Idle` | locomotion |
 | Following, moving | `Walk` / `Run` by speed (run above ~12 u/s: Kami walks under 10, skips 10-20, sprints 28) | locomotion |
 | Plain idle for 8-14s (random), no dialogue/cutscene | `IdleThinking` -> `IdleThinkingLoop` for 4s, then `Idle` | idle break |
-| Page 1, until she talks to Kami | `Idle Enojada` (rest pose) | scene instance's initial rest pose; cleared by `Natalia_01` line 1 ("Oh! Sorry...") |
-| Page 1, after the café fold (she thinks about what to do with Kami) | `IdleThinking` -> `IdleThinkingLoop` from `Natalia_AfterTicket` line 2 ("Someone dragged you here..."), `Idle` when that dialogue closes | line cue + `cuesOnEnd` |
+| Page 1, until she talks to Kami | `Idle Enojada` (rest pose) | scene instance's initial rest pose; cleared by `Natalia_01` line 3 ("Ay perdón...", moved there by the 2026-10-17 rewrite) |
+| Page 1, after the café fold (she thinks about what to do with Kami) | `IdleThinking` -> `IdleThinkingLoop` from `Natalia_01` line 10 ("Te propongo algo..."), `EndPose` on line 11 (2026-10-17 rewrite; it used to be `Natalia_AfterTicket` line 2 + `cuesOnEnd`, now a one-line dialogue) | line cues |
 | Page 2, all clues found | `IdleHappy` rest pose from `Natalia_AllClues` line 0, until the next page turn | line cue; the pose clears on page turn |
 | Page 3, the arrest | `IdleToShock` -> `Shock` on `Arrest_Shout` line 0, held until the escort starts | line cue |
 | Page 3, escort to the car | `Walk` (run forbidden) | `ArrestCutscene.CUE_StartEscort` |

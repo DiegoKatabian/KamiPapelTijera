@@ -101,10 +101,12 @@ design: `specs/006-nivel2-detective-natalia/`. The old spec
 - **Changed 2026-09-28 (Diego): she joins Kami when the café ticket is folded, not when her
   opening ends.** Opening ends -> the café pedestal appears and her dialogue 1 becomes the "fold the
   ticket first" reminder (`Natalia_FoldTicket`). `OnCafeWrapperFolded` -> `_afterTicketDialogue`
-  (`Natalia_AfterTicket`: she realizes Kami was dragged here from another book and promises to find
-  a way to send her back in the morning; then the café's **radio** (`radio_name`) announces another
-  incident at the museum, the Pelusa, and she heads out to look for clues right now) -> when it
-  ends, Quest05 + follow. **Premise (Diego, 2026-09-28)**: Natalia investigates a *series* of
+  (`Natalia_AfterTicket`: one line, "Ahora sí, vamos!") -> when it ends, Quest05 + follow.
+  **Rewritten 2026-10-17 (Diego's script, hand-written text)**: everything before the fold now lives in
+  `Natalia_01` (11 lines: narrator, Natalia still named `???`, Kami's silent `[...]`, her name and the
+  robberies, the café's **radio** (`radio_name`) announcing the Pelusa, her reaction, the deal to get
+  Kami back to her book, "keep this ticket"). Keys `natalia_01_01-11`; speaker keys `narrator_name`
+  and `unknown_name` (`???`) are new in `DialogueTable`; an empty `speakerName` writes no name. **Premise (Diego, 2026-09-28)**: Natalia investigates a *series* of
   museum robberies and does not know about the Pelusa until the radio. Her opening says Ariel was on
   her back all day at work and only just left her alone: he was at the museum. The girls' café
   receipt (21:47, the minute of the robbery) is the alibi of both on page 5; Ariel had privileged
@@ -215,8 +217,8 @@ gone until she falls again. After the escape both are warped outside below the w
 
 Natalia is a Spine character now (`SpineCharacter` on `Natalia.prefab`, actor `Natalia`): `Idle` / `Walk` / `Run` from
 her real speed, flipped toward where she walks and toward Kami when she stops, a thinking idle break, and the story
-beats as poses or moods: angry on page 1 until `Natalia_01` line 1 and in her page 4 cell, thinking during
-`Natalia_AfterTicket`, happy after all clues (until the page turns) and after the police apology on page 5, shocked at
+beats as poses or moods: angry on page 1 until `Natalia_01` line 3 ("Ay perdón...") and in her page 4 cell, thinking on
+`Natalia_01` line 10 (ended on line 11), happy after all clues (until the page turns) and after the police apology on page 5, shocked at
 the arrest. `_sr` is empty on purpose; `NPC.FaceDirection` / damage tint go through the `SpineCharacter`.
 **Following changed**: she aims at a spot 3.5 units beside Kami on the side she is already on (stopping 1 unit from it)
 and matches Kami's pace (`NPC` "Following Kami" header, capped at 18 u/s, a bit under Kami's 20). The Abuela follower
