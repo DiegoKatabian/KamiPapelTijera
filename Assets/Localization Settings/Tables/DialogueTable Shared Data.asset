@@ -271,6 +271,14 @@ MonoBehaviour:
     m_Key: natalia_name
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000196
+    m_Key: narrator_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000197
+    m_Key: unknown_name
+    m_Metadata:
+      m_Items: []
   - m_Id: 661900000000001
     m_Key: natalia_01_01
     m_Metadata:
@@ -295,12 +303,28 @@ MonoBehaviour:
     m_Key: natalia_01_06
     m_Metadata:
       m_Items: []
-  - m_Id: 661900000000007
-    m_Key: natalia_02_01
+  - m_Id: 661900000000190
+    m_Key: natalia_01_07
     m_Metadata:
       m_Items: []
-  - m_Id: 661900000000008
-    m_Key: natalia_02_02
+  - m_Id: 661900000000191
+    m_Key: natalia_01_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000192
+    m_Key: natalia_01_09
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000193
+    m_Key: natalia_01_10
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000194
+    m_Key: natalia_01_11
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000195
+    m_Key: natalia_after_ticket_01
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000100
@@ -533,38 +557,6 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 661900000000189
     m_Key: grace_reaction_01
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000190
-    m_Key: natalia_01_07
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000191
-    m_Key: natalia_01_08
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000192
-    m_Key: natalia_01_09
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000193
-    m_Key: natalia_01_10
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000194
-    m_Key: natalia_01_11
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000195
-    m_Key: natalia_after_ticket_01
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000196
-    m_Key: narrator_name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000197
-    m_Key: unknown_name
     m_Metadata:
       m_Items: []
   m_Metadata:

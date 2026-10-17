@@ -299,6 +299,14 @@ MonoBehaviour:
     m_Localized: Natalia
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000196
+    m_Localized: "Narrador"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000197
+    m_Localized: "???"
+    m_Metadata:
+      m_Items: []
   - m_Id: 661900000000001
     m_Localized: "[Kami encontra uma garota com cara de preocupada.]"
     m_Metadata:
@@ -323,12 +331,28 @@ MonoBehaviour:
     m_Localized: "Meu nome \xE9 Natalia, sou detetive particular. Estava tomando um caf\xE9 enquanto tentava resolver um caso."
     m_Metadata:
       m_Items: []
-  - m_Id: 661900000000007
-    m_Localized: "Fica comigo, as pistas n\xE3o v\xE3o se procurar sozinhas."
+  - m_Id: 661900000000190
+    m_Localized: "Houve uma s\xE9rie de roubos no museu, e ningu\xE9m consegue encontrar o ladr\xE3o."
     m_Metadata:
       m_Items: []
-  - m_Id: 661900000000008
-    m_Localized: "E se voc\xEA vir o Ariel... me avisa antes que ele me veja."
+  - m_Id: 661900000000191
+    m_Localized: "...\xFAltima hora: outro incidente no museu da cidade! Teria sido roubado um Pelusa original, avaliado em 20 milh\xF5es de d\xF3lares..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000192
+    m_Localized: "Mais um? Justo agora?! As obras desse artista s\xE3o muito valiosas, temos que ir investigar j\xE1!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000193
+    m_Localized: "Te proponho uma coisa: me ajude a resolver este caso, e eu te ajudo a voltar para o seu livro."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000194
+    m_Localized: "Guarde este ticket, pode ser \xFAtil para n\xF3s."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000195
+    m_Localized: "Agora sim, vamos!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000100
@@ -505,7 +529,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000169
-    m_Localized: "R\xE1dio"
+    m_Localized: "R\xC1DIO"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000172
@@ -591,38 +615,6 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 661900000000189
     m_Localized: "Posso ajudar...? Isso \xE9... a Pelusa?!"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000190
-    m_Localized: "Houve uma s\xE9rie de roubos no museu, e ningu\xE9m consegue encontrar o ladr\xE3o."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000191
-    m_Localized: "...\xFAltima hora: outro incidente no museu da cidade! Teria sido roubado um Pelusa original, avaliado em 20 milh\xF5es de d\xF3lares..."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000192
-    m_Localized: "Mais um? Justo agora?! As obras desse artista s\xE3o muito valiosas, temos que ir investigar j\xE1!"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000193
-    m_Localized: "Te proponho uma coisa: me ajude a resolver este caso, e eu te ajudo a voltar para o seu livro."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000194
-    m_Localized: "Guarde este ticket, pode ser \xFAtil para n\xF3s."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000195
-    m_Localized: "Agora sim, vamos!"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000196
-    m_Localized: "Narrador"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000197
-    m_Localized: "???"
     m_Metadata:
       m_Items: []
   references:

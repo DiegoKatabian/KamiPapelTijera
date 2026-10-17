@@ -158,7 +158,6 @@ MonoBehaviour:
   _dialogues:
   - {fileID: 11400000, guid: 639a885be8ab492e91263d5e5dab5a79, type: 2}
   - {fileID: 11400000, guid: 65205d9e85fb494b9d0de2046b2d076d, type: 2}
-  - {fileID: 11400000, guid: 3c7c824fdb9e4d1cac66afaa1a59d50d, type: 2}
   _natalia: {fileID: 2951000000000000003}
   _quest: {fileID: 11400000, guid: 04478d8f335943b1adadc7a7ac5fd81d, type: 2}
   _activateAfterOpening: []
