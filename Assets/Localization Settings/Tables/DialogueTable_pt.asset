@@ -312,11 +312,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000002
-    m_Localized: "...entre o Ariel que n\xE3o me deixa em paz, os roubos no museu e este caf\xE9 que estava car\xEDssimo, n\xE3o sei o que vou fazer. J\xE1 estou far-"
+    m_Localized: "...entre o Ariel que n\xE3o me deixa em paz, os roubos no museu e este caf\xE9 que estava car\xEDssimo, n\xE3o sei o que vou fazer. J\xE1 estou far\u2014"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000003
-    m_Localized: "Ai, desculpa, n\xE3o te vi. O que voc\xEA precisa?"
+    m_Localized: "Ai, desculpa, n\xE3o te vi. Do que voc\xEA precisa?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000004
@@ -348,11 +348,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000194
-    m_Localized: "Guarde este ticket, pode ser \xFAtil para n\xF3s."
+    m_Localized: "Ah, mas antes: voc\xEA poderia guardar o recibo da compra? Pode ser \xFAtil pra n\xF3s."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000125
+    m_Localized: "E o recibo? Dobra a\xED, pode ser \xFAtil pra n\xF3s."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000195
-    m_Localized: "Agora sim, vamos!"
+    m_Localized: "Agora sim! Vamos ao museu procurar pistas!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000100

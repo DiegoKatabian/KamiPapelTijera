@@ -101,7 +101,7 @@ design: `specs/006-nivel2-detective-natalia/`. The old spec
 - **Changed 2026-09-28 (Diego): she joins Kami when the café ticket is folded, not when her
   opening ends.** Opening ends -> the café pedestal appears and her dialogue 1 becomes the "fold the
   ticket first" reminder (`Natalia_FoldTicket`). `OnCafeWrapperFolded` -> `_afterTicketDialogue`
-  (`Natalia_AfterTicket`: one line, "Ahora sí, vamos!") -> when it ends, Quest05 + follow.
+  (`Natalia_AfterTicket`: one line, "¡Ahora sí! ¡Vayamos al museo a buscar pistas!") -> when it ends, Quest05 + follow.
   **Rewritten 2026-10-17 (Diego's script, hand-written text)**: everything before the fold now lives in
   `Natalia_01` (11 lines: narrator, Natalia still named `???`, Kami's silent `[...]`, her name and the
   robberies, the café's **radio** (`radio_name`) announcing the Pelusa, her reaction, the deal to get

@@ -307,7 +307,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000002
-    m_Localized: "...between Ariel never leaving me alone, the museum robberies, and this caf\xE9 being so expensive, I don't know what I'm going to do. I'm so fed up-"
+    m_Localized: "...between Ariel never leaving me alone, the museum robberies, and this caf\xE9 being so expensive, I don't know what I'm going to do. I'm so fed up\u2014"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000003
@@ -343,11 +343,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000194
-    m_Localized: "Keep this ticket, it might come in handy."
+    m_Localized: "Oh, but first: could you hang on to the receipt from the purchase? It might come in handy."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000125
+    m_Localized: "What about the receipt? Fold it up, it might come in handy."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000195
-    m_Localized: "Alright, let's go!"
+    m_Localized: "Alright! Let's go to the museum and look for clues!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000100

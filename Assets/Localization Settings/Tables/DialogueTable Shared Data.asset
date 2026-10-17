@@ -323,6 +323,10 @@ MonoBehaviour:
     m_Key: natalia_01_11
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000125
+    m_Key: natalia_fold_ticket_01
+    m_Metadata:
+      m_Items: []
   - m_Id: 661900000000195
     m_Key: natalia_after_ticket_01
     m_Metadata:
