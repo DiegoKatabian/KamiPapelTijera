@@ -1,6 +1,7 @@
 using System.Collections;
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 /// Level 2 page 4: the Abuela drops out of the sky next to Kami's cell, the cell fence is gone
@@ -10,6 +11,12 @@ using UnityEngine;
 /// PoliceStationPage decides WHEN (Schedule) and puts everything back after a capture (ResetEntrance):
 /// this only knows how to perform the entrance. Kami is locked from the start of the countdown until
 /// the Abuela's line ends (#172, 2026-10-13; it used to be only the fall and the line).
+///
+/// #232: the countdown is a rumble, as if a plane flew right over the station: camera shake pulses
+/// from the same impulse source as the crash, growing from _rumbleStartForce to _rumbleEndForce, over a
+/// low rumble loop. With the camera (the first time), _fallShot blends in during the rumble, looking up
+/// at the sky she drops from, follows her down (its Composer looks at her) and stays on her through her
+/// line; then the camera goes back to the player's. A capture restart has the rumble without the shot.
 /// </summary>
 public class AbuelaEntrance : MonoBehaviour
 {
@@ -22,8 +29,8 @@ public class AbuelaEntrance : MonoBehaviour
     [SerializeField, Tooltip("How high above the landing point she starts falling, in world units.")]
     float _dropHeight = 45f;
 
-    [SerializeField, Tooltip("Seconds the fall takes.")]
-    float _fallSeconds = 0.9f;
+    [SerializeField, Tooltip("Seconds the fall takes. Long enough for the fall shot to follow her down (#232).")]
+    float _fallSeconds = 1.4f;
 
     [SerializeField, Tooltip("Everything that disappears on impact: Kami's cell fence.")]
     GameObject[] _hideOnImpact;
@@ -48,6 +55,22 @@ public class AbuelaEntrance : MonoBehaviour
     [SerializeField, Tooltip("What she says after landing (optional).")]
     DialogueSO _landingLine;
 
+    [Header("Rumble and fall camera (#232)")]
+    [SerializeField, Tooltip("Shake of the first rumble pulse, as a fraction of the crash (1 = the crash's shake).")]
+    float _rumbleStartForce = 0.05f;
+
+    [SerializeField, Tooltip("Shake of the last rumble pulse, just before she falls. Pulses overlap, so the felt shake is a bit stronger than this.")]
+    float _rumbleEndForce = 0.35f;
+
+    [SerializeField, Tooltip("Seconds between rumble pulses.")]
+    float _rumblePulseSeconds = 0.25f;
+
+    [SerializeField, Tooltip("Low rumble loop under the countdown, stopped by the crash. Leave empty for none.")]
+    string _rumbleSound = AudioId.PlaneRumbleLoop;
+
+    [SerializeField, Tooltip("The shot that looks up at her and follows her down (its Composer looks at the Abuela, set in code). Drag it to reframe. Empty = the fall plays in the player's camera.")]
+    CinemachineVirtualCamera _fallShot;
+
     Coroutine _running;
     bool _lockedKami;
 
@@ -62,15 +85,19 @@ public class AbuelaEntrance : MonoBehaviour
         }
     }
 
-    /// <summary>Starts the countdown to her fall, cancelling any countdown already running.</summary>
-    public void Schedule(float delaySeconds)
+    /// <summary>
+    /// Starts the countdown (the rumble) to her fall, cancelling any countdown already running.
+    /// <paramref name="withCamera"/>: the fall shot follows her down (the first time; not after a capture).
+    /// </summary>
+    public void Schedule(float delaySeconds, bool withCamera)
     {
         if (_running != null)
         {
             StopCoroutine(_running);
+            StopRumble();
         }
-        _running = StartCoroutine(EntranceRoutine(delaySeconds));
-        Debug.Log($"[AbuelaEntrance] the Abuela falls in {delaySeconds}s");
+        _running = StartCoroutine(EntranceRoutine(delaySeconds, withCamera));
+        Debug.Log($"[AbuelaEntrance] the Abuela falls in {delaySeconds}s (fall camera: {withCamera})");
     }
 
     /// <summary>Back to before she came: she is gone, the fence is closed again.</summary>
@@ -82,8 +109,10 @@ public class AbuelaEntrance : MonoBehaviour
             _running = null;
         }
 
-        //a reset in the middle of the fall must not leave Kami locked
+        //a reset in the middle of the fall must not leave Kami locked, the rumble going or the shot live
         SetKamiLocked(false);
+        StopRumble();
+        CutsceneCamera.Hide(_fallShot);
 
         HasLanded = false;
 
@@ -96,7 +125,7 @@ public class AbuelaEntrance : MonoBehaviour
         SetImpactObjectsActive(true);
     }
 
-    IEnumerator EntranceRoutine(float delaySeconds)
+    IEnumerator EntranceRoutine(float delaySeconds, bool withCamera)
     {
         if (_abuela == null || _landingPoint == null)
         {
@@ -110,25 +139,43 @@ public class AbuelaEntrance : MonoBehaviour
         yield return WaitForCalmMoment();
         SetKamiLocked(true);
 
-        yield return new WaitForSeconds(delaySeconds);
+        //the landing point is on the floor, but her transform sits at the sprite's pivot (the waist):
+        //end the fall with her FEET on the floor, where the agent will put her anyway. Read from the
+        //component: she is still inactive, so NPC.Awake (which fills navAgent) has not run the first time
+        NavMeshAgent agent = _abuela.GetComponent<NavMeshAgent>();
+        float pivotAboveFeet = agent != null ? agent.baseOffset * _abuela.transform.lossyScale.y : 0f;
+        Vector3 landing = _landingPoint.position + Vector3.up * pivotAboveFeet;
+        Vector3 start = landing + Vector3.up * _dropHeight;
+
+        //she waits up there, still hidden, so the shot already looks at the sky she will drop from. Her
+        //agent goes off first: enabling one this far from the NavMesh fails with an engine warning
+        if (agent != null)
+        {
+            agent.enabled = false;
+        }
+        _abuela.transform.position = start;
+
+        bool useShot = withCamera && _fallShot != null;
+        if (useShot)
+        {
+            _fallShot.LookAt = _abuela.transform;
+        }
+
+        yield return Rumble(delaySeconds, useShot);
 
         //something may have opened during the wait (a dialogue): never drop her in the middle of it
         yield return WaitForCalmMoment();
         SetKamiLocked(true); //again: a cutscene that ended meanwhile cleared the shared flag
+        if (useShot)
+        {
+            CutsceneCamera.Show(_fallShot); //no-op if the rumble already did; covers a zero-second countdown
+        }
         Debug.Log("[AbuelaEntrance] the Abuela falls");
 
         _abuela.gameObject.SetActive(true);
+        _abuela.transform.position = start;
         PlaySound(_fallSound);
-        if (_abuela.navAgent != null)
-        {
-            _abuela.navAgent.enabled = false; //an enabled agent snaps her back to the NavMesh every frame
-        }
 
-        //the landing point is on the floor, but her transform sits at the sprite's pivot (the waist):
-        //end the fall with her FEET on the floor, where the agent will put her anyway
-        float pivotAboveFeet = _abuela.navAgent != null ? _abuela.navAgent.baseOffset * _abuela.transform.lossyScale.y : 0f;
-        Vector3 landing = _landingPoint.position + Vector3.up * pivotAboveFeet;
-        Vector3 start = landing + Vector3.up * _dropHeight;
         float elapsed = 0f;
         while (elapsed < _fallSeconds)
         {
@@ -163,6 +210,11 @@ public class AbuelaEntrance : MonoBehaviour
             }
         }
 
+        //the camera starts blending back as Kami gets control: waiting for the blend would only feel stuck
+        if (useShot)
+        {
+            CutsceneCamera.Hide(_fallShot);
+        }
         SetKamiLocked(false);
 
         //a prefab cannot hold a scene reference to Kami, and the Abuela's base prefab comes from Level 1
@@ -175,9 +227,53 @@ public class AbuelaEntrance : MonoBehaviour
         _running = null;
     }
 
+    //the countdown: shake pulses that grow toward the crash, over the rumble loop. The fall shot is
+    //raised one blend before the end, so it has arrived (looking up) when she appears
+    IEnumerator Rumble(float seconds, bool useShot)
+    {
+        PlaySound(_rumbleSound);
+
+        if (_shake == null)
+        {
+            Debug.LogWarning($"[AbuelaEntrance] {gameObject.name}: _shake is not assigned, the rumble has no camera shake");
+        }
+
+        float showShotAt = useShot ? Mathf.Max(0f, seconds - CutsceneCamera.BlendSeconds) : float.MaxValue;
+        bool shotShown = false;
+        float nextPulse = 0f;
+        float elapsed = 0f;
+        while (elapsed < seconds)
+        {
+            if (!shotShown && elapsed >= showShotAt)
+            {
+                CutsceneCamera.Show(_fallShot);
+                shotShown = true;
+            }
+
+            if (_shake != null && elapsed >= nextPulse)
+            {
+                float t = seconds > 0f ? elapsed / seconds : 1f;
+                _shake.GenerateImpulseWithForce(Mathf.Lerp(_rumbleStartForce, _rumbleEndForce, t * t));
+                nextPulse += Mathf.Max(0.05f, _rumblePulseSeconds);
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    void StopRumble()
+    {
+        if (!string.IsNullOrEmpty(_rumbleSound) && AudioManager.instance != null)
+        {
+            AudioManager.instance.StopById(_rumbleSound);
+        }
+    }
+
     void Impact()
     {
         Debug.Log("[AbuelaEntrance] impact: the cell fence is open");
+        StopRumble();
         SetImpactObjectsActive(false);
 
         if (_impactParticles != null)

@@ -113,7 +113,14 @@ drive off after the second clue so the police tape can be cut, and the quest han
   (`[Kami finds a clue ...]`) and then Natalia's two lines; `Natalia_CopsLeft` and `Natalia_AllClues` are one line each. The guards can be
   talked to: `CrimeSceneGate`'s `GuardTalk` child (a `TriggerDialogue` trigger box, listed in `_cops` so it goes away with them) plays
   `CrimeScene_Guard` (speaker `police_name`: "Policía Federal" in ES, "Police" in EN, "Polícia" in PT). Tune its box with the gizmo. The robbery
-  happened at 20:30 (watch, café ticket, page 5 evidence). The cops' leave-by-cutscene is #231.
+  happened at 20:30 (watch, café ticket, page 5 evidence).
+- **The cops leave in a short cutscene (#231, 2026-10-17, compile-checked only)**: after the 2nd clue's comment is read (`FindCluesTracker`
+  queues the exit as a step, so it can never overlap a line) `CrimeSceneGate` locks Kami, starts the siren, raises its `CM CopsLeave` shot
+  (follows the patrol car, CarFollow's recipe), walks both cops on the NavMesh to `CarDoor` (each vanishes there with a door slam), launches
+  the car, waits until it has left, blends back to the player's camera and frees Kami; only then does the tracker play `Natalia_CopsLeft`
+  (it waits while `inCutscene` is on). Tuning: the `Leaving cutscene` header on `CrimeSceneGate` (walk speed, arrive distance, how much of
+  the camera blend plays before they walk) and dragging `CarDoor` / `CM CopsLeave`'s Follow Offset. A page switched off mid-way
+  finishes the old instant way on return.
 - **Every trash can in Level 2 is now `Assets/Prefabs/Interactables/TrashCan.prefab`**
   (15 of them, pages 1-5; the scene instances used to be the bare `Kami_TrashCan.fbx`).
   Opening one runs the stock `Solapa`/`TriggerSolapa` flap flow (Kami's `PullSolapas`
@@ -204,12 +211,17 @@ sequence and is the only thing that restarts it:
    and the Pelusa.
 2. The intro cutscene plays (first time only), then **Kami is free for `_freeExploreSeconds` (5, Diego 2026-10-17: "to achieve
    maximum fun she should explore for a short while")**, the narrator's two lines (`Narrator_JailIntro`, played by `PoliceStationPage._narratorLine`,
-   first time only) say there is no way out and the ground shakes, and `_abuelaDelaySeconds` (3, the rumble; its camera shake and the camera
-   following her fall are #232) after it closes `AbuelaEntrance`
+   first time only) say there is no way out and the ground shakes, and `_abuelaDelaySeconds` (3, the rumble: growing camera-shake pulses and
+   a low `PlaneRumbleLoop`, #232) after it closes `AbuelaEntrance`
    drops the Abuela (`Abuela_Follower` prefab variant) next to the fence: Kami is locked (`inCutscene`)
    from the start of that countdown until her two lines (`Abuela_JailLanding`) end (#172, 2026-10-13, which also
    locked the wait before it; since 2026-10-17 the free seconds above come first and only the countdown is locked); the fence disappears
    (reveal, not destruction), she follows Kami. After a capture the same lock covers the shorter countdown.
+   **The fall shot (#232, 2026-10-17, compile-checked only)**: the first time, `PoliceStationPage/IntroCameras/CM Abuela Fall` (a static vcam
+   with a Composer that looks at the Abuela, and an impulse listener so the crash shakes it) blends in during the rumble, already looking up
+   at the sky she drops from (she waits there, still hidden), follows her 1.4 s fall down (`_fallSeconds`, was 0.9) and stays on her through
+   her line; the camera goes back to the player's when Kami is freed. A capture restart has the rumble in the player's own camera. Rumble
+   tuning: the `Rumble and fall camera` header on `AbuelaEntrance`; reframe by dragging the vcam.
 3. `ConfiscatedGearPickup` (where Diego had placed the TijeraPickup, just east of the cell) gives
    everything back. Kami cuts the `CandadoCortable` on Natalia's door (moved there, 1 paper as
    before) -> the door opens and Natalia follows. Freeing her also opens the pedestal:
@@ -278,7 +290,10 @@ always reaches page 5 with it.
    see `cutscenes.md`). Once the car has left and Kami is free, **Grace offers the catapult** (`Grace_CatapultOffer`,
    `MuseumPage._catapultOffer`, phase `Offer`; #223, 2026-10-16: it used to be the end of `Museum_Evidence`, so she
    helped while Ariel was still free; keys `grace_catapult_offer_01-07` in `DialogueTable`, formerly
-   `museum_evidence_11-14`; 2026-10-17 it starts with Grace's thanks and Natalia's "Kami tiene que volver a su libro", the camera beat to the catapult is #233). When it ends the case closes: the five items leave the inventory (handed over), `OnPaintingReturned` completes
+   `museum_evidence_11-14`; 2026-10-17 it starts with Grace's thanks and Natalia's "Kami tiene que volver a su libro"). **The catapult beat (#233, 2026-10-17,
+   compile-checked only)**: the offer is two dialogues. `Grace_CatapultOffer` ends on her "Mmm..."; then `MuseumPage.ShowTheCatapult` keeps Kami
+   locked, raises the catapult's `CM Catapult Hold` (`Catapult._showcaseShot`), unlocks the catapult so its arm comes down on camera, holds
+   `_catapultShotHoldSeconds` (1.5), blends back and plays `Grace_CatapultOfferEnd` ("Si no les da miedo..." to the end). When that ends the case closes: the five items leave the inventory (handed over), `OnPaintingReturned` completes
    Quest08 (removed a frame later) and ends the story music, Natalia walks to `Marks/NataliaStayMark` (a few units
    from Grace, #184) and only then becomes talkable with her farewell (`NataliaDialogueTrigger.StayBehind`), the
    Abuela walks to `Marks/AbuelaStayMark` (Diego's) and waits there, and the **catapult** (`Catapult`) unlocks.

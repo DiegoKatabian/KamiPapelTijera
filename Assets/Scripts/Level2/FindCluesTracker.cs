@@ -7,8 +7,9 @@ using UnityEngine;
 /// everything that depends on HOW MANY have been found. Nothing here cares about the ORDER.
 ///
 /// - Every new clue queues Natalia's comment about it.
-/// - At _cluesToCallOffCops clues, fires Evento.OnCrimeSceneUnguarded (the cops at the
-///   museum's broken fence drive off, CrimeSceneGate listens) and queues her "they left" line.
+/// - At _cluesToCallOffCops clues, queues the cops' exit right after that clue's comment: once the
+///   comment is read it fires Evento.OnCrimeSceneUnguarded (CrimeSceneGate plays the cops leaving as
+///   a cutscene, #231), and her "they left" line waits until that cutscene is over.
 /// - At all clues, fires Evento.OnAllCluesFound EXACTLY ONCE (latched), which completes
 ///   Quest05_FindClues through QuestManager.
 /// - When that quest completes, queues her "let's head home" line, closes Quest05 and starts
@@ -17,9 +18,18 @@ using UnityEngine;
 /// Why the dialogue queue: DialogueManager.ShowDialogue silently drops a request while another
 /// dialogue is open, and the third clue alone produces two lines back to back (the clue comment
 /// and the "head home" line). Natalia's own chatter trigger can also be open when a clue lands.
+/// The queue also holds the cops' exit as a step, so the order is always comment -> cutscene ->
+/// "they left", and it waits while any cutscene holds Kami.
 /// </summary>
 public class FindCluesTracker : MonoBehaviour
 {
+    //a dialogue to show, or (callOffCops) the moment the cops leave
+    struct Step
+    {
+        public DialogueSO dialogue;
+        public bool callOffCops;
+    }
+
     [System.Serializable]
     struct Clue
     {
@@ -56,7 +66,7 @@ public class FindCluesTracker : MonoBehaviour
     int _pageNumber = 2;
 
     readonly HashSet<ResourceType> _found = new HashSet<ResourceType>();
-    readonly Queue<DialogueSO> _pendingComments = new Queue<DialogueSO>();
+    readonly Queue<Step> _pending = new Queue<Step>();
     bool _copsCalledOff;
     bool _allCluesFired;
     bool _findCluesClosed;
@@ -128,8 +138,8 @@ public class FindCluesTracker : MonoBehaviour
         if (!_copsCalledOff && _found.Count >= _cluesToCallOffCops)
         {
             _copsCalledOff = true;
-            Debug.Log("[FindCluesTracker] enough clues found, the cops drive off");
-            EventManager.Trigger(Evento.OnCrimeSceneUnguarded);
+            Debug.Log("[FindCluesTracker] enough clues found, the cops leave after this clue's comment");
+            _pending.Enqueue(new Step { callOffCops = true });
             QueueComment(_copsLeftComment);
         }
 
@@ -205,18 +215,19 @@ public class FindCluesTracker : MonoBehaviour
     {
         if (comment != null)
         {
-            _pendingComments.Enqueue(comment);
+            _pending.Enqueue(new Step { dialogue = comment });
         }
     }
 
     void Update()
     {
-        if (_pendingComments.Count == 0 || DialogueManager.Instance == null || LevelManager.Instance == null)
+        if (_pending.Count == 0 || DialogueManager.Instance == null || LevelManager.Instance == null)
         {
             return;
         }
 
-        if (DialogueManager.Instance.isShowing || LevelManager.Instance.inDialogue)
+        //inCutscene too: the cops' exit holds Kami, and "they left" must wait until she is free
+        if (DialogueManager.Instance.isShowing || LevelManager.Instance.inDialogue || LevelManager.Instance.inCutscene)
         {
             return;
         }
@@ -226,7 +237,16 @@ public class FindCluesTracker : MonoBehaviour
             return;
         }
 
-        DialogueManager.Instance.ShowDialogue(_pendingComments.Dequeue());
+        Step step = _pending.Dequeue();
+        if (step.callOffCops)
+        {
+            //CrimeSceneGate takes the cutscene lock inside this call, so the next step waits for it
+            Debug.Log("[FindCluesTracker] the clue comment is read: the cops leave");
+            EventManager.Trigger(Evento.OnCrimeSceneUnguarded);
+            return;
+        }
+
+        DialogueManager.Instance.ShowDialogue(step.dialogue);
     }
 
     void OnDestroy()

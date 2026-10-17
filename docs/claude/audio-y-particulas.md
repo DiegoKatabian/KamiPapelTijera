@@ -41,7 +41,10 @@ reusing an existing clip (clip list = the only thing to swap in 6.G, nothing in 
 bus unless noted; all 2D. Ids and where they fire:
 - Police (page 3 arrest, `ArrestCutscene` CUE_ methods): `CarBrake`, `PoliceHorn`, `RunningFootsteps`,
   `PoliceSirenLoop` (loop, starts at `CUE_CopsBehindGirls`, stops at `CUE_TurnPage`/WrapUp/OnDestroy),
-  `CarEngine` + `PoliceHorn` at `CUE_DriveOff` and when `CrimeSceneGate`'s car leaves (page 2).
+  `CarEngine` + `PoliceHorn` at `CUE_DriveOff` and when `CrimeSceneGate`'s car leaves (page 2; since #231 page 2's exit also loops
+  `PoliceSirenLoop` for the whole cutscene and plays `CarDoor` as each cop gets in).
+- `PlaneRumbleLoop` (#232, 2026-10-17): placeholder (`CarEngine`'s clip at pitch 0.22, loop) under page 4's countdown before the Abuela
+  falls (`AbuelaEntrance._rumbleSound`), stopped by her crash. Swap the clip in the bank row.
 - Page 4: `CellBarsSlam` (`PoliceStationPage.StartSequence`, also after a capture), `PadlockClank`
   (`CandadoCortable.ApplyCut`, so Level 1's chest padlocks clank too), `FenceRattle` (Natalia's door
   in `PoliceStationPage`, Kami's fence in `AbuelaEntrance.Impact`), `AbuelaFall` + `AbuelaCrash`

@@ -1,4 +1,5 @@
 using System.Collections;
+using Cinemachine;
 using UnityEngine;
 
 /// <summary>
@@ -86,6 +87,9 @@ public class Catapult : TriggerScript
     [SerializeField, Tooltip("The scene loaded at the LoadEnding signal.")]
     GameScene _nextScene = GameScene.Level2EndCutscene;
 
+    [SerializeField, Tooltip("The shot that frames the catapult (CM Catapult Hold, the launch timeline's camera). MuseumPage borrows it to show the catapult while Grace offers it (#233).")]
+    CinemachineVirtualCamera _showcaseShot;
+
     CutsceneDirector _cutscene;
     Collider _ropeTrigger;
     NPC _abuela;
@@ -95,6 +99,8 @@ public class Catapult : TriggerScript
     bool _launched;
 
     public override bool EsInteractuable => _unlocked && _armed && !_boarded;
+
+    public CinemachineVirtualCamera ShowcaseShot => _showcaseShot;
 
     void Awake()
     {

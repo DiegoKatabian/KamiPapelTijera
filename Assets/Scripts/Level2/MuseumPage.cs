@@ -17,7 +17,8 @@ using UnityEngine;
 /// 4. When it ends the cops march Ariel to the patrol car and drive off (MuseumArrest, #183).
 /// 5. Once the car has left, Grace offers the catapult to send Kami and the Abuela home
 ///    (_catapultOffer, #223: it used to be the end of the evidence dialogue, so she helped while
-///    Ariel was still free).
+///    Ariel was still free). After her "Mmm..." the camera goes to the catapult, which arms on
+///    camera, and comes back (#233), then she finishes the offer (_catapultOfferEnd).
 /// 6. Then everything is handed over (it leaves the inventory), OnPaintingReturned completes Quest08
 ///    (and ends the story music), Natalia walks to her spot away from Grace and becomes talkable
 ///    (farewell, #184), the Abuela stops following and the catapult (Catapult), which ends the level,
@@ -55,8 +56,14 @@ public class MuseumPage : MonoBehaviour
     [SerializeField, Tooltip("Plays by itself once the ticket's text is closed: the alibi, Ariel's hat and glove, the watch, the apology. When it ends the cops take Ariel away.")]
     DialogueSO _evidenceDialogue;
 
-    [SerializeField, Tooltip("Plays by itself once Ariel's patrol car has left: Grace offers the catapult. When it ends the quest closes and the catapult unlocks. Empty = the case closes straight away.")]
+    [SerializeField, Tooltip("Plays by itself once Ariel's patrol car has left: Grace's offer up to her \"Mmm...\". When it ends the camera shows the catapult, then _catapultOfferEnd plays. Empty = the case closes straight away.")]
     DialogueSO _catapultOffer;
+
+    [SerializeField, Tooltip("The rest of the offer, after the catapult shot (#233). When it ends the quest closes. Empty = the case closes right after the shot.")]
+    DialogueSO _catapultOfferEnd;
+
+    [SerializeField, Tooltip("Seconds the camera holds on the catapult once it has arrived, before going back (the arm comes down meanwhile).")]
+    float _catapultShotHoldSeconds = 1.5f;
 
     [SerializeField, Tooltip("Talking to her once the catapult is unlocked.")]
     DialogueSO _graceCatapultReminder;
@@ -318,6 +325,10 @@ public class MuseumPage : MonoBehaviour
         }
         else if (_phase == Phase.Offer && ended == _catapultOffer && _catapultOffer != null)
         {
+            StartCoroutine(ShowTheCatapult());
+        }
+        else if (_phase == Phase.Offer && ended == _catapultOfferEnd && _catapultOfferEnd != null)
+        {
             CloseTheCase();
         }
     }
@@ -401,6 +412,56 @@ public class MuseumPage : MonoBehaviour
 
         Debug.Log("[MuseumPage] Ariel is gone: Grace offers the catapult");
         DialogueManager.Instance.ShowDialogue(_catapultOffer);
+    }
+
+    //#233: after Grace's "Mmm..." the camera goes to the catapult, which arms on camera, and comes
+    //back before she finishes the offer. Kami stays locked between the two dialogues
+    IEnumerator ShowTheCatapult()
+    {
+        CinemachineVirtualCamera shot = _catapult != null ? _catapult.ShowcaseShot : null;
+        if (shot == null)
+        {
+            Debug.LogWarning("[MuseumPage] no catapult or its _showcaseShot is not assigned: Grace goes on without showing it");
+        }
+
+        bool locked = LevelManager.Instance != null && !LevelManager.Instance.inCutscene;
+        if (locked)
+        {
+            LevelManager.Instance.inCutscene = true;
+        }
+
+        Debug.Log("[MuseumPage] Grace thinks: the camera shows the catapult");
+        CutsceneCamera.Show(shot);
+        if (_catapult != null)
+        {
+            _catapult.Unlock(Abuela); //it arms while the camera looks at it; CloseTheCase's call is then a no-op
+        }
+
+        if (shot != null)
+        {
+            yield return new WaitForSeconds(CutsceneCamera.BlendSeconds + _catapultShotHoldSeconds);
+            CutsceneCamera.Hide(shot);
+            yield return new WaitForSeconds(CutsceneCamera.BlendSeconds);
+        }
+
+        while (DialogueManager.Instance == null || !DialogueManager.Instance.CanShowDialogueNow)
+        {
+            yield return null;
+        }
+
+        //released in the same frame the dialogue takes over, so Kami is never free in between
+        if (locked)
+        {
+            LevelManager.Instance.inCutscene = false;
+        }
+
+        if (_catapultOfferEnd == null)
+        {
+            CloseTheCase();
+            yield break;
+        }
+
+        DialogueManager.Instance.ShowDialogue(_catapultOfferEnd);
     }
 
     void CloseTheCase()

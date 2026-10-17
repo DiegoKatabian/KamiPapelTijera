@@ -93,6 +93,19 @@ patrolling cop) and NataliaCell again. Two dialogue markers: `Jail_CopTaunt` (9.
 `_freeExploreSeconds` (5) of free play, then the Abuela's countdown rumbles, #232). No signals: the cell-bars sound comes from
 `PoliceStationPage.StartSequence`. Once the timeline is over and the Abuela has landed and spoken (Kami is free again) `PoliceStationPage` switches the live camera to `BookCenter` (the whole station in view; `_cameraAfterIntro`, the player cycles or picks as usual afterwards; first time only, a capture restart leaves the camera alone, 2026-10-16, not played). The free seconds start when the timeline ends.
 
+## Code-driven shots: `CutsceneCamera` (#231, #232, #233, 2026-10-17)
+
+Short camera beats that are not on a Timeline use `CutsceneCamera.Show(vcam)` / `Hide(vcam)` (`Assets/Scripts/Cutscenes/`): a vcam that sits
+in the scene at priority 0 is lifted to 50 (above `CameraManager`'s 10) and dropped back, and the brain's default blend (1.5 s) carries it both
+ways, so the camera always returns to the player's mode. `CutsceneCamera.BlendSeconds` lets a beat wait for the camera to arrive. A Timeline's
+Cinemachine track overrides priorities, so the two never fight (page 5's `CM Catapult Hold` serves both). Framing is the vcam, not code. Used by:
+
+- **Page 2, the cops leave** (`CrimeSceneGate`, shot `CM CopsLeave` inside `CrimeSceneGate.prefab`, Transposer following the car).
+- **Page 4, the Abuela falls** (`AbuelaEntrance._fallShot`, `PoliceStation/IntroCameras/CM Abuela Fall`, Composer looking at her; first time only).
+- **Page 5, Grace shows the catapult** (`MuseumPage.ShowTheCatapult`, the catapult's own `CM Catapult Hold`).
+
+Detail of each beat: `nivel2-y-ui.md`. Kami is locked (`inCutscene`) by the script that owns each beat, never by the helper.
+
 ## Tuning the page 5 meeting (Phase 6.D, reworked by #182 on 2026-10-13)
 
 `Timeline_MuseumArrival.playable`, on `Page 5/Museum Sequence`. No car arrives any more (#182): Ariel, the two cops and

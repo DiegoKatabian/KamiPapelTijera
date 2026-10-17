@@ -285,7 +285,8 @@ public class PoliceStationPage : MonoBehaviour
             }
             else
             {
-                _abuelaEntrance.Schedule(firstTime ? _abuelaDelaySeconds : _abuelaDelayAfterCaptureSeconds);
+                //after a capture she falls in the player's own camera: a retry should stay quick (#232)
+                _abuelaEntrance.Schedule(firstTime ? _abuelaDelaySeconds : _abuelaDelayAfterCaptureSeconds, withCamera: firstTime);
             }
         }
 
@@ -343,7 +344,7 @@ public class PoliceStationPage : MonoBehaviour
             Debug.LogWarning("[PoliceStationPage] no _narratorLine: the Abuela's countdown starts right after the free seconds");
         }
 
-        _abuelaEntrance.Schedule(_abuelaDelaySeconds);
+        _abuelaEntrance.Schedule(_abuelaDelaySeconds, withCamera: true);
 
         //Kami is locked until the Abuela has landed and spoken (HasLanded is set the moment she gets control
         //back): that is when the player gets the wide shot of the whole station
