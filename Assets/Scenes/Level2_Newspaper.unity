@@ -1693,27 +1693,27 @@ PrefabInstance:
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -39.65
+      value: -39.86
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -159.356
+      value: -161.12001
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 169.1
+      value: 181.85
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9881183
+      value: 0.9914449
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022661, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.15369537
+      value: 0.13052616
       objectReference: {fileID: 0}
     - target: {fileID: 3096468786035022668, guid: 67bfd1aca63a765429641ea4d5c5a375,
         type: 3}
@@ -67606,7 +67606,7 @@ MonoBehaviour:
   - {fileID: 1552561451}
   - {fileID: 965064140}
   - {fileID: 620715592}
-  startingPage: 2
+  startingPage: 1
   activePageIndex: 0
   esferaPrev: {fileID: 1768877052}
   esferaNext: {fileID: 344292683}
@@ -106531,7 +106531,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1267486465
 Transform:
   m_ObjectHideFlags: 0
@@ -136499,7 +136499,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1657797273
 Transform:
   m_ObjectHideFlags: 0
@@ -200399,7 +200399,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _grace: {fileID: 696038266435947712}
   _graceMeeting: {fileID: 11400000, guid: 42683fb43b924ef9b52010040d2f5110, type: 2}
-  _graceNoProof: {fileID: 11400000, guid: 309419e6a1b04390a52ac1eb724bab71, type: 2}
+  _graceNoProof: {fileID: 0}
   _graceTicketReminder: {fileID: 11400000, guid: 476495ba2db64981a44ba6b3d0c833e0,
     type: 2}
   _evidenceDialogue: {fileID: 11400000, guid: 2664bf18b27147a4bc0ea732d40d0ef6, type: 2}
@@ -200460,6 +200460,8 @@ MonoBehaviour:
   _nataliaInCellRestPose: Angry
   _abuelaEntrance: {fileID: 5828617772423878024}
   _introCutscene: {fileID: 5406560976700229359}
+  _freeExploreSeconds: 5
+  _narratorLine: {fileID: 11400000, guid: 55a7ea1714ab4d188f3968c4c41b986f, type: 2}
   _cameraAfterIntro: 4
   _introDelaySeconds: 0.5
   _abuelaDelaySeconds: 3
@@ -200478,6 +200480,7 @@ MonoBehaviour:
   _planeRide: {fileID: 3175561262066488454}
   _escapeQuest: {fileID: 11400000, guid: 1da6c264967248478b6228cd60a54c5c, type: 2}
   _museumQuest: {fileID: 11400000, guid: f23e3b50543a43e3bad61d3748a1696e, type: 2}
+  _escapedLine: {fileID: 11400000, guid: dea741e729d24d40a21051b354b077fd, type: 2}
   _pageNumber: 4
 --- !u!198 &7433176980147634210 stripped
 ParticleSystem:

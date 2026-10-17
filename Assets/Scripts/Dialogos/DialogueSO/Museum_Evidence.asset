@@ -18,28 +18,25 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
   - text: museum_evidence_02
-    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
-    speakerName: natalia_name
-  - text: museum_evidence_03
     sprite: {fileID: 21300000, guid: 3c2006527920acd4a9f3868883a309d3, type: 3}
     speakerName: ariel_name
-  - text: museum_evidence_04
-    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
+  - text: museum_evidence_03
+    sprite: {fileID: 21300000, guid: 006be16fa8b91c74abbeeab1a5c4c680, type: 3}
     speakerName: natalia_name
-  - text: museum_evidence_05
+  - text: museum_evidence_04
     sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
     animationCues:
     - actor: Ariel
       action: 0
       value: Angry
+  - text: museum_evidence_05
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
+    speakerName: natalia_name
   - text: museum_evidence_06
     sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
     speakerName: grace_name
   - text: museum_evidence_07
-    sprite: {fileID: 21300000, guid: 006be16fa8b91c74abbeeab1a5c4c680, type: 3}
-    speakerName: natalia_name
-  - text: museum_evidence_08
     sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
     speakerName: police_name
     animationCues:
@@ -49,10 +46,37 @@ MonoBehaviour:
     - actor: Police
       action: 5
       value: 
+  - text: museum_evidence_08
+    sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
+    speakerName: police_name
   - text: museum_evidence_09
     sprite: {fileID: 21300000, guid: 1f6da964cb28bb142969bda904a9bb5e, type: 3}
     speakerName: ariel_name
   - text: museum_evidence_10
+    sprite: {fileID: 21300000, guid: 006be16fa8b91c74abbeeab1a5c4c680, type: 3}
+    speakerName: natalia_name
+  - text: museum_evidence_11
+    sprite: {fileID: 21300000, guid: 3c2006527920acd4a9f3868883a309d3, type: 3}
+    speakerName: ariel_name
+  - text: museum_evidence_12
+    sprite: {fileID: 21300000, guid: 12ec3d9f382d88840b26afd24c74d88a, type: 3}
+    speakerName: natalia_name
+  - text: museum_evidence_13
     sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
     speakerName: grace_name
+  - text: museum_evidence_14
+    sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
+    speakerName: police_name
+  - text: museum_evidence_15
+    sprite: {fileID: 21300000, guid: 75fdca8f3dd19d94ab9575b14d156944, type: 3}
+    speakerName: Abuela
+  - text: museum_evidence_16
+    sprite: {fileID: 21300000, guid: 1f6da964cb28bb142969bda904a9bb5e, type: 3}
+    speakerName: ariel_name
+  - text: museum_evidence_17
+    sprite: {fileID: 21300000, guid: aeb8c4fba09eb964b89484400dbdd612, type: 3}
+    speakerName: ariel_name
+  - text: museum_evidence_18
+    sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
+    speakerName: police_name
   currentText: 0

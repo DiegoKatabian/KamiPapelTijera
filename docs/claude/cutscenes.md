@@ -88,9 +88,10 @@ the fired art, Kami and the Abuela vanish and `FlyingGirls_PLACEHOLDER` arcs to 
 (`PlayableDirector` + `CutsceneDirector`, started by `PoliceStationPage`, first time only, not
 skippable). Cameras track: KamiCell, PatrolRoute, NataliaCell, Window (static vcams under
 `PoliceStation/IntroCameras`: drag the vcam itself to reframe), then CopFollow (Transposer following the
-patrolling cop) and NataliaCell again. Three dialogue markers: `Jail_CopTaunt` (9.2s), `Jail_NataliaReply`
-(12.8s), `Narrator_JailIntro` (13.9s). No signals: the cell-bars sound comes from
-`PoliceStationPage.StartSequence`. Once the timeline is over and the Abuela has landed and spoken (Kami is free again) `PoliceStationPage` switches the live camera to `BookCenter` (the whole station in view; `_cameraAfterIntro`, the player cycles or picks as usual afterwards; first time only, a capture restart leaves the camera alone, 2026-10-16, not played). The Abuela is scheduled when the timeline ends.
+patrolling cop) and NataliaCell again. Two dialogue markers: `Jail_CopTaunt` (9.2s), `Jail_NataliaReply`
+(12.8s) (the narrator marker at 13.9s was removed on 2026-10-17: the narrator now plays from `PoliceStationPage` after Kami has had
+`_freeExploreSeconds` (5) of free play, then the Abuela's countdown rumbles, #232). No signals: the cell-bars sound comes from
+`PoliceStationPage.StartSequence`. Once the timeline is over and the Abuela has landed and spoken (Kami is free again) `PoliceStationPage` switches the live camera to `BookCenter` (the whole station in view; `_cameraAfterIntro`, the player cycles or picks as usual afterwards; first time only, a capture restart leaves the camera alone, 2026-10-16, not played). The free seconds start when the timeline ends.
 
 ## Tuning the page 5 meeting (Phase 6.D, reworked by #182 on 2026-10-13)
 

@@ -15,9 +15,12 @@ MonoBehaviour:
   wasRead: 0
   events:
   - text: abuela_jail_01
-    sprite: {fileID: 21300000, guid: c30a33cbf91ae74419ae61edc3963666, type: 3}
+    sprite: {fileID: 21300000, guid: ea1a7dd0265051e45abee668b2136ef9, type: 3}
     speakerName: Abuela
   - text: abuela_jail_02
-    sprite: {fileID: 21300000, guid: c30a33cbf91ae74419ae61edc3963666, type: 3}
+    sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
+    speakerName: police_name
+  - text: abuela_jail_03
+    sprite: {fileID: 21300000, guid: 75fdca8f3dd19d94ab9575b14d156944, type: 3}
     speakerName: Abuela
   currentText: 0

@@ -312,7 +312,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000002
-    m_Localized: "...entre o Ariel que n\xE3o me deixa em paz, os roubos no museu e este caf\xE9 que estava car\xEDssimo, n\xE3o sei o que vou fazer. J\xE1 estou far\u2014"
+    m_Localized: "...entre o Ariel que n\xE3o me deixa em paz, os roubos no museu e este caf\xE9 que estava car\xEDssimo, n\xE3o sei o que vou fazer. J\xE1 estou far-"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000003
@@ -359,106 +359,168 @@ MonoBehaviour:
     m_Localized: "Agora sim! Vamos ao museu procurar pistas!"
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000198
+    m_Localized: "N\xE3o pode passar. Nossos agentes est\xE3o investigando a cena."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000199
+    m_Localized: "Embora ainda n\xE3o tenham encontrado nada..."
+    m_Metadata:
+      m_Items: []
   - m_Id: 661900000000100
-    m_Localized: "Uma luva sozinha! Algu\xE9m saiu com as m\xE3os frias... Vamos
-      guardar: essa pista est\xE1 na palma da nossa m\xE3o."
+    m_Localized: "[Kami encontra uma pista dentro da lixeira.]"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000200
+    m_Localized: "Olha, Kami, parece que o ladr\xE3o tentou se livrar das luvas..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000201
+    m_Localized: "Mas jogou fora s\xF3 uma. Vamos continuar procurando mais pistas."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000101
-    m_Localized: "Um chap\xE9u preso no bueiro! O ladr\xE3o saiu com tanta pressa
-      que perdeu a cabe\xE7a... bom, o chap\xE9u."
+    m_Localized: "[Kami encontra uma pista presa no limpador de para-brisa de um carro.]"
     m_Metadata:
       m_Items: []
-  - m_Id: 661900000000102
-    m_Localized: "Um rel\xF3gio quebrado... parou bem na hora do roubo. O tempo do
-      ladr\xE3o acabou!"
+  - m_Id: 661900000000202
+    m_Localized: "Olha, Kami, parece que o ladr\xE3o perdeu o chap\xE9u!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000203
+    m_Localized: "Esse ladr\xE3o \xE9 bem distra\xEDdo."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000103
-    m_Localized: Olha! Os policiais que vigiavam a cena do crime foram embora! Talvez
-      a gente consiga abrir caminho na tesoura pra procurar mais pistas!
+    m_Localized: "Os policiais que vigiavam a entrada foram embora. \xC9 a nossa chance de entrar escondido no museu!"
     m_Metadata:
       m_Items: []
-  - m_Id: 661900000000104
-    m_Localized: Vamos direto ao corte!
+  - m_Id: 661900000000102
+    m_Localized: "[Kami encontra uma pista no ch\xE3o, rodeada de vidro quebrado.]"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000204
+    m_Localized: "Olha, Kami, parece que o ladr\xE3o deixou o rel\xF3gio cair no ch\xE3o e ele quebrou."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000205
+    m_Localized: "Hora do roubo: 20:30."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000105
-    m_Localized: "Essas tr\xEAs pistas devem nos dar uma \xF3tima vantagem."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000106
-    m_Localized: "Vamos pra casa analisar melhor. Esse caso est\xE1 come\xE7ando
-      a se desdobrar!"
+    m_Localized: "O tempo do ladr\xE3o acabou! Vamos levar essas tr\xEAs pistas pra minha casa, analisar tudo e desvendar esse mist\xE9rio."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000107
-    m_Localized: "Um presente gigante... na MINHA porta? O que \xE9 isso?"
+    m_Localized: "Um presente gigante... na minha porta? O que \xE9 isso?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000108
-    m_Localized: "S\xF3 tem um jeito de descobrir. Vamos cortar a fita!"
+    m_Localized: "Corta a fita e vamos ver o que \xE9."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000109
-    m_Localized: "Continua embrulhado. Ser\xE1 que sua tesoura d\xE1 uma m\xE3ozinha?"
+    m_Localized: "Corta a fita e vamos ver que presente misterioso \xE9 esse."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000110
-    m_Localized: Ariel
+    m_Localized: "Ariel"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000111
-    m_Localized: "Pol\xEDcia Federal"
+    m_Localized: "Pol\xEDcia"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000112
-    m_Localized: "Kami... \xE9 o Pelusa! O ORIGINAL!"
+    m_Localized: "Kami, n\xE3o acredito, \xE9 o Pelusa original! O ladr\xE3o trouxe isso pra c\xE1?!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000113
-    m_Localized: Temos que levar de volta pro museu! Espera, tem uma carta dobrada
-      aqui dentro...
+    m_Localized: "Temos que devolver ao museu, mas..."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000114
-    m_Localized: "Vamos desdobrar. Tem alguma coisa nesse caso que n\xE3o se encaixa."
+    m_Localized: "Olha! Tem uma carta a\xED dentro, voc\xEA consegue ler o que diz?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000115
-    m_Localized: "POL\xCDCIA FEDERAL! Ningu\xE9m se mexe!"
+    m_Localized: "Pol\xEDcia! M\xE3os ao alto!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000116
-    m_Localized: "Policiais! L\xE1 est\xE3o as ladras! Com o Pelusa nas m\xE3os!"
+    m_Localized: "A\xED est\xE3o as ladras. Prendam elas."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000117
-    m_Localized: "Ariel?! O que voc\xEA... a gente n\xE3o roubou nada!"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000118
-    m_Localized: "Ent\xE3o expliquem a carta. \"Esta \xE9 a sua parte\"... que fofo."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000119
-    m_Localized: "Voc\xEAs duas v\xEAm com a gente. M\xE3os onde eu possa ver!"
+    m_Localized: "Ariel, o que voc\xEA est\xE1 fazendo? D\xE1 pra parar de me incomodar?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000120
-    m_Localized: "\xD3timo. Emolduradas... feito um quadro."
+    m_Localized: "N\xF3s n\xE3o roubamos nada. Que brincadeira de mau gosto \xE9 essa?"
     m_Metadata:
       m_Items: []
-  - m_Id: 661900000000121
-    m_Localized: Surpresa! Acharam que eu ia perder a fuga?
+  - m_Id: 661900000000119
+    m_Localized: "Aqui tem uma carta! Diz... bl\xE1 bl\xE1 bl\xE1... bl\xE1 bl\xE1 bl\xE1... \"esta \xE9 a sua parte do roubo\"."
     m_Metadata:
       m_Items: []
-  - m_Id: 661900000000122
-    m_Localized: "V\xE1 pegar suas coisas e vamos libertar sua amiga, querida."
+  - m_Id: 661900000000118
+    m_Localized: "Bom, est\xE1 bem claro que elas s\xE3o culpadas."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000206
+    m_Localized: "N\xE3o! Parem! Nos incriminaram!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000186
+    m_Localized: "Voc\xEAs duas v\xE3o ficar trancadas aqui para sempre! Malditas mentirosas!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000207
+    m_Localized: "E nem pensem em fugir. Se eu vir voc\xEAs, vou mandar de volta pra cela na base do chute!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000187
+    m_Localized: "Cala a boca! N\xF3s n\xE3o somos umas malditas mentirosas!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000208
+    m_Localized: "Kami, a gente precisa achar um jeito de sair!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000123
-    m_Localized: Depois de um tempo trancadas, ouviu-se uma batida tremenda...
+    m_Localized: "[Kami n\xE3o encontra nenhuma sa\xEDda, e tudo parece perdido...]"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000209
+    m_Localized: "[Mas, de repente, um forte tremor sacode a delegacia.]"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000121
+    m_Localized: "Surpresaaa! Ai, voc\xEA n\xE3o faz ideia do que me aconteceu!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000122
+    m_Localized: "Que barulho foi esse?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000210
+    m_Localized: "Bom, depois eu te conto. Vamos pegar as nossas coisas e sair daqui."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000188
+    m_Localized: "Obrigada por me salvar, Kami! Oi! Essa \xE9 a sua av\xF3 que tamb\xE9m se perdeu?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000211
+    m_Localized: "Bom, depois voc\xEA nos conta. Agora a gente precisa fugir por aquela janela l\xE1 em cima. Mas como a gente faz pra chegar l\xE1?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000212
+    m_Localized: "Incr\xEDvel! Eu n\xE3o sabia que voc\xEA era uma especialista em origami."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000213
+    m_Localized: "Vamos voltar r\xE1pido para o museu!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000124
@@ -479,19 +541,168 @@ MonoBehaviour:
       de se despedir da Natalia!"
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000189
+    m_Localized: "[Kami e as garotas chegam ao museu, onde a pol\xEDcia e o Ariel interrogam uma mo\xE7a.]"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000214
+    m_Localized: "...e deve ter sido por volta das oito e meia."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000215
+    m_Localized: "Mo\xE7as, o que voc\xEAs querem agora? O museu est\xE1 fechado."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000151
+    m_Localized: "Ali est\xE3o as fugitivas, ainda com o Pelusa na m\xE3o!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000152
+    m_Localized: "Ningu\xE9m se mexa! Voc\xEAs duas v\xE3o direto de volta para as suas celas!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000153
+    m_Localized: "Meninas, o que voc\xEAs aprontaram agora?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000154
+    m_Localized: "Vov\xF3!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000155
+    m_Localized: "Esperem, oficiais. Se essas garotas roubaram o Pelusa, por que o trariam de volta?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000216
+    m_Localized: "Eu sou a Grace, a diretora do museu. O que voc\xEAs t\xEAm a dizer?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000217
+    m_Localized: "N\xF3s n\xE3o roubamos o Pelusa! Armaram pra cima da gente para parecermos as ladras, mas n\xE3o fomos n\xF3s."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000218
+    m_Localized: "Ningu\xE9m acredita em voc\xEAs."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000219
+    m_Localized: "Eu posso provar, olhem!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000220
+    m_Localized: "Kami, mostra pra eles o ticket do caf\xE9."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000172
+    m_Localized: "Viram? Diz 20:30! Na hora do roubo n\xF3s est\xE1vamos na cafeteria! \xC9 imposs\xEDvel que tenha sido a gente!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000173
+    m_Localized: "Isso n\xE3o prova nada. Esse ticket pode ser falso."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000174
+    m_Localized: "N\xE3o! Chega de me incomodar! Al\xE9m disso, olhem isto!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000175
+    m_Localized: "Encontramos o chap\xE9u do Ariel e uma das luvas dele na cena do roubo. E justo a ele faltam um chap\xE9u e uma luva."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000176
+    m_Localized: "E tamb\xE9m encontramos o seu rel\xF3gio! Com a hora marcada: 20:30."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000177
+    m_Localized: "Incr\xEDvel... Al\xE9m disso, Ariel, seu pai \xE9 o maior benfeitor do museu. Com certeza voc\xEA usou as chaves dele para entrar na sala do Pelusa."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000178
+    m_Localized: "Hmm, tudo se encaixa. Isso explica os outros roubos tamb\xE9m. Mo\xE7as, acho que devemos desculpas a voc\xEAs."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000179
+    m_Localized: "O senhor, Ariel, vai ter que nos acompanhar."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000180
+    m_Localized: "N\xE3o, voc\xEAs est\xE3o loucas! Voc\xEAs n\xE3o sabem o que est\xE3o dizendo!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000181
+    m_Localized: "Voc\xEA \xE9 uma p\xE9ssima pessoa, Ariel. Por que voc\xEA queria que botassem a culpa em mim?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000221
+    m_Localized: "Eu n\xE3o vou te dizer..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000222
+    m_Localized: "..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000223
+    m_Localized: "..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000224
+    m_Localized: "..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000225
+    m_Localized: "..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000226
+    m_Localized: "\xC9 que eu tinha medo de que uma boa detetive como voc\xEA descobrisse os meus roubos."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000227
+    m_Localized: "E tudo teria dado certo se n\xE3o fosse por aquela garota com a tesoura!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000228
+    m_Localized: "Bom, j\xE1 chega, circulando, senhor, por favor."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000182
+    m_Localized: "Excelente trabalho, meninas. O Pelusa voltou para casa gra\xE7as a voc\xEAs."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000183
+    m_Localized: "Tem mais uma coisa, Grace. A Kami n\xE3o \xE9 daqui, ela precisa voltar para o livro dela."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000184
+    m_Localized: "Hmm..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000185
+    m_Localized: "Se voc\xEAs n\xE3o tiverem medo, podem usar a catapulta antiga."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000229
+    m_Localized: "Eu n\xE3o tenho medo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000230
+    m_Localized: "\xD3timo, ent\xE3o! Quando estiverem prontas para ir, subam na catapulta."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661900000000231
+    m_Localized: "N\xE3o se esque\xE7am de se despedir da Natalia antes de ir."
+    m_Metadata:
+      m_Items: []
   - m_Id: 661900000000145
-    m_Localized: "Ent\xE3o \xE9 um adeus, parceira. O melhor caso que j\xE1 resolvi...
-      e tamb\xE9m o primeiro."
+    m_Localized: "Ent\xE3o \xE9 isso que \xE9 resolver um caso com uma parceira. Muito melhor do que fazer isso sozinha."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000146
-    m_Localized: "Manda um oi pro seu livro. E se um dia precisar de uma detetive,
-      voc\xEA sabe em que p\xE1gina me encontrar."
+    m_Localized: "Obrigada pela sua ajuda, Kami. Espero que a gente se veja de novo em breve."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000147
-    m_Localized: "Segura firme, querida! N\xE3o voo desde a grande guerra de travesseiros
-      de 58."
+    m_Localized: "Quando voc\xEA estiver pronta, corte a corda, querida."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000148
@@ -509,116 +720,8 @@ MonoBehaviour:
       tinham lido."
     m_Metadata:
       m_Items: []
-  - m_Id: 661900000000151
-    m_Localized: "L\xE1 est\xE3o elas, policiais! As fugitivas! E ainda est\xE3o
-      com a Pelusa!"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000152
-    m_Localized: "Ningu\xE9m se mexe! Voc\xEAs duas v\xE3o direto de volta pras celas."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000153
-    m_Localized: Esperem, policiais. Sou a Grace, diretora deste museu. Se elas roubaram
-      a Pelusa... por que a devolveriam?
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000154
-    m_Localized: "Porque a gente nunca roubou! Eu sou a Natalia, e esta \xE9 a Kami.
-      Armaram pra gente, e podemos provar."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000155
-    m_Localized: "Kami, o nosso recibo do caf\xE9! Desdobra e mostra pra eles."
-    m_Metadata:
-      m_Items: []
   - m_Id: 661900000000169
     m_Localized: "R\xC1DIO"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000172
-    m_Localized: "Viram o hor\xE1rio? 21:47, o minuto exato em que a Pelusa sumiu.
-      N\xF3s duas est\xE1vamos no caf\xE9, tomando um chocolate quente."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000173
-    m_Localized: "A gente soube do roubo pelo r\xE1dio do caf\xE9, como todo mundo!"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000174
-    m_Localized: "Um recibo n\xE3o prova nada! Voc\xEAs... voc\xEAs podem ter pago
-      e sa\xEDdo correndo!"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000175
-    m_Localized: "Ah, \xE9? Ent\xE3o de quem \xE9 o chap\xE9u que ficou preso no
-      bueiro do museu? E a luva no lixo?"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000176
-    m_Localized: "S\xE3o seus, Ariel. E este rel\xF3gio estava ca\xEDdo no p\xE1tio
-      do museu, parado \xE0s 21:47."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000177
-    m_Localized: "Ariel... o seu pai \xE9 o maior benfeitor deste museu. Voc\xEA
-      podia entrar e sair de qualquer sala quando quisesse."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000178
-    m_Localized: "O dia inteiro sem me deixar em paz no trabalho. Justo na noite
-      em que voc\xEA me deixou sossegada, a Pelusa sumiu."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000179
-    m_Localized: "Hmm... tudo confere, e aposto que os outros roubos tamb\xE9m. Senhoritas,
-      a Pol\xEDcia Federal deve desculpas a voc\xEAs. Ariel, voc\xEA vem com a gente!"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000180
-    m_Localized: "Natalia... me desculpa. Eu nunca quis que a culpa ca\xEDsse em
-      voc\xEA."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000181
-    m_Localized: "Obrigada, meninas. A Pelusa voltou pra casa gra\xE7as a voc\xEAs."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000182
-    m_Localized: "Tem mais uma coisa, Grace. A Kami n\xE3o \xE9 daqui: ela precisa
-      voltar pro pr\xF3prio livro."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000183
-    m_Localized: "Ent\xE3o tenho exatamente o que voc\xEAs precisam. A pe\xE7a mais
-      antiga do museu \xE9 uma catapulta: dizem que ela lan\xE7a qualquer coisa de
-      volta pras p\xE1ginas de onde veio."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000184
-    m_Localized: "Uma catapulta? Ai, que emo\xE7\xE3o! Eu tamb\xE9m vou, querida."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000185
-    m_Localized: "Ent\xE3o subam as duas, e cortem a corda quando estiverem prontas."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000186
-    m_Localized: "Voc\xEAs duas v\xE3o ficar trancadas aqui para sempre! R\xE1 r\xE1
-      r\xE1, ladras mentirosas!"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000187
-    m_Localized: "N\xF3s n\xE3o somos mentirosas nem ladras."
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000188
-    m_Localized: "Obrigada por me salvar! Temos que fugir por aquela janela aberta
-      l\xE1 em cima. Voc\xEA consegue dobrar um avi\xE3ozinho de papel ou algo assim?"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 661900000000189
-    m_Localized: "Posso ajudar...? Isso \xE9... a Pelusa?!"
     m_Metadata:
       m_Items: []
   references:

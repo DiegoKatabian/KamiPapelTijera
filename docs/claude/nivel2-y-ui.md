@@ -105,10 +105,15 @@ now, ready for pages 1-5 to wire up:
   with `.Add()`, so a duplicated item in that list throws at startup.
 
 **Phase 2 (page 2, "Find clues") built 2026-09-24, played in Diego's full playthrough (2026-09-28).** Three
-clues (glove in a trash can, hat on the manhole, watch in the museum yard), two cops that
+clues (glove in a trash can, hat hooked on a parked car's windshield wiper (2026-10-16, it was a manhole), watch in the museum yard), two cops that
 drive off after the second clue so the police tape can be cut, and the quest handoff to
 `Quest06_GoBackToNataliasHouse` (closed by the page 3 arrest since Phase 3). What exists and where:
 
+- **Page 2's lines (Diego's dialogue pass, 2026-10-16)**: each clue's `DialogueSO` (`Natalia_ClueGlove|Hat|Watch`) opens with a Narrador bubble
+  (`[Kami finds a clue ...]`) and then Natalia's two lines; `Natalia_CopsLeft` and `Natalia_AllClues` are one line each. The guards can be
+  talked to: `CrimeSceneGate`'s `GuardTalk` child (a `TriggerDialogue` trigger box, listed in `_cops` so it goes away with them) plays
+  `CrimeScene_Guard` (speaker `police_name`: "Policía Federal" in ES, "Police" in EN, "Polícia" in PT). Tune its box with the gizmo. The robbery
+  happened at 20:30 (watch, café ticket, page 5 evidence). The cops' leave-by-cutscene is #231.
 - **Every trash can in Level 2 is now `Assets/Prefabs/Interactables/TrashCan.prefab`**
   (15 of them, pages 1-5; the scene instances used to be the bare `Kami_TrashCan.fbx`).
   Opening one runs the stock `Solapa`/`TriggerSolapa` flap flow (Kami's `PullSolapas`
@@ -197,12 +202,13 @@ sequence and is the only thing that restarts it:
    east wall is now a `CellFence`) and Natalia (a new fenced cell in the front-left room, AROUND the
    paper-plane pedestal) are locked up, and `ConfiscatedGear` takes Kami's scissors, ALL her paper
    and the Pelusa.
-2. The narrator's line (`Narrator_JailIntro`, `_introLine`, first time only) plays half a second
-   after the girls land — the dialogue itself keeps Kami still. `_abuelaDelaySeconds` (3) after it
-   closes `AbuelaEntrance`
+2. The intro cutscene plays (first time only), then **Kami is free for `_freeExploreSeconds` (5, Diego 2026-10-17: "to achieve
+   maximum fun she should explore for a short while")**, the narrator's two lines (`Narrator_JailIntro`, played by `PoliceStationPage._narratorLine`,
+   first time only) say there is no way out and the ground shakes, and `_abuelaDelaySeconds` (3, the rumble; its camera shake and the camera
+   following her fall are #232) after it closes `AbuelaEntrance`
    drops the Abuela (`Abuela_Follower` prefab variant) next to the fence: Kami is locked (`inCutscene`)
-   from the start of that countdown until her two lines (`Abuela_JailLanding`) end (#172, 2026-10-13: it
-   used to be only the fall and the lines, and the free wait read as "go explore"); the fence disappears
+   from the start of that countdown until her two lines (`Abuela_JailLanding`) end (#172, 2026-10-13, which also
+   locked the wait before it; since 2026-10-17 the free seconds above come first and only the countdown is locked); the fence disappears
    (reveal, not destruction), she follows Kami. After a capture the same lock covers the shorter countdown.
 3. `ConfiscatedGearPickup` (where Diego had placed the TijeraPickup, just east of the cell) gives
    everything back. Kami cuts the `CandadoCortable` on Natalia's door (moved there, 1 paper as
@@ -214,6 +220,7 @@ sequence and is the only thing that restarts it:
    `EscapeWindow` completes `Quest07_EscapeThePoliceStation`, starts `Quest08_ReturnThePelusa`, warps
    both followers to `OutsideLanding` below the window, makes that Kami's respawn point and blinds
    the cops. The page is then left the normal way (edge of the book), no forced turn.
+   Once Kami is back on the ground outside, Natalia says `Natalia_Escaped` ("¡Increíble! No sabía que eras una experta del origami...", `PoliceStationPage._escapedLine`).
    `OnPoliceStationEscaped` (what `PageExitLock` opens page 4's next sphere on) fires on every crossing,
    with or without Quest07 held (#169, 2026-10-13): a lost Quest07 used to keep the sphere locked for good.
 5. **Getting caught restarts the whole page** (Diego): on the respawn after a `DeathCause.Caught`,
@@ -257,21 +264,21 @@ always reaches page 5 with it.
 1. Walking up to **Grace** (`_approachRadius`, 12) or talking to her (the museum director, `Prefabs/NPCs/Grace.prefab`:
    a tinted Natalia sprite + `GraceDialogueTrigger`, whose lines `MuseumPage` picks) with the Pelusa, the café ticket
    and the three clues starts the meeting (#182: no E press needed; without the evidence the approach does nothing and
-   E gets `Grace_NoProof`). Her meeting dialogue ends -> the ticket pedestal (`SelloOrigami CafeTicket`, a
+   E gets nothing: Diego switched `MuseumPage._graceNoProof` off on 2026-10-17, the asset still exists). Her dialogue: `Grace_Reaction` (the narrator's arrival line + her interrogated "???" lines), then `Grace_Meeting` (10 lines, Natalia's "mostrales el ticket" last). Her meeting dialogue ends -> the ticket pedestal (`SelloOrigami CafeTicket`, a
    `SelloOrigami Cafe` instance pointed at `OrigamiRoute_Cafe_Unfold`, 0 paper, auto-prompt) appears.
    **Ariel and two cops are there** (Spine since spec 014: `Ariel.prefab` + the Old Male / Femme `CopEscort`
    variants, still named `Ariel_PLACEHOLDER_POSITION` / `CopWitness1|2_PLACEHOLDER_POSITION`) from the start, taking
    Grace's statement about the robbery, their car (`PoliceCar_Parked`) parked in the street. The meeting is where
    Grace introduces herself, and Natalia introduces herself and Kami.
-2. The unfold shows the ticket (the girls' receipt from page 1: 2 hot chocolates, paid at 21:47) on
+2. The unfold shows the ticket (the girls' receipt from page 1: 2 hot chocolates, paid at 20:30) on
    the letter's `OrigamiTextRevealPanel`; closing it plays `Museum_Evidence`: both girls were at the
-   café at 21:47 and heard of the robbery on its radio, Ariel's hat + glove, the watch stopped at
-   21:47, Grace pointing out Ariel's access through his father, the police apology and arrest, Ariel's apology to Natalia and Grace's thanks.
+   café at 20:30 and heard of the robbery on its radio, Ariel's hat + glove, the watch stopped at
+   20:30, Grace pointing out Ariel's access through his father, the police apology and "Usted Ariel, nos va a tener que acompañar", Ariel's confession after four silent "..." bubbles and "Bueno ya, circule caballero por favor" (18 lines, rewritten 2026-10-17 from Diego's script; the Abuela's '58 pillow-war joke and Ariel's apology are gone).
 3. When that ends the cops march Ariel to their car and drive off (`MuseumArrest`, `Timeline_MuseumArrest`, #183,
    see `cutscenes.md`). Once the car has left and Kami is free, **Grace offers the catapult** (`Grace_CatapultOffer`,
    `MuseumPage._catapultOffer`, phase `Offer`; #223, 2026-10-16: it used to be the end of `Museum_Evidence`, so she
-   helped while Ariel was still free; keys `grace_catapult_offer_01-04` in `DialogueTable`, formerly
-   `museum_evidence_11-14`). When it ends the case closes: the five items leave the inventory (handed over), `OnPaintingReturned` completes
+   helped while Ariel was still free; keys `grace_catapult_offer_01-07` in `DialogueTable`, formerly
+   `museum_evidence_11-14`; 2026-10-17 it starts with Grace's thanks and Natalia's "Kami tiene que volver a su libro", the camera beat to the catapult is #233). When it ends the case closes: the five items leave the inventory (handed over), `OnPaintingReturned` completes
    Quest08 (removed a frame later) and ends the story music, Natalia walks to `Marks/NataliaStayMark` (a few units
    from Grace, #184) and only then becomes talkable with her farewell (`NataliaDialogueTrigger.StayBehind`), the
    Abuela walks to `Marks/AbuelaStayMark` (Diego's) and waits there, and the **catapult** (`Catapult`) unlocks.

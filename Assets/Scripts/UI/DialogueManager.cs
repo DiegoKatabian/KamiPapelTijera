@@ -123,6 +123,12 @@ public class DialogueManager : Singleton<DialogueManager>
         if (!isShowing && !LevelManager.Instance.inDialogue)
         {
             dialogue.currentText = 0;
+            //whatever post-it is up belongs to the trigger Kami stands in (the trash can's "look inside" one stayed
+            //over Natalia's comment about the glove), and nothing else can move it while she is frozen
+            if (TooltipManager.Instance != null)
+            {
+                TooltipManager.Instance.HideTooltip();
+            }
             dialogueGlobe.SetActive(true);
             PlayEToInteractSound();
             LevelManager.Instance.inDialogue = true;

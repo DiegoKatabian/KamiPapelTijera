@@ -15,6 +15,12 @@ MonoBehaviour:
   wasRead: 0
   events:
   - text: natalia_clue_hat_01
+    sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
+    speakerName: narrator_name
+  - text: natalia_clue_hat_02
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
+    speakerName: natalia_name
+  - text: natalia_clue_hat_03
     sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
   currentText: 0

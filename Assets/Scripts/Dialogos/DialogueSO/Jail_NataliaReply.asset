@@ -17,4 +17,7 @@ MonoBehaviour:
   - text: jail_reply_01
     sprite: {fileID: 21300000, guid: 006be16fa8b91c74abbeeab1a5c4c680, type: 3}
     speakerName: natalia_name
+  - text: jail_reply_02
+    sprite: {fileID: 21300000, guid: 12ec3d9f382d88840b26afd24c74d88a, type: 3}
+    speakerName: natalia_name
   currentText: 0

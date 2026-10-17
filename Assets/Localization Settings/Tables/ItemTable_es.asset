@@ -88,7 +88,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000002
-    m_Localized: "Enganchado en la tapa de una alcantarilla cerca del museo. Alguien se fue muy apurado... y perdi\xF3 el sombrero."
+    m_Localized: "Enganchado en el limpiaparabrisas de un auto cerca del museo. Alguien se fue muy apurado... y perdi\xF3 el sombrero."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000003
@@ -100,11 +100,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000007
-    m_Localized: La Pelusa
+    m_Localized: El Pelusa
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000008
-    m_Localized: El cuadro robado, por fin recuperado.
+    m_Localized: "Pelusa. \"Sin T\xEDtulo\". c.1913. Esta obra del legendario artista post-moderno tiene la capacidad de conmover hasta el m\xE1s duro de los hombres. Est\xE1 hecha de un papel muy raro."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000009

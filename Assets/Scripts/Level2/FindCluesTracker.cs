@@ -121,7 +121,7 @@ public class FindCluesTracker : MonoBehaviour
 
             _found.Add(clue.resource);
             Debug.Log($"[FindCluesTracker] clue found: {clue.resource} ({_found.Count}/{_clues.Length})");
-            PlayClueSounds(clue.resource);
+            PlayClueSounds();
             QueueComment(clue.comment);
         }
 
@@ -188,9 +188,9 @@ public class FindCluesTracker : MonoBehaviour
         }
     }
 
-    //the hat lies on a manhole cover, so picking it up also clanks the metal; every clue gets the
-    //short "found it" sting on top
-    void PlayClueSounds(ResourceType resource)
+    //every clue gets the short "found it" sting (the hat hangs on a car's windshield wiper now, so
+    //the manhole clank it used to get is gone)
+    void PlayClueSounds()
     {
         if (AudioManager.instance == null)
         {
@@ -198,10 +198,6 @@ public class FindCluesTracker : MonoBehaviour
             return;
         }
 
-        if (resource == ResourceType.caughtBelonging)
-        {
-            AudioManager.instance.Play(AudioId.ManholeClank);
-        }
         AudioManager.instance.Play(AudioId.ClueFound);
     }
 

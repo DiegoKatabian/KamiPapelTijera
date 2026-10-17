@@ -17,4 +17,7 @@ MonoBehaviour:
   - text: natalia_freed_01
     sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
+  - text: natalia_freed_02
+    sprite: {fileID: 21300000, guid: 9793003222ce967428421660c968f02a, type: 3}
+    speakerName: natalia_name
   currentText: 0

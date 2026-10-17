@@ -17,4 +17,7 @@ MonoBehaviour:
   - text: jail_taunt_01
     sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
     speakerName: police_name
+  - text: jail_taunt_02
+    sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
+    speakerName: police_name
   currentText: 0

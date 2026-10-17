@@ -46,7 +46,7 @@ public class MuseumPage : MonoBehaviour
     [SerializeField, Tooltip("The lines of the meeting: the last part of the arrival cutscene (a dialogue marker on the timeline points at this same asset). When it ends the ticket pedestal appears.")]
     DialogueSO _graceMeeting;
 
-    [SerializeField, Tooltip("First talk WITHOUT the evidence (should not happen in a normal playthrough).")]
+    [SerializeField, Tooltip("First talk WITHOUT the evidence (should not happen in a normal playthrough). Empty = she says nothing (Diego switched her no-proof line off, 2026-10-17; Grace_NoProof still exists).")]
     DialogueSO _graceNoProof;
 
     [SerializeField, Tooltip("Talking to her again before the ticket is unfolded.")]

@@ -18,7 +18,10 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
     speakerName: police_name
     soundOnLine: Handcuffs
-  - text: arrest_natalia_02
+  - text: arrest_ariel_02
+    sprite: {fileID: 21300000, guid: e8e128bcefa845343b9cad683d1eda25, type: 3}
+    speakerName: ariel_name
+  - text: arrest_natalia_03
     sprite: {fileID: 21300000, guid: 006be16fa8b91c74abbeeab1a5c4c680, type: 3}
     speakerName: natalia_name
   currentText: 0

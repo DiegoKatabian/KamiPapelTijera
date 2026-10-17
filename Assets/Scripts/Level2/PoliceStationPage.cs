@@ -6,8 +6,9 @@ using UnityEngine;
 /// and is the only thing that restarts it.
 ///
 /// The sequence: Kami and Natalia wake up in separate cells with their things confiscated. The
-/// intro cutscene plays the first time (a camera tour of the page, the cop's taunt, Natalia's reply
-/// and the narrator, all on Timeline_PoliceIntro), and _abuelaDelaySeconds after it ends the Abuela
+/// intro cutscene plays the first time (a camera tour of the page, the cop's taunt and Natalia's
+/// reply, all on Timeline_PoliceIntro), then Kami is free for _freeExploreSeconds (Diego, 2026-10-17),
+/// the narrator says there is no way out and the ground shakes, and _abuelaDelaySeconds later the Abuela
 /// crashes down and opens Kami's cell fence (AbuelaEntrance). Kami
 /// gets her things back at the evidence pickup (ConfiscatedGear), cuts the padlock on Natalia's
 /// cell -- which also holds the paper-plane pedestal -- folds the plane, jumps to the 2nd floor,
@@ -46,7 +47,7 @@ public class PoliceStationPage : MonoBehaviour
     [SerializeField, Tooltip("The padlock on Natalia's cell door.")]
     CandadoCortable _nataliaPadlock;
 
-    [SerializeField, Tooltip("What Natalia says when Kami frees her, the first time only: thanks, and the window + paper plane idea that points the player at the pedestal in her cell. Empty = no line.")]
+    [SerializeField, Tooltip("What Natalia says when Kami frees her, the first time only: thanks, meeting the Abuela, and the window she has no way to reach. Empty = no line.")]
     DialogueSO _nataliaFreedLine;
 
     [SerializeField, Tooltip("Natalia's rest pose (mood) behind bars, a pose id from her SpineCharacter. Cleared when Kami frees her. Empty = plain idle.")]
@@ -56,8 +57,14 @@ public class PoliceStationPage : MonoBehaviour
     [SerializeField, Tooltip("The Abuela's fall onto Kami's cell.")]
     AbuelaEntrance _abuelaEntrance;
 
-    [SerializeField, Tooltip("The intro cutscene (Timeline_PoliceIntro), played the first time only and not skippable: camera tour, the cop's taunt, Natalia's reply, the narrator. Empty = no intro.")]
+    [SerializeField, Tooltip("The intro cutscene (Timeline_PoliceIntro), played the first time only and not skippable: camera tour, the cop's taunt, Natalia's reply. Empty = no intro.")]
     CutsceneDirector _introCutscene;
+
+    [SerializeField, Tooltip("Seconds Kami can look around on her own once the intro is over, before the narrator's lines and the tremor. First time only.")]
+    float _freeExploreSeconds = 5f;
+
+    [SerializeField, Tooltip("What the narrator says when the free seconds are up (Narrator_JailIntro): no way out, then the tremor. The Abuela's countdown starts when it ends. First time only. Empty = straight to the countdown.")]
+    DialogueSO _narratorLine;
 
     [SerializeField, Tooltip("The camera the player starts with once the intro is over and the Abuela has landed (Kami is free), so the whole station is in view. The player changes it as usual afterwards. Only after the intro (first time), not after a capture.")]
     CameraMode _cameraAfterIntro = CameraMode.BookCenter;
@@ -65,7 +72,7 @@ public class PoliceStationPage : MonoBehaviour
     [SerializeField, Tooltip("Seconds between the girls landing in their cells and the intro cutscene starting.")]
     float _introDelaySeconds = 0.5f;
 
-    [SerializeField, Tooltip("Seconds between the intro ending and the Abuela crashing down. Kami waits, locked, from the start of it until the Abuela's line ends.")]
+    [SerializeField, Tooltip("Seconds between the narrator's lines ending and the Abuela crashing down: the rumble before her fall. Kami waits, locked, from the start of it until the Abuela's line ends.")]
     float _abuelaDelaySeconds = 3f;
 
     [SerializeField, Tooltip("The same wait after a capture restarts the page: shorter, the player already saw it.")]
@@ -99,6 +106,9 @@ public class PoliceStationPage : MonoBehaviour
 
     [SerializeField, Tooltip("Quest08_ReturnThePelusa: started once the escape is complete.")]
     QuestSO _museumQuest;
+
+    [SerializeField, Tooltip("What Natalia says once Kami has crossed the window and is back on the ground outside. Empty = no line.")]
+    DialogueSO _escapedLine;
 
     [Header("Testing")]
     [SerializeField, Tooltip("Starting the scene on this page (PageScrollerManager.startingPage) sets the prison up by itself, without playing pages 1-3.")]
@@ -309,6 +319,30 @@ public class PoliceStationPage : MonoBehaviour
             yield return null;
         }
 
+        //Kami is free now: a short while to look around before the tremor (Diego, 2026-10-17)
+        yield return new WaitForSeconds(_freeExploreSeconds);
+
+        if (_narratorLine != null)
+        {
+            //Kami may be in the middle of another line (freeing Natalia): wait for a free box
+            while (DialogueManager.Instance == null || !DialogueManager.Instance.CanShowDialogueNow)
+            {
+                yield return null;
+            }
+
+            DialogueManager.Instance.ShowDialogue(_narratorLine);
+            yield return null;
+
+            while (DialogueManager.Instance.isShowing)
+            {
+                yield return null;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[PoliceStationPage] no _narratorLine: the Abuela's countdown starts right after the free seconds");
+        }
+
         _abuelaEntrance.Schedule(_abuelaDelaySeconds);
 
         //Kami is locked until the Abuela has landed and spoken (HasLanded is set the moment she gets control
@@ -443,6 +477,11 @@ public class PoliceStationPage : MonoBehaviour
             }
         }
 
+        if (_escapedLine != null)
+        {
+            StartCoroutine(SayEscapedLine());
+        }
+
         //always: PageExitLock opens page 4's next sphere on this event, and the way out must not depend
         //on quest bookkeeping (#169: a lost Quest07 kept the sphere locked for good)
         EventManager.Trigger(Evento.OnPoliceStationEscaped);
@@ -452,6 +491,40 @@ public class PoliceStationPage : MonoBehaviour
         {
             StartCoroutine(HandOffQuestNextFrame());
         }
+    }
+
+    //Kami crosses the window on her way down: a dialogue now would freeze her in the air, so let her land first
+    IEnumerator SayEscapedLine()
+    {
+        Player player = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+
+        if (player != null)
+        {
+            //she may still be walking off the ledge when the trigger fires: give her a moment to take off
+            float waited = 0f;
+            while (waited < 1f && !IsInAir(player))
+            {
+                waited += Time.deltaTime;
+                yield return null;
+            }
+
+            while (IsInAir(player))
+            {
+                yield return null;
+            }
+        }
+
+        while (DialogueManager.Instance == null || !DialogueManager.Instance.CanShowDialogueNow)
+        {
+            yield return null;
+        }
+
+        DialogueManager.Instance.ShowDialogue(_escapedLine);
+    }
+
+    static bool IsInAir(Player player)
+    {
+        return player.CurrentState == PlayerState.Jumping || player.CurrentState == PlayerState.Falling;
     }
 
     static void BringOutside(NPC follower, Vector3 position)

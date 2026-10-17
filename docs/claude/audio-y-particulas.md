@@ -50,8 +50,8 @@ bus unless noted; all 2D. Ids and where they fire:
   `CaughtSting` (`Player.Die` on `DeathCause.Caught`, on top of the shared defeat music),
   `TypewriterClack` (`PickupCortable._extraCutSound`, set on `CuttableTypewriter.prefab`), `ClothRip`
   (`CuttableDrapes.ApplyCut`).
-- Pages 1-2: `ManholeClank` + `ClueFound` (`FindCluesTracker.PlayClueSounds`; the clank only for the
-  hat), `RadioStatic` + `NewsJingle` (dialogue lines, below), `CarEngine`/`CarHorn` on ambient
+- Pages 1-2: `ClueFound` (`FindCluesTracker.PlayClueSounds`; the hat's `ManholeClank` was dropped on
+  2026-10-16 when the hat moved to a car's windshield wiper, the row is unused), `RadioStatic` + `NewsJingle` (dialogue lines, below), `CarEngine`/`CarHorn` on ambient
   traffic (`TrafficSpawner.PlayTrafficSounds`: engine at most once per 6s and horn once per 20s at
   15%, both counted across ALL spawners; tunable per spawner).
 - Page 3: `GiftBoxOpen` (`GiftDialogueTrigger.Open`), `Handcuffs` (dialogue line).

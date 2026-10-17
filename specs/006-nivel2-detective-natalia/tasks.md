@@ -393,7 +393,7 @@ jump from the floor onto the mezzanine with the hat (22 units of jump vs ~18 of 
   Natalia; Grace introduces herself and Natalia introduces the two of them. **Premise**: Natalia
   investigates a series of museum robberies and learns about the Pelusa from the café radio right
   after the fold (page 1), which sends them out for clues; Ariel was on her back all day at work and
-  only just left her alone, so the girls' café receipt (21:47) is the alibi of both; Ariel had
+  only just left her alone, so the girls' café receipt (20:30) is the alibi of both; Ariel had
   privileged access through his rich father.
 - **5.D**: Interact on the catapult is the confirm. A short fade puts Kami in the bucket (invisible
   walls: she can't leave but can attack) and the Abuela next to her; the rope only becomes cuttable

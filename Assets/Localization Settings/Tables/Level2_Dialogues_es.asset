@@ -19,11 +19,11 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 5000000000001
-    m_Localized: "\"El golpe fue un \xE9xito... esta es tu parte. Bien hecho, socia.\"\n\u2014 Un amigo"
+    m_Localized: "\"El golpe fue un \xE9xito... Esta es tu parte del robo. Bien hecho, socia.\"\n- Un amigo"
     m_Metadata:
       m_Items: []
   - m_Id: 5000000000002
-    m_Localized: "Caf\xE9 de la Esquina\n2 submarinos, 1 medialuna\nPagado a las 21:47"
+    m_Localized: "Caf\xE9 de la Esquina\n2 submarinos, 1 medialuna\nPagado a las 20:30"
     m_Metadata:
       m_Items: []
   references:

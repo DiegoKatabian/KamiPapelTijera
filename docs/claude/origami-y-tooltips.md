@@ -149,8 +149,8 @@ Prefab: `Assets/Prefabs/UI/PostIt.prefab` (tiene CanvasGroup; fallback AddCompon
 ### Gotcha: `HideTooltip()` global llamado desde afuera del sistema de tooltips
 
 `TooltipManager.HideTooltip()` (sin color) esconde los 5 post-its de una — lo usa código que
-necesita "limpiar la pantalla" sin saber qué color está mostrando qué en ese momento. Hoy el único
-caller externo es `Player.DestroyPaperPlaneHat()` (sombrero de papel / salto aumentado), pensado
+necesita "limpiar la pantalla" sin saber qué color está mostrando qué en ese momento. Hoy los
+callers externos son `DialogueManager.ShowDialogue` (2026-10-16: abrir un diálogo esconde todos los post-its; el "E para mirar adentro" del tacho se quedaba encima del comentario de Natalia) y `Player.DestroyPaperPlaneHat()` (sombrero de papel / salto aumentado), pensado
 para dispararse UNA vez al terminarse los saltos aumentados.
 
 **Bug real (issue #41.13, septiembre 2026):** `PlayerModel.UpdateVerticalState()` llamaba a

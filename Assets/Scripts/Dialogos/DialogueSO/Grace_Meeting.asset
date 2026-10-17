@@ -29,12 +29,27 @@ MonoBehaviour:
       action: 0
       value: Arrest
   - text: grace_meeting_03
-    sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
-    speakerName: grace_name
+    sprite: {fileID: 21300000, guid: 75fdca8f3dd19d94ab9575b14d156944, type: 3}
+    speakerName: Abuela
   - text: grace_meeting_04
-    sprite: {fileID: 21300000, guid: 006be16fa8b91c74abbeeab1a5c4c680, type: 3}
+    sprite: {fileID: 21300000, guid: 12ec3d9f382d88840b26afd24c74d88a, type: 3}
     speakerName: natalia_name
   - text: grace_meeting_05
+    sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
+    speakerName: unknown_name
+  - text: grace_meeting_06
+    sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
+    speakerName: grace_name
+  - text: grace_meeting_07
+    sprite: {fileID: 21300000, guid: 006be16fa8b91c74abbeeab1a5c4c680, type: 3}
+    speakerName: natalia_name
+  - text: grace_meeting_08
+    sprite: {fileID: 21300000, guid: 3c2006527920acd4a9f3868883a309d3, type: 3}
+    speakerName: ariel_name
+  - text: grace_meeting_09
+    sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
+    speakerName: natalia_name
+  - text: grace_meeting_10
     sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
   currentText: 0
