@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7dbce3668a28f42bb62a3c585866f0, type: 3}
+  m_Name: Grace_MeetingAccusation
+  m_EditorClassIdentifier: 
+  wasRead: 0
+  events:
+  - text: grace_meeting_01
+    sprite: {fileID: 21300000, guid: aeb8c4fba09eb964b89484400dbdd612, type: 3}
+    speakerName: ariel_name
+    animationCues:
+    - actor: Ariel
+      action: 0
+      value: Point
+  - text: grace_meeting_02
+    sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
+    speakerName: police_name
+    animationCues:
+    - actor: Police
+      action: 0
+      value: Arrest
+  currentText: 0

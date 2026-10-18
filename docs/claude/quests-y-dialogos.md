@@ -222,7 +222,14 @@ beats as poses or moods: angry on page 1 until `Natalia_01` line 3 ("Ay perdón.
 the arrest. `_sr` is empty on purpose; `NPC.FaceDirection` / damage tint go through the `SpineCharacter`.
 **Following changed**: she aims at a spot 3.5 units beside Kami on the side she is already on (stopping 1 unit from it)
 and matches Kami's pace (`NPC` "Following Kami" header, capped at 18 u/s, a bit under Kami's 20). The Abuela follower
-does the same at 7 units. Both play `Walk` while riding a page turn or the paper plane (`NPC.SetRiding`).
+does the same at 7 units. **The side spot never leaves the page (#246, 2026-10-17, not played)**: a spot past the page's X
+range (`PlayerPageSpawnManager.PageMinX/PageMaxX`, the page entry/exit X, -42/42 in Level 2) is swapped for the other side for
+that frame, both out = Kami's own point; at the book's edge the outer spot either had no NavMesh (they froze, page 4) or sat on
+the floor's NavMesh past the invisible walls (they pushed against them, page 5). Landing from a page turn also points the side
+at the page centre (`NPC.FollowSideTowardPageCentre`, from `PageRideFollowers.TryLand`). Both play `Walk` while riding a page turn or the paper plane (`NPC.SetRiding`). The Abuela has
+no `SpineCharacter`, so riding holds her Animator's `IsWalking` on (`NPC._ridingWalk`, #240, 2026-10-17): boarding stops her
+follow and the FSM's follow-exit / idle-enter used to write it back to false the next frame. Plane seats (#239):
+Natalia (-1.6, 0.1, 0.6), the Abuela (-3.2, -0.6, 1.3), closer, higher and at different depths so their feet don't z-fight.
 
 ### Phase 6 additions (2026-09-29)
 

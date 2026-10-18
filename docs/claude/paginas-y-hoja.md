@@ -54,4 +54,5 @@ entry point. Seats and timings are Inspector fields; detail in `specs/012-page-t
 **Landing spots (#171, 2026-10-13)**: only toward the middle of the page (`_landingSpacing` x slot, then twice that), never
 outward: Kami lands at the book's edge, and the floor's NavMesh continues past the book's invisible walls, so an outer spot
 sampled fine and stranded the follower outside. A spot is taken only if `NavMesh.CalculatePath` from it to Kami's own
-NavMesh point is `PathComplete`; if neither is, the follower lands on Kami's point.
+NavMesh point is `PathComplete`; if neither is, the follower lands on Kami's point. After landing its follow side points at
+the page centre, and the follow spot itself never falls past the page's edge (#246, see "Following changed" in `quests-y-dialogos.md`).

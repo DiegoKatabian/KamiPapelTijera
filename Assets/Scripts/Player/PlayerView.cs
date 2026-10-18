@@ -224,12 +224,12 @@ public class PlayerView
                 {
                     SetBodyAnimation(ANIMATION_CASTING, true);
                 }
-                CameraManager.Instance.SetCamera(CameraMode.OrigamiCasting);
+                CameraManager.Instance.SetCameraForBeat(CameraMode.OrigamiCasting);
                 break;
 
             case PlayerState.ReceivingReward:
                 AudioManager.instance.Play(AudioId.Receive_Reward);
-                CameraManager.Instance.SetCamera(CameraMode.ReceiveReward);
+                CameraManager.Instance.SetCameraForBeat(CameraMode.ReceiveReward);
                 _player.particleShooter.Enable(PARTICLE_REWARD, true);
                 SetBodyAnimation(ANIMATION_RECEIVE_REWARD, false);
                 _skeletonAnimation.AnimationState.AddAnimation(TRACK_BODY, ANIMATION_RECEIVE_REWARD_LOOP, true, 0);
@@ -268,10 +268,10 @@ public class PlayerView
         switch (previous)
         {
             case PlayerState.Casting:
-                CameraManager.Instance.SetCamera(CameraMode.Normal);
+                CameraManager.Instance.SetCameraForBeat(CameraMode.Normal);
                 break;
             case PlayerState.ReceivingReward:
-                CameraManager.Instance.SetCamera(CameraMode.Normal);
+                CameraManager.Instance.SetCameraForBeat(CameraMode.Normal);
                 _player.particleShooter.Enable(PARTICLE_REWARD, false);
                 break;
         }

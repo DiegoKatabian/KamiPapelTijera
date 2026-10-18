@@ -113,6 +113,9 @@ public class PoliceOfficer : PatrollingAgent
     float _nextRepathTime;
     bool _knockedOut;
     float _wakeUpTime;
+
+    bool _frozenForDialogue;
+    bool _stoppedBeforeFreeze;
     Vector3 _spriteStartLocalPosition;
     Quaternion _spriteStartLocalRotation;
     Color _spriteStartColor;
@@ -219,6 +222,13 @@ public class PoliceOfficer : PatrollingAgent
 
     protected override void Update()
     {
+        //#238: while a line is on screen he stands where he is (first, so a knocked-out cop can't wake up and walk
+        //off in the middle of it either)
+        if (UpdateDialogueFreeze())
+        {
+            return;
+        }
+
         if (_knockedOut)
         {
             if (Time.time >= _wakeUpTime)
@@ -239,6 +249,37 @@ public class PoliceOfficer : PatrollingAgent
 
         UpdateFacing();
         UpdateSpriteFlip();
+    }
+
+    /// <summary>True while a dialogue is open: the agent is stopped on the spot and resumes as it was when it closes.</summary>
+    bool UpdateDialogueFreeze()
+    {
+        LevelManager levelManager = LevelManager.Instance;
+        bool frozen = levelManager != null && levelManager.inDialogue;
+        if (frozen == _frozenForDialogue)
+        {
+            return frozen;
+        }
+
+        _frozenForDialogue = frozen;
+        if (navAgent == null || !navAgent.enabled || !navAgent.isOnNavMesh)
+        {
+            return frozen;
+        }
+
+        if (frozen)
+        {
+            _stoppedBeforeFreeze = navAgent.isStopped;
+            navAgent.isStopped = true;
+            navAgent.velocity = Vector3.zero; //stop now, not after decelerating: SpineCharacter idles from the real speed
+            Debug.Log($"[PoliceOfficer] {gameObject.name}: dialogue open, standing still");
+        }
+        else
+        {
+            navAgent.isStopped = _stoppedBeforeFreeze;
+            Debug.Log($"[PoliceOfficer] {gameObject.name}: dialogue closed, back to what he was doing");
+        }
+        return frozen;
     }
 
     // ---------------------------------------------------------------- public API
@@ -352,6 +393,7 @@ public class PoliceOfficer : PatrollingAgent
         _pausing = false;
         Awareness = 0f;
         _facing = _startFacing;
+        _frozenForDialogue = false; //the next Update freezes him again if a dialogue is still open, from his new state
         state = AgentState.Patrolling;
 
         if (_character != null)

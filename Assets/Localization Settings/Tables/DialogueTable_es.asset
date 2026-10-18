@@ -586,6 +586,10 @@ MonoBehaviour:
     m_Localized: "Kami, mostrales el ticket del caf\xE9."
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000232
+    m_Localized: "\xA1Eh! \xA1Re caro!"
+    m_Metadata:
+      m_Items: []
   - m_Id: 661900000000172
     m_Localized: "\xBFVen? \xA1Dice 20:30! \xA1A la hora del robo nosotras est\xE1bamos en la cafeter\xEDa! \xA1Es imposible que hayamos sido nosotras!"
     m_Metadata:

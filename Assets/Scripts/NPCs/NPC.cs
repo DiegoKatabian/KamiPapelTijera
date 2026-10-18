@@ -35,6 +35,8 @@ public class NPC : Entity
     [SerializeField, Tooltip("Bool parameter toggled on the animator while this NPC is moving under its own steering.")]
     string _walkAnimatorBool = "IsWalking";
 
+    bool _ridingWalk; //an Animator NPC on a ride keeps walking whatever its states ask (SetRiding)
+
     [SerializeField, Tooltip("Flip the sprite to face the direction of travel while moving.")]
     bool _flipSpriteToMovement = true;
 
@@ -211,7 +213,38 @@ public class NPC : Entity
             _followSide = -_followSide;
         }
 
-        return kami + (Vector3.right * _followSide * _followSideOffset);
+        //Kami at a page's edge (#246): the spot on the outer side is past the book, either with no
+        //NavMesh (the follower froze) or on the floor's NavMesh beyond the book's invisible walls (it
+        //pushed against them). Use the inner side then, without remembering it: the side still only
+        //switches for real once the follower is clearly past her. Both sides out = her own point.
+        Vector3 spot = kami + (Vector3.right * _followSide * _followSideOffset);
+        if (IsOnPage(spot.x))
+        {
+            return spot;
+        }
+
+        Vector3 otherSpot = kami - (Vector3.right * _followSide * _followSideOffset);
+        return IsOnPage(otherSpot.x) ? otherSpot : kami;
+    }
+
+    /// <summary>After a page-turn landing (#246): the follow side points toward the middle of the page, away from the book's edge.</summary>
+    public void FollowSideTowardPageCentre()
+    {
+        if (player == null || PlayerPageSpawnManager.Instance == null)
+        {
+            return;
+        }
+
+        PlayerPageSpawnManager pages = PlayerPageSpawnManager.Instance;
+        float centre = (pages.PageMinX + pages.PageMaxX) * 0.5f;
+        _followSide = player.transform.position.x > centre ? -1f : 1f;
+    }
+
+    //no spawn manager (a scene without pages) = no edge to keep away from
+    static bool IsOnPage(float x)
+    {
+        PlayerPageSpawnManager pages = PlayerPageSpawnManager.Instance;
+        return pages == null || (x >= pages.PageMinX && x <= pages.PageMaxX);
     }
 
     /// <summary>Sets the agent's speed from Kami's pace (when Match Kami Pace is on). Called every frame while following.</summary>
@@ -257,6 +290,7 @@ public class NPC : Entity
             return;
         }
 
+        _ridingWalk = riding;
         SetWalkAnimation(riding);
     }
 
@@ -453,7 +487,9 @@ public class NPC : Entity
             return;
         }
 
-        anim.SetBool(_walkAnimatorBool, walking);
+        //#240: boarding stops the follow, and the FSM's next tick (follow state's last update, its exit, the idle
+        //state's enter) writes false right after SetRiding wrote true, so a ride never showed the walk
+        anim.SetBool(_walkAnimatorBool, walking || _ridingWalk);
     }
 
     public void UpdateSpriteFlip()

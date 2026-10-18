@@ -29,13 +29,17 @@ public class CameraManager : Singleton<CameraManager>
     [SerializeField] DialogueSO[] dialoguesEspeciales;
     [SerializeField] CameraMode[] camarasEspeciales;
 
+    [Header("Pages that keep their camera (#237)")]
+    [SerializeField, Tooltip("Page numbers (1 = first page) where the gameplay beats (folding an origami, receiving a reward, putting on the paper plane hat) leave the camera where it is, instead of cutting to their own shot and back to Normal. Level 2: page 4, which stays on BookCenter. Empty = every page switches, as always.")]
+    int[] _pagesThatKeepTheirCamera;
+
     protected override void Awake()
     {
         base.Awake();
 
         EventManager.Subscribe(Evento.OnEncounterStart, SetCamera);
-        EventManager.Subscribe(Evento.OnOrigamiGivePaperPlaneHat, SetCamera);
-        EventManager.Subscribe(Evento.OnOrigamiCameraChange, SetCamera);
+        EventManager.Subscribe(Evento.OnOrigamiGivePaperPlaneHat, SetCameraForBeat);
+        EventManager.Subscribe(Evento.OnOrigamiCameraChange, SetCameraForBeat);
 
         currentCamera = startingCamera;
         StartCoroutine(LevelStartCameraMovement());
@@ -154,6 +158,42 @@ public class CameraManager : Singleton<CameraManager>
         EventManager.Trigger(Evento.OnCameraChange, cam);
     }
 
+    /// <summary>
+    /// A camera change that belongs to a gameplay beat (origami, reward, the paper plane hat), not to the
+    /// story or the player: skipped on the pages listed in _pagesThatKeepTheirCamera.
+    /// </summary>
+    public void SetCameraForBeat(CameraMode cam)
+    {
+        if (CurrentPageKeepsItsCamera())
+        {
+            Debug.Log($"[CameraManager] {cam} skipped: this page keeps its camera ({CurrentMode})");
+            return;
+        }
+
+        SetCamera(cam);
+    }
+
+    void SetCameraForBeat(params object[] parameters)
+    {
+        if (CurrentPageKeepsItsCamera())
+        {
+            Debug.Log($"[CameraManager] beat camera skipped: this page keeps its camera ({CurrentMode})");
+            return;
+        }
+
+        SetCamera(parameters);
+    }
+
+    bool CurrentPageKeepsItsCamera()
+    {
+        if (_pagesThatKeepTheirCamera == null || _pagesThatKeepTheirCamera.Length == 0 || PageScrollerManager.Instance == null)
+        {
+            return false;
+        }
+
+        return System.Array.IndexOf(_pagesThatKeepTheirCamera, PageScrollerManager.Instance.activePageIndex + 1) >= 0;
+    }
+
     public void SetCamera(params object[] parameters)
     {
         if (parameters != null && parameters.Length > 0)
@@ -182,8 +222,8 @@ public class CameraManager : Singleton<CameraManager>
         if (!gameObject.scene.isLoaded)
         {
             EventManager.Unsubscribe(Evento.OnEncounterStart, SetCamera);
-            EventManager.Unsubscribe(Evento.OnOrigamiGivePaperPlaneHat, SetCamera);
-            EventManager.Unsubscribe(Evento.OnOrigamiCameraChange, SetCamera);
+            EventManager.Unsubscribe(Evento.OnOrigamiGivePaperPlaneHat, SetCameraForBeat);
+            EventManager.Unsubscribe(Evento.OnOrigamiCameraChange, SetCameraForBeat);
         }
     }
 }

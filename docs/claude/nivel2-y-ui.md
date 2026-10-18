@@ -142,8 +142,21 @@ drive off after the second clue so the police tape can be cut, and the quest han
   `RejaCentral Puerta` doors are switched off in `Museum Page Parent.prefab` (shared by pages 2 and 5) and replaced
   by `Prefabs/Level2/Reja Central Rota.prefab` (Diego posed the doors fallen and bent, convex MeshColliders), plus
   extra fence pieces with MeshColliders. `CrimeSceneGate` (page 2 only) moved to that gate, its blocker resized to the
-  gap; on page 5 the gap is open. The yard slabs `Cube (11)` / `Cube (16)` use `Materials/Libro/Pasto.mat`. Page 5's
-  NavMesh must be rebaked through the gate (Ariel's arrest walks it).
+  gap; on page 5 the gap is open. Page 5's NavMesh must be rebaked through the gate (Ariel's arrest walks it).
+- **Grass only inside the museum fence, newsprint on the buildings (#236, 2026-10-17, not seen in the Editor yet)**: the floor
+  slabs `Cube (11)` / `Cube (16)` are street now (`Newspaper 4` left, `Newspaper` right, the split pages 1 and 3 use) and keep
+  their colliders. The grass is `YardGrass`, a collider-less, non-static flat mesh (`Prefabs/Level2/MuseumYardGrass.asset`,
+  `Pasto.mat`, UVs at the old slabs' density) 0.03 above them, shaped like the fence outline (front at prefab z 14.45 with
+  the chamfered corners, sides at x -31.76 / 29.25), so the NavMesh needs no rebake for it. The museum is option C "Fine
+  print": `KamiMuseo.fbx`'s six embedded materials are remapped in its importer (walls and stairs `Newspaper Seamless Texture 2`,
+  columns, fence columns and gate `... 2 Black`, roof `... 3 Black Handwritten`) AND the prefab's unpacked renderers point at
+  those materials directly (they referenced the fbx's embedded sub-assets by fileID, which a remap doesn't reach). Natalia's
+  building (Page 3) is option A "Match the street" below the first-floor line (Edificio-local y 12.3, building-root y 11.06:
+  the jazz bar) and option C above it; wood (her door `Puertas`, `casita 2` and `Madera 1` in the bar) is `Newspaper Seamless
+  Texture 3 Handwritten Wooden`. Its shell `Edificio` is one ProBuilder mesh, so it now has two submeshes (cached Mesh and the
+  faces' `m_SubmeshIndex`, so a ProBuilder rebuild keeps the split) with `[Newspaper 4, Newspaper Seamless Texture 2]`. Left
+  as they were: the musicians, the saxophone, `Mesa`, `Cube (51)` and the inactive "for export" copy. Pattern size depends on
+  each mesh's UVs: tune a material's tiling if it reads too big or small.
 - **The museum fence is bars (#155, 2026-10-13)**: every fence panel (`RejasYColumnas/Reja1-8` in
   `Museum Page Parent.prefab`, and both fallen doors in `Reja Central Rota.prefab`) is an instance of
   `Prefabs/Level2/Reja/`: one base `Reja.prefab` (root + `Panel` with the BoxCollider, Navigation Static) and one
@@ -165,7 +178,14 @@ drive off after the second clue so the police tape can be cut, and the quest han
   fires `Shoot`. `BucketFrame` and `BaseCollider` are yawed 157.4 deg to match the model's override in the museum
   prefab: if the model is rotated again, rotate those two with it. The old `Catapult_PLACEHOLDER_POSITION` stays in the
   scene switched off (safe to delete).
-- Page 5 is page 2 after the clues (Diego): none of the page 2 gameplay objects live there.
+- Page 5 is page 2 after the clues (Diego): none of the page 2 gameplay objects live there. Its copy of the museum's
+  glove can (inside `Museum Page Parent.prefab`) is overridden on page 5's instance into a plain paper can (2 paper, #241).
+- **No moving traffic on the museum street (#234, 2026-10-17)**: the `TrafficSpawner_Vertical (1)` that lived inside
+  `Museum Page Parent.prefab` was removed, so pages 2 and 5 only have parked cars and the patrol cars.
+- **Page 2's guards board quickly (#235, 2026-10-17, not played)**: on the scene instance of `CrimeSceneGate` the patrol car
+  sits at gate-local z -13.34 (was -18.34), `CarDoor` at z -9.4 and both guards at z -5.5 (were about -1.5), so each one
+  walks 4-7 units to the door (about a second at `_copWalkSpeed` 7). `DriveOffTarget` moved to the car's z so it drives
+  straight. `GuardTalk`'s box (z +3.5 to -8.5) still covers them.
 
 **Phase 3 (page 3, "The trap") built 2026-09-25, played in Diego's full playthrough (2026-09-28).** Chain: talk to
 the gift ("what's this? let's cut it open!") → cut its ribbon (any time, talked to or not) →
@@ -282,10 +302,10 @@ always reaches page 5 with it.
    variants, still named `Ariel_PLACEHOLDER_POSITION` / `CopWitness1|2_PLACEHOLDER_POSITION`) from the start, taking
    Grace's statement about the robbery, their car (`PoliceCar_Parked`) parked in the street. The meeting is where
    Grace introduces herself, and Natalia introduces herself and Kami.
-2. The unfold shows the ticket (the girls' receipt from page 1: 2 hot chocolates, paid at 20:30) on
+2. The unfold shows the ticket (the girls' receipt from page 1, Big C Cafe: a coffee and a medialuna, $24.000, paid at 20:30; #243) on
    the letter's `OrigamiTextRevealPanel`; closing it plays `Museum_Evidence`: both girls were at the
    café at 20:30 and heard of the robbery on its radio, Ariel's hat + glove, the watch stopped at
-   20:30, Grace pointing out Ariel's access through his father, the police apology and "Usted Ariel, nos va a tener que acompañar", Ariel's confession after four silent "..." bubbles and "Bueno ya, circule caballero por favor" (18 lines, rewritten 2026-10-17 from Diego's script; the Abuela's '58 pillow-war joke and Ariel's apology are gone).
+   20:30, Grace pointing out Ariel's access through his father, the police apology and "Usted Ariel, nos va a tener que acompañar", Ariel's confession after four silent "..." bubbles and "Bueno ya, circule caballero por favor" (19 lines since #243 added the Abuela's opening "¡Eh! ¡Re caro!" (key `museum_evidence_00`), rewritten 2026-10-17 from Diego's script; the Abuela's '58 pillow-war joke and Ariel's apology are gone).
 3. When that ends the cops march Ariel to their car and drive off (`MuseumArrest`, `Timeline_MuseumArrest`, #183,
    see `cutscenes.md`). Once the car has left and Kami is free, **Grace offers the catapult** (`Grace_CatapultOffer`,
    `MuseumPage._catapultOffer`, phase `Offer`; #223, 2026-10-16: it used to be the end of `Museum_Evidence`, so she
@@ -408,7 +428,8 @@ page since 2026-09-24**: `PageMusicManager` (`Assets/Scripts/Managers/`, instanc
 `Prefabs/Level2/PageMusicManager.prefab` at the scene root) holds one AudioId per page in the
 Inspector — Bohren on pages 1-2, silence on 3, `DeadEndAngels` on 4, Bohren again on 5. It re-applies
 on `OnNewPageOpen` and one frame after start, so it wins over `LevelManager.Start` on a test started from
-page 3. **Story music (#176, 2026-10-13)**: `_storyMusic` (`DeadEndAngels` in the prefab) overrides every page
+page 3. **Story music (#176, 2026-10-13)**: `_storyMusic` (`DeadEndAngels` in the prefab, its AudioBank row loops since #244:
+it played once and page 5 went silent) overrides every page
 from `_storyMusicStartsOn` (`OnArrestStarted`, raised by the arrest) until `_storyMusicEndsOn`
 (`OnPaintingReturned`, page 5's evidence), latched: the tension track runs through the escape without
 restarting, pages 1-3 included, and page 5 goes back to Bohren when the case closes. LevelManager también expone
@@ -504,6 +525,13 @@ suprimir tooltips mientras el mouse está sobre UI.
 (`CloseUp`, `OrigamiCasting`, `Normal`, `General`, `BookCenter`, `ReceiveReward`).
 `SetCamera(modo)` apaga todas y prende la target; `ToggleNextCamera()` (click medio)
 cicla. Durante un page-turn la secuencia es CloseUp → BookCenter (con delay) → Normal.
+
+**Pages that keep their camera (#237, 2026-10-17, not played).** `CameraManager._pagesThatKeepTheirCamera` (page numbers,
+1 = first; Level 2's scene override: `4`) makes the gameplay beats' camera switches do nothing on those pages:
+`CameraManager.SetCameraForBeat` is what `PlayerView` (casting -> OrigamiCasting, reward -> ReceiveReward, and the Normal
+on leaving either), `MultipleRectCheck` (CloseUp on start, Normal on end) and the `OnOrigamiGivePaperPlaneHat` /
+`OnOrigamiCameraChange` events go through. So on page 4 the gear pickup, the paper plane fold and the hat keep
+`BookCenter`. Page turns, cutscenes and player picks still switch. Empty list (Level 1) = unchanged.
 
 **Player-pickable vs game-driven (#43, 2026-10-05, played by Diego in both levels).** `CameraManager.IsPlayerSelectable` is the one
 source of truth: `OrigamiCasting` and `ReceiveReward` are driven by `PlayerView` (casting / receiving

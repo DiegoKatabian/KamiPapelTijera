@@ -75,6 +75,10 @@ which is why `SoundEntry` has `minDistance` / `maxDistance` / `linearRolloff` (d
 rows are unchanged). The idling cars use linear 25-75 (engine) and 30-110 (horn). `AudioManager` applies them on every
 play, so a pooled source never keeps the last sound's rolloff.
 
+**Dialogue portraits (#245, 2026-10-17)**: `DialogueManager.WriteText` sets each line's portrait before the two
+localization lookups (each takes a frame or more), hides the old text and blanks the speaker name only when it changes,
+so the globe never shows the previous line's or dialogue's portrait. Not played yet.
+
 **Per-line dialogue sounds**: `DialogueEvent.soundOnLine` (an AudioId, empty = none) is played by
 `DialogueManager.WriteText` when that line starts being written. Set today: `Arrest_Cuffs` line 1
 -> `Handcuffs`; `Natalia_01` line 7 -> `RadioStatic`, line 8 (the radio announcement) ->

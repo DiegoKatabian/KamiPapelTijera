@@ -23,7 +23,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 5000000000002
-    m_Localized: "Caf\xE9 de la Esquina\n2 submarinos, 1 medialuna\nPagado a las 20:30"
+    m_Localized: "Big C Cafe\n1 caf\xE9........$12.000\n1 medialuna...$12.000\nTotal.........$24.000\n\nPagado a las 20:30"
     m_Metadata:
       m_Items: []
   references:

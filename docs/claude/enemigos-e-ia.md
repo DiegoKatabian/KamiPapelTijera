@@ -54,6 +54,10 @@ BaseOffset 4). The project's first detection system. Played by Diego (full playt
   walking to" is exactly spec 002's FR-004. So in the base's debug logs, "Evading" means alerted.
   `PatrollingAgent` itself was not touched. Its `Start` never sets a first destination (it would
   skip waypoint 0), so the officer calls `SetWaypoints` itself, like Gallina.
+- **He stands still during dialogues (#238, 2026-10-17, not played)**: while `LevelManager.inDialogue` is on (any line on
+  screen, overlays and page turns too) `PoliceOfficer.UpdateDialogueFreeze` stops his agent on the spot (velocity zeroed, so
+  his Spine idles) and skips the rest of his Update; when it ends the agent gets back the `isStopped` it had. `ResetToStart`
+  clears the freeze so a restart during one can't leave him stopped.
 - **No detection while the game is frozen for the player**: dialogue, cutscene, overlay, page turn,
   Kami dead or riding a page.
 - `VisionConeView` rebuilds the fan every frame from the officer's own numbers, cut short by the

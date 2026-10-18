@@ -21,6 +21,10 @@ public class PlayerPageSpawnManager : Singleton<PlayerPageSpawnManager>
     Vector3 targetPos = Vector3.zero; //para cuando el player cambia de pagina, saber a donde debe ir
     Vector3? _placementOverride;
 
+    /// <summary>The page's horizontal extent: Kami enters and leaves every page at these X, its book edges.</summary>
+    public float PageMinX => Mathf.Min(pageEntryX, pageExitX);
+    public float PageMaxX => Mathf.Max(pageEntryX, pageExitX);
+
     void Start()
     {
         //EventManager.Subscribe(Evento.OnEncounterStart, SaveCurrentPosition);

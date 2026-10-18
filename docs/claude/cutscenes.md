@@ -110,8 +110,11 @@ Detail of each beat: `nivel2-y-ui.md`. Kami is locked (`inCutscene`) by the scri
 
 `Timeline_MuseumArrival.playable`, on `Page 5/Museum Sequence`. No car arrives any more (#182): Ariel, the two cops and
 their parked patrol car (`PoliceCar_Parked`) are on the page from the start. The timeline is camera only: GroupNear
-(0-3s) -> PullBack (2.6-6s) -> GroupNear (5.6-9s), both following Kami (set in code by `MuseumPage`), with the
-dialogue markers `Grace_Reaction` (0.4s) and `Grace_Meeting` (6.4s). It starts when Kami walks within
+(0-3s, following Kami, set in code by `MuseumPage`) -> a push-in on Ariel (`CM Arrival Ariel`, 2-4.4s, a 1 s blend;
+#242, 2026-10-17, not played: it was the PullBack vcam, now following Ariel at Follow Offset (0, 11, -32)) -> GroupNear
+(3.8-7.4s), with the dialogue markers `Grace_Reaction` (0.4s), `Grace_MeetingAccusation` (3.2s: Ariel's "¡Ahí están las
+fugitivas...!" and the cop's "¡Nadie se mueva!", split out of `Grace_Meeting` so they play on his close-up) and
+`Grace_Meeting` (4.6s, from the Abuela's "Chicas, ¿qué hicieron ahora?"). It starts when Kami walks within
 `MuseumPage._approachRadius` (12, gizmo on `Museum Sequence`) of Grace with the evidence, or talks to her.
 
 ## Tuning Ariel's arrest (page 5, #183, 2026-10-13, not playtested)

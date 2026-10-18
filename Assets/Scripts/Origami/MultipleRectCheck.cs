@@ -311,7 +311,7 @@ public class MultipleRectCheck : MonoBehaviour
             AudioManager.instance.Play(Random.Range(0, 2) == 0
                 ? AudioId.MagicChannelingLoop01
                 : AudioId.MagicChannelingLoop02); //no bank group: EndOrigami stops each loop by id
-            CameraManager.Instance.SetCamera(CameraMode.CloseUp);
+            CameraManager.Instance.SetCameraForBeat(CameraMode.CloseUp);
             EventManager.Trigger(Evento.OnOrigamiStart);
             //print("rect check: mando a actualizar");
             origami.TriggerPliegueTextUpdater();
@@ -336,7 +336,7 @@ public class MultipleRectCheck : MonoBehaviour
         CursorManager.Instance.SetCursor(CursorType.OpenHand);
         EventManager.Trigger(Evento.OnOrigamiEnd);
         CursorManager.Instance.ShowCursor(false);
-        CameraManager.Instance.SetCamera(CameraMode.Normal);
+        CameraManager.Instance.SetCameraForBeat(CameraMode.Normal);
         //TriggerOrigami.OnExitBehaviour tambien pasa por aca justo antes de destruir este objeto:
         //por eso el cursor se esconde SIEMPRE en EndOrigami y no solo en los caminos "de juego"
         EsconderCursorJoystick();

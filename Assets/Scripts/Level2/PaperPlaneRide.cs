@@ -28,10 +28,10 @@ public class PaperPlaneRide : MonoBehaviour
 
     [Header("Seats (relative to Kami, X mirrored with the way she faces)")]
     [SerializeField, Tooltip("Natalia's seat, in world units from Kami's body center. Her transform sits at her waist.")]
-    Vector3 _nataliaSeat = new Vector3(-2.5f, -0.5f, 0.6f);
+    Vector3 _nataliaSeat = new Vector3(-1.6f, 0.1f, 0.6f);
 
-    [SerializeField, Tooltip("The Abuela's seat.")]
-    Vector3 _abuelaSeat = new Vector3(-5f, -1.2f, 0.6f);
+    [SerializeField, Tooltip("The Abuela's seat. Keep its Z different from Natalia's: at the same depth their overlapping feet z-fight (#239).")]
+    Vector3 _abuelaSeat = new Vector3(-3.2f, -0.6f, 1.3f);
 
     [SerializeField, Tooltip("How far each rider bobs up and down, in world units. Placeholder for the real pose.")]
     float _bobAmplitude = 0.35f;

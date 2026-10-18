@@ -15,7 +15,7 @@ MonoBehaviour:
   m_Version: 0
   m_Tracks:
   - {fileID: 6378722483872706554}
-  m_FixedDuration: 9
+  m_FixedDuration: 7.4
   m_EditorSettings:
     m_Framerate: 60
     m_ScenePreview: 1
@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fb794a295e73545af71bcdb7375791, type: 3}
   m_Name: CinemachineShot
   m_EditorClassIdentifier:
-  DisplayName: PullBack
+  DisplayName: ArielPushIn
   VirtualCamera:
     exposedName: cee0de9a7780c2871e550ef09701725c
     defaultValue: {fileID: 0}
@@ -100,7 +100,7 @@ MonoBehaviour:
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
     m_BlendInDuration: -1
-    m_BlendOutDuration: 0.4
+    m_BlendOutDuration: 1
     m_MixInCurve:
       serializedVersion: 2
       m_Curve: []
@@ -142,16 +142,16 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: Shot GroupNear
   - m_Version: 1
-    m_Start: 2.6
+    m_Start: 2.0
     m_ClipIn: 0
     m_Asset: {fileID: 7195618477897737885}
-    m_Duration: 3.4
+    m_Duration: 2.4
     m_TimeScale: 1
     m_ParentTrack: {fileID: 6378722483872706554}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
-    m_BlendInDuration: 0.4
-    m_BlendOutDuration: 0.4
+    m_BlendInDuration: 1
+    m_BlendOutDuration: 0.6
     m_MixInCurve:
       serializedVersion: 2
       m_Curve:
@@ -209,17 +209,17 @@ MonoBehaviour:
     m_PreExtrapolationMode: 0
     m_PostExtrapolationTime: 0
     m_PreExtrapolationTime: 0
-    m_DisplayName: Shot PullBack
+    m_DisplayName: Shot Ariel PushIn
   - m_Version: 1
-    m_Start: 5.6
+    m_Start: 3.8
     m_ClipIn: 0
     m_Asset: {fileID: 8297690811308407058}
-    m_Duration: 3.4
+    m_Duration: 3.6
     m_TimeScale: 1
     m_ParentTrack: {fileID: 6378722483872706554}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
-    m_BlendInDuration: 0.4
+    m_BlendInDuration: 0.6
     m_BlendOutDuration: -1
     m_MixInCurve:
       serializedVersion: 2
@@ -277,6 +277,20 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   m_Time: 0.4
   _dialogue: {fileID: 11400000, guid: 20972f124d864b9292a184de5044b6c6, type: 2}
+--- !u!114 &4719305822610934411
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe7ebb6245df4fe0b2b5489736a0309f, type: 3}
+  m_Name: CutsceneDialogueMarker
+  m_EditorClassIdentifier:
+  m_Time: 3.2
+  _dialogue: {fileID: 11400000, guid: 57b5125411984cb3826802040c67da06, type: 2}
 --- !u!114 &1465934499735810783
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -289,7 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe7ebb6245df4fe0b2b5489736a0309f, type: 3}
   m_Name: CutsceneDialogueMarker
   m_EditorClassIdentifier:
-  m_Time: 6.4
+  m_Time: 4.6
   _dialogue: {fileID: 11400000, guid: 42683fb43b924ef9b52010040d2f5110, type: 2}
 --- !u!114 &5583044181036057711
 MonoBehaviour:
@@ -315,4 +329,5 @@ MonoBehaviour:
   m_Markers:
     m_Objects:
     - {fileID: 5513888137748267049}
+    - {fileID: 4719305822610934411}
     - {fileID: 1465934499735810783}

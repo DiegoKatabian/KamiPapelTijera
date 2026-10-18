@@ -588,6 +588,10 @@ MonoBehaviour:
     m_Localized: "Kami, show them the caf\xE9 ticket."
     m_Metadata:
       m_Items: []
+  - m_Id: 661900000000232
+    m_Localized: "Whoa! What a rip-off!"
+    m_Metadata:
+      m_Items: []
   - m_Id: 661900000000172
     m_Localized: "See? It says 20:30! At the time of the robbery we were at the caf\xE9! There is no way it was us!"
     m_Metadata:

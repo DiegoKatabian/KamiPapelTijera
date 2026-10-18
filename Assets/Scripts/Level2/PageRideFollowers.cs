@@ -312,6 +312,9 @@ public class PageRideFollowers : MonoBehaviour
             rider.npc.player = player;
         }
         rider.npc.StartFollowingPlayer();
+        //StartFollowingPlayer picks the side the follower stands on, and landing on Kami's own point
+        //(the last resort) made that the outer side at the right-hand edge (#246)
+        rider.npc.FollowSideTowardPageCentre();
         Debug.Log($"[PageRideFollowers] {rider.npc.gameObject.name} lands next to Kami at {hit.position}");
         return true;
     }

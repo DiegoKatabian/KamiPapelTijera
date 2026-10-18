@@ -1109,7 +1109,7 @@ MonoBehaviour:
     volume: 0.03
     pitch: 1
     pitchVariation: 0
-    loop: 0
+    loop: 1
     bus: 0
     maxSimultaneous: 1
     spatialBlend: 0

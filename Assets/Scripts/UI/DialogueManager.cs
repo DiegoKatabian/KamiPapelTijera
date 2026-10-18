@@ -154,9 +154,25 @@ public class DialogueManager : Singleton<DialogueManager>
 
     public IEnumerator WriteText(DialogueSO dialogue)
     {
+        string previousSpeakerKey = null;
         for (int i = 0; i < dialogue.events.Length; i++)
         {
             dialogue.currentText++;
+
+            //#245: the two localization lookups below take a frame or more each, and until they finish the globe kept
+            //the previous line's portrait, name and text (the opening line showed the LAST dialogue's portrait). So the
+            //portrait is set before any wait, the old text is hidden, and a name that changes is blanked until the new
+            //one arrives (a speaker who keeps talking keeps his name, so it never blinks)
+            npcQueTeHablaImage.sprite = dialogue.events[i].sprite;
+            SetNativeSize(npcQueTeHablaImage.sprite);
+            dialogueGlobeText.maxVisibleCharacters = 0;
+            if (dialogue.events[i].speakerName != previousSpeakerKey)
+            {
+                LocalizedText.Limpiar(dialogueGlobeSpeaker);
+                dialogueGlobeSpeaker.text = "";
+            }
+            previousSpeakerKey = dialogue.events[i].speakerName;
+
             yield return StartCoroutine(SetLocalizedText(dialogue.events[i].text, dialogueGlobeText));
 
             //arranca tapado en 0 ANTES del WaitForEndOfFrame: si no, el texto completo queda
@@ -165,8 +181,6 @@ public class DialogueManager : Singleton<DialogueManager>
             dialogueGlobeText.maxVisibleCharacters = 0;
 
             yield return StartCoroutine(SetLocalizedText(dialogue.events[i].speakerName, dialogueGlobeSpeaker));
-            npcQueTeHablaImage.sprite = dialogue.events[i].sprite;
-            SetNativeSize(npcQueTeHablaImage.sprite);
             EventManager.Trigger(Evento.OnDialogueWriteText, dialogue);
 
             //per-line sound (Level 2 SFX pass): plays as the line starts being written, so a

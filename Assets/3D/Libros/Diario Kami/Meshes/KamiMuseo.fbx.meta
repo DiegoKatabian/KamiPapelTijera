@@ -3,7 +3,37 @@ guid: be49bc4744cdab84fa0fde844f95a1af
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EscaleraYBarandas
+    second: {fileID: 2100000, guid: ed8a04d6fb18e9e4bae124c4b6f3a3bb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MuseoColumnas
+    second: {fileID: 2100000, guid: 049109d4b7895a94b8f0a9bd600c92d4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MuseoParedes
+    second: {fileID: 2100000, guid: ed8a04d6fb18e9e4bae124c4b6f3a3bb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MuseoPisoYColumnas
+    second: {fileID: 2100000, guid: 049109d4b7895a94b8f0a9bd600c92d4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MuseoTecho
+    second: {fileID: 2100000, guid: 2c06255d61888ab42bcb5594cdd2699b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Rejas
+    second: {fileID: 2100000, guid: 049109d4b7895a94b8f0a9bd600c92d4, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
