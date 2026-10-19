@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: 3c06d48a015f67f4db0b3fc0da8b16d7, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: adc644bc44529844e8b075ce8cf88f1e, type: 2}
   initialSkinName: Policia 2
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
@@ -195,6 +195,13 @@ MonoBehaviour:
   _flipSpriteToMovement: 1
   _invertFlip: 1
   _reparentToPlayerPageOnFollow: 0
+  _followSideOffset: 0
+  _matchKamiPace: 0
+  _paceFactor: 0.9
+  _arriveSpeed: 8
+  _catchUpDistance: 10
+  _catchUpFactor: 1.3
+  _maxFollowSpeed: 18
   _debugMovement: 0
   _debugInterval: 1
 --- !u!195 &3479626782747727990
