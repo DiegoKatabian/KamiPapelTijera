@@ -150,7 +150,7 @@ ends up following Kami and that the "Find clues" quest appears in the Flap.
 ### Story 2 — Page 2: Finding clues (Priority: P2)
 
 Kami and Natalia search the street outside the museum. A trash can (opens like a flap)
-holds a **single glove**; a **hat** is snagged on a manhole cover (changed 2026-10-16: it hangs from a parked car's windshield wiper). Two cops guard the
+holds a **single glove**; a **hat** is snagged on a manhole cover (changed 2026-10-16: it hangs from a parked car's windshield wiper; 2026-10-19: it is stuck on a car's hood). Two cops guard the
 museum's broken fence, taped off with police tape. Once Kami has two clues the cops drive
 off, and she cuts the tape to reach the museum's front yard, where a **broken wristwatch**
 shows the time of the robbery. "Find clues" completes; "Go back to Natalia's house" starts,

@@ -50,3 +50,5 @@ MonoBehaviour:
   - BarAmbience
   - 
   - 
+  _bedAmbience: CityAmbience
+  _ambienceSourcePerPage: []

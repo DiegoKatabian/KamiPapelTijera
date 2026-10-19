@@ -198,7 +198,7 @@ public class FindCluesTracker : MonoBehaviour
         }
     }
 
-    //every clue gets the short "found it" sting (the hat hangs on a car's windshield wiper now, so
+    //every clue gets the short "found it" sting (the hat is stuck on a car's hood now, so
     //the manhole clank it used to get is gone)
     void PlayClueSounds()
     {

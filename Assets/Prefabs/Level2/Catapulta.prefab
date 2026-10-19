@@ -914,7 +914,6 @@ MonoBehaviour:
   _flightTarget: {fileID: 4361665503832413570}
   _flightSeconds: 1.2
   _flightArcHeight: 20
-  _ropeCreakInterval: {x: 3, y: 6}
   _fadeSeconds: 1.5
   _nextScene: 4
   _showcaseShot: {fileID: 4415277159845995029}

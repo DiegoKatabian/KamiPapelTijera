@@ -67,7 +67,6 @@ public static class AudioId
     public const string EstampesPagodes_Battle_Intro = "EstampesPagodes_Battle_Intro";
     public const string BohrenDestroyingAngels = "BohrenDestroyingAngels";
     public const string Dialogue_PencilWrite = "Dialogue_PencilWrite";
-    public const string Dialogue_Sigh = "Dialogue_Sigh";
     public const string TijeraHit = "TijeraHit";
     public const string PaperCut = "PaperCut";
     public const string PaperFold = "PaperFold";
@@ -92,8 +91,8 @@ public static class AudioId
     public const string TypewriterClack = "TypewriterClack";
     public const string ClothRip = "ClothRip";
     public const string CafeAmbience = "CafeAmbience";
+    public const string CityAmbience = "CityAmbience";
     public const string RadioStatic = "RadioStatic";
-    public const string NewsJingle = "NewsJingle";
     public const string ManholeClank = "ManholeClank";
     public const string ClueFound = "ClueFound";
     public const string CarEngine = "CarEngine";

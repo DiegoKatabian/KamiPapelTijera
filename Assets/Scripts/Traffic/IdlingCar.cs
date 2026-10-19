@@ -18,10 +18,10 @@ public class IdlingCar : MonoBehaviour
     string _horn = AudioId.CarHornIdling;
 
     [SerializeField, Tooltip("Shortest wait between two honks of this car, in seconds.")]
-    float _hornMinSeconds = 6f;
+    float _hornMinSeconds = 20f;
 
     [SerializeField, Tooltip("Longest wait between two honks of this car, in seconds. The first honk waits a random time up to this too, so the cars of a jam don't honk together.")]
-    float _hornMaxSeconds = 16f;
+    float _hornMaxSeconds = 45f;
 
     SoundHandle _engine;
 

@@ -176,7 +176,8 @@ public class TrafficCarHitbox : MonoBehaviour
 
         if (!string.IsNullOrEmpty(hitSound) && AudioManager.instance != null)
         {
-            AudioManager.instance.Play(hitSound);
+            //CarHorn is positional (a 2D Play of a 3D row would sound from the world origin)
+            AudioManager.instance.PlayAt(hitSound, transform.position);
         }
     }
 

@@ -945,28 +945,22 @@ MonoBehaviour:
     interruptSelf: 0
   - id: Dialogue_PencilWrite
     clips:
-    - {fileID: 8300000, guid: 65236dcb8b4cad64fa2e1ee2c15bab55, type: 3}
-    - {fileID: 8300000, guid: 2134304ff51945348ba80263bd471f4b, type: 3}
-    volume: 0.35
-    pitch: 1.6
-    pitchVariation: 0.15
-    loop: 1
+    - {fileID: 8300000, guid: 7e07de6cde5740a2b742204bc3e26326, type: 3}
+    - {fileID: 8300000, guid: 6d41a9a47986402e94f16df97b758198, type: 3}
+    - {fileID: 8300000, guid: ea54bac3889040c1883cdca4cef4f7cb, type: 3}
+    - {fileID: 8300000, guid: 042405534a9446c6b7a8e0f62460706a, type: 3}
+    - {fileID: 8300000, guid: bc9246d81f4d4b6f965a5fc9b263f5de, type: 3}
+    - {fileID: 8300000, guid: 967af80667da4f9f8e07c6cd30fa115c, type: 3}
+    - {fileID: 8300000, guid: 05592835a9384b728f185deb09e4b014, type: 3}
+    - {fileID: 8300000, guid: b582132b45624ee893ceaae3db7d6bfa, type: 3}
+    - {fileID: 8300000, guid: 0de598e030c44c2bb5c15ace71ff7583, type: 3}
+    - {fileID: 8300000, guid: 9bee23e2a4ca463e8e346af82db45c77, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0.05
+    loop: 0
     bus: 2
-    maxSimultaneous: 1
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
-    priority: 128
-    interruptSelf: 0
-  - id: Dialogue_Sigh
-    clips: []
-    volume: 0.35
-    pitch: 1.6
-    pitchVariation: 0.15
-    loop: 1
-    bus: 2
-    maxSimultaneous: 1
+    maxSimultaneous: 2
     spatialBlend: 0
     minDistance: 1
     maxDistance: 500
@@ -1198,13 +1192,13 @@ MonoBehaviour:
     interruptSelf: 0
   - id: Handcuffs
     clips:
-    - {fileID: 8300000, guid: f4c9cdd0eb65d594b84d6b0962b1f4c4, type: 3}
+    - {fileID: 8300000, guid: 5c4fbd2327d34903874987476aa3b768, type: 3}
     volume: 0.5
-    pitch: 1.6
+    pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
-    maxSimultaneous: 2
+    maxSimultaneous: 1
     spatialBlend: 0
     minDistance: 1
     maxDistance: 500
@@ -1289,13 +1283,13 @@ MonoBehaviour:
     interruptSelf: 0
   - id: CopWhistle
     clips:
-    - {fileID: 8300000, guid: 6afc3e1614751f843b49f708a80b613f, type: 3}
-    volume: 0.2
+    - {fileID: 8300000, guid: 36758168a8cb4b88998c0410efe80c93, type: 3}
+    volume: 0.5
     pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
-    maxSimultaneous: 2
+    maxSimultaneous: 1
     spatialBlend: 0
     minDistance: 1
     maxDistance: 500
@@ -1350,8 +1344,23 @@ MonoBehaviour:
     interruptSelf: 0
   - id: CafeAmbience
     clips:
-    - {fileID: 8300000, guid: 7ef0cc8aeaeef69408c8f3368ff05ad9, type: 3}
-    volume: 0.2
+    - {fileID: 8300000, guid: a7771608a3f04abcac35432b2d7950cd, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 1
+    bus: 3
+    maxSimultaneous: 1
+    spatialBlend: 1
+    minDistance: 40
+    maxDistance: 140
+    linearRolloff: 1
+    priority: 128
+    interruptSelf: 0
+  - id: CityAmbience
+    clips:
+    - {fileID: 8300000, guid: 16fd84ba0eaf464ca6c2d05bb39846d9, type: 3}
+    volume: 0.5
     pitch: 1
     pitchVariation: 0
     loop: 1
@@ -1365,24 +1374,9 @@ MonoBehaviour:
     interruptSelf: 0
   - id: RadioStatic
     clips:
-    - {fileID: 8300000, guid: b639f0ac59f93e546b23afb5d63aab56, type: 3}
-    volume: 0.25
-    pitch: 1.4
-    pitchVariation: 0
-    loop: 0
-    bus: 1
-    maxSimultaneous: 1
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
-    priority: 128
-    interruptSelf: 0
-  - id: NewsJingle
-    clips:
-    - {fileID: 8300000, guid: ee4629f9fba8bb34aae6c99b575accd9, type: 3}
-    volume: 0.35
-    pitch: 1.3
+    - {fileID: 8300000, guid: b5f4b9612ea74131b561ad3df75ff6e6, type: 3}
+    volume: 0.5
+    pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
@@ -1440,17 +1434,21 @@ MonoBehaviour:
     interruptSelf: 0
   - id: CarHorn
     clips:
-    - {fileID: 8300000, guid: 8d681e10a3e1cb84297a1167db0cb5e0, type: 3}
-    volume: 0.15
-    pitch: 0.9
-    pitchVariation: 0.1
+    - {fileID: 8300000, guid: e8a91226bc68459da32e036502c9e86d, type: 3}
+    - {fileID: 8300000, guid: cbd29ddddb3147bea8b81c67b34e1717, type: 3}
+    - {fileID: 8300000, guid: f82af45a5f224760b2caefb94961b93e, type: 3}
+    - {fileID: 8300000, guid: dcab9cda86e746359f68ab6f5044e3ac, type: 3}
+    - {fileID: 8300000, guid: b9aa51dbde40426ebd268d9c94837c99, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0.08
     loop: 0
     bus: 1
-    maxSimultaneous: 1
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
+    maxSimultaneous: 2
+    spatialBlend: 1
+    minDistance: 30
+    maxDistance: 110
+    linearRolloff: 1
     priority: 128
     interruptSelf: 0
   - id: GiftBoxOpen
@@ -1478,10 +1476,10 @@ MonoBehaviour:
     loop: 1
     bus: 3
     maxSimultaneous: 1
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
+    spatialBlend: 1
+    minDistance: 40
+    maxDistance: 140
+    linearRolloff: 1
     priority: 128
     interruptSelf: 0
   - id: RopeCreak
@@ -1561,10 +1559,14 @@ MonoBehaviour:
     interruptSelf: 0
   - id: CarHornIdling
     clips:
-    - {fileID: 8300000, guid: 8d681e10a3e1cb84297a1167db0cb5e0, type: 3}
-    volume: 0.15
-    pitch: 0.9
-    pitchVariation: 0.15
+    - {fileID: 8300000, guid: e8a91226bc68459da32e036502c9e86d, type: 3}
+    - {fileID: 8300000, guid: cbd29ddddb3147bea8b81c67b34e1717, type: 3}
+    - {fileID: 8300000, guid: f82af45a5f224760b2caefb94961b93e, type: 3}
+    - {fileID: 8300000, guid: dcab9cda86e746359f68ab6f5044e3ac, type: 3}
+    - {fileID: 8300000, guid: b9aa51dbde40426ebd268d9c94837c99, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0.08
     loop: 0
     bus: 1
     maxSimultaneous: 2

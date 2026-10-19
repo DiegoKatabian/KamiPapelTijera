@@ -86,38 +86,59 @@ public class AudioManager : MonoBehaviour
 
     public SoundHandle Play(string id)
     {
-        return PlayInternal(id, null, null, false, Vector3.zero);
+        return PlayInternal(id, null, null, false, Vector3.zero, null, out _);
     }
 
     public SoundHandle Play(string id, float pitch)
     {
-        return PlayInternal(id, pitch, null, false, Vector3.zero);
+        return PlayInternal(id, pitch, null, false, Vector3.zero, null, out _);
     }
 
     public SoundHandle Play(string id, float centralPitch, float pitchVariation)
     {
-        return PlayInternal(id, centralPitch, pitchVariation, false, Vector3.zero);
+        return PlayInternal(id, centralPitch, pitchVariation, false, Vector3.zero, null, out _);
     }
 
-    /// <summary>Positional one-shot. Used by the chickens; the rest of the game is 2D.</summary>
+    /// <summary>Positional one-shot: the chickens, the traffic horns, the idling cars, the café and bar ambiences.</summary>
     public SoundHandle PlayAt(string id, Vector3 position)
     {
-        return PlayInternal(id, null, null, true, position);
+        return PlayInternal(id, null, null, true, position, null, out _);
+    }
+
+    /// <summary>
+    /// Plays one chosen clip of a row, with the row's volume, pitch spread and bus. For callers that
+    /// pick the clip themselves (the dialogue pencil chains clips to fit a line). pitch is the one it
+    /// got, so the caller knows how long the clip really lasts.
+    /// </summary>
+    public SoundHandle PlayClip(string id, AudioClip clip, out float pitch)
+    {
+        return PlayInternal(id, null, null, false, Vector3.zero, clip, out pitch);
+    }
+
+    /// <summary>The clips a row can play, or an empty array for an unknown id (warned once).</summary>
+    public AudioClip[] ClipsOf(string id)
+    {
+        if (!TryGetEntry(id, out SoundEntry entry) || entry.clips == null)
+        {
+            return new AudioClip[0];
+        }
+        return entry.clips;
     }
 
     SoundHandle PlayInternal(string id, float? pitchOverride, float? variationOverride,
-                             bool positional, Vector3 position)
+                             bool positional, Vector3 position, AudioClip clipOverride, out float finalPitch)
     {
+        finalPitch = 1f;
         if (!TryGetEntry(id, out SoundEntry entry))
         {
             return SoundHandle.None;
         }
 
-        AudioClip clip = entry.PickClip();
+        AudioClip clip = clipOverride != null ? clipOverride : entry.PickClip();
         if (clip == null)
         {
-            //a bank row with no clip is a legitimate "not recorded yet" state (Dialogue_Sigh
-            //ships that way), so warn once per id and stay silent instead of erroring
+            //a bank row with no clip is a legitimate "not recorded yet" state, so warn once per id
+            //and stay silent instead of erroring
             if (_unknownIdsReported.Add($"noclip:{id}"))
             {
                 Debug.LogWarning($"[AudioManager] '{id}' has no clips in the bank: staying silent.");
@@ -140,7 +161,7 @@ public class AudioManager : MonoBehaviour
 
         float basePitch = pitchOverride ?? entry.pitch;
         float variation = variationOverride ?? entry.pitchVariation;
-        float finalPitch = variation > 0f
+        finalPitch = variation > 0f
             ? Random.Range(basePitch - variation, basePitch + variation)
             : basePitch;
 

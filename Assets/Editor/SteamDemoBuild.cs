@@ -19,10 +19,10 @@ public static class SteamDemoBuild
     const string AUDIO_BANK_PATH = "Assets/Resources/AudioBank.asset";
 
     //Not for the demo: Level 2's music is commercially licensed (Bohren & Der Club Of Gore, and the
-    //"DeadEndAngels" track next to it) and the QuestCompleted/NewsJingle clip is named after The Sims' build
+    //"DeadEndAngels" track next to it) and the QuestCompleted clip is named after The Sims' build
     //mode. The demo has no Level 2, but the AudioBank sits in Resources, so every clip it references ships
     //whether or not anything plays it: those entries lose their clips for the length of the build.
-    static readonly string[] DEMO_EXCLUDED_AUDIO_IDS = { "BohrenDestroyingAngels", "DeadEndAngels", "QuestCompleted", "NewsJingle" };
+    static readonly string[] DEMO_EXCLUDED_AUDIO_IDS = { "BohrenDestroyingAngels", "DeadEndAngels", "QuestCompleted" };
 
     [MenuItem("Kami/Build/Steam Demo (Level 1)")]
     public static void Build()

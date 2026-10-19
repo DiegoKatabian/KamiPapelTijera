@@ -199845,7 +199845,6 @@ MonoBehaviour:
   _flightTarget: {fileID: 1336815645380250595}
   _flightSeconds: 1.2
   _flightArcHeight: 20
-  _ropeCreakInterval: {x: 3, y: 6}
   _fadeSeconds: 1.5
   _nextScene: 4
   _showcaseShot: {fileID: 0}
@@ -200441,6 +200440,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 690429518479140202, guid: 0d75e9338c374065853869c6d33e7292,
+        type: 3}
+      propertyPath: _ambienceSourcePerPage.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 690429518479140202, guid: 0d75e9338c374065853869c6d33e7292,
+        type: 3}
+      propertyPath: _ambienceSourcePerPage.Array.data[0]
+      value: 
+      objectReference: {fileID: 557665092}
+    - target: {fileID: 690429518479140202, guid: 0d75e9338c374065853869c6d33e7292,
+        type: 3}
+      propertyPath: _ambienceSourcePerPage.Array.data[2]
+      value: 
+      objectReference: {fileID: 65046027}
     - target: {fileID: 8131994908970664901, guid: 0d75e9338c374065853869c6d33e7292,
         type: 3}
       propertyPath: m_Name

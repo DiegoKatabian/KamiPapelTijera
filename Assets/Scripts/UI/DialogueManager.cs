@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,12 @@ public class DialogueManager : Singleton<DialogueManager>
     bool _isTyping = false;
     TMPro.TextMeshProUGUI _typewriterTarget;
     int _typewriterTotalCaracteres;
+
+    [SerializeField, Tooltip("Pencil sound while a line is written: clips of this AudioBank row chained one after another, picked so the stream lasts about as long as the typewriter takes to write the line. Empty = silent.")]
+    string _pencilSound = AudioId.Dialogue_PencilWrite;
+
+    Coroutine _pencilRoutine;
+    SoundHandle _pencilClip;
 
     [SerializeField, Tooltip("Segundos maximos que el dialogo puede quedar bloqueado por una animacion antes de destrabarse solo")]
     float _maxSegundosBloqueadoPorAnimacion = 8f;
@@ -143,6 +150,7 @@ public class DialogueManager : Singleton<DialogueManager>
         //device con el globo cerrado les reescribiria la ultima linea del dialogo
         LocalizedText.Limpiar(dialogueGlobeText);
         LocalizedText.Limpiar(dialogueGlobeSpeaker);
+        StopPencil();
         dialogueGlobeText.text = "";
         dialogueGlobeSpeaker.text = "";
         LevelManager.Instance.inDialogue = false;
@@ -275,6 +283,7 @@ public class DialogueManager : Singleton<DialogueManager>
         _typewriterTotalCaracteres = totalCaracteres;
 
         float segundosPorCaracter = 1f / _charsPerSecond;
+        StartPencil(totalCaracteres * segundosPorCaracter);
         float acumulado = 0f;
         int visibles = 0;
 
@@ -292,8 +301,110 @@ public class DialogueManager : Singleton<DialogueManager>
             yield return null;
         }
 
+        //skipped: the text is all there now, so the pencil stops with it. Written to the end, the
+        //clip that is playing was picked to end about now and is left to finish
+        if (visibles < totalCaracteres)
+        {
+            StopPencil();
+        }
+
         textElement.maxVisibleCharacters = totalCaracteres;
         _isTyping = false;
+    }
+
+    void StartPencil(float seconds)
+    {
+        StopPencil();
+        if (string.IsNullOrEmpty(_pencilSound) || AudioManager.instance == null)
+        {
+            return;
+        }
+        _pencilRoutine = StartCoroutine(PencilStream(seconds));
+    }
+
+    void StopPencil()
+    {
+        if (_pencilRoutine != null)
+        {
+            StopCoroutine(_pencilRoutine);
+            _pencilRoutine = null;
+        }
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.Stop(_pencilClip); //a stale handle stops nothing, by design
+        }
+        _pencilClip = SoundHandle.None;
+    }
+
+    /// <summary>
+    /// The pencil writing a line: Diego's clips (exported to chain in any order) played back to back
+    /// with a little pitch spread, until about <paramref name="seconds"/> have been filled. Each clip
+    /// is picked among the ones that still fit what is left, so a long line gets long strokes and the
+    /// end of any line gets short ones, and the stream stops about when the text does.
+    /// </summary>
+    IEnumerator PencilStream(float seconds)
+    {
+        AudioClip[] clips = AudioManager.instance.ClipsOf(_pencilSound);
+        float shortest = float.MaxValue;
+        foreach (AudioClip clip in clips)
+        {
+            if (clip != null)
+            {
+                shortest = Mathf.Min(shortest, clip.length);
+            }
+        }
+        if (shortest == float.MaxValue)
+        {
+            _pencilRoutine = null;
+            yield break;
+        }
+
+        float end = Time.unscaledTime + seconds;
+        AudioClip last = null;
+
+        //stop once what is left is under half the shortest stroke: closer to the text than overshooting
+        while (end - Time.unscaledTime >= shortest * 0.5f)
+        {
+            AudioClip clip = PickPencilClip(clips, end - Time.unscaledTime, last);
+            _pencilClip = AudioManager.instance.PlayClip(_pencilSound, clip, out float pitch);
+            if (!_pencilClip.IsValid)
+            {
+                break;
+            }
+            last = clip;
+            yield return new WaitForSecondsRealtime(clip.length / Mathf.Max(0.01f, pitch));
+        }
+
+        _pencilRoutine = null;
+    }
+
+    //random among the clips that still fit, never the same one twice in a row; when none fits, the
+    //one closest to what is left
+    static AudioClip PickPencilClip(AudioClip[] clips, float remaining, AudioClip last)
+    {
+        List<AudioClip> fitting = new List<AudioClip>();
+        AudioClip closest = null;
+        float closestGap = float.MaxValue;
+
+        foreach (AudioClip clip in clips)
+        {
+            if (clip == null || (clip == last && clips.Length > 1))
+            {
+                continue;
+            }
+            if (clip.length <= remaining)
+            {
+                fitting.Add(clip);
+            }
+            float gap = Mathf.Abs(clip.length - remaining);
+            if (gap < closestGap)
+            {
+                closestGap = gap;
+                closest = clip;
+            }
+        }
+
+        return fitting.Count > 0 ? fitting[Random.Range(0, fitting.Count)] : closest;
     }
 
     /// <summary>
@@ -314,6 +425,11 @@ public class DialogueManager : Singleton<DialogueManager>
     public void PlayEToInteractSound()
     {
         AudioManager.instance.Play(AudioId.PickupSFX, 0.5f);
+    }
+
+    private void OnDisable()
+    {
+        StopPencil();
     }
 
     private void OnDestroy()

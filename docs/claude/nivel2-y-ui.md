@@ -105,7 +105,7 @@ now, ready for pages 1-5 to wire up:
   with `.Add()`, so a duplicated item in that list throws at startup.
 
 **Phase 2 (page 2, "Find clues") built 2026-09-24, played in Diego's full playthrough (2026-09-28).** Three
-clues (glove in a trash can, hat hooked on a parked car's windshield wiper (2026-10-16, it was a manhole), watch in the museum yard), two cops that
+clues (glove in a trash can, hat stuck on a parked car's hood (2026-10-19; a manhole until 2026-10-16, then the windshield wiper), watch in the museum yard), two cops that
 drive off after the second clue so the police tape can be cut, and the quest handoff to
 `Quest06_GoBackToNataliasHouse` (closed by the page 3 arrest since Phase 3). What exists and where:
 

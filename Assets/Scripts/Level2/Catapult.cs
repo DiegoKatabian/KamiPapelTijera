@@ -77,9 +77,6 @@ public class Catapult : TriggerScript
     [SerializeField, Tooltip("How high the flight arcs above the straight line, in world units.")]
     float _flightArcHeight = 20f;
 
-    [SerializeField, Tooltip("Seconds between rope creaks while Kami waits in the bucket (random between the two values).")]
-    Vector2 _ropeCreakInterval = new Vector2(3f, 6f);
-
     [Header("Ending")]
     [SerializeField, Tooltip("Seconds of the fade to black (starts at the FadeOut signal).")]
     float _fadeSeconds = 1.5f;
@@ -156,6 +153,12 @@ public class Catapult : TriggerScript
     //the arm comes down first, so Kami never boards a bucket that is still in the air
     IEnumerator ArmRoutine()
     {
+        //the rope tightens as the arm is pulled down: once, while Grace shows the catapult (Diego, 2026-10-19)
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.Play(AudioId.RopeCreak);
+        }
+
         if (_animator != null)
         {
             _animator.SetTrigger(_armTrigger);
@@ -248,7 +251,6 @@ public class Catapult : TriggerScript
 
         SeatAbuela();
         SetRopeCuttable(true);
-        StartCoroutine(RopeCreakLoop());
 
         if (_fader != null)
         {
@@ -275,26 +277,6 @@ public class Catapult : TriggerScript
         if (!_launched && TooltipManager.Instance != null && !string.IsNullOrEmpty(_cutRopeTooltip))
         {
             TooltipManager.Instance.ShowTooltip(_cutRopeTooltip, _cutRopeColor, this);
-        }
-    }
-
-    //the rope is under tension the whole time Kami sits in the bucket: an occasional creak, not a
-    //loop, so the bank row stays a plain one-shot Diego can swap for a real recording
-    IEnumerator RopeCreakLoop()
-    {
-        while (!_launched)
-        {
-            yield return new WaitForSeconds(Random.Range(_ropeCreakInterval.x, _ropeCreakInterval.y));
-
-            if (_launched)
-            {
-                yield break;
-            }
-
-            if (AudioManager.instance != null)
-            {
-                AudioManager.instance.Play(AudioId.RopeCreak);
-            }
         }
     }
 

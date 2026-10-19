@@ -54,19 +54,25 @@ bus unless noted; all 2D. Ids and where they fire:
   `TypewriterClack` (`PickupCortable._extraCutSound`, set on `CuttableTypewriter.prefab`), `ClothRip`
   (`CuttableDrapes.ApplyCut`).
 - Pages 1-2: `ClueFound` (`FindCluesTracker.PlayClueSounds`; the hat's `ManholeClank` was dropped on
-  2026-10-16 when the hat moved to a car's windshield wiper, the row is unused), `RadioStatic` + `NewsJingle` (dialogue lines, below), `CarEngine`/`CarHorn` on ambient
-  traffic (`TrafficSpawner.PlayTrafficSounds`: engine at most once per 6s and horn once per 20s at
-  15%, both counted across ALL spawners; tunable per spawner).
+  2026-10-16 when the hat moved onto a parked car (its hood since 2026-10-19), the row is unused), `RadioStatic` (dialogue line, below), `CarEngine`/`CarHorn` on ambient
+  traffic (`TrafficSpawner.PlayTrafficSounds`: engine at most once per 6s; horn at most once per 40s at
+  5%, lowered from 20s / 15% when the real horns came in; both counted across ALL spawners; tunable per spawner,
+  `hornChance` / `hornMinInterval` in its Sound header). The horn plays positional from the middle of the street.
 - Page 3: `GiftBoxOpen` (`GiftDialogueTrigger.Open`), `Handcuffs` (dialogue line).
-- Page 5: `RopeCreak` (`Catapult.RopeCreakLoop`, every 3-6s while Kami sits in the bucket),
-  `CatapultThud` + `CatapultWhoosh` (`Catapult.CUE_Launch`, replacing `Jump_Paperplane`).
-- Ambience bus, loops: `CafeAmbience` (page 1) and `BarAmbience` (page 3), driven by `PageAmbience`
+- Page 5: `RopeCreak` once, when the arm is pulled down while Grace shows the catapult (`Catapult.ArmRoutine`,
+  Diego 2026-10-19; it used to creak every 3-6s while Kami sat in the bucket). Cutting the rope plays the
+  cuttable's own `TijeraHit` + `PaperCut`; the launch timeline's `Launch` signal 0.6s later plays
+  `CatapultThud` + `CatapultWhoosh` together (`Catapult.CUE_Launch`, replacing `Jump_Paperplane`).
+- Ambience bus, loops: `CafeAmbience` (page 1) and `BarAmbience` (page 3) on top of `CityAmbience`, a 2D bed under every page
+  (`PageAmbience._bedAmbience`, started once at level start and never switched, Diego 2026-10-19), driven by `PageAmbience`
   (`Managers/`, sibling of `PageMusicManager`: one id per page in the Inspector, same
   play-if-not-already-playing rule). Drop `Prefabs/Level2/PageAmbience.prefab` into the scene; the
-  prefab is pre-filled for Level 2.
+  prefab is pre-filled for Level 2. The café and the bar are positional (2026-10-19): `_ambienceSourcePerPage`
+  points page 1 at `KamiCafe` and page 3 at the jazz band's object, and their rows are linear 40-140.
 - `CopKnockedOut` plays when a patrol cop is cut and knocked out (`PoliceOfficer._knockedOutSound`, since 2026-09-29).
 - Page 3's traffic jam (#177, 2026-10-13): `CarEngineIdleLoop` (loop, `CarEngine`'s clip) and `CarHornIdling`
-  (`CarHorn`'s clip), both positional, played by `Traffic/IdlingCar` on the `Paper Car Idling` prefab. The jazz band
+  (the five real horn clips, like `CarHorn`), both positional, played by `Traffic/IdlingCar` on the `Paper Car Idling` prefab,
+  each car honking every 20-45s (`_hornMinSeconds` / `_hornMaxSeconds` on the prefab; was 6-16s). The jazz band
   (`Live Music - Alone Together`, a scene AudioSource, not the bank) is stopped by the arrest (#176, `cutscenes.md`).
 
 **Positional sounds and distance (#177).** The AudioListener is on the camera, 13-45 units from Kami. With Unity's
@@ -81,8 +87,21 @@ so the globe never shows the previous line's or dialogue's portrait. Not played 
 
 **Per-line dialogue sounds**: `DialogueEvent.soundOnLine` (an AudioId, empty = none) is played by
 `DialogueManager.WriteText` when that line starts being written. Set today: `Arrest_Cuffs` line 1
--> `Handcuffs`; `Natalia_01` line 7 -> `RadioStatic`, line 8 (the radio announcement) ->
-`NewsJingle`. New sounds tied to a sentence are one YAML/Inspector field, not a Timeline signal.
+-> `Handcuffs`; `Natalia_01` line 7 -> `RadioStatic` (`NewsJingle` on line 8 was removed on 2026-10-19).
+New sounds tied to a sentence are one YAML/Inspector field, not a Timeline signal.
+
+**Real clips (2026-10-19, `Assets/Sounds/Level 2 SFXs/` and `Pencil Write/`)**: Diego's recordings, all rows at volume
+0.5 and pitch 1 (his clips are already levelled). In so far: `CafeAmbience`, `CityAmbience`, `CarHorn` / `CarHornIdling`
+(five clips each, pitch spread 0.08), `CopWhistle`, `Handcuffs`, `RadioStatic`, `Dialogue_PencilWrite`. Ambience beds
+over 30s import as Streaming. `Dialogue_Sigh` and `NewsJingle` were removed (Diego). Still placeholders: every other row
+above. Positional rows (spatial blend 1) must be played with `PlayAt`: a plain `Play` sounds from the world origin.
+
+**Dialogue pencil (2026-10-19)**: `DialogueManager` chains `Dialogue_PencilWrite`'s ten clips back to back while a line is
+written (`PencilStream`): it fills the typewriter's time for that line (characters / `_charsPerSecond`), picking each
+clip at random among those that still fit what is left (never the same twice in a row; none fits = the closest), so long
+lines get long strokes and every line ends on short ones. The row's 0.05 pitch spread varies each stroke. Skipping the
+typewriter stops the pencil; a line written to the end lets the last stroke finish. `AudioManager.PlayClip` /
+`ClipsOf` exist for this: callers that pick the clip themselves.
 
 **Gotchas worth knowing:**
 - A `SoundHandle` carries a generation counter. A stale handle can never stop whatever is playing on

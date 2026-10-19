@@ -30,11 +30,11 @@ public class TrafficSpawner : MonoBehaviour
     [Tooltip("Minimum seconds between two engine sounds, counted across every spawner in the scene.")]
     [SerializeField] private float engineMinInterval = 6f;
 
-    [Tooltip("Chance (0-1) that an allowed engine sound is followed by a horn beep.")]
-    [SerializeField] [Range(0f, 1f)] private float hornChance = 0.15f;
+    [Tooltip("Chance (0-1) that an allowed engine sound is followed by a horn beep. Lowered from 0.15 when the real horn clips came in (2026-10-19): they are loud.")]
+    [SerializeField] [Range(0f, 1f)] private float hornChance = 0.05f;
 
     [Tooltip("Minimum seconds between two horns, counted across every spawner in the scene.")]
-    [SerializeField] private float hornMinInterval = 20f;
+    [SerializeField] private float hornMinInterval = 40f;
 
     // Static on purpose: two spawners spawning in the same second must not double the noise.
     // Starts far in the past so the first car of a page is allowed to be heard.
@@ -90,7 +90,8 @@ public class TrafficSpawner : MonoBehaviour
         if (Time.time - _lastHornTime >= hornMinInterval && Random.value < hornChance)
         {
             _lastHornTime = Time.time;
-            AudioManager.instance.Play(AudioId.CarHorn);
+            //CarHorn is positional: heard from the middle of the street, the stretch the car is about to drive
+        AudioManager.instance.PlayAt(AudioId.CarHorn, (spawnPoint.position + despawnPoint.position) * 0.5f);
         }
     }
 

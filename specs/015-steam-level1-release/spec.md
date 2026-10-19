@@ -84,7 +84,7 @@ When committing, stage the Steam demo files separately (the list is in the table
 ### Added 2026-10-14
 
 - **A.7 (#208) Licensed music out.** MemoFlora -> Estampes Pagodes in the AudioBank (loudness-matched volumes), boss theme plays intro then loop, `Assets/Sounds/MemoFlora/` deleted. Details in the issue.
-- **Licensed clips never ship in the demo.** The AudioBank is in Resources, so everything it references ships. The build menu item empties the Level 2 music entries (`BohrenDestroyingAngels`, `DeadEndAngels`) and the Sims-named `QuestCompleted`/`NewsJingle` clip for the length of the build, then restores them. The provenance of the Level 1 clips (menu music, ambience, UI piano, Cathedral) is Diego's to confirm (#209).
+- **Licensed clips never ship in the demo.** The AudioBank is in Resources, so everything it references ships. The build menu item empties the Level 2 music entries (`BohrenDestroyingAngels`, `DeadEndAngels`) and the Sims-named `QuestCompleted` clip (`NewsJingle` also used it until it was removed on 2026-10-19) for the length of the build, then restores them. The provenance of the Level 1 clips (menu music, ambience, UI piano, Cathedral) is Diego's to confirm (#209).
 - **Testing the build locally.** Double-clicking the exe from `Builds/SteamDemo` hands the launch to Steam (`RestartAppIfNecessary`, no `steam_appid.txt` next to the exe), which starts the version installed in the library: the old build. Use `tools/steam/run-local.bat` (copies `steam_appid.txt` in and starts the exe); `upload-demo.bat` removes it again before uploading.
 
 ### First upload, 2026-10-14 (evening)
