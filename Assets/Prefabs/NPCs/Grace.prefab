@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7320000000000000002}
   - component: {fileID: 7320000000000000003}
   - component: {fileID: 7320000000000000004}
+  - component: {fileID: 7606921831585493173}
   m_Layer: 0
   m_Name: Grace
   m_TagString: Untagged
@@ -30,7 +31,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7320000000000000012}
+  - {fileID: 7384126518838595744}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -66,7 +67,7 @@ MonoBehaviour:
   _burnAfterReading: 0
   _dialogues:
   - {fileID: 11400000, guid: 42683fb43b924ef9b52010040d2f5110, type: 2}
---- !u!1 &7320000000000000011
+--- !u!1 &2340301465369243676
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -74,37 +75,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7320000000000000012}
-  - component: {fileID: 7320000000000000013}
+  - component: {fileID: 7384126518838595744}
+  - component: {fileID: 4922612855927191080}
+  - component: {fileID: 2948813278967736722}
+  - component: {fileID: 2823341039572687102}
   m_Layer: 0
-  m_Name: GraceVisual_PLACEHOLDER
+  m_Name: Spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7320000000000000012
+--- !u!4 &7384126518838595744
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7320000000000000011}
+  m_GameObject: {fileID: 2340301465369243676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.07, z: 0}
-  m_LocalScale: {x: 0.12, y: 0.12, z: 0.12}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.35, y: 0.35, z: 0.35}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7320000000000000002}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &7320000000000000013
-SpriteRenderer:
+--- !u!23 &4922612855927191080
+MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7320000000000000011}
+  m_GameObject: {fileID: 2340301465369243676}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -113,12 +116,12 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
+  m_RayTracingMode: 2
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: be6fae3724036bc4abca1f6a3da23f90, type: 2}
+  - {fileID: 2100000, guid: 389c76c63c8bff44b8252843a2c222ef, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -131,7 +134,7 @@ SpriteRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -139,14 +142,97 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c972ab5333811c5448e613ab274546c6, type: 3}
-  m_Color: {r: 0.75, g: 0.55, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2948813278967736722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2340301465369243676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  skeletonDataAsset: {fileID: 11400000, guid: 90dc48ed6ad4dfd42a0f1d18c2fff8f3, type: 2}
+  initialSkinName: 
+  fixPrefabOverrideViaMeshFilter: 2
+  initialFlipX: 0
+  initialFlipY: 0
+  updateWhenInvisible: 3
+  separatorSlotNames: []
+  zSpacing: 0
+  useClipping: 1
+  immutableTriangles: 0
+  pmaVertexColors: 1
+  clearStateOnDisable: 0
+  tintBlack: 0
+  singleSubmesh: 0
+  fixDrawOrder: 0
+  addNormals: 0
+  calculateTangents: 0
+  maskInteraction: 0
+  maskMaterials:
+    materialsMaskDisabled: []
+    materialsInsideMask: []
+    materialsOutsideMask: []
+  disableRenderingOnOverride: 1
+  physicsPositionInheritanceFactor: {x: 0.25, y: 1}
+  physicsRotationInheritanceFactor: 1
+  physicsMovementRelativeTo: {fileID: 0}
+  updateTiming: 1
+  unscaledTime: 0
+  _animationName: Idle
+  loop: 1
+  timeScale: 1
+--- !u!33 &2823341039572687102
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2340301465369243676}
+  m_Mesh: {fileID: 0}
+--- !u!114 &7606921831585493173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7320000000000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31b1904fbf2344e18b52dcfa953ec1ac, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _actorId: Grace
+  _skeleton: {fileID: 2948813278967736722}
+  _idleAnimation: Idle
+  _walkAnimation: Walk
+  _runAnimation: 
+  _movingSpeed: 1
+  _runSpeed: 12
+  _walkAnimationSpeed: 0
+  _runAnimationSpeed: 0
+  _mixSeconds: 0.2
+  _idleOverlay:
+  _walkOverlay:
+  _artFacesRight: 1
+  _faceMovement: 1
+  _faceKamiWhenIdle: 1
+  _facingDeadzone: 0.3
+  _poses:
+  - id: Wave
+    intro: 
+    main: Saludo
+    loop: 1
+    next: 
+    overlay: 
+    endsWhenMoving: 0
+    clearOnPageTurn: 0
+  _initialRestPose:
+  _idleBreakPose:
+  _idleBreakEverySeconds: {x: 8, y: 14}
+  _idleBreakSeconds: 4
+  _debugAnimations: 0

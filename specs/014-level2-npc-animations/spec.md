@@ -212,10 +212,36 @@ Things to know:
 - Not verified at runtime: the facing direction of each export, the arm-aim angles, foot sliding (walk/run
   `Animation Speed` is 0 = off), and whether the page 3 street cops' agents snap onto the NavMesh where they stand.
 
+## Addendum: the Abuela, Grace and Natalia's new animations (2026-10-19, compile-checked only)
+
+Valentino's new exports in `Assets/2D/NPC/`: `Abuela/Spine` (skins `Abuela Base` / `Abuela Cocinera`; Idle, Walk, Scared,
+Falling, Land, Celebrate, `Fly Page`), `Grace Spine` (Idle, Saludo) and `Natalia Spine` (her rig re-exported with `Fly Page`
+and `Saludo`; `Natalia.prefab` points at it now, the old `Assets/2D/Spine/Natalia` export is unreferenced but kept).
+
+- **Abuela** (`Abuela.prefab`, Level 1; its `Abuela_Follower` variant, Level 2): the spritesheet SpriteRenderer + Animator
+  are gone, replaced by a `Spine` child (scale 0.63, feet at the agent's base offset: -4.58, the variant -5) and a
+  `SpineCharacter` (actor `Abuela`, no run, faces Kami when idle). Skins: Level 1 `Abuela Base`, Level 2 `Abuela Cocinera`
+  (Diego), set on `initialSkinName` (the variant overrides it). Poses: `Scared`, `Celebrate` (once), `Falling`, `Land`
+  (once), `Ride` (`Fly Page`). Folding her (Level 1) hides the skeleton's renderer (`NPC_Abuela.SetVisible`).
+- **When**: Level 1 `NPC_Abuela` sets `Scared` as her rest pose on `OnEncounterStart` (the whole rocoso fight) and on
+  `OnEncounterEnd` clears it and plays `Celebrate` once (`_fightPose` / `_fightWonPose`). Level 2 page 4,
+  `AbuelaEntrance` loops `Falling` during the drop and plays `Land` once on impact (`_fallPose` / `_landPose`); page 5,
+  `Museum_Evidence`'s `Cues On End` plays her `Celebrate` once as the cops start taking Ariel away.
+- **Rides**: `NPC.SetRiding` plays the `Ride` pose (`NPC._ridePose`) when the character has one, so Natalia and the Abuela
+  play `Fly Page` on page turns and the paper plane (decision 10 below is superseded); a character without it still walks.
+  On the plane they keep walking with Kami after the fold and start flying only when she jumps (`PaperPlaneRide`, Diego).
+- **Grace** (`Grace.prefab`): the tinted placeholder sprite is gone; `Spine` child at her feet, scale 0.35 (Natalia's),
+  `SpineCharacter` actor `Grace`, faces Kami when idle, pose `Wave` (`Saludo`, loops).
+- **The goodbye**: `Catapult._launchCues` (on `Catapulta.prefab`) plays Natalia's and Grace's `Wave` at the launch signal;
+  it loops until the scene changes, and both face Kami (the bucket) because they face her when standing still.
+- Not verified at runtime: the Abuela's size and feet (scale 0.63 matches the old sprite's art), Grace's facing
+  (`_artFacesRight` on; the Abuela's was read from the rig: her cane is on the right), and Level 1's scene still carries
+  dead overrides for the removed SpriteRenderer (flip, material), which Unity ignores.
+
 ## Out of scope
 
-The Abuela (Animator-based, untouched), Grace (still a sprite: no Spine export yet), Kami, any timeline retiming, new
-animations. Page 2's crime-scene cops unless Q8 says otherwise.
+Kami, any timeline retiming. Page 2's crime-scene cops unless Q8 says otherwise. (The Abuela and Grace were out of scope
+here until the 2026-10-19 addendum above.)
 
 ## Decisions (Diego, 2026-10-09)
 

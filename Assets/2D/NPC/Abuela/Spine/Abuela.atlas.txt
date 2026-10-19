@@ -1,0 +1,119 @@
+Abuela.png
+size:2001,1821
+filter:Linear,Linear
+01 antebrazo
+bounds:1552,1229,293,447
+offsets:16,16,325,479
+rotate:90
+02 mano
+bounds:532,1590,163,240
+offsets:16,16,195,272
+rotate:90
+03 brazo
+bounds:1170,1268,268,380
+offsets:16,16,300,412
+rotate:90
+04 chef hat
+bounds:418,988,575,304
+offsets:16,16,607,336
+05 eyebrow high
+bounds:2,1783,210,36
+offsets:4,1,216,37
+05 eyebrow sad
+bounds:436,1777,203,42
+offsets:4,1,216,43
+05 eyebrows happy
+bounds:214,1782,220,37
+offsets:0,0,225,42
+05 eyes happy
+bounds:641,1755,258,64
+05 eyes open
+bounds:1269,1748,262,71
+offsets:1,0,263,73
+05 eyes open side
+bounds:1005,1748,262,71
+offsets:1,0,263,73
+05 eyes sad
+bounds:774,1564,265,182
+offsets:1,0,266,182
+05 mouth happy
+bounds:1624,1745,125,74
+05 mouth sad
+bounds:901,1750,102,69
+05 mouth smile
+bounds:1751,1745,131,74
+05 mouth talk
+bounds:1533,1746,89,73
+06 head
+bounds:1478,882,426,345
+offsets:16,16,459,377
+07 rodete
+bounds:1629,1524,219,265
+offsets:16,16,252,298
+rotate:90
+07 rodete cocina
+bounds:2,1451,241,235
+offsets:16,16,273,267
+08 pantufla
+bounds:2,1688,246,92
+offsets:16,16,278,124
+09 brazo back
+bounds:1074,421,459,616
+rotate:90
+10 baston
+bounds:621,2,417,1354
+offsets:17,17,451,1387
+rotate:90
+11 lampara
+bounds:1315,1538,205,312
+offsets:16,16,237,345
+rotate:90
+OL 01 antebrazo
+bounds:995,939,327,481
+rotate:90
+OL 02 mano
+bounds:1041,1549,197,272
+offsets:0,1,197,274
+rotate:90
+OL 03 brazo
+bounds:2,1074,302,414
+rotate:90
+OL 04 chef hat
+bounds:2,648,608,338
+offsets:1,0,609,338
+OL 06 head
+bounds:612,558,460,379
+OL 07 rodete
+bounds:870,1294,253,298
+offsets:0,1,253,299
+rotate:90
+OL 07 rodete cocina
+bounds:245,1378,275,269
+OL 08 pantufla
+bounds:250,1649,280,126
+OL 09 brazo back
+bounds:2,97,459,617
+offsets:1,0,461,617
+rotate:90
+OL 11 lampara
+bounds:522,1323,239,346
+rotate:90
+
+Abuela_2.png
+size:1994,1279
+filter:Linear,Linear
+08 cuerpo
+bounds:998,2,822,994
+rotate:90
+08 cuerpo cocinera
+bounds:2,2,822,994
+rotate:90
+OL 10 baston
+bounds:2,826,451,1388
+rotate:90
+
+Abuela_3.png
+size:827,999
+filter:Linear,Linear
+OL 08 cuerpo
+bounds:2,2,823,995

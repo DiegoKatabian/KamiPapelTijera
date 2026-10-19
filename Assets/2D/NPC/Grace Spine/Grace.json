@@ -1,0 +1,510 @@
+{
+"skeleton": {
+	"hash": "+7zznmt5jfo",
+	"spine": "4.2.43",
+	"x": -610.11,
+	"y": -4.52,
+	"width": 1117.99,
+	"height": 2028.56,
+	"images": "",
+	"audio": ""
+},
+"bones": [
+	{ "name": "root" },
+	{ "name": "bone", "parent": "root", "length": 151.29, "rotation": 89.24, "x": -58.94, "y": 1186.91 },
+	{ "name": "bone2", "parent": "bone", "length": 353.12, "rotation": 2.4, "x": 121.55, "y": 0.11 },
+	{ "name": "bone3", "parent": "bone2", "length": 195.67, "rotation": 128.27, "x": 181.27, "y": 191.2 },
+	{ "name": "bone4", "parent": "bone3", "length": 207.75, "rotation": 23.85, "x": 203.11, "y": 6.67 },
+	{ "name": "bone5", "parent": "bone4", "length": 125.54, "rotation": 11.92, "x": 206.04, "y": 3.48 },
+	{ "name": "bone6", "parent": "bone2", "length": 202.5, "rotation": -2.43, "x": 379.39, "y": 0.62 },
+	{ "name": "bone7", "parent": "bone6", "x": 118.57, "y": -91.46, "icon": "eye" },
+	{ "name": "bone8", "parent": "bone", "length": 547.88, "rotation": -170.74, "x": -80.12, "y": 191.36 },
+	{ "name": "bone9", "parent": "bone8", "length": 305.18, "rotation": -10.11, "x": 560.12, "y": -6 },
+	{ "name": "bone10", "parent": "bone9", "length": 196.37, "rotation": 5.64, "x": 309.66, "y": -1.47 },
+	{ "name": "bone11", "parent": "bone10", "length": 151.64, "rotation": 83.31, "x": 198.88, "y": -0.18 },
+	{ "name": "pie", "parent": "root", "x": -221.55, "y": 52, "color": "ff3f00ff", "icon": "ik" },
+	{
+		"name": "talon",
+		"parent": "pie",
+		"rotation": 0.03,
+		"x": -15.45,
+		"y": 201.12,
+		"color": "ff3f00ff",
+		"icon": "ik"
+	},
+	{
+		"name": "mano",
+		"parent": "root",
+		"rotation": -101.9,
+		"x": -487.2,
+		"y": 1188.38,
+		"color": "ff3f00ff",
+		"icon": "ik"
+	},
+	{
+		"name": "bone12",
+		"parent": "bone2",
+		"length": 195.67,
+		"rotation": 69.63,
+		"x": 173.29,
+		"y": -187.05,
+		"scaleX": -1
+	},
+	{ "name": "bone13", "parent": "bone12", "length": 207.75, "rotation": 23.85, "x": 203.69, "y": 4.75 },
+	{ "name": "bone14", "parent": "bone13", "length": 125.54, "rotation": 11.92, "x": 206.04, "y": 3.48 },
+	{ "name": "mano back", "parent": "root", "x": 401.67, "y": 1213.77, "color": "ff3f00ff", "icon": "ik" },
+	{ "name": "bone15", "parent": "bone", "length": 547.88, "rotation": 173.34, "x": -62.04, "y": -210.7 },
+	{ "name": "bone16", "parent": "bone15", "length": 305.18, "rotation": 5.81, "x": 559.61, "y": -0.41 },
+	{ "name": "bone17", "parent": "bone16", "length": 196.37, "rotation": 8.97, "x": 309.66, "y": -1.47 },
+	{ "name": "bone18", "parent": "bone17", "length": 151.64, "rotation": 83.31, "x": 198.88, "y": -0.18 },
+	{ "name": "pie back", "parent": "root", "x": 63.73, "y": 68.89, "color": "ff3f00ff", "icon": "ik" },
+	{ "name": "tobillo back", "parent": "pie back", "x": -6.15, "y": 196.8, "color": "ff3f00ff", "icon": "ik" },
+	{ "name": "bone19", "parent": "bone6", "x": 22.66, "y": 100.71 }
+],
+"slots": [
+	{ "name": "Grace Parts-OL 11 zapato2", "bone": "bone17", "attachment": "Grace Parts/OL 11 zapato" },
+	{ "name": "Grace Parts-OL 10 pantoriila2", "bone": "bone16", "attachment": "Grace Parts/OL 10 pantoriila" },
+	{ "name": "Grace Parts-OL 11 zapato", "bone": "bone10", "attachment": "Grace Parts/OL 11 zapato" },
+	{ "name": "Grace Parts-OL 10 pantoriila", "bone": "bone9", "attachment": "Grace Parts/OL 10 pantoriila" },
+	{ "name": "Grace Parts-OL 9 skirt", "bone": "bone8", "attachment": "Grace Parts/OL 9 skirt2" },
+	{ "name": "Grace Parts-OL 8 hips", "bone": "bone", "attachment": "Grace Parts/OL 8 hips" },
+	{ "name": "Grace Parts-OL 7 hair", "bone": "bone19", "attachment": "Grace Parts/OL 7 hair2" },
+	{ "name": "Grace Parts-OL 6 torso", "bone": "bone2", "attachment": "Grace Parts/OL 6 torso" },
+	{ "name": "Grace Parts-OL 5 head", "bone": "bone6", "attachment": "Grace Parts/OL 5 head" },
+	{ "name": "Grace Parts-OL 4 lentes", "bone": "bone6", "attachment": "Grace Parts/OL 4 lentes" },
+	{ "name": "Grace Parts-OL 3 brazo copy", "bone": "bone3", "attachment": "Grace Parts/OL 3 brazo copy" },
+	{ "name": "Grace Parts-OL 3 brazo copy2", "bone": "bone12", "attachment": "Grace Parts/OL 3 brazo copy" },
+	{ "name": "Grace Parts-OL 2 antebrazo", "bone": "bone4", "attachment": "Grace Parts/OL 2 antebrazo" },
+	{ "name": "Grace Parts-OL 2 antebrazo2", "bone": "bone13", "attachment": "Grace Parts/OL 2 antebrazo" },
+	{ "name": "Grace Parts-OL 1 mano fist", "bone": "bone5", "attachment": "Grace Parts/OL 1 mano fist" },
+	{ "name": "Grace Parts-OL 1 mano fist2", "bone": "bone14", "attachment": "Grace Parts/OL 1 mano rest" },
+	{ "name": "Grace Parts-11 zapato2", "bone": "bone17", "attachment": "Grace Parts/11 zapato" },
+	{ "name": "Grace Parts-10 pantoriila2", "bone": "bone16", "attachment": "Grace Parts/10 pantoriila" },
+	{ "name": "Grace Parts-11 zapato", "bone": "bone10", "attachment": "Grace Parts/11 zapato" },
+	{ "name": "Grace Parts-10 pantoriila", "bone": "bone9", "attachment": "Grace Parts/10 pantoriila" },
+	{ "name": "Grace Parts-9 skirt", "bone": "bone8", "attachment": "Grace Parts/9 skirt" },
+	{ "name": "Grace Parts-8 hips", "bone": "bone", "attachment": "Grace Parts/8 hips" },
+	{ "name": "Grace Parts-7 hair", "bone": "bone19", "attachment": "Grace Parts/7 hair" },
+	{ "name": "Grace Parts-6 torso", "bone": "bone2", "attachment": "Grace Parts/6 torso" },
+	{ "name": "Grace Parts-5 head", "bone": "bone6", "attachment": "Grace Parts/5 head" },
+	{ "name": "Grace Parts-4 mouth sad", "bone": "bone6", "attachment": "Grace Parts/4 mouth" },
+	{ "name": "Grace Parts-4 lentes", "bone": "bone6", "attachment": "Grace Parts/4 lentes" },
+	{ "name": "Grace Parts-4 eyeballs closed", "bone": "bone7", "attachment": "Grace Parts/4 eyeballs" },
+	{ "name": "Grace Parts-4 cejas", "bone": "bone6", "attachment": "Grace Parts/4 cejas" },
+	{ "name": "Grace Parts-3 brazo copy", "bone": "bone3", "attachment": "Grace Parts/3 brazo copy" },
+	{ "name": "Grace Parts-3 brazo copy2", "bone": "bone12", "attachment": "Grace Parts/3 brazo copy" },
+	{ "name": "Grace Parts-2 antebrazo", "bone": "bone4", "attachment": "Grace Parts/2 antebrazo" },
+	{ "name": "Grace Parts-2 antebrazo2", "bone": "bone13", "attachment": "Grace Parts/2 antebrazo" },
+	{ "name": "Grace Parts-1 mano", "bone": "bone5", "attachment": "Grace Parts/1 mano fist" },
+	{ "name": "Grace Parts-1 mano2", "bone": "bone14", "attachment": "Grace Parts/1 mano rest" },
+	{ "name": "Grace Parts-1 mano fist", "bone": "bone5" },
+	{ "name": "Grace Parts-1 mano fist2", "bone": "bone14" },
+	{ "name": "Grace Parts-1 mano actually", "bone": "bone5" },
+	{ "name": "Grace Parts-1 mano actually2", "bone": "bone14" },
+	{ "name": "OL 1 mano open", "bone": "root" },
+	{ "name": "1 mano open", "bone": "root" }
+],
+"ik": [
+	{
+		"name": "mano",
+		"order": 2,
+		"bones": [ "bone3", "bone4" ],
+		"target": "mano"
+	},
+	{
+		"name": "mano back",
+		"order": 3,
+		"bones": [ "bone12", "bone13" ],
+		"target": "mano back",
+		"bendPositive": false
+	},
+	{
+		"name": "pie",
+		"order": 1,
+		"bones": [ "bone10" ],
+		"target": "pie"
+	},
+	{
+		"name": "pie back",
+		"order": 5,
+		"bones": [ "bone17" ],
+		"target": "pie back"
+	},
+	{
+		"name": "talon",
+		"bones": [ "bone8", "bone9" ],
+		"target": "talon",
+		"bendPositive": false
+	},
+	{
+		"name": "tobillo back",
+		"order": 4,
+		"bones": [ "bone15", "bone16" ],
+		"target": "tobillo back",
+		"bendPositive": false
+	}
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"Grace Parts-1 mano": {
+				"Grace Parts/1 mano actually": { "x": 69.45, "y": 16.99, "rotation": 104.32, "width": 207, "height": 290 },
+				"Grace Parts/1 mano fist": { "x": 46.96, "y": 7.22, "rotation": 104.32, "width": 215, "height": 244 },
+				"Grace Parts/1 mano rest": { "x": 50.85, "y": 11.44, "rotation": 104.32, "width": 210, "height": 257 }
+			},
+			"Grace Parts-1 mano2": {
+				"Grace Parts/1 mano actually": { "x": 69.45, "y": 16.99, "rotation": 104.32, "width": 207, "height": 290 },
+				"Grace Parts/1 mano fist": { "x": 46.96, "y": 7.22, "rotation": 104.32, "width": 215, "height": 244 },
+				"Grace Parts/1 mano open": { "x": 75.36, "y": -19.53, "rotation": 91.74, "width": 237, "height": 290 },
+				"Grace Parts/1 mano rest": { "x": 50.85, "y": 11.44, "rotation": 104.32, "width": 210, "height": 257 }
+			},
+			"Grace Parts-2 antebrazo": {
+				"Grace Parts/2 antebrazo": { "x": 94.62, "y": 2.61, "rotation": 116.25, "width": 216, "height": 286 }
+			},
+			"Grace Parts-2 antebrazo2": {
+				"Grace Parts/2 antebrazo": { "x": 94.62, "y": 2.61, "rotation": 116.25, "width": 216, "height": 286 }
+			},
+			"Grace Parts-3 brazo copy": {
+				"Grace Parts/3 brazo copy": { "x": 76.52, "y": -47.68, "rotation": 140.1, "width": 263, "height": 385 }
+			},
+			"Grace Parts-3 brazo copy2": {
+				"Grace Parts/3 brazo copy": { "x": 76.52, "y": -47.68, "rotation": 140.1, "width": 263, "height": 385 }
+			},
+			"Grace Parts-4 cejas": {
+				"Grace Parts/4 cejas": { "x": 167.26, "y": -28.21, "rotation": -88.64, "width": 147, "height": 29 },
+				"Grace Parts/4 cejas cuestion": { "x": 167.24, "y": -27.36, "rotation": -88.64, "width": 145, "height": 45 }
+			},
+			"Grace Parts-4 eyeballs closed": {
+				"Grace Parts/4 eyeballs": { "x": 0.18, "y": 54.67, "rotation": -88.92, "width": 137, "height": 43 },
+				"Grace Parts/4 eyeballs closed": { "x": 5.45, "y": 49.3, "rotation": -88.64, "width": 137, "height": 38 }
+			},
+			"Grace Parts-4 lentes": {
+				"Grace Parts/4 lentes": { "x": 117.46, "y": -36.28, "rotation": -88.64, "width": 238, "height": 103 }
+			},
+			"Grace Parts-4 mouth sad": {
+				"Grace Parts/4 mouth": { "x": 43.85, "y": -34.85, "rotation": -88.64, "width": 82, "height": 29 },
+				"Grace Parts/4 mouth sad": { "x": 43.22, "y": -34.92, "rotation": -88.64, "width": 80, "height": 27 }
+			},
+			"Grace Parts-5 head": {
+				"Grace Parts/5 head": { "x": 149.8, "y": 2.69, "rotation": -88.64, "width": 325, "height": 366 }
+			},
+			"Grace Parts-6 torso": {
+				"Grace Parts/6 torso": { "x": 227.05, "y": -1.47, "rotation": -91.64, "width": 500, "height": 537 }
+			},
+			"Grace Parts-7 hair": {
+				"Grace Parts/7 hair": {
+					"type": "mesh",
+					"uvs": [ 1, 0.16102, 1, 0.75912, 1, 1, 0.73595, 1, 0.52954, 1, 0, 1, 0, 0.65519, 0, 0.20051, 0, 0, 0.11631, 0, 0.87628, 0, 1, 0, 0.07753, 0.81374 ],
+					"triangles": [ 12, 6, 7, 5, 6, 12, 5, 12, 4, 3, 1, 2, 1, 3, 10, 3, 4, 10, 12, 9, 4, 7, 8, 9, 10, 11, 0, 10, 0, 1, 4, 9, 10, 9, 12, 7 ],
+					"vertices": [ 1, 6, 144.19, -191.41, 1, 1, 25, 2.54, -294.95, 1, 2, 6, -22.72, -195.39, 0.0953, 25, -45.38, -296.09, 0.9047, 1, 25, -47.91, -189.71, 1, 1, 25, -49.89, -106.55, 1, 1, 25, -54.97, 106.79, 1, 1, 25, 13.63, 108.42, 1, 1, 6, 126.74, 211.28, 1, 1, 6, 166.63, 212.23, 1, 1, 6, 167.75, 165.37, 1, 1, 6, 175.04, -140.81, 1, 1, 6, 176.22, -190.65, 1, 1, 25, -17.17, 76.44, 1 ],
+					"hull": 12,
+					"edges": [ 8, 10, 4, 6, 6, 8, 4, 2, 2, 0, 0, 22, 20, 22, 16, 18, 18, 20, 14, 16, 10, 12, 12, 14 ],
+					"width": 403,
+					"height": 199
+				}
+			},
+			"Grace Parts-8 hips": {
+				"Grace Parts/8 hips": { "x": 56.1, "y": -7.68, "rotation": -89.24, "width": 624, "height": 277 }
+			},
+			"Grace Parts-9 skirt": {
+				"Grace Parts/9 skirt": {
+					"type": "mesh",
+					"uvs": [ 0.61249, 0, 0.86158, 0.06361, 1, 0.22922, 1, 0.37249, 0.97105, 0.51608, 0.89796, 0.7405, 0.8574, 0.86506, 0.82497, 0.96464, 0.70967, 0.98419, 0.5902, 0.99752, 0.4915, 1, 0.3929, 0.9979, 0.2788, 0.98427, 0.173, 0.94716, 0.10578, 0.74945, 0.03234, 0.53347, 0, 0.43206, 0, 0.30776, 0.058, 0.15483, 0.28175, 0.0112, 0.45558, 0, 0.27888, 0.76754, 0.43043, 0.77132, 0.59612, 0.76904, 0.72249, 0.76145, 0.72819, 0.86682, 0.57525, 0.8821, 0.43263, 0.87967, 0.27188, 0.86137, 0.25126, 0.54823, 0.4328, 0.53695, 0.6021, 0.53756, 0.77479, 0.52933, 0.24193, 0.43998, 0.51257, 0.42894, 0.79569, 0.41773, 0.20163, 0.29847, 0.49933, 0.30317, 0.81439, 0.28566 ],
+					"triangles": [ 37, 20, 0, 37, 0, 38, 19, 20, 37, 36, 18, 19, 17, 18, 36, 36, 19, 37, 16, 17, 36, 33, 36, 37, 33, 37, 34, 16, 36, 33, 15, 16, 33, 30, 33, 34, 29, 33, 30, 15, 33, 29, 14, 15, 29, 21, 29, 30, 14, 29, 21, 22, 21, 30, 23, 22, 30, 28, 14, 21, 26, 27, 22, 13, 14, 28, 28, 27, 12, 22, 28, 21, 27, 28, 22, 13, 28, 12, 11, 12, 27, 10, 27, 26, 11, 27, 10, 38, 0, 1, 38, 1, 2, 38, 2, 3, 35, 37, 38, 35, 38, 3, 34, 37, 35, 4, 35, 3, 35, 31, 34, 32, 35, 4, 32, 31, 35, 30, 34, 31, 5, 32, 4, 24, 31, 32, 24, 32, 5, 23, 30, 31, 23, 31, 24, 6, 24, 5, 25, 24, 6, 23, 24, 25, 23, 26, 22, 26, 23, 25, 7, 25, 6, 8, 26, 25, 8, 25, 7, 9, 26, 8, 10, 26, 9 ],
+					"vertices": [ 2, 19, -218.97, -141.54, 0.1685, 1, 171.86, -95.49, 0.8315, 2, 19, -181.52, 36.18, 0.76142, 1, 114.06, -267.67, 0.23858, 2, 19, -53.74, 147.05, 0.997, 1, -25.71, -362.98, 0.003, 1, 19, 66.13, 160.62, 1, 1, 19, 188.52, 154.33, 1, 1, 19, 381.97, 125.34, 1, 1, 19, 489.34, 109.25, 1, 1, 19, 575.18, 96.39, 1, 2, 19, 599.68, 14.65, 0.7664, 8, 628.4, 280.73, 0.2336, 2, 19, 621.39, -59.74, 0.54039, 8, 623.49, 181.84, 0.45961, 2, 19, 627.15, -143.23, 0.38416, 8, 619.9, 120.7, 0.61584, 2, 19, 635.65, -198.24, 0.23992, 8, 603.94, 43.99, 0.76008, 2, 19, 624.11, -298.18, 0.12925, 8, 582.32, -29.65, 0.87075, 1, 8, 539.42, -99.5, 1, 1, 8, 367.88, -120.73, 1, 1, 8, 180.49, -143.92, 1, 1, 8, 92.72, -153.34, 1, 2, 8, -10.78, -137.77, 0.99994, 1, -89.5, 329.24, 6.0E-5, 2, 8, -132.14, -78.92, 0.87195, 1, 39.13, 288.67, 0.12805, 2, 8, -228.69, 92.19, 0.23112, 1, 159.54, 133.43, 0.76888, 2, 8, -223.73, 213.09, 0.00693, 1, 172.23, 13.09, 0.99307, 1, 8, 400.77, -4.54, 1, 2, 19, 444.17, -193.22, 0.27387, 8, 419.52, 98.69, 0.72613, 2, 19, 429.36, -79.51, 0.80007, 8, 434.68, 212.35, 0.19993, 1, 19, 413.16, 6.67, 1, 1, 19, 500.88, 20.58, 1, 2, 19, 525.58, -83.14, 0.74208, 8, 526.67, 183.91, 0.25792, 2, 19, 534.65, -181.43, 0.25653, 8, 509.96, 86.62, 0.74347, 1, 8, 478.17, -21.09, 1, 3, 19, 271.48, -337.56, 0.00158, 8, 215.32, 4.03, 0.9981, 1, -292.57, 156.05, 3.3E-4, 3, 19, 247.9, -213.8, 0.30155, 8, 224.62, 129.67, 0.64875, 1, -283.49, 30.39, 0.0497, 3, 19, 235.22, -97.33, 0.77216, 8, 242.56, 245.45, 0.19186, 1, -284.4, -86.76, 0.03599, 1, 19, 214.89, 20.63, 1, 3, 19, 181.64, -354.23, 0.00385, 8, 124.23, 11.21, 0.99092, 1, -201.4, 162.2, 0.00523, 3, 19, 151.32, -169.18, 0.45602, 8, 142.91, 197.8, 0.34296, 1, -192.73, -25.12, 0.20102, 1, 19, 119.89, 24.43, 1, 3, 19, 66.38, -395.35, 5.0E-5, 8, 2.25, 1.37, 0.99889, 1, -82.15, 189.68, 0.00106, 3, 19, 47.13, -190.21, 0.23624, 8, 36.82, 204.49, 0.17655, 1, -86.81, -16.31, 0.58721, 1, 19, 7.94, 24.77, 1 ],
+					"hull": 21,
+					"edges": [ 0, 40, 0, 2, 2, 4, 4, 6, 34, 36, 36, 38, 38, 40, 26, 28, 10, 12, 12, 14, 8, 10, 6, 8, 28, 30, 30, 32, 32, 34, 14, 16, 16, 18, 18, 20, 20, 22, 22, 24, 24, 26 ],
+					"width": 692,
+					"height": 842
+				}
+			},
+			"Grace Parts-10 pantoriila": {
+				"Grace Parts/10 pantoriila": { "x": 153.6, "y": -6.71, "rotation": 91.48, "width": 207, "height": 450 }
+			},
+			"Grace Parts-10 pantoriila2": {
+				"Grace Parts/10 pantoriila": { "x": 153.6, "y": -6.71, "rotation": 91.48, "width": 207, "height": 450 }
+			},
+			"Grace Parts-11 zapato": {
+				"Grace Parts/11 zapato": { "x": 96.25, "y": 41.77, "rotation": 85.84, "width": 280, "height": 318 }
+			},
+			"Grace Parts-11 zapato2": {
+				"Grace Parts/11 zapato": { "x": 96.25, "y": 41.77, "rotation": 85.84, "width": 280, "height": 318 }
+			},
+			"Grace Parts-OL 1 mano fist": {
+				"Grace Parts/OL 1 mano actually": { "x": 71.66, "y": 17.73, "rotation": 104.32, "width": 209, "height": 292 },
+				"Grace Parts/OL 1 mano fist": { "x": 46.58, "y": 6.06, "rotation": 104.32, "width": 217, "height": 245 },
+				"Grace Parts/OL 1 mano rest": { "x": 52.9, "y": 10.48, "rotation": 104.32, "width": 212, "height": 259 }
+			},
+			"Grace Parts-OL 1 mano fist2": {
+				"Grace Parts/OL 1 mano actually": { "x": 71.66, "y": 17.73, "rotation": 104.32, "width": 209, "height": 292 },
+				"Grace Parts/OL 1 mano fist": { "x": 46.58, "y": 6.06, "rotation": 104.32, "width": 217, "height": 245 },
+				"Grace Parts/OL 1 mano open": { "x": 74.06, "y": -18.77, "rotation": 93.19, "width": 239, "height": 292 },
+				"Grace Parts/OL 1 mano rest": { "x": 52.9, "y": 10.48, "rotation": 104.32, "width": 212, "height": 259 }
+			},
+			"Grace Parts-OL 2 antebrazo": {
+				"Grace Parts/OL 2 antebrazo": { "x": 85.78, "y": 4.46, "rotation": 116.25, "width": 217, "height": 288 }
+			},
+			"Grace Parts-OL 2 antebrazo2": {
+				"Grace Parts/OL 2 antebrazo": { "x": 85.78, "y": 4.46, "rotation": 116.25, "width": 217, "height": 288 }
+			},
+			"Grace Parts-OL 3 brazo copy": {
+				"Grace Parts/OL 3 brazo copy": { "x": 78.84, "y": -45.49, "rotation": 140.1, "width": 265, "height": 387 }
+			},
+			"Grace Parts-OL 3 brazo copy2": {
+				"Grace Parts/OL 3 brazo copy": { "x": 78.84, "y": -45.49, "rotation": 140.1, "width": 265, "height": 387 }
+			},
+			"Grace Parts-OL 4 lentes": {
+				"Grace Parts/OL 4 lentes": { "x": 115.85, "y": -37.47, "rotation": -88.92, "width": 240, "height": 104 }
+			},
+			"Grace Parts-OL 5 head": {
+				"Grace Parts/OL 5 head": { "x": 151.24, "y": 1.73, "rotation": -88.64, "width": 326, "height": 367 }
+			},
+			"Grace Parts-OL 6 torso": {
+				"Grace Parts/OL 6 torso": { "x": 226.97, "y": -0.14, "rotation": -91.64, "width": 502, "height": 539 }
+			},
+			"Grace Parts-OL 7 hair": {
+				"Grace Parts/OL 7 hair2": {
+					"type": "mesh",
+					"path": "Grace Parts/OL 7 hair",
+					"uvs": [ 0.99753, 0.16439, 0.99753, 0.75654, 0.99753, 0.99502, 0.73478, 0.99502, 0.5294, 0.99502, 0.00247, 0.99502, 0.00247, 0.65364, 0.00247, 0.20349, 0.00247, 0.00498, 0.1182, 0.00498, 0.87443, 0.00498, 0.99753, 0.00498, 0.07961, 0.81062 ],
+					"triangles": [ 12, 6, 7, 5, 6, 12, 5, 12, 4, 3, 1, 2, 1, 3, 10, 3, 4, 10, 12, 9, 4, 7, 8, 9, 10, 11, 0, 10, 0, 1, 4, 9, 10, 9, 12, 7 ],
+					"vertices": [ 1, 6, 144.19, -191.41, 1, 1, 25, 2.54, -294.95, 1, 2, 6, -22.72, -195.39, 0.0953, 25, -45.38, -296.09, 0.9047, 1, 25, -47.91, -189.71, 1, 1, 25, -49.89, -106.55, 1, 1, 25, -54.97, 106.79, 1, 1, 25, 13.63, 108.42, 1, 1, 6, 126.74, 211.28, 1, 1, 6, 166.63, 212.23, 1, 1, 6, 167.75, 165.37, 1, 1, 6, 175.04, -140.81, 1, 1, 6, 176.22, -190.65, 1, 1, 25, -17.17, 76.44, 1 ],
+					"hull": 12,
+					"edges": [ 8, 10, 4, 6, 6, 8, 4, 2, 2, 0, 0, 22, 20, 22, 16, 18, 18, 20, 14, 16, 10, 12, 12, 14 ],
+					"width": 405,
+					"height": 201
+				}
+			},
+			"Grace Parts-OL 8 hips": {
+				"Grace Parts/OL 8 hips": { "x": 53.84, "y": -5.81, "rotation": -89.24, "width": 626, "height": 278 }
+			},
+			"Grace Parts-OL 9 skirt": {
+				"Grace Parts/OL 9 skirt2": {
+					"type": "mesh",
+					"path": "Grace Parts/OL 9 skirt",
+					"uvs": [ 0.61217, 5.9E-4, 0.86054, 0.06815, 0.99856, 0.23278, 0.99856, 0.37521, 0.96969, 0.51795, 0.89681, 0.74105, 0.85637, 0.86486, 0.82403, 0.96386, 0.70907, 0.9833, 0.58994, 0.99655, 0.49153, 0.99901, 0.39321, 0.99692, 0.27943, 0.98337, 0.17394, 0.94648, 0.10691, 0.74994, 0.03369, 0.53524, 0.00144, 0.43442, 0.00144, 0.31086, 0.05927, 0.15883, 0.28238, 0.01605, 0.45571, 5.9E-4, 0.27952, 0.76792, 0.43063, 0.77168, 0.59584, 0.76942, 0.72184, 0.76187, 0.72753, 0.86662, 0.57503, 0.88181, 0.43283, 0.87939, 0.27254, 0.8612, 0.25197, 0.54991, 0.43299, 0.5387, 0.60181, 0.5393, 0.774, 0.53112, 0.24267, 0.4423, 0.51254, 0.43132, 0.79484, 0.42018, 0.20249, 0.30162, 0.49933, 0.3063, 0.81348, 0.28889 ],
+					"triangles": [ 19, 20, 37, 37, 0, 38, 37, 20, 0, 11, 27, 10, 10, 27, 26, 11, 12, 27, 13, 28, 12, 27, 28, 22, 22, 28, 21, 28, 27, 12, 13, 14, 28, 26, 27, 22, 28, 14, 21, 23, 22, 30, 22, 21, 30, 14, 29, 21, 21, 29, 30, 14, 15, 29, 15, 33, 29, 29, 33, 30, 30, 33, 34, 15, 16, 33, 16, 36, 33, 33, 37, 34, 33, 36, 37, 16, 17, 36, 36, 19, 37, 17, 18, 36, 36, 18, 19, 10, 26, 9, 9, 26, 8, 8, 25, 7, 8, 26, 25, 7, 25, 6, 26, 23, 25, 23, 26, 22, 23, 24, 25, 25, 24, 6, 6, 24, 5, 23, 31, 24, 23, 30, 31, 24, 32, 5, 24, 31, 32, 5, 32, 4, 30, 34, 31, 32, 31, 35, 32, 35, 4, 35, 31, 34, 4, 35, 3, 34, 37, 35, 35, 38, 3, 35, 37, 38, 38, 2, 3, 38, 1, 2, 38, 0, 1 ],
+					"vertices": [ 2, 19, -218.97, -141.54, 0.1685, 1, 171.86, -95.49, 0.8315, 2, 19, -181.52, 36.18, 0.76142, 1, 114.06, -267.67, 0.23858, 2, 19, -53.74, 147.05, 0.997, 1, -25.71, -362.98, 0.003, 1, 19, 66.13, 160.62, 1, 1, 19, 188.52, 154.33, 1, 1, 19, 381.97, 125.34, 1, 1, 19, 489.34, 109.25, 1, 1, 19, 575.18, 96.39, 1, 2, 19, 599.68, 14.65, 0.7664, 8, 628.4, 280.73, 0.2336, 2, 19, 621.39, -59.74, 0.54039, 8, 623.49, 181.84, 0.45961, 2, 19, 627.15, -143.23, 0.38416, 8, 619.9, 120.7, 0.61584, 2, 19, 635.65, -198.24, 0.23992, 8, 603.94, 43.99, 0.76008, 2, 19, 624.11, -298.18, 0.12925, 8, 582.32, -29.65, 0.87075, 1, 8, 539.42, -99.5, 1, 1, 8, 367.88, -120.73, 1, 1, 8, 180.49, -143.92, 1, 1, 8, 92.72, -153.34, 1, 2, 8, -10.78, -137.77, 0.99994, 1, -89.5, 329.24, 6.0E-5, 2, 8, -132.14, -78.92, 0.87195, 1, 39.13, 288.67, 0.12805, 2, 8, -228.69, 92.19, 0.23112, 1, 159.54, 133.43, 0.76888, 2, 8, -223.73, 213.09, 0.00693, 1, 172.23, 13.09, 0.99307, 1, 8, 400.77, -4.54, 1, 2, 19, 444.17, -193.22, 0.27387, 8, 419.52, 98.69, 0.72613, 2, 19, 429.36, -79.51, 0.80007, 8, 434.68, 212.35, 0.19993, 1, 19, 413.16, 6.67, 1, 1, 19, 500.88, 20.58, 1, 2, 19, 525.58, -83.14, 0.74208, 8, 526.67, 183.91, 0.25792, 2, 19, 534.65, -181.43, 0.25653, 8, 509.96, 86.62, 0.74347, 1, 8, 478.17, -21.09, 1, 3, 19, 271.48, -337.56, 0.00158, 8, 215.32, 4.03, 0.9981, 1, -292.57, 156.05, 3.3E-4, 3, 19, 247.9, -213.8, 0.30155, 8, 224.62, 129.67, 0.64875, 1, -283.49, 30.39, 0.0497, 3, 19, 235.22, -97.33, 0.77216, 8, 242.56, 245.45, 0.19186, 1, -284.4, -86.76, 0.03599, 1, 19, 214.89, 20.63, 1, 3, 19, 181.64, -354.23, 0.00385, 8, 124.23, 11.21, 0.99092, 1, -201.4, 162.2, 0.00523, 3, 19, 151.32, -169.18, 0.45602, 8, 142.91, 197.8, 0.34296, 1, -192.73, -25.12, 0.20102, 1, 19, 119.89, 24.43, 1, 3, 19, 66.38, -395.35, 5.0E-5, 8, 2.25, 1.37, 0.99889, 1, -82.15, 189.68, 0.00106, 3, 19, 47.13, -190.21, 0.23624, 8, 36.82, 204.49, 0.17655, 1, -86.81, -16.31, 0.58721, 1, 19, 7.94, 24.77, 1 ],
+					"hull": 21,
+					"edges": [ 0, 40, 0, 2, 2, 4, 4, 6, 34, 36, 36, 38, 38, 40, 26, 28, 10, 12, 12, 14, 8, 10, 6, 8, 28, 30, 30, 32, 32, 34, 14, 16, 16, 18, 18, 20, 20, 22, 22, 24, 24, 26 ],
+					"width": 694,
+					"height": 842
+				}
+			},
+			"Grace Parts-OL 10 pantoriila": {
+				"Grace Parts/OL 10 pantoriila": { "x": 147.87, "y": -7.71, "rotation": 91.48, "width": 209, "height": 454 }
+			},
+			"Grace Parts-OL 10 pantoriila2": {
+				"Grace Parts/OL 10 pantoriila": { "x": 147.87, "y": -7.71, "rotation": 91.48, "width": 209, "height": 454 }
+			},
+			"Grace Parts-OL 11 zapato": {
+				"Grace Parts/OL 11 zapato": { "x": 93.57, "y": 41.19, "rotation": 85.84, "width": 282, "height": 319 }
+			},
+			"Grace Parts-OL 11 zapato2": {
+				"Grace Parts/OL 11 zapato": { "x": 93.57, "y": 41.19, "rotation": 85.84, "width": 282, "height": 319 }
+			}
+		}
+	}
+],
+"animations": {
+	"animation": {},
+	"Idle": {
+		"slots": {
+			"Grace Parts-1 mano2": {
+				"attachment": [
+					{ "name": "Grace Parts/1 mano rest" }
+				]
+			},
+			"Grace Parts-4 eyeballs closed": {
+				"attachment": [
+					{ "time": 0.8333, "name": "Grace Parts/4 eyeballs closed" },
+					{ "time": 1.1667, "name": "Grace Parts/4 eyeballs" },
+					{ "time": 2.3333, "name": "Grace Parts/4 eyeballs closed" },
+					{ "time": 2.4667, "name": "Grace Parts/4 eyeballs" }
+				]
+			},
+			"Grace Parts-OL 1 mano fist2": {
+				"attachment": [
+					{ "name": "Grace Parts/OL 1 mano rest" }
+				]
+			}
+		},
+		"bones": {
+			"mano back": {
+				"translate": [
+					{ "x": -341.04, "y": 111.72 }
+				]
+			},
+			"mano": {
+				"translate": [
+					{ "x": 124.34, "y": 55.18 }
+				]
+			},
+			"bone14": {
+				"rotate": [
+					{ "value": -10.74 },
+					{ "time": 0.3333, "value": -15.57 },
+					{ "time": 1.3333, "value": 2.57 },
+					{ "time": 2.4667, "value": -10.74 }
+				]
+			},
+			"bone6": {
+				"rotate": [
+					{ "value": -12.32 },
+					{ "time": 1.3333, "value": -7.56 },
+					{ "time": 2.4667, "value": -12.32 }
+				]
+			},
+			"bone2": {
+				"rotate": [
+					{ "value": 3.02 },
+					{ "time": 1.1, "value": -0.14 },
+					{ "time": 2.4667, "value": 3.02 }
+				]
+			},
+			"pie": {
+				"translate": [
+					{ "x": 89.6, "y": 4.04 }
+				]
+			},
+			"pie back": {
+				"translate": [
+					{ "x": -82.84, "y": 12.4 }
+				]
+			},
+			"bone7": {
+				"translate": [
+					{ "x": 6.02, "y": 12.77, "curve": "stepped" },
+					{ "time": 1, "x": 6.02, "y": 12.77, "curve": "stepped" },
+					{ "time": 1.1333, "x": 6.02, "y": 12.77 },
+					{ "time": 1.4333, "x": 4.04, "y": -6.05 },
+					{ "time": 2.3333, "x": -0.79, "y": -10.69 }
+				]
+			},
+			"bone19": {
+				"translate": [
+					{ "x": -3.85, "y": 1.3 },
+					{ "time": 0.3333, "x": -12.45, "y": -0.8 },
+					{ "time": 0.8667, "x": -3.85, "y": 1.3 },
+					{ "time": 1.4, "x": 0.51, "y": 1.3 },
+					{ "time": 1.8333, "x": -6.76, "y": 2.96 },
+					{ "time": 2.2, "x": 0.51, "y": 1.3 },
+					{ "time": 2.4667, "x": -3.85, "y": 1.3 }
+				]
+			}
+		}
+	},
+	"Saludo": {
+		"slots": {
+			"Grace Parts-1 mano2": {
+				"attachment": [
+					{ "name": "Grace Parts/1 mano open" }
+				]
+			},
+			"Grace Parts-OL 1 mano fist2": {
+				"attachment": [
+					{ "name": "Grace Parts/OL 1 mano open" }
+				]
+			}
+		},
+		"bones": {
+			"bone14": {
+				"rotate": [
+					{
+						"value": -22.08,
+						"curve": [ 0.111, -14.14, 0.222, -5.7 ]
+					},
+					{
+						"time": 0.3333,
+						"value": -1.04,
+						"curve": [ 0.4, 1.76, 0.889, -43.93 ]
+					},
+					{
+						"time": 1.0667,
+						"value": -43.93,
+						"curve": [ 1.156, -43.93, 1.244, -28.43 ]
+					},
+					{ "time": 1.3333, "value": -22.08 }
+				],
+				"scale": [
+					{ "y": -1 }
+				]
+			},
+			"mano back": {
+				"translate": [
+					{ "x": -10.66, "y": 385.08 },
+					{ "time": 0.6667, "x": -88.05, "y": 399.09 },
+					{ "time": 1.3333, "x": -10.66, "y": 385.08 }
+				]
+			},
+			"mano": {
+				"translate": [
+					{ "x": 127.24, "y": -88.9 },
+					{ "time": 0.6667, "x": 90.76, "y": -88.9 },
+					{ "time": 1.3333, "x": 127.24, "y": -88.9 }
+				]
+			},
+			"bone2": {
+				"rotate": [
+					{ "value": -1.66 },
+					{ "time": 0.7667, "value": 1.72 },
+					{ "time": 1.3333, "value": -1.66 }
+				]
+			},
+			"bone6": {
+				"rotate": [
+					{ "value": 12.03 }
+				]
+			},
+			"bone": {
+				"rotate": [
+					{ "value": -2.09, "curve": "stepped" },
+					{ "time": 1.3333, "value": -2.09 }
+				],
+				"translate": [
+					{ "x": 7.93, "y": -0.4 },
+					{ "time": 0.6667, "x": -12.09, "y": 0.6 },
+					{ "time": 1.3333, "x": 7.93, "y": -0.4 }
+				]
+			},
+			"pie": {
+				"translate": [
+					{ "x": -31.11, "y": -4.44 }
+				]
+			},
+			"pie back": {
+				"translate": [
+					{ "x": -79.99, "y": 8.89 }
+				]
+			},
+			"bone3": {
+				"rotate": [
+					{ "time": 1.3333, "value": 20.79 }
+				],
+				"translate": [
+					{ "x": -34.94, "y": -11.56 },
+					{ "time": 0.6667, "x": -37.6, "y": -11.37 },
+					{ "time": 1.3333, "x": -34.94, "y": -11.56 }
+				]
+			},
+			"bone12": {
+				"rotate": [
+					{ "value": 3 }
+				],
+				"translate": [
+					{ "x": -7.32, "y": -19.7 },
+					{ "time": 0.6667, "x": -11.97, "y": -11.6 },
+					{ "time": 1.3333, "x": -7.32, "y": -19.7 }
+				]
+			}
+		},
+		"ik": {
+			"mano back": [
+				{ "curve": "stepped" },
+				{ "time": 0.6667 }
+			]
+		}
+	}
+}
+}

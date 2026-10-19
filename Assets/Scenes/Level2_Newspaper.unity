@@ -176,10 +176,20 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3516556227717492618, guid: 55968c0be0eae574cac6fbf9493c0537,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3594971233757730330, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4577865234163815372, guid: 55968c0be0eae574cac6fbf9493c0537,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4761352252165417099, guid: 55968c0be0eae574cac6fbf9493c0537,
         type: 3}
@@ -73501,7 +73511,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh37920
+  m_Name: pb_Mesh320394
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -197013,8 +197023,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _natalia: {fileID: 2950999999736668454}
   _abuelaEntrance: {fileID: 5828617772423878024}
-  _nataliaSeat: {x: -1.6, y: 0.1, z: 0.6}
-  _abuelaSeat: {x: -3.2, y: -0.6, z: 1.3}
+  _nataliaSeat: {x: -1.6, y: 2.1, z: 0.6}
+  _abuelaSeat: {x: -3.2, y: 1.1, z: 1.3}
   _bobAmplitude: 0.35
   _bobSpeed: 6
   _landingSpacing: 3
@@ -199517,6 +199527,8 @@ MonoBehaviour:
   _fenceSound: FenceRattle
   _shake: {fileID: 5828617772423879000}
   _landingLine: {fileID: 11400000, guid: fa6f568d1c0e49e78d9a4eb976e93ce9, type: 2}
+  _fallPose: Falling
+  _landPose: Land
   _rumbleStartForce: 0.05
   _rumbleEndForce: 0.35
   _rumblePulseSeconds: 0.25
@@ -199940,6 +199952,13 @@ MonoBehaviour:
   _flightTarget: {fileID: 1336815645380250595}
   _flightSeconds: 1.2
   _flightArcHeight: 20
+  _launchCues:
+  - actor: Natalia
+    action: 0
+    value: Wave
+  - actor: Grace
+    action: 0
+    value: Wave
   _fadeSeconds: 1.5
   _nextScene: 4
   _showcaseShot: {fileID: 0}

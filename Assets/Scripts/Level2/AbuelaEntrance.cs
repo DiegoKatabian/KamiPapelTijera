@@ -55,6 +55,12 @@ public class AbuelaEntrance : MonoBehaviour
     [SerializeField, Tooltip("What she says after landing (optional).")]
     DialogueSO _landingLine;
 
+    [SerializeField, Tooltip("Pose (on her SpineCharacter) looped while she drops. Empty = none.")]
+    string _fallPose = "Falling";
+
+    [SerializeField, Tooltip("Pose played once on impact, then she goes back to idle. Empty = none.")]
+    string _landPose = "Land";
+
     [Header("Rumble and fall camera (#232)")]
     [SerializeField, Tooltip("Shake of the first rumble pulse, as a fraction of the crash (1 = the crash's shake).")]
     float _rumbleStartForce = 0.05f;
@@ -174,6 +180,8 @@ public class AbuelaEntrance : MonoBehaviour
 
         _abuela.gameObject.SetActive(true);
         _abuela.transform.position = start;
+        _abuela.ResetSkeletonPhysics(); //she was parked up there by hand: her bun must not swing from it
+        PlayPose(_fallPose);
         PlaySound(_fallSound);
 
         float elapsed = 0f;
@@ -187,6 +195,7 @@ public class AbuelaEntrance : MonoBehaviour
         _abuela.transform.position = landing;
 
         Impact();
+        PlayPose(_landPose);
 
         if (_abuela.navAgent != null)
         {
@@ -293,6 +302,22 @@ public class AbuelaEntrance : MonoBehaviour
         {
             Debug.LogWarning($"[AbuelaEntrance] {gameObject.name}: _shake is not assigned, the crash has no camera shake");
         }
+    }
+
+    void PlayPose(string poseId)
+    {
+        if (string.IsNullOrEmpty(poseId))
+        {
+            return;
+        }
+
+        if (_abuela.Character == null)
+        {
+            Debug.LogWarning($"[AbuelaEntrance] {_abuela.name} has no SpineCharacter, pose '{poseId}' skipped");
+            return;
+        }
+
+        _abuela.Character.PlayPose(poseId);
     }
 
     static void PlaySound(string id)

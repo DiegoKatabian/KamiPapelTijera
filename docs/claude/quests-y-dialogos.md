@@ -75,7 +75,7 @@ reportarse un bug ahí.
 | **Chino** | `ChinoDialogueTrigger.cs` | **STUB VACÍO** — la clase existe pero no implementa nada, pese a que `Quest04_Chino.asset` ya está configurada (100× papel → SprintBoots). Quest sin NPC funcional. |
 | **Florista** | `NPCs/NPC_Florista.cs` | **STUB VACÍO** — clase sin implementación, sin diálogo conectado. |
 | Natalia (Nivel 2) | `NataliaDialogueTrigger.cs` + `NPCs/NPC_Natalia.cs` | Page 1 (opening dialogue + follow + quest start) implementado 2026-09-22; page 2 clue comments come from `FindCluesTracker` (2026-09-24); page 3 arrest + page 4 cell/escape wired (2026-09-25/27); page 5 drop-off + farewell (2026-09-28). Ver la sección de abajo. |
-| Grace (Nivel 2) | `GraceDialogueTrigger.cs` (lines picked by `Level2/MuseumPage.cs`) | Page 5, 2026-09-28: museum director, placeholder tinted sprite (`Prefabs/NPCs/Grace.prefab`). Not an `NPC`: she never walks. |
+| Grace (Nivel 2) | `GraceDialogueTrigger.cs` (lines picked by `Level2/MuseumPage.cs`) | Page 5, 2026-09-28: museum director (`Prefabs/NPCs/Grace.prefab`), on Spine since 2026-10-19 (`Assets/2D/NPC/Grace Spine`: Idle, and `Wave` = Saludo at the catapult launch). Not an `NPC`: she never walks. |
 
 `NPC.cs` es la base común de estado (junto con `NPC_FollowPlayerState`/
 `NPC_IdleState`, reusados por Abuela y pensados para reusarse por más NPCs).
@@ -226,10 +226,15 @@ does the same at 7 units. **The side spot never leaves the page (#246, 2026-10-1
 range (`PlayerPageSpawnManager.PageMinX/PageMaxX`, the page entry/exit X, -42/42 in Level 2) is swapped for the other side for
 that frame, both out = Kami's own point; at the book's edge the outer spot either had no NavMesh (they froze, page 4) or sat on
 the floor's NavMesh past the invisible walls (they pushed against them, page 5). Landing from a page turn also points the side
-at the page centre (`NPC.FollowSideTowardPageCentre`, from `PageRideFollowers.TryLand`). Both play `Walk` while riding a page turn or the paper plane (`NPC.SetRiding`). The Abuela has
-no `SpineCharacter`, so riding holds her Animator's `IsWalking` on (`NPC._ridingWalk`, #240, 2026-10-17): boarding stops her
-follow and the FSM's follow-exit / idle-enter used to write it back to false the next frame. Plane seats (#239):
-Natalia (-1.6, 0.1, 0.6), the Abuela (-3.2, -0.6, 1.3), closer, higher and at different depths so their feet don't z-fight.
+at the page centre (`NPC.FollowSideTowardPageCentre`, from `PageRideFollowers.TryLand`). Both play their `Ride` pose
+(`Fly Page`) while riding a page turn or the paper plane (`NPC.SetRiding`, 2026-10-19; it was `Walk`). **The Abuela is on
+Spine too since 2026-10-19** (skin `Abuela Base` in Level 1, `Abuela Cocinera` in Level 2; poses Scared, Celebrate,
+Falling, Land, Ride; when each plays: spec 014's addendum). An Animator-only NPC without a `SpineCharacter` still holds its
+`IsWalking` on while riding (`NPC._ridingWalk`, #240). On the paper plane they board at the fold but only start
+`Fly Page` when Kami's hat jump spends it (`PaperPlaneRide.StartFlyingOnJump`, 2026-10-19); until then their
+`SpineCharacter` walks or idles with the seat's movement. Plane seats (#239; raised 2026-10-19 so their feet stay above the
+floor while Kami walks before the jump): Natalia (-1.6, 2.1, 0.6), the Abuela (-3.2, 1.1, 1.3), at different depths so their
+feet don't z-fight. They are `_nataliaSeat` / `_abuelaSeat` on `PaperPlaneRide`, on `Page 4/PoliceStation`.
 
 ### Phase 6 additions (2026-09-29)
 

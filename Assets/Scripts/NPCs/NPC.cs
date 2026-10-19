@@ -68,6 +68,10 @@ public class NPC : Entity
     [SerializeField, Tooltip("Never faster than this while following (units/s). Kami walks under 10, skips up to 20 and sprints at 28: under 20 = a bit slower than her full skip.")]
     float _maxFollowSpeed = 18f;
 
+    [Header("Riding (page turns, paper plane)")]
+    [SerializeField, Tooltip("Pose (on the SpineCharacter) played while riding a page turn or the paper plane with Kami. A character without this pose plays its walk cycle instead.")]
+    string _ridePose = "Ride";
+
     [Header("Debug")]
     [SerializeField, Tooltip("Log a periodic report of everything that decides whether this NPC can move: position, effective agent size, isOnNavMesh, path status, distance to the nearest NavMesh point. Turn on when an NPC refuses to move.")]
     bool _debugMovement = false;
@@ -77,7 +81,7 @@ public class NPC : Entity
 
     public NavMeshAgent navAgent { get; private set; }
 
-    /// <summary>The Spine animation driver, when the NPC has one (Natalia, the cops). Null = sprite/Animator NPC (the Abuela).</summary>
+    /// <summary>The Spine animation driver, when the NPC has one (Natalia, the Abuela, the cops). Null = sprite/Animator NPC.</summary>
     public SpineCharacter Character { get; private set; }
 
     float _repathTimer;
@@ -274,11 +278,27 @@ public class NPC : Entity
         navAgent.speed = Mathf.Min(speed, _maxFollowSpeed);
     }
 
-    /// <summary>Hanging from Kami on a page turn or riding the paper plane: plays the walk cycle (Diego, spec 014).</summary>
+    /// <summary>
+    /// Hanging from Kami on a page turn or riding the paper plane: plays the character's "Ride" pose (Fly Page,
+    /// 2026-10-19) when its SpineCharacter has one, the walk cycle otherwise (Diego, spec 014).
+    /// </summary>
     public void SetRiding(bool riding)
     {
         if (Character != null)
         {
+            if (Character.HasPose(_ridePose))
+            {
+                if (riding)
+                {
+                    Character.PlayPose(_ridePose);
+                }
+                else if (string.Equals(Character.CurrentPoseId, _ridePose, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    Character.EndPose();
+                }
+                return;
+            }
+
             if (riding)
             {
                 Character.ForceGait(Gait.Walk);

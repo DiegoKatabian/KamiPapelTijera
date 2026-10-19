@@ -77,6 +77,13 @@ public class Catapult : TriggerScript
     [SerializeField, Tooltip("How high the flight arcs above the straight line, in world units.")]
     float _flightArcHeight = 20f;
 
+    [SerializeField, Tooltip("Animation beats at the launch, by actor id: Natalia and Grace wave goodbye until the fade (their Wave pose loops).")]
+    AnimationCue[] _launchCues =
+    {
+        new AnimationCue { actor = "Natalia", action = AnimationCueAction.PlayPose, value = "Wave" },
+        new AnimationCue { actor = "Grace", action = AnimationCueAction.PlayPose, value = "Wave" }
+    };
+
     [Header("Ending")]
     [SerializeField, Tooltip("Seconds of the fade to black (starts at the FadeOut signal).")]
     float _fadeSeconds = 1.5f;
@@ -296,6 +303,7 @@ public class Catapult : TriggerScript
             _abuela.navAgent.enabled = false;
         }
         _abuela.transform.position = _abuelaSeat.position + Vector3.up * pivotAboveFeet;
+        _abuela.ResetSkeletonPhysics();
     }
 
     void OnRopeCut()
@@ -345,6 +353,8 @@ public class Catapult : TriggerScript
         {
             _animator.SetTrigger(_shootTrigger);
         }
+
+        AnimationCue.RunAll(_launchCues, "Catapult launch");
 
         //the arm hitting its stop, then the girls whooshing away (replaces Jump_Paperplane)
         AudioManager.instance.Play(AudioId.CatapultThud);

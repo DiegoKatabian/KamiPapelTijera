@@ -27,11 +27,11 @@ public class PaperPlaneRide : MonoBehaviour
     AbuelaEntrance _abuelaEntrance;
 
     [Header("Seats (relative to Kami, X mirrored with the way she faces)")]
-    [SerializeField, Tooltip("Natalia's seat, in world units from Kami's body center. Her transform sits at her waist.")]
-    Vector3 _nataliaSeat = new Vector3(-1.6f, 0.1f, 0.6f);
+    [SerializeField, Tooltip("Natalia's seat, in world units from Kami's body center (her feet are 2.4 below it). Natalia's transform sits at her waist, 4 above her feet: Y under about 2 sinks her feet into the floor while Kami walks before the jump.")]
+    Vector3 _nataliaSeat = new Vector3(-1.6f, 2.1f, 0.6f);
 
-    [SerializeField, Tooltip("The Abuela's seat. Keep its Z different from Natalia's: at the same depth their overlapping feet z-fight (#239).")]
-    Vector3 _abuelaSeat = new Vector3(-3.2f, -0.6f, 1.3f);
+    [SerializeField, Tooltip("The Abuela's seat. Her transform sits 3 above her feet (at Level 2's scale): Y under about 1 sinks her feet into the floor. Keep its Z different from Natalia's: at the same depth their overlapping feet z-fight (#239).")]
+    Vector3 _abuelaSeat = new Vector3(-3.2f, 1.1f, 1.3f);
 
     [SerializeField, Tooltip("How far each rider bobs up and down, in world units. Placeholder for the real pose.")]
     float _bobAmplitude = 0.35f;
@@ -52,6 +52,7 @@ public class PaperPlaneRide : MonoBehaviour
         public Vector3 seat;
         public int landingSlot; //1 = closest to Kami, 2 = one spacing further
         public float bobPhase;
+        public bool flying; //Kami has jumped with the hat: the Ride pose (Fly Page) is on
         public bool parked;
         public Vector3 parkedPosition;
     }
@@ -110,7 +111,8 @@ public class PaperPlaneRide : MonoBehaviour
         {
             agent.updatePosition = false; //the agent stays on the mesh internally, the LateUpdate drives the transform
         }
-        follower.SetRiding(true); //on the plane with Kami: walk cycle (spec 014)
+        //no SetRiding yet (Diego, 2026-10-19): until Kami jumps they walk along with her (their SpineCharacter
+        //measures the seat's movement: walk when she walks, idle when she stops). StartFlyingOnJump switches it on
 
         _riders.Add(new Rider { npc = follower, seat = seat, landingSlot = landingSlot, bobPhase = Random.value * Mathf.PI * 2f });
         Debug.Log($"[PaperPlaneRide] {follower.gameObject.name} climbs aboard the paper plane");
@@ -154,7 +156,14 @@ public class PaperPlaneRide : MonoBehaviour
 
     void Update()
     {
-        if (_riders.Count == 0 || Time.time < _nextReclaimCheck)
+        if (_riders.Count == 0)
+        {
+            return;
+        }
+
+        StartFlyingOnJump();
+
+        if (Time.time < _nextReclaimCheck)
         {
             return;
         }
@@ -168,6 +177,28 @@ public class PaperPlaneRide : MonoBehaviour
             {
                 _riders.RemoveAt(i);
             }
+        }
+    }
+
+    //the hat's jump spends an augmented jump (PlayerModel.OnJump): from then on they fly with her until they get off
+    void StartFlyingOnJump()
+    {
+        Player player = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+        if (player == null || !player.isPaperPlaneHat || player.augmentedJumpsLeft >= player.augmentedJumpsMax)
+        {
+            return;
+        }
+
+        foreach (Rider rider in _riders)
+        {
+            if (rider.npc == null || rider.parked || rider.flying)
+            {
+                continue;
+            }
+
+            rider.flying = true;
+            rider.npc.SetRiding(true); //the Ride pose (Fly Page), or the walk cycle without one
+            Debug.Log($"[PaperPlaneRide] Kami jumps: {rider.npc.gameObject.name} flies with her");
         }
     }
 

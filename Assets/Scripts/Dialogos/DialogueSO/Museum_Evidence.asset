@@ -83,3 +83,7 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
     speakerName: police_name
   currentText: 0
+  cuesOnEnd:
+  - actor: Abuela
+    action: 0
+    value: Celebrate

@@ -218,7 +218,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2c3d928e8ba1c22428d20a92466e950c, type: 2}
+  - {fileID: 2100000, guid: 653726efd1528ce4dab295126292a25d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: 012b063337d2f754eb588eb9a3640761, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: 466b70eb767653d4c9a4120c9c3c474b, type: 2}
   initialSkinName: 
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
@@ -347,6 +347,22 @@ MonoBehaviour:
   - id: Shock
     intro: IdleToShock
     main: Shock
+    loop: 1
+    next: 
+    overlay: 
+    endsWhenMoving: 0
+    clearOnPageTurn: 0
+  - id: Ride
+    intro: 
+    main: Fly Page
+    loop: 1
+    next: 
+    overlay: 
+    endsWhenMoving: 0
+    clearOnPageTurn: 0
+  - id: Wave
+    intro: 
+    main: Saludo
     loop: 1
     next: 
     overlay: 

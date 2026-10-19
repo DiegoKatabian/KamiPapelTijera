@@ -1,0 +1,118 @@
+Grace.png
+size:1955,1873
+filter:Linear,Linear
+Grace Parts/1 mano actually
+bounds:421,8,175,258
+offsets:16,16,207,290
+rotate:90
+Grace Parts/1 mano fist
+bounds:1415,15,183,211
+offsets:16,16,215,244
+rotate:90
+Grace Parts/1 mano open
+bounds:908,2,205,258
+offsets:16,16,237,290
+rotate:90
+Grace Parts/1 mano rest
+bounds:681,5,178,225
+offsets:16,16,210,257
+rotate:90
+Grace Parts/10 pantoriila
+bounds:2,8,175,417
+offsets:16,17,207,450
+rotate:90
+Grace Parts/11 zapato
+bounds:1168,243,248,284
+offsets:16,17,280,318
+Grace Parts/2 antebrazo
+bounds:979,273,183,254
+offsets:17,16,216,286
+Grace Parts/3 brazo copy
+bounds:696,780,231,353
+offsets:16,16,263,385
+rotate:90
+Grace Parts/4 cejas
+bounds:1290,584,146,29
+offsets:0,0,147,29
+rotate:90
+Grace Parts/4 cejas cuestion
+bounds:1266,1081,145,45
+Grace Parts/4 eyeballs
+bounds:1290,732,135,42
+offsets:1,0,137,43
+Grace Parts/4 eyeballs closed
+bounds:1266,1043,135,36
+offsets:1,1,137,38
+Grace Parts/4 lentes
+bounds:1372,1162,206,70
+offsets:16,17,238,103
+rotate:90
+Grace Parts/4 mouth
+bounds:1413,1078,82,29
+rotate:90
+Grace Parts/4 mouth sad
+bounds:898,1013,79,27
+offsets:1,0,80,27
+Grace Parts/5 head
+bounds:1427,440,292,333
+offsets:17,16,325,366
+Grace Parts/6 torso
+bounds:1448,1403,468,505
+offsets:16,16,500,537
+rotate:90
+Grace Parts/7 hair
+bounds:1727,998,403,199
+rotate:90
+Grace Parts/8 hips
+bounds:696,529,592,244
+offsets:16,16,624,277
+Grace Parts/9 skirt
+bounds:2,1029,692,842
+Grace Parts/OL 1 mano actually
+bounds:1721,415,209,291
+offsets:0,1,209,292
+Grace Parts/OL 1 mano fist
+bounds:1168,26,215,245
+offsets:1,0,217,245
+rotate:90
+Grace Parts/OL 1 mano open
+bounds:1418,200,238,291
+offsets:1,1,239,292
+rotate:90
+Grace Parts/OL 1 mano rest
+bounds:1711,154,212,259
+Grace Parts/OL 10 pantoriila
+bounds:696,1418,208,453
+offsets:0,1,209,454
+Grace Parts/OL 11 zapato
+bounds:696,209,281,318
+offsets:1,0,282,319
+Grace Parts/OL 2 antebrazo
+bounds:1727,708,216,288
+offsets:0,0,217,288
+Grace Parts/OL 3 brazo copy
+bounds:1051,776,264,386
+offsets:0,1,265,387
+rotate:90
+Grace Parts/OL 4 lentes
+bounds:1266,1128,240,104
+rotate:90
+Grace Parts/OL 5 head
+bounds:898,1042,326,366
+offsets:0,1,326,367
+rotate:90
+Grace Parts/OL 6 torso
+bounds:908,1370,501,538
+offsets:0,0,502,539
+rotate:90
+Grace Parts/OL 7 hair
+bounds:696,1013,403,200
+offsets:1,0,405,201
+rotate:90
+Grace Parts/OL 8 hips
+bounds:1448,775,626,277
+offsets:0,1,626,278
+rotate:90
+Grace Parts/OL 9 skirt
+bounds:2,185,692,842
+offsets:1,0,694,842

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: Abuela_Atlas
+  m_EditorClassIdentifier: 
+  textureLoadingMode: 0
+  onDemandTextureLoader: {fileID: 0}
+  atlasFile: {fileID: 4900000, guid: 8ddd7ab48a47ce0488c568baf75306cd, type: 3}
+  materials:
+  - {fileID: 2100000, guid: adad81aab178ee14c89df032a42e303e, type: 2}
+  - {fileID: 2100000, guid: 69a81e8381779a046b459b3a4442e3f4, type: 2}
+  - {fileID: 2100000, guid: 7ff27071365178444a611b3fb6bbb6be, type: 2}

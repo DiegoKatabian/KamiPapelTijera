@@ -233,7 +233,7 @@ sequence and is the only thing that restarts it:
    maximum fun she should explore for a short while")**, the narrator's two lines (`Narrator_JailIntro`, played by `PoliceStationPage._narratorLine`,
    first time only) say there is no way out and the ground shakes, and `_abuelaDelaySeconds` (3, the rumble: growing camera-shake pulses and
    a low `PlaneRumbleLoop`, #232) after it closes `AbuelaEntrance`
-   drops the Abuela (`Abuela_Follower` prefab variant) next to the fence: Kami is locked (`inCutscene`)
+   drops the Abuela (`Abuela_Follower` prefab variant; Spine `Falling` during the drop, `Land` on impact) next to the fence: Kami is locked (`inCutscene`)
    from the start of that countdown until her two lines (`Abuela_JailLanding`) end (#172, 2026-10-13, which also
    locked the wait before it; since 2026-10-17 the free seconds above come first and only the countdown is locked); the fence disappears
    (reveal, not destruction), she follows Kami. After a capture the same lock covers the shorter countdown.
@@ -294,7 +294,7 @@ always reaches page 5 with it.
 `MuseumPage` (`Assets/Scripts/Level2/`, on `Page 5/Museum Sequence`) owns the page:
 
 1. Walking up to **Grace** (`_approachRadius`, 12) or talking to her (the museum director, `Prefabs/NPCs/Grace.prefab`:
-   a tinted Natalia sprite + `GraceDialogueTrigger`, whose lines `MuseumPage` picks) with the Pelusa, the café ticket
+   a Spine skeleton since 2026-10-19 + `GraceDialogueTrigger`, whose lines `MuseumPage` picks) with the Pelusa, the café ticket
    and the three clues starts the meeting (#182: no E press needed; without the evidence the approach does nothing and
    E gets nothing: Diego switched `MuseumPage._graceNoProof` off on 2026-10-17, the asset still exists). Her dialogue: `Grace_Reaction` (the narrator's arrival line + her interrogated "???" lines), then `Grace_Meeting` (10 lines, Natalia's "mostrales el ticket" last). Her meeting dialogue ends -> the ticket pedestal (`SelloOrigami CafeTicket`, a
    `SelloOrigami Cafe` instance pointed at `OrigamiRoute_Cafe_Unfold`, 0 paper, auto-prompt) appears.

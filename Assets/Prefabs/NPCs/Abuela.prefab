@@ -126,9 +126,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5357465105482584965}
-  - component: {fileID: 5357465105482584966}
   - component: {fileID: 8621498527565570154}
-  - component: {fileID: 3175414029089527560}
+  - component: {fileID: 8486515450248429183}
   - component: {fileID: 4471000000000000090}
   m_Layer: 0
   m_Name: Abuela
@@ -155,61 +154,10 @@ Transform:
   - {fileID: 4628073250125763666}
   - {fileID: 2587773577642616176}
   - {fileID: 8936258439587699409}
+  - {fileID: 4821023746736507929}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &5357465105482584966
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5357465105482584964}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: be6fae3724036bc4abca1f6a3da23f90, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 483ffe4df57fda84cad3cb5b7fd1bdc9, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 1
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 10.94, y: 10.05}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!114 &8621498527565570154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,12 +173,12 @@ MonoBehaviour:
   _hp: 9999
   _maxSpeed: 15
   _attackDamage: 1
-  _sr: {fileID: 5357465105482584966}
+  _sr: {fileID: 0}
   isFollowing: 0
   player: {fileID: 0}
   followStoppingDistance: 3
   repathInterval: 0.2
-  anim: {fileID: 3175414029089527560}
+  anim: {fileID: 0}
   _walkAnimatorBool: IsWalking
   _flipSpriteToMovement: 1
   _invertFlip: 0
@@ -247,26 +195,6 @@ MonoBehaviour:
   isDropoff: 0
   dropoffPoint: {fileID: 0}
   unfoldPoint: {fileID: 0}
---- !u!95 &3175414029089527560
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5357465105482584964}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 2edc3b66bf8bd9f4c9550de204d54835, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!195 &4471000000000000090
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -621,3 +549,204 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8703191041032181190}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &750676113190588367
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4821023746736507929}
+  - component: {fileID: 7970159922130174877}
+  - component: {fileID: 8828353070924033903}
+  - component: {fileID: 3464278417447186271}
+  m_Layer: 0
+  m_Name: Spine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4821023746736507929
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750676113190588367}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -4.58, z: 0}
+  m_LocalScale: {x: 0.63, y: 0.63, z: 0.63}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 5357465105482584965}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &7970159922130174877
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750676113190588367}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: adad81aab178ee14c89df032a42e303e, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8828353070924033903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750676113190588367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  skeletonDataAsset: {fileID: 11400000, guid: be602ca8232b63f47a9761e2e179abf3, type: 2}
+  initialSkinName: Abuela Base
+  fixPrefabOverrideViaMeshFilter: 2
+  initialFlipX: 0
+  initialFlipY: 0
+  updateWhenInvisible: 3
+  separatorSlotNames: []
+  zSpacing: 0
+  useClipping: 1
+  immutableTriangles: 0
+  pmaVertexColors: 1
+  clearStateOnDisable: 0
+  tintBlack: 0
+  singleSubmesh: 0
+  fixDrawOrder: 0
+  addNormals: 0
+  calculateTangents: 0
+  maskInteraction: 0
+  maskMaterials:
+    materialsMaskDisabled: []
+    materialsInsideMask: []
+    materialsOutsideMask: []
+  disableRenderingOnOverride: 1
+  physicsPositionInheritanceFactor: {x: 0.25, y: 1}
+  physicsRotationInheritanceFactor: 1
+  physicsMovementRelativeTo: {fileID: 0}
+  updateTiming: 1
+  unscaledTime: 0
+  _animationName: Idle
+  loop: 1
+  timeScale: 1
+--- !u!33 &3464278417447186271
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750676113190588367}
+  m_Mesh: {fileID: 0}
+--- !u!114 &8486515450248429183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5357465105482584964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31b1904fbf2344e18b52dcfa953ec1ac, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _actorId: Abuela
+  _skeleton: {fileID: 8828353070924033903}
+  _idleAnimation: Idle
+  _walkAnimation: Walk
+  _runAnimation: 
+  _movingSpeed: 1
+  _runSpeed: 12
+  _walkAnimationSpeed: 0
+  _runAnimationSpeed: 0
+  _mixSeconds: 0.2
+  _idleOverlay:
+  _walkOverlay:
+  _artFacesRight: 1
+  _faceMovement: 1
+  _faceKamiWhenIdle: 1
+  _facingDeadzone: 0.3
+  _poses:
+  - id: Scared
+    intro: 
+    main: Scared
+    loop: 1
+    next: 
+    overlay: 
+    endsWhenMoving: 1
+    clearOnPageTurn: 0
+  - id: Celebrate
+    intro: 
+    main: Celebrate
+    loop: 0
+    next: 
+    overlay: 
+    endsWhenMoving: 1
+    clearOnPageTurn: 0
+  - id: Falling
+    intro: 
+    main: Falling
+    loop: 1
+    next: 
+    overlay: 
+    endsWhenMoving: 0
+    clearOnPageTurn: 0
+  - id: Land
+    intro: 
+    main: Land
+    loop: 0
+    next: 
+    overlay: 
+    endsWhenMoving: 1
+    clearOnPageTurn: 0
+  - id: Ride
+    intro: 
+    main: Fly Page
+    loop: 1
+    next: 
+    overlay: 
+    endsWhenMoving: 0
+    clearOnPageTurn: 0
+  _initialRestPose:
+  _idleBreakPose:
+  _idleBreakEverySeconds: {x: 8, y: 14}
+  _idleBreakSeconds: 4
+  _debugAnimations: 0

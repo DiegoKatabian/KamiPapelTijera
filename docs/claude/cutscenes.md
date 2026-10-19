@@ -77,7 +77,7 @@ before it is gameplay, see `nivel2-y-ui.md`). One camera shot, `CM Catapult Hold
 catapult, CarFollow's recipe: Transposer in world space following the catapult, so it holds still;
 framing = its `Follow Offset` + X tilt), and three signals: `Launch` (0.6s: the loaded art swaps for
 the fired art, Kami and the Abuela vanish and `FlyingGirls_PLACEHOLDER` arcs to `FlightTarget` in
-`_flightSeconds`) -> `FadeOut` (3.6s, over `_fadeSeconds`) -> `LoadEnding` (5.4s, loads
+`_flightSeconds`; Natalia and Grace start waving goodbye, `Catapult._launchCues`, looping until the scene changes) -> `FadeOut` (3.6s, over `_fadeSeconds`) -> `LoadEnding` (5.4s, loads
 `Level2_EndCutscene`). The hold on the empty catapult is the gap between `Launch` and `FadeOut`. Keep
 `LoadEnding` before the end of the shot clip (6s). The durations that are not on the timeline live on
 `Catapult`: `_flightSeconds`, `_flightArcHeight`, `_fadeSeconds` and `_boardFadeSeconds`.
@@ -154,7 +154,7 @@ line of the `DialogueSO` (`Animation Cues`: actor id + PlayPose / EndPose / SetR
 cutscene's dialogue markers already time them. Arrest: `Arrest_Shout` (cops `Arrest`, Natalia `Shock`),
 `Arrest_Accusation` (Ariel `Point`, his arm aimed at Kami). Meeting: `Grace_Meeting` (Ariel `Point`, cops `Arrest`),
 then `Museum_Evidence` (Ariel `Angry`, Natalia `Happy`, cops lose the walking lantern; the page 5 witnesses never hold the idle
-lantern since #225: their `_idleOverlay` is empty in the scene). Beats that are not lines are in the
+lantern since #225: their `_idleOverlay` is empty in the scene; its end cue plays the Abuela's `Celebrate` once, 2026-10-19). Beats that are not lines are in the
 cutscene scripts (`ArrestCutscene.CUE_StartEscort`: shock ends, everyone walks). Detail: `specs/014-level2-npc-animations/spec.md`.
 
 ## The HUD during cutscenes (#188)

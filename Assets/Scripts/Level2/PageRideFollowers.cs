@@ -158,7 +158,7 @@ public class PageRideFollowers : MonoBehaviour
         {
             agent.updatePosition = false; //the agent keeps its internal position, the LateUpdate drives the transform
         }
-        follower.SetRiding(true); //hanging from the page edge with Kami: walk cycle (spec 014)
+        follower.SetRiding(true); //hanging from the page edge with Kami: the Ride pose (Fly Page), or the walk cycle without one
 
         _riders.Add(new Rider
         {
