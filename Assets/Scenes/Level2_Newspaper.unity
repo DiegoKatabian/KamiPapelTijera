@@ -95182,6 +95182,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5019034001922312300, guid: 7e1f800fee87ec1469b5b40197b586be,
         type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5019034001922312300, guid: 7e1f800fee87ec1469b5b40197b586be,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 8
       objectReference: {fileID: 0}
@@ -189653,6 +189658,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SelloOrigami PaperPlane (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5019034001922312300, guid: 7e1f800fee87ec1469b5b40197b586be,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5019034001922312300, guid: 7e1f800fee87ec1469b5b40197b586be,
         type: 3}
