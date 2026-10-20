@@ -22,7 +22,7 @@ MonoBehaviour:
       action: 0
       value: Point
   - text: grace_meeting_02
-    sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
+    sprite: {fileID: 21300000, guid: 9d7614f3ccdc2ae49affb3153c708502, type: 3}
     speakerName: police_name
     animationCues:
     - actor: Police

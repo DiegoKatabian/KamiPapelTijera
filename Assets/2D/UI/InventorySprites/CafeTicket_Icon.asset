@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7ac5b21e976491a856a253cdce2d4d1, type: 3}
+  m_Name: CafeTicket_Icon
+  m_EditorClassIdentifier: 
+  _entries:
+  - localeCode: es
+    sprites:
+    - {fileID: 21300000, guid: 5499d9e795a836a4e83f027193e306bd, type: 3}
+  - localeCode: en
+    sprites:
+    - {fileID: 21300000, guid: 2bd7eac6bd1f4de7829e8d73fa995b07, type: 3}
+  - localeCode: pt
+    sprites:
+    - {fileID: 21300000, guid: 941efbade2b844f89565c590d4d5df6a, type: 3}

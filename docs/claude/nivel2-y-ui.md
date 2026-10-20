@@ -92,8 +92,12 @@ now, ready for pages 1-5 to wire up:
   café fold through `OrigamiItemGiver`, see `origami-y-tooltips.md`) was appended after `lostGlove`;
   `lostGlove` was appended as a 5th in
   Phase 2, in both InventoryManager lists) + matching `InventoryItem` assets in
-  `Assets/Scripts/Inventory/` (sprites left empty, no art yet), registered in
-  `InventoryManager._allItems`.
+  `Assets/Scripts/Inventory/`, registered in
+  `InventoryManager._allItems`. Icons (Valentino, 2026-10-20): `Glove Item`, `Hand Clock Item`, `Sombrero Item`,
+  `Cafe Ticket Item` in `Assets/2D/UI/InventorySprites/`. The ticket has words printed on it, so
+  `ItemCafeTicket` also points `localizedSprite` at `CafeTicket_Icon.asset` (ES/EN/PT, see "Real art" in
+  `origami-y-tooltips.md`); `InventoryItem.Icon` picks the current language's and `InventorySlot` refreshes it
+  when the language changes. The Pelusa and the outfits still have no icon.
 
   **Careful — the two levels wire InventoryManager differently.**
   `Nivel1_KamiPapelTijera.unity` instantiates `Assets/Prefabs/Managers/InventoryManager.prefab`,
@@ -135,9 +139,19 @@ drive off after the second clue so the police tape can be cut, and the quest han
   something scale-1 to animate; Valentino's lid animation replaces those two clips (done 2026-10-15: `Trashcan.fbx` with a separate lid, clips `TrashCan_Opening`/`Closing` swing `Trashcan_Tapa` on a back hinge, position + rotation, and `TrashCan_Open` holds the opened pose because an empty Animator state would snap the lid back shut; transitions are instant).
 - `Assets/Prefabs/Level2/`: `CrimeSceneGate` (tape + blocker + cops + car,
   `Assets/Scripts/Level2/CrimeSceneGate.cs`), `CluePickup_Hat`/`CluePickup_Watch` (walk-into
-  pickups), `FindCluesTracker` (`Assets/Scripts/Level2/FindCluesTracker.cs`: counts clues,
+  pickups; since 2026-10-20 they show their bag icons, the hat at scale 0.45, the watch at 0.6, and the glove
+  can's contents show the glove), `FindCluesTracker` (`Assets/Scripts/Level2/FindCluesTracker.cs`: counts clues,
   queues Natalia's comments, calls off the cops, fires `OnAllCluesFound` once, hands off the
   quest) and `GiftBox` (`GiftDialogueTrigger`, extended in Phase 3 — see above).
+- **A magnifying glass marks each clue (Valentino's order, 2026-10-20; built, not seen in the Editor yet)**:
+  `Prefabs/Level2/ClueLupa.prefab`, a marker pin whose arrow tip is the prefab's origin. Its Animator
+  (`Animations/ClueLupa/`, one 2.4 s loop) bobs the `Visual` child 0.4 up and down and swaps `Lupa Icon` and
+  `Lupa Icon Empty` every 1.2 s with a squash-and-stretch pop; tune it in the Animation window. It carries
+  the violet flower's sparkles (a `Brillitos Mágicos` instance, the flower's settings, at scale 2). `ClueMarker`
+  switches it off for good when its trash can is opened (`_hideWhenOpened`, a `Solapa`) or its pickup is collected
+  (`_hideWhenCollected`). Placed: a child of `CluePickup_Hat` (3.5 up) and `CluePickup_Watch` (4.6 up), and in
+  `Museum Page Parent.prefab` over the glove can and, as a decoy (Diego), over `Kami_TrashCan (2)`, the page's
+  paper-only can, both 5.2 above the can. Page 5 shares that prefab, so its instance switches both off.
 - **The museum's main gate is broken (#180, 2026-10-13)**: the robber got in and out through it. The fbx's two
   `RejaCentral Puerta` doors are switched off in `Museum Page Parent.prefab` (shared by pages 2 and 5) and replaced
   by `Prefabs/Level2/Reja Central Rota.prefab` (Diego posed the doors fallen and bent, convex MeshColliders), plus

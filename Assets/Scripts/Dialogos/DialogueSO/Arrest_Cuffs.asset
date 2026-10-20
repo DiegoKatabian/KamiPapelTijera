@@ -15,7 +15,7 @@ MonoBehaviour:
   wasRead: 0
   events:
   - text: arrest_police_02
-    sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
+    sprite: {fileID: 21300000, guid: 64e8d4f89612d82448e1e559882e1bd6, type: 3}
     speakerName: police_name
     soundOnLine: Handcuffs
   - text: arrest_ariel_02

@@ -47,6 +47,16 @@ inicial (`QuestManager.AddQuest()`), 1 = recordatorio en loop mientras no está
 completa, 2 = agradecimiento + fanfarria de recompensa (saca recursos del inventario,
 da la recompensa), 3 = charla post-entrega.
 
+**Portraits (Valentino's art and rules, 2026-10-20)**: the portraits live in `Assets/2D/NPC/Nuevos Dialogos/`.
+Level 2's Abuela lines use the `AbuelaCocinera_*` set (Level 1 keeps `Abuela_*`, redrawn in place), with
+`SASSY` when she says something funny ("¡Eh! ¡Re caro!", "A mí no me da miedo."). The cop who talks in the
+story is `Policia1_*` (crime scene, arrest, museum); page 4's guard lines (the intro taunt, "¿Qué fue ese
+ruido?") use `Policia2_*`, the patrolling skin; `Policia3/4` are unused. `STOP` for orders ("¡Alto las
+manos!", "¡Nadie se mueva!", "No se puede pasar"), `SORRY` for the apology, `TALK` otherwise. Grace's lines,
+her `???` ones included, use `Grace_*` by mood. All PNGs there must import as Single sprites: Valentino's
+2026-10-20 commit left them on sprite mode 0, which drops the sprite every dialogue references (fixed in
+the `.meta` files). The Level 2 quests (Quest05-08) show `QuestIcon Natalia`.
+
 ## Quest de Tiburcio — la más reciente, ya estabilizada
 
 Cambió de Resource (cortar hongos) a **Event** (`OnTreeCutForChickens`) en 3 commits

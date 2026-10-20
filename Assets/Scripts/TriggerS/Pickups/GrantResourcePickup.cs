@@ -46,6 +46,9 @@ public class GrantResourcePickup : MonoBehaviour
     Vector3 _restLocalPosition;
     Vector3 _restLocalScale;
 
+    /// <summary>True once Kami got it (the page 2 clue markers go away then).</summary>
+    public bool IsCollected => _collected;
+
     void Awake()
     {
         _restLocalPosition = transform.localPosition;

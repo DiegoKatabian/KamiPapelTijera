@@ -69,6 +69,8 @@ MonoBehaviour:
   _tableName: Level2_Dialogues
   _closePromptKey: OrigamiReadClose
   _readDelay: 2
+  _paper: {fileID: 7311240347914740041}
+  _maxPaperSize: {x: 1000, y: 860}
   _fadeInDuration: 0.3
   _fadeOutDuration: 0.3
 --- !u!1 &3131757147188643071
@@ -320,7 +322,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 30}
+  m_AnchoredPosition: {x: 0, y: 85}
   m_SizeDelta: {x: -120, y: 60}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &7360693298348479322

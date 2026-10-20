@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 
 public class InventorySlot : MonoBehaviour
 {
@@ -45,10 +47,22 @@ public class InventorySlot : MonoBehaviour
             StartCoroutine(SetLocalizedText(currentItem.itemName, nameTextComponent));
             setNamePromised = false;
         }
+
+        //an icon with words drawn on it (the cafe ticket) follows the language, also if it changed while this slot was hidden
+        RefreshIcon();
+        if (LocalizationSettings.HasSettings)
+        {
+            LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
+        }
     }
 
     private void OnDisable()
     {
+        if (LocalizationSettings.HasSettings)
+        {
+            LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
+        }
+
         if (_gearPlayer != null)
         {
             _gearPlayer.OnGearChanged -= RefreshWornBadge;
@@ -58,6 +72,19 @@ public class InventorySlot : MonoBehaviour
 
     Player _gearPlayer;
     bool? _inFlap;
+
+    void OnLocaleChanged(Locale locale)
+    {
+        RefreshIcon();
+    }
+
+    void RefreshIcon()
+    {
+        if (currentItem != null)
+        {
+            itemImageComponent.sprite = currentItem.Icon;
+        }
+    }
 
     //Whether the gear this slot shows is on Kami right now: the bag's only "equipped" signal (the
     //Wardrobe scales its buttons instead, and it is hidden in the Level 1 demo).
@@ -113,7 +140,7 @@ public class InventorySlot : MonoBehaviour
     {
         currentItem = item;
 
-        itemImageComponent.sprite = currentItem.itemSprite;
+        itemImageComponent.sprite = currentItem.Icon;
         slotStickerImageComponent.color = currentItem.itemColor;
 
         if (gameObject.activeInHierarchy)

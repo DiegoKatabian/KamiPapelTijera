@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: cafe_ticket_title
   itemDescription: cafe_ticket_text
-  itemSprite: {fileID: 0}
+  itemSprite: {fileID: 21300000, guid: 5499d9e795a836a4e83f027193e306bd, type: 3}
+  localizedSprite: {fileID: 11400000, guid: 8c8d6ad3d58b4b659549842ec1c9f27a, type: 2}
   itemColor: {r: 1, g: 1, b: 1, a: 1}
   resourceType: 13

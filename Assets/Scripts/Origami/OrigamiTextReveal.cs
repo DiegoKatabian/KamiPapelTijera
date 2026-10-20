@@ -28,6 +28,16 @@ public class OrigamiTextReveal : OrigamiEventTriggerer
     [Tooltip("Panel that fades in the revealed text. Optional: if missing, the event still fires but nothing is shown (a warning is logged).")]
     [SerializeField] OrigamiTextRevealDisplay _textDisplay;
 
+    [Header("Panel look")]
+    [Tooltip("Picture behind the text (Ariel's letter: Nota Carta). Empty = the panel's own plain paper.")]
+    [SerializeField] Sprite _paperSprite;
+
+    [Tooltip("Picture that changes with the language (the cafe ticket, whose words are printed on it). Wins over _paperSprite.")]
+    [SerializeField] LocalizedSprites _localizedPaper;
+
+    [Tooltip("Off = show only the picture, no text: the ticket already has its words printed. _revealedTextKey is then ignored.")]
+    [SerializeField] bool _showText = true;
+
     public override void Apply()
     {
         base.Apply();
@@ -39,6 +49,7 @@ public class OrigamiTextReveal : OrigamiEventTriggerer
             return;
         }
 
-        _textDisplay.ShowText(_revealedTextKey);
+        Sprite paper = _localizedPaper != null ? _localizedPaper.Get() : _paperSprite;
+        _textDisplay.Show(_showText ? _revealedTextKey : null, paper);
     }
 }

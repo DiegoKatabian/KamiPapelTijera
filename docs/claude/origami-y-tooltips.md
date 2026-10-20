@@ -35,13 +35,29 @@ same-frame input collision as issues #41.2/#41.14).
 and `Hide` (or the panel switching off) gives it back, only if the panel was the one that set it. The
 dismiss press still works because the panel reads `InputHub.InteractDown` itself.
 
-**Placeholder art (Diego's call, 2026-09-22)**: the café wrapper is a **2-step fold using
-`OSU-Avion`** (the paper plane, mirroring `OrigamiRoute Avion`) and the trap letter is a
-**1-step fold using `OSU-Puente`** (the puentecito, mirroring **`OrigamiRoute 1-Easy`** —
-Nivel 1 page 2). `OrigamiRoute_Cafe_Unfold` lists the same two folds as `_Cafe_Fold` in
-reverse order, which is exactly how `AbuelaUnfold` expresses "unfold" against `AbuelaFold`.
-Real `OSU-Cafe`/`OSU-Letter` art from Valentino replaces these later. `_textDisplay` on both
-text-reveal prefabs is unassigned by design (scene-specific placement).
+**Real art (Valentino, 2026-10-20; built from here, not seen in the Editor yet)**: all three routes are now
+the letter's shape, one nested `OSU-Puente` (1 fold) whose flipbook gets a new controller and first frame
+by override, and whose `Ruta` is turned by override: the café fold (page 1) uses `OrigamiSheet CAFE TICKET`
+(`OrigamiSheet_CafeTicket.controller`), dragged **downwards** (Diego: one fold, downwards; it was a 2-step
+placeholder on `OSU-Avion`); page 5's unfold plays the same frames reversed (`OrigamiSheet_CafeTicketUnfold`,
+its own clip with the keys in reverse order) dragged **upwards**; the letter uses `OrigamiSheet ENVELOPE`
+(`OrigamiSheet_Envelope.controller`), dragged **upwards** like the flap lifts (the Puente placeholder went
+right to left). `Ruta.prefab` points down unrotated; `OSU-Puente` turns it -90 (right to left), the routes
+override its rotation to 0 (down) or 180 (up). `_textDisplay` on the text-reveal routes is set in the scene.
+**The café ticket is localized**: its receipt has words printed on it, so there are `EN`/`PT` copies of the
+sheet and of the bag icon, made by `tools/localize-cafe-ticket.py` (re-run it if Valentino redraws the
+ticket; its word boxes are measured on this art). `LocalizedFlipbook` (`Scripts/Localization/`, added to
+the flipbook of both café routes) swaps each frame the clip keys for the current language's in
+`LateUpdate`, reading `CafeTicket_Flipbook.asset` (a `LocalizedSprites`: one sprite list per locale code,
+first entry = the frames the clip keys and the fallback). One clip for every language.
+**The reveal panel takes a picture per route**: `OrigamiTextReveal._paperSprite` (the letter: `Nota Carta`),
+`_localizedPaper` (page 5's ticket: `CafeTicket_Full.asset`, the open receipt, a `_Full` slice added to each
+ticket sheet) and `_showText` (off for the ticket: its words are printed, so the panel shows only the
+picture and `OrigamiRoute_CafeTicket_Text` is unused). `OrigamiTextRevealDisplay._paper` fits the picture
+inside `_maxPaperSize` (1000 x 860) keeping its proportions, untinted; a route without one gets the plain
+paper as authored. The close prompt sits 85 up from the paper's bottom (was 30): both pictures have a dark
+shadow strip along their bottom edge. The receipt's prices (6800 + 9900 = 16700) differ from the old
+text's $24.000; nothing else in the dialogue names a price.
 
 **Auto prompt (Diego, 2026-09-25)**: `TriggerOrigami._promptAutomatically` (off by default, so
 every existing pedestal is unchanged). When on, the origami opens by itself as soon as the pedestal
@@ -61,7 +77,7 @@ item must be in BOTH InventoryManager lists (Level 2's is a standalone scene cop
 
 On for the page 3 letter (inside `GiftBox.prefab`) and the page 1 café. The text panel now exists:
 `Assets/Prefabs/UI/OrigamiTextRevealPanel.prefab`, placed once under Level 2's `Canvas` and
-assigned to the letter route's `_textDisplay` (the café fold has no text). Page 5's ticket unfold
+assigned to the letter route's `_textDisplay` (the café fold on page 1 shows no panel). Page 5's ticket unfold
 (`OrigamiRoute_Cafe_Unfold`, 2026-09-28) uses the same panel: its `_textDisplay` is set in the scene,
 and its pedestal is a second `SelloOrigami Cafe` instance under `Page 5/Museum` (0 paper, auto
 prompt), switched on by `MuseumPage` when Grace's meeting dialogue ends. On page 1 the café fold is

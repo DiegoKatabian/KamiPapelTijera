@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Text panel for an Origami fold/unfold that ends in "read this" instead of "produce/spawn
@@ -35,11 +36,21 @@ public class OrigamiTextRevealDisplay : MonoBehaviour
     [Tooltip("Seconds of reading time before the close prompt appears and Interact is accepted. Stops the fold button press from closing the text in the same breath.")]
     [SerializeField] float _readDelay = 2f;
 
+    [Tooltip("The paper behind the text. Origamis can put their own picture on it (Ariel's letter, the cafe ticket); the others get it as authored here.")]
+    [SerializeField] Image _paper;
+
+    [Tooltip("Largest the paper grows to when it shows an origami's picture. It keeps the picture's proportions.")]
+    [SerializeField] Vector2 _maxPaperSize = new Vector2(1000f, 860f);
+
     [Tooltip("Fade-in duration in seconds")]
     [SerializeField] float _fadeInDuration = 0.3f;
 
     [Tooltip("Fade-out duration in seconds")]
     [SerializeField] float _fadeOutDuration = 0.3f;
+
+    Sprite _authoredPaperSprite;
+    Color _authoredPaperColor;
+    Vector2 _authoredPaperSize;
 
     bool _visible;
     bool _canBeDismissed;
@@ -71,6 +82,17 @@ public class OrigamiTextRevealDisplay : MonoBehaviour
         {
             _closePrompt.gameObject.SetActive(false);
         }
+
+        if (_paper == null)
+        {
+            Debug.LogWarning($"[OrigamiTextRevealDisplay] {gameObject.name}: _paper is not assigned, origamis can't show their own picture");
+        }
+        else
+        {
+            _authoredPaperSprite = _paper.sprite;
+            _authoredPaperColor = _paper.color;
+            _authoredPaperSize = _paper.rectTransform.sizeDelta;
+        }
     }
 
     void Update()
@@ -87,16 +109,18 @@ public class OrigamiTextRevealDisplay : MonoBehaviour
         }
     }
 
-    /// <summary>Fades the panel in and writes the localized text for <paramref name="localizationKey"/>.</summary>
-    public void ShowText(string localizationKey)
+    /// <summary>Fades the panel in and writes the localized text for <paramref name="localizationKey"/>
+    /// (none when it is empty: the picture is the whole message) on <paramref name="paper"/> (null = the authored paper).</summary>
+    public void Show(string localizationKey, Sprite paper)
     {
-        if (string.IsNullOrEmpty(localizationKey))
+        bool hasText = !string.IsNullOrEmpty(localizationKey);
+        if (!hasText && paper == null)
         {
-            Debug.LogWarning($"[OrigamiTextRevealDisplay] {gameObject.name}: ShowText called with an empty key, ignoring");
+            Debug.LogWarning($"[OrigamiTextRevealDisplay] {gameObject.name}: Show called with neither a text key nor a picture, ignoring");
             return;
         }
 
-        if (_revealedText == null)
+        if (hasText && _revealedText == null)
         {
             Debug.LogWarning($"[OrigamiTextRevealDisplay] {gameObject.name}: _revealedText is not assigned, can't show '{localizationKey}'");
             return;
@@ -105,15 +129,25 @@ public class OrigamiTextRevealDisplay : MonoBehaviour
         _visible = true;
         _canBeDismissed = false;
         SetKamiLocked(true);
-        Debug.Log($"[OrigamiTextRevealDisplay] {gameObject.name}: showing '{localizationKey}' from table '{_tableName}', readable in {_readDelay:F1}s");
+        SetPaper(paper);
+        Debug.Log($"[OrigamiTextRevealDisplay] {gameObject.name}: showing '{(hasText ? localizationKey : "(picture only)")}' on {(paper != null ? paper.name : "the plain paper")}, readable in {_readDelay:F1}s");
 
-        StartCoroutine(LocalizedText.Escribir(_revealedText, localizationKey, _tableName, new LocalizedText.Opciones
+        if (hasText)
         {
-            escribirSinTabla = true,
-            avisarSinTabla = true,
-            avisarSinClave = true,
-            origen = "OrigamiTextRevealDisplay"
-        }));
+            StartCoroutine(LocalizedText.Escribir(_revealedText, localizationKey, _tableName, new LocalizedText.Opciones
+            {
+                escribirSinTabla = true,
+                avisarSinTabla = true,
+                avisarSinClave = true,
+                origen = "OrigamiTextRevealDisplay"
+            }));
+        }
+        else if (_revealedText != null)
+        {
+            //out of LocalizedText's registry too, or a device change would write the last reveal back
+            LocalizedText.Limpiar(_revealedText);
+            _revealedText.text = "";
+        }
 
         StartFade(1f, _fadeInDuration);
 
@@ -147,6 +181,29 @@ public class OrigamiTextRevealDisplay : MonoBehaviour
         }
 
         StartFade(0f, _fadeOutDuration);
+    }
+
+    //A picture keeps its proportions inside _maxPaperSize, shown untinted; no picture = the paper as authored
+    void SetPaper(Sprite picture)
+    {
+        if (_paper == null)
+        {
+            return;
+        }
+
+        if (picture == null)
+        {
+            _paper.sprite = _authoredPaperSprite;
+            _paper.color = _authoredPaperColor;
+            _paper.rectTransform.sizeDelta = _authoredPaperSize;
+            return;
+        }
+
+        Vector2 size = picture.rect.size;
+        float fit = Mathf.Min(_maxPaperSize.x / size.x, _maxPaperSize.y / size.y);
+        _paper.sprite = picture;
+        _paper.color = Color.white;
+        _paper.rectTransform.sizeDelta = size * fit;
     }
 
     //Kami stays put while she reads (#172), like in a dialogue. inCutscene, the lock AbuelaEntrance and the

@@ -15,9 +15,9 @@ MonoBehaviour:
   wasRead: 0
   events:
   - text: crime_guard_01
-    sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
+    sprite: {fileID: 21300000, guid: 9d7614f3ccdc2ae49affb3153c708502, type: 3}
     speakerName: police_name
   - text: crime_guard_02
-    sprite: {fileID: 21300000, guid: 006b5f9c590e958409643c1f7ebb3be1, type: 3}
+    sprite: {fileID: 21300000, guid: 64e8d4f89612d82448e1e559882e1bd6, type: 3}
     speakerName: police_name
   currentText: 0

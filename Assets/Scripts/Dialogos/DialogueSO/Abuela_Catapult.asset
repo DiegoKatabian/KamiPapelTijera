@@ -15,6 +15,6 @@ MonoBehaviour:
   wasRead: 0
   events:
   - text: abuela_catapult_01
-    sprite: {fileID: 21300000, guid: ea1a7dd0265051e45abee668b2136ef9, type: 3}
+    sprite: {fileID: 21300000, guid: b229f58b2d9dacb4390f40167196c056, type: 3}
     speakerName: Abuela
   currentText: 0

@@ -20,5 +20,5 @@ MonoBehaviour:
     requiredAmount: 0
     evento: 52
   rewardType: 3
-  questSprite: {fileID: 0}
+  questSprite: {fileID: 21300000, guid: c99390be35f45324a83b487fb5818bd3, type: 3}
   rewardRt: 0

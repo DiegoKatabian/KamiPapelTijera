@@ -230,6 +230,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: OrigamiSheet CAFE TICKET_Full
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 732
+        width: 434
+        height: 634
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab92d00ab0bb428e9ff4c1864579745d
+      internalID: 1638291746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -241,6 +262,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      OrigamiSheet CAFE TICKET_Full: 1638291746
       OrigamiSheet CAFE TICKET_0: 605173550
       OrigamiSheet CAFE TICKET_2: -2130307936
       OrigamiSheet CAFE TICKET_4: 2077483883

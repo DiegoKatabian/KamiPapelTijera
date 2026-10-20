@@ -15,12 +15,12 @@ MonoBehaviour:
   wasRead: 0
   events:
   - text: grace_catapult_offer_01
-    sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
+    sprite: {fileID: 21300000, guid: 7c9e524fb6bc135498da4b9708f810b8, type: 3}
     speakerName: grace_name
   - text: grace_catapult_offer_02
     sprite: {fileID: 21300000, guid: 59ddfe2b7fcabc7499aa17dae4bfd279, type: 3}
     speakerName: natalia_name
   - text: grace_catapult_offer_03
-    sprite: {fileID: 21300000, guid: cafe2728fb441de419063b14ca58131f, type: 3}
+    sprite: {fileID: 21300000, guid: de9e99f0ce6814b4b9e6ff24214a53f5, type: 3}
     speakerName: grace_name
   currentText: 0
