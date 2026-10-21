@@ -931,7 +931,7 @@ MonoBehaviour:
   - id: BohrenDestroyingAngels
     clips:
     - {fileID: 8300000, guid: 8e5ab12689b88834da8b27318ffdd246, type: 3}
-    volume: 0.03
+    volume: 0.04
     pitch: 1
     pitchVariation: 0
     loop: 1
@@ -1100,7 +1100,7 @@ MonoBehaviour:
   - id: DeadEndAngels
     clips:
     - {fileID: 8300000, guid: 1618f0a50970837439307faadcef262d, type: 3}
-    volume: 0.03
+    volume: 0.05
     pitch: 1
     pitchVariation: 0
     loop: 1
@@ -1193,7 +1193,7 @@ MonoBehaviour:
   - id: Handcuffs
     clips:
     - {fileID: 8300000, guid: 5c4fbd2327d34903874987476aa3b768, type: 3}
-    volume: 0.5
+    volume: 1
     pitch: 1
     pitchVariation: 0
     loop: 0
@@ -1345,7 +1345,7 @@ MonoBehaviour:
   - id: CafeAmbience
     clips:
     - {fileID: 8300000, guid: a7771608a3f04abcac35432b2d7950cd, type: 3}
-    volume: 0.5
+    volume: 0.25
     pitch: 1
     pitchVariation: 0
     loop: 1
@@ -1360,7 +1360,7 @@ MonoBehaviour:
   - id: CityAmbience
     clips:
     - {fileID: 8300000, guid: 16fd84ba0eaf464ca6c2d05bb39846d9, type: 3}
-    volume: 0.5
+    volume: 0.25
     pitch: 1
     pitchVariation: 0
     loop: 1
