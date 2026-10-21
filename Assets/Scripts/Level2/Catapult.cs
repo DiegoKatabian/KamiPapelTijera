@@ -356,9 +356,9 @@ public class Catapult : TriggerScript
 
         AnimationCue.RunAll(_launchCues, "Catapult launch");
 
-        //the arm hitting its stop, then the girls whooshing away (replaces Jump_Paperplane)
-        AudioManager.instance.Play(AudioId.CatapultThud);
-        AudioManager.instance.Play(AudioId.CatapultWhoosh);
+        //one clip: the swish of the girls leaving and the thud of the arm hitting its stop. The rope's own
+        //cut sound (TijeraHit + PaperCut) already played when Kami cut it
+        AudioManager.instance.Play(AudioId.CatapultLaunch);
 
         if (_flyingGirls != null && _flightTarget != null)
         {

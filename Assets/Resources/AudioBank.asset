@@ -1174,24 +1174,6 @@ MonoBehaviour:
     linearRolloff: 0
     priority: 128
     interruptSelf: 0
-  - id: RunningFootsteps
-    clips:
-    - {fileID: 8300000, guid: 44992993c48758d459325faf694c4610, type: 3}
-    - {fileID: 8300000, guid: e3a3956824c297a438b55d97fd25001c, type: 3}
-    - {fileID: 8300000, guid: fc9dccabd10c72e46bfd007ffd3586a0, type: 3}
-    - {fileID: 8300000, guid: 094f94850b79a7a4fb890c4a601fb958, type: 3}
-    volume: 0.06
-    pitch: 1.15
-    pitchVariation: 0.05
-    loop: 0
-    bus: 1
-    maxSimultaneous: 4
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
-    priority: 128
-    interruptSelf: 0
   - id: Handcuffs
     clips:
     - {fileID: 8300000, guid: 5c4fbd2327d34903874987476aa3b768, type: 3}
@@ -1254,9 +1236,9 @@ MonoBehaviour:
     interruptSelf: 0
   - id: AbuelaFall
     clips:
-    - {fileID: 8300000, guid: 1a7b33ca8967feb4fb64d352ef6e3d4c, type: 3}
+    - {fileID: 8300000, guid: dac4a0f217ee060419b478ad53c97c4f, type: 3}
     volume: 0.5
-    pitch: 0.8
+    pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
@@ -1291,52 +1273,6 @@ MonoBehaviour:
     loop: 0
     bus: 1
     maxSimultaneous: 1
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
-    priority: 128
-    interruptSelf: 0
-  - id: CaughtSting
-    clips:
-    - {fileID: 8300000, guid: 6afc3e1614751f843b49f708a80b613f, type: 3}
-    volume: 0.35
-    pitch: 0.8
-    pitchVariation: 0
-    loop: 0
-    bus: 1
-    maxSimultaneous: 1
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
-    priority: 128
-    interruptSelf: 0
-  - id: TypewriterClack
-    clips:
-    - {fileID: 8300000, guid: c7a69cf7cbb920448a03132b9deffd1b, type: 3}
-    - {fileID: 8300000, guid: a98068e4f9395bf4da6963d19fd59e9e, type: 3}
-    volume: 0.35
-    pitch: 1.6
-    pitchVariation: 0.1
-    loop: 0
-    bus: 1
-    maxSimultaneous: 2
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
-    priority: 128
-    interruptSelf: 0
-  - id: ClothRip
-    clips:
-    - {fileID: 8300000, guid: a98068e4f9395bf4da6963d19fd59e9e, type: 3}
-    volume: 0.5
-    pitch: 0.7
-    pitchVariation: 0
-    loop: 0
-    bus: 1
-    maxSimultaneous: 2
     spatialBlend: 0
     minDistance: 1
     maxDistance: 500
@@ -1388,36 +1324,6 @@ MonoBehaviour:
     linearRolloff: 0
     priority: 128
     interruptSelf: 0
-  - id: ManholeClank
-    clips:
-    - {fileID: 8300000, guid: f4c9cdd0eb65d594b84d6b0962b1f4c4, type: 3}
-    volume: 0.6
-    pitch: 0.8
-    pitchVariation: 0
-    loop: 0
-    bus: 1
-    maxSimultaneous: 2
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
-    priority: 128
-    interruptSelf: 0
-  - id: ClueFound
-    clips:
-    - {fileID: 8300000, guid: 4ea6b923c1d65bd4d9ebcebe8f410980, type: 3}
-    volume: 0.149
-    pitch: 1
-    pitchVariation: 0
-    loop: 0
-    bus: 1
-    maxSimultaneous: 2
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
-    priority: 128
-    interruptSelf: 0
   - id: CarEngine
     clips:
     - {fileID: 8300000, guid: 069e3ed2451d8504cb06eb8f9c609eea, type: 3}
@@ -1452,22 +1358,6 @@ MonoBehaviour:
     linearRolloff: 1
     priority: 128
     interruptSelf: 0
-  - id: GiftBoxOpen
-    clips:
-    - {fileID: 8300000, guid: 65236dcb8b4cad64fa2e1ee2c15bab55, type: 3}
-    - {fileID: 8300000, guid: c7a69cf7cbb920448a03132b9deffd1b, type: 3}
-    volume: 0.5
-    pitch: 1
-    pitchVariation: 0
-    loop: 0
-    bus: 1
-    maxSimultaneous: 2
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
-    priority: 128
-    interruptSelf: 0
   - id: BarAmbience
     clips:
     - {fileID: 8300000, guid: a4e950327790c8440b61d6779c659a6c, type: 3}
@@ -1498,22 +1388,7 @@ MonoBehaviour:
     linearRolloff: 0
     priority: 128
     interruptSelf: 0
-  - id: CatapultThud
-    clips:
-    - {fileID: 8300000, guid: 3a0ca2e35df4feb47b0378923884fc5e, type: 3}
-    volume: 0.5
-    pitch: 1
-    pitchVariation: 0
-    loop: 0
-    bus: 1
-    maxSimultaneous: 1
-    spatialBlend: 0
-    minDistance: 1
-    maxDistance: 500
-    linearRolloff: 0
-    priority: 128
-    interruptSelf: 0
-  - id: CatapultWhoosh
+  - id: CatapultLaunch
     clips:
     - {fileID: 8300000, guid: 824e5d5c2b6aa09439221d833eee49b2, type: 3}
     volume: 0.5
@@ -1601,6 +1476,36 @@ MonoBehaviour:
     loop: 0
     bus: 1
     maxSimultaneous: 2
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CarDoorOpen
+    clips:
+    - {fileID: 8300000, guid: b72a190020d8ef24b85c4a82091e0f2e, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    bus: 1
+    maxSimultaneous: 4
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CarEngineRun
+    clips:
+    - {fileID: 8300000, guid: c7d29a72c6118d34fa2627bb6a6eeeee, type: 3}
+    volume: 0.5
+    pitch: 1.35
+    pitchVariation: 0
+    loop: 1
+    bus: 1
+    maxSimultaneous: 1
     spatialBlend: 0
     minDistance: 1
     maxDistance: 500

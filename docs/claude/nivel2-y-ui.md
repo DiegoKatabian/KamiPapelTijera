@@ -259,7 +259,7 @@ sequence and is the only thing that restarts it:
    (reveal, not destruction), she follows Kami. After a capture the same lock covers the shorter countdown.
    **The fall shot (#232, 2026-10-17, compile-checked only)**: the first time, `PoliceStationPage/IntroCameras/CM Abuela Fall` (a static vcam
    with a Composer that looks at the Abuela, and an impulse listener so the crash shakes it) blends in during the rumble, already looking up
-   at the sky she drops from (she waits there, still hidden), follows her 1.4 s fall down (`_fallSeconds`, was 0.9) and stays on her through
+   at the sky she drops from (she waits there, still hidden), follows her fall down (`_fallDuration` 2.7 s from `_startHeight` 60 since 2026-10-21, to match the Falling clip; she starts just out of frame, `_offscreenFactor`) and stays on her through
    her line; the camera goes back to the player's when Kami is freed. A capture restart has the rumble in the player's own camera. Rumble
    tuning: the `Rumble and fall camera` header on `AbuelaEntrance`; reframe by dragging the vcam.
 3. `ConfiscatedGearPickup` (where Diego had placed the TijeraPickup, just east of the cell) gives

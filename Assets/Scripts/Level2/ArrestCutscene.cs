@@ -490,11 +490,10 @@ public class ArrestCutscene : MonoBehaviour
 
         PlaceCopsBehindGirls();
 
-        //the squad rolls in: brakes, a horn beep, running boots, and the siren stays on until the
+        //the squad rolls in: brakes, a horn beep, and the siren stays on until the
         //car leaves (stopped in CUE_TurnPage/WrapUp/OnDestroy)
         PlaySound(AudioId.CarBrake);
         PlaySound(AudioId.PoliceHorn);
-        PlaySound(AudioId.RunningFootsteps);
         PlaySound(AudioId.PoliceSirenLoop);
         SetCarSiren(true);
 
@@ -677,7 +676,7 @@ public class ArrestCutscene : MonoBehaviour
             }
         }
 
-        AudioManager.instance.Play(AudioId.CarDoor);
+        PatrolCarAudio.GetIn();
         Debug.Log("[ArrestCutscene] the girls get into the patrol car");
     }
 
@@ -693,7 +692,7 @@ public class ArrestCutscene : MonoBehaviour
         //the lifetime is only a safety net; the car despawns itself on arrival
         _policeCar.Launch(_driveOffTarget.position, _driveOffSeconds, (_driveOffSeconds * 3f) + 1f);
         _carDrivingOff = true;
-        PlaySound(AudioId.CarEngine);
+        PatrolCarAudio.DriveOff();
         PlaySound(AudioId.PoliceHorn);
         Debug.Log("[ArrestCutscene] the patrol car drives off");
     }
@@ -770,12 +769,10 @@ public class ArrestCutscene : MonoBehaviour
         }
     }
 
+    //the siren and the engine run loop go off together
     static void StopSiren()
     {
-        if (AudioManager.instance != null)
-        {
-            AudioManager.instance.StopById(AudioId.PoliceSirenLoop);
-        }
+        PatrolCarAudio.StopLoops();
     }
 
     // ---------------------------------------------------------------- wrap-up on page 4

@@ -99,7 +99,8 @@ public class GiftDialogueTrigger : TriggerDialogue
 
         if (AudioManager.instance != null)
         {
-            AudioManager.instance.Play(AudioId.GiftBoxOpen);
+            //the same sound as opening a chest in Level 1 (CofreCortable)
+            AudioManager.instance.Play(AudioId.MagicSuccess, 1.4f);
         }
 
         SetAllActive(_showOnOpen, true);

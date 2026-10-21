@@ -281,7 +281,7 @@ public class CrimeSceneGate : MonoBehaviour
     {
         cop.StopAgent();
         cop.gameObject.SetActive(false);
-        PlaySound(AudioId.CarDoor);
+        PatrolCarAudio.GetIn();
         Debug.Log($"[CrimeSceneGate] {cop.name} gets into the patrol car");
     }
 
@@ -311,7 +311,7 @@ public class CrimeSceneGate : MonoBehaviour
         {
             //the lifetime cap is only a safety net for the despawn, give it plenty of room
             _policeCar.Launch(_driveOffTarget.position, _driveOffSeconds, _driveOffSeconds * 3f + 1f);
-            PlaySound(AudioId.CarEngine);
+            PatrolCarAudio.DriveOff();
             PlaySound(AudioId.PoliceHorn);
         }
         else
@@ -364,12 +364,10 @@ public class CrimeSceneGate : MonoBehaviour
         AudioManager.instance.Play(id);
     }
 
+    //the siren and the engine run loop go off together
     static void StopSiren()
     {
-        if (AudioManager.instance != null)
-        {
-            AudioManager.instance.StopById(AudioId.PoliceSirenLoop);
-        }
+        PatrolCarAudio.StopLoops();
     }
 
     void OpenGap()

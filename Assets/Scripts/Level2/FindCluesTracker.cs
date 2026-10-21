@@ -208,7 +208,8 @@ public class FindCluesTracker : MonoBehaviour
             return;
         }
 
-        AudioManager.instance.Play(AudioId.ClueFound);
+        //the same sound as opening a chest in Level 1 (CofreCortable)
+        AudioManager.instance.Play(AudioId.MagicSuccess, 1.4f);
     }
 
     void QueueComment(DialogueSO comment)

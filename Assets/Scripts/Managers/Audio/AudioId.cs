@@ -79,7 +79,6 @@ public static class AudioId
     public const string PoliceSirenLoop = "PoliceSirenLoop";
     public const string PoliceHorn = "PoliceHorn";
     public const string CarBrake = "CarBrake";
-    public const string RunningFootsteps = "RunningFootsteps";
     public const string Handcuffs = "Handcuffs";
     public const string CellBarsSlam = "CellBarsSlam";
     public const string PadlockClank = "PadlockClank";
@@ -87,24 +86,19 @@ public static class AudioId
     public const string AbuelaFall = "AbuelaFall";
     public const string AbuelaCrash = "AbuelaCrash";
     public const string CopWhistle = "CopWhistle";
-    public const string CaughtSting = "CaughtSting";
-    public const string TypewriterClack = "TypewriterClack";
-    public const string ClothRip = "ClothRip";
     public const string CafeAmbience = "CafeAmbience";
     public const string CityAmbience = "CityAmbience";
     public const string RadioStatic = "RadioStatic";
-    public const string ManholeClank = "ManholeClank";
-    public const string ClueFound = "ClueFound";
     public const string CarEngine = "CarEngine";
     public const string CarHorn = "CarHorn";
-    public const string GiftBoxOpen = "GiftBoxOpen";
     public const string BarAmbience = "BarAmbience";
     public const string RopeCreak = "RopeCreak";
-    public const string CatapultThud = "CatapultThud";
-    public const string CatapultWhoosh = "CatapultWhoosh";
+    public const string CatapultLaunch = "CatapultLaunch";
     public const string CopKnockedOut = "CopKnockedOut";
     public const string CarEngineIdleLoop = "CarEngineIdleLoop";
     public const string CarHornIdling = "CarHornIdling";
     public const string PlaneRumbleLoop = "PlaneRumbleLoop";
     public const string CarPassBy = "CarPassBy";
+    public const string CarDoorOpen = "CarDoorOpen";
+    public const string CarEngineRun = "CarEngineRun";
 }

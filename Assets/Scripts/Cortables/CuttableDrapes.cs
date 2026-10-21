@@ -44,7 +44,6 @@ public class CuttableDrapes : ObjetoCortable
     {
         AudioManager.instance.Play(AudioId.TijeraHit);
         AudioManager.instance.Play(AudioId.PaperCut);
-        AudioManager.instance.Play(AudioId.ClothRip);
 
         SepararSprites();
         StartCoroutine(DropBottomHalf());

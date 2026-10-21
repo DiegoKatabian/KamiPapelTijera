@@ -32,17 +32,14 @@ mixer parameters is Task 23 of the refactor plan.
 
 **Music is Estampes Pagodes (public domain) since 2026-10-14 (spec 015, A.7).** The `MemoFlora*` ids (main loop, battle loop, post-battle, `GameOverOrchestral`, `MagicSuccess`, `PickupSpecial`, `QuestCompleted02`, `Receive_Reward`) kept their names but play the Estampes clips; volumes were matched by integrated loudness (the old clips were 10-14 dB quieter). The boss theme is `EstampesPagodes_Battle_Intro` then `MemoFloraBattleLoop01` (`EncounterManager`). `Assets/Sounds/MemoFlora/` is gone. The Level 1 demo build also empties the Level 2 music entries and the Sims-named clip while it builds (`SteamDemoBuild`), because the bank is in Resources and ships every clip it references.
 
-**Placeholder sounds** (the Level 2 pass above added 27 more rows): `CarDoor` (the patrol car door in page 3's arrest, added 2026-09-25) reuses
-`PaperFold02`'s clip until a real door slam exists; swap the clip in the bank row, nothing else. Its
-`AudioId` constant was added by hand in the generator's format (running Regenerate AudioId keeps it).
-
 **Level 2 SFX pass (task 6.E, 2026-09-28, compile-checked only)**: 27 placeholder rows, every one
 reusing an existing clip (clip list = the only thing to swap in 6.G, nothing in code changes). SFX
 bus unless noted; all 2D. Ids and where they fire:
-- Police (page 3 arrest, `ArrestCutscene` CUE_ methods): `CarBrake`, `PoliceHorn`, `RunningFootsteps`,
+- Police (page 3 arrest, `ArrestCutscene` CUE_ methods): `CarBrake`, `PoliceHorn` (the cops' running steps were dropped 2026-10-21: NPC footsteps are #247),
   `PoliceSirenLoop` (loop, starts at `CUE_CopsBehindGirls`, stops at `CUE_TurnPage`/WrapUp/OnDestroy),
-  `CarEngine` + `PoliceHorn` at `CUE_DriveOff` and when `CrimeSceneGate`'s car leaves (page 2; since #231 page 2's exit also loops
-  `PoliceSirenLoop` for the whole cutscene and plays `CarDoor` as each cop gets in).
+  `PoliceHorn` at `CUE_DriveOff` and when `CrimeSceneGate`'s car leaves (page 2; since #231 page 2's exit also loops
+  `PoliceSirenLoop` for the whole cutscene). The door and engine sounds of all three patrol car sites (page 2, 3 and 5) go through
+  `Level2/PatrolCarAudio`, see "Patrol car sequence" below.
 - `PlaneRumbleLoop` (#232, 2026-10-17): the loop under page 4's countdown before the Abuela falls (`AbuelaEntrance._rumbleSound`),
   stopped by her crash. Real `RumbleLoop.ogg` since 2026-10-21 (it was `CarEngine`'s clip at pitch 0.22).
 - Page 4: `CellBarsSlam` (`PoliceStationPage.StartSequence`, also after a capture), `PadlockClank`
@@ -50,19 +47,20 @@ bus unless noted; all 2D. Ids and where they fire:
   in `PoliceStationPage`, Kami's fence in `AbuelaEntrance.Impact`), `AbuelaFall` + `AbuelaCrash`
   (`AbuelaEntrance` `_fallSound`/`_crashSound`/`_fenceSound`, replacing the old `_impactSound`),
   `CopWhistle` (`PoliceOfficer._alertSound`, was `MagicFail`; also changed in `PoliceOfficer.prefab`),
-  `CaughtSting` (`Player.Die` on `DeathCause.Caught`, on top of the shared defeat music),
-  `TypewriterClack` (`PickupCortable._extraCutSound`, set on `CuttableTypewriter.prefab`), `ClothRip`
-  (`CuttableDrapes.ApplyCut`).
-- Pages 1-2: `ClueFound` (`FindCluesTracker.PlayClueSounds`; the hat's `ManholeClank` was dropped on
-  2026-10-16 when the hat moved onto a parked car (its hood since 2026-10-19), the row is unused), `RadioStatic` (dialogue line, below), `CarEngine`/`CarHorn` on ambient
-  traffic (`TrafficSpawner.PlayTrafficSounds`: engine at most once per 6s; horn at most once per 40s at
+  the capture (`Player.Die` on `DeathCause.Caught`) is `CopWhistle` on top of `GameOverOrchestral` (Diego, 2026-10-21; the
+  `CaughtSting` row is gone). The typewriters and the drapes have no extra sound for now (`TypewriterClack` and `ClothRip` rows
+  deleted; `_extraCutSound` is empty on `CuttableTypewriter.prefab`).
+- Pages 1-2: a clue found plays `MagicSuccess` at pitch 1.4, the same as opening a chest in Level 1 (`FindCluesTracker.PlayClueSounds`;
+  Diego 2026-10-21, the `ClueFound` and `ManholeClank` rows are gone), `RadioStatic` (dialogue line, below), `CarPassBy`/`CarHorn` on ambient
+  traffic (`TrafficSpawner.PlayTrafficSounds`: pass-by at most once per 6s; horn at most once per 40s at
   5%, lowered from 20s / 15% when the real horns came in; both counted across ALL spawners; tunable per spawner,
   `hornChance` / `hornMinInterval` in its Sound header). The horn plays positional from the middle of the street.
-- Page 3: `GiftBoxOpen` (`GiftDialogueTrigger.Open`), `Handcuffs` (dialogue line).
+- Page 3: the gift opening plays the same chest sound (`GiftDialogueTrigger.Open`, `MagicSuccess` at 1.4), `Handcuffs` (dialogue line).
 - Page 5: `RopeCreak` once, when the arm is pulled down while Grace shows the catapult (`Catapult.ArmRoutine`,
   Diego 2026-10-19; it used to creak every 3-6s while Kami sat in the bucket). Cutting the rope plays the
   cuttable's own `TijeraHit` + `PaperCut`; the launch timeline's `Launch` signal 0.6s later plays
-  `CatapultThud` + `CatapultWhoosh` together (`Catapult.CUE_Launch`, replacing `Jump_Paperplane`).
+  `CatapultLaunch` (the "Swish and Thud" clip, `Catapult.CUE_Launch`, replacing `Jump_Paperplane`; the old `CatapultThud` row and
+  its duplicate clip are gone).
 - Ambience bus, loops: `CafeAmbience` (page 1) and `BarAmbience` (page 3) on top of `CityAmbience`, a 2D bed under every page
   (`PageAmbience._bedAmbience`, started once at level start and never switched, Diego 2026-10-19), driven by `PageAmbience`
   (`Managers/`, sibling of `PageMusicManager`: one id per page in the Inspector, same
@@ -96,18 +94,23 @@ New sounds tied to a sentence are one YAML/Inspector field, not a Timeline signa
 over 30s import as Streaming. `Dialogue_Sigh` and `NewsJingle` were removed (Diego). Positional rows (spatial blend 1)
 must be played with `PlayAt`: a plain `Play` sounds from the world origin.
 
-**Real clips pt 2 (2026-10-20 import, wired 2026-10-21, bank only, no scene touched, compile-checked, not heard in play)**: 14 more
-rows on Diego's clips, all volume 0.5 / pitch 1 except `PlaneRumbleLoop` (0.35, as before). `CarDoor` <- Car Door Close;
-`PoliceSirenLoop` <- Police car Siren Loop; `PoliceHorn` <- the three Police Horn Siren Short clips (random pick, pitch spread 0.05);
-`CarBrake` <- Car Break Tires Squeak; `CellBarsSlam`; `PadlockClank`; `FenceRattle` (was sharing the padlock + manhole clips);
-`AbuelaCrash`; `CarEngine` <- Car Engine Start (the drive-offs); `RopeCreak`; `CatapultThud` <- CatapultThud;
-`CatapultWhoosh` <- Catapult Swish and Thud (so the launch plays two thuds, one at 0 s and one at 0.5 s: if it sounds doubled, drop
-the `CatapultThud` row's volume or swap which clip it uses); `CarEngineIdleLoop` <- Car Engine Idle Loop (still positional 25-75);
-`PlaneRumbleLoop` <- RumbleLoop. New id **`CarPassBy`**: `TrafficSpawner` used to play `CarEngine` on every ambient spawn, which
-with a real ignition would be a car starting every 6 s, so it now plays `CarPassBy`, a row that keeps the old placeholder engine
-clip and settings (0.12, pitch 0.5). Swap its clip when a real pass-by exists. Still placeholders or without a clip: see the issue
-that lists the leftovers (`AbuelaFall`, `CaughtSting`, `TypewriterClack`, `ClothRip`, `GiftBoxOpen`, `ClueFound`, `ManholeClank`,
-`CopKnockedOut`, `RunningFootsteps`, `Car Door Open.ogg` and `Catapult.ogg` unused).
+**Real clips pt 2 (2026-10-20 import, wired 2026-10-21, bank + code only, no scene touched, compile-checked, not heard in play)**:
+all volume 0.5 / pitch 1 except `PlaneRumbleLoop` (0.35, as before) and `CarEngineRun` (pitch 1.35). `PoliceSirenLoop` <- Police car Siren Loop;
+`PoliceHorn` <- the three Police Horn Siren Short clips (random pick, pitch spread 0.05); `CarBrake` <- Car Break Tires Squeak; `CellBarsSlam`;
+`PadlockClank`; `FenceRattle`; `AbuelaCrash`; `AbuelaFall` <- Abuela Falling (2.97 s); `RopeCreak`; `CatapultLaunch`; `CarEngineIdleLoop` (still
+positional 25-75); `PlaneRumbleLoop` <- RumbleLoop. Ambient traffic plays **`CarPassBy`** (an old placeholder engine clip at 0.12 / pitch 0.5)
+instead of `CarEngine`, which is now the real ignition and only the police cars use it.
+
+**Patrol car sequence (`Level2/PatrolCarAudio`, Diego's design 2026-10-21, not heard in play).** Everyone who gets in: `CarDoorOpen`, then
+`CarDoor` (the close) when the open ends (`AudioManager.PlayOnEnd`). The drive-off waits for any door-open still sounding, plays `CarEngine`
+(Car Engine Start) together with that last close, and when the start ends loops `CarEngineRun` (the idle loop pitched up 1.35; "a transformed
+idle") beside the siren. `StopLoops()` (the sites' old `StopSiren`) stops both and cancels a run loop still waiting on the start. The siren is
+started by each site at its own moment (page 3: when the squad arrives, so it is already on when the girls get in).
+
+**The Abuela's entrance sounds (page 4, `AbuelaEntrance`)**: `PlaneRumbleLoop` starts with the shake, `AbuelaFall` the instant she appears,
+`AbuelaCrash` + `FenceRattle` on impact. The fall now lasts `_fallDuration` 2.7 s from `_startHeight` 60 (new field names: the scene kept the old
+`_fallSeconds` 1.4 and `_dropHeight` 45, which are ignored now) so the fall and its 2.97 s clip end together; the fall shot looks at a point below her
+start while it rumbles (`_offscreenFactor`) so she enters from above the frame, then follows her. Not seen in the Editor.
 
 **Dialogue pencil (2026-10-19)**: `DialogueManager` chains `Dialogue_PencilWrite`'s ten clips back to back while a line is
 written (`PencilStream`): it fills the typewriter's time for that line (characters / `_charsPerSecond`), picking each

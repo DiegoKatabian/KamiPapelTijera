@@ -208,7 +208,7 @@ public class MuseumArrest : MonoBehaviour
         _carDrivingOff = true;
         PlaySound(AudioId.PoliceSirenLoop);
         SetCarSiren(true);
-        PlaySound(AudioId.CarEngine);
+        PatrolCarAudio.DriveOff();
         PlaySound(AudioId.PoliceHorn);
         Debug.Log("[MuseumArrest] the patrol car drives off");
     }
@@ -346,7 +346,7 @@ public class MuseumArrest : MonoBehaviour
             }
         }
 
-        PlaySound(AudioId.CarDoor);
+        PatrolCarAudio.GetIn();
         Debug.Log("[MuseumArrest] Ariel and the cops get into the patrol car");
     }
 
@@ -419,12 +419,10 @@ public class MuseumArrest : MonoBehaviour
         }
     }
 
+    //the siren and the engine run loop go off together
     static void StopSiren()
     {
-        if (AudioManager.instance != null)
-        {
-            AudioManager.instance.StopById(AudioId.PoliceSirenLoop);
-        }
+        PatrolCarAudio.StopLoops();
     }
 
     void OnDisable()

@@ -727,8 +727,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         AudioManager.instance.Play(AudioId.GameOverOrchestral);
         if (cause == DeathCause.Caught)
         {
-            //Level 2's police capture gets its own sting on top of the shared defeat music
-            AudioManager.instance.Play(AudioId.CaughtSting);
+            //Level 2's police capture is the cop's whistle on top of the shared defeat music (Diego, 2026-10-21)
+            AudioManager.instance.Play(AudioId.CopWhistle);
         }
         EventManager.Trigger(Evento.OnPlayerDie, cause);
         StartCoroutine(DeathSequence(cause));

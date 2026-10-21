@@ -26,11 +26,16 @@ public class AbuelaEntrance : MonoBehaviour
     [SerializeField, Tooltip("Where she lands: just outside the cell fence, ON the NavMesh, so she can walk after Kami right away.")]
     Transform _landingPoint;
 
-    [SerializeField, Tooltip("How high above the landing point she starts falling, in world units.")]
-    float _dropHeight = 45f;
+    //new field names on purpose (2026-10-21): the scene still carries the old _dropHeight (45) and _fallSeconds (1.4),
+    //which would have overridden these defaults
+    [SerializeField, Tooltip("How high above the landing point she starts falling, in world units. Higher than the first version so she comes in from above the screen (Diego, 2026-10-21).")]
+    float _startHeight = 60f;
 
-    [SerializeField, Tooltip("Seconds the fall takes. Long enough for the fall shot to follow her down (#232).")]
-    float _fallSeconds = 1.4f;
+    [SerializeField, Tooltip("Seconds the fall takes. The Falling clip is 2.97 s and builds up to the crash, so this keeps the fall and its sound ending together; also long enough for the fall shot to follow her down (#232).")]
+    float _fallDuration = 2.7f;
+
+    [SerializeField, Tooltip("While the rumble plays, the fall shot looks at a point below her start so she is just out of frame when she appears, and falls into view. 1 = her start sits exactly on the top edge of the picture, higher = further out of frame, lower than 1 = already visible. Needs the fall shot; without it nothing changes.")]
+    float _offscreenFactor = 1.15f;
 
     [SerializeField, Tooltip("Everything that disappears on impact: Kami's cell fence.")]
     GameObject[] _hideOnImpact;
@@ -84,11 +89,20 @@ public class AbuelaEntrance : MonoBehaviour
     float _landZoomSeconds = 0.6f;
 
     Coroutine _running;
+    Transform _skyLookPoint; //what the fall shot looks at before she appears
     float _fallShotFieldOfView; //the vcam's authored value, kept to put it back before the next use
     bool _lockedKami;
 
     public bool HasLanded { get; private set; }
     public NPC Abuela => _abuela;
+
+    void OnDestroy()
+    {
+        if (_skyLookPoint != null)
+        {
+            Destroy(_skyLookPoint.gameObject);
+        }
+    }
 
     void Awake()
     {
@@ -163,7 +177,7 @@ public class AbuelaEntrance : MonoBehaviour
         NavMeshAgent agent = _abuela.GetComponent<NavMeshAgent>();
         float pivotAboveFeet = agent != null ? agent.baseOffset * _abuela.transform.lossyScale.y : 0f;
         Vector3 landing = _landingPoint.position + Vector3.up * pivotAboveFeet;
-        Vector3 start = landing + Vector3.up * _dropHeight;
+        Vector3 start = landing + Vector3.up * _startHeight;
 
         //she waits up there, still hidden, so the shot already looks at the sky she will drop from. Her
         //agent goes off first: enabling one this far from the NavMesh fails with an engine warning
@@ -176,8 +190,8 @@ public class AbuelaEntrance : MonoBehaviour
         bool useShot = withCamera && _fallShot != null;
         if (useShot)
         {
-            _fallShot.LookAt = _abuela.transform;
             SetFallShotFieldOfView(_fallShotFieldOfView); //undo the last use's close-up (it is left on while the camera blends away)
+            _fallShot.LookAt = GetSkyLookPoint(start);
         }
 
         yield return Rumble(delaySeconds, useShot);
@@ -191,6 +205,11 @@ public class AbuelaEntrance : MonoBehaviour
         }
         Debug.Log("[AbuelaEntrance] the Abuela falls");
 
+        if (useShot)
+        {
+            _fallShot.LookAt = _abuela.transform; //from here the shot follows her down
+        }
+
         _abuela.gameObject.SetActive(true);
         _abuela.transform.position = start;
         _abuela.ResetSkeletonPhysics(); //she was parked up there by hand: her bun must not swing from it
@@ -198,9 +217,9 @@ public class AbuelaEntrance : MonoBehaviour
         PlaySound(_fallSound);
 
         float elapsed = 0f;
-        while (elapsed < _fallSeconds)
+        while (elapsed < _fallDuration)
         {
-            float t = elapsed / Mathf.Max(0.01f, _fallSeconds);
+            float t = elapsed / Mathf.Max(0.01f, _fallDuration);
             _abuela.transform.position = Vector3.Lerp(start, landing, t * t); //t*t: accelerates like a real fall
             elapsed += Time.deltaTime;
             yield return null;
@@ -252,6 +271,21 @@ public class AbuelaEntrance : MonoBehaviour
         _abuela.StartFollowingPlayer();
         HasLanded = true;
         _running = null;
+    }
+
+    //a point below her start by the picture's half height (at the shot's distance and lens), times the factor:
+    //looking at it leaves her just above the top edge of the frame
+    Transform GetSkyLookPoint(Vector3 abuelaStart)
+    {
+        if (_skyLookPoint == null)
+        {
+            _skyLookPoint = new GameObject("AbuelaFallLookPoint").transform;
+        }
+
+        float distance = Vector3.Distance(_fallShot.transform.position, abuelaStart);
+        float halfHeight = distance * Mathf.Tan(_fallShotFieldOfView * 0.5f * Mathf.Deg2Rad);
+        _skyLookPoint.position = abuelaStart - Vector3.up * (halfHeight * _offscreenFactor);
+        return _skyLookPoint;
     }
 
     //the countdown: shake pulses that grow toward the crash, over the rumble loop. The fall shot is
