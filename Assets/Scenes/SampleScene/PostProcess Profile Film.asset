@@ -15,13 +15,13 @@ MonoBehaviour:
   active: 1
   type:
     m_OverrideState: 1
-    m_Value: 8
+    m_Value: 4
   intensity:
     m_OverrideState: 1
-    m_Value: 0.25
+    m_Value: 0.12
   response:
     m_OverrideState: 1
-    m_Value: 0.13
+    m_Value: 0
   texture:
     m_OverrideState: 0
     m_Value: {fileID: 0}
@@ -42,16 +42,16 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: {r: 0.09433961, g: 0.066601396, b: 0.011124953, a: 1}
   center:
-    m_OverrideState: 0
-    m_Value: {x: 0.5, y: 0.5}
+    m_OverrideState: 1
+    m_Value: {x: 0.5, y: 0.06}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0.36
   smoothness:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0.11
   rounded:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
 --- !u!114 &11400000
 MonoBehaviour:
@@ -70,6 +70,7 @@ MonoBehaviour:
   - {fileID: 5192567181046461971}
   - {fileID: -5272527179756046103}
   - {fileID: -2888692408906491568}
+  - {fileID: 2833570463042140718}
 --- !u!114 &831219567570864578
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -91,7 +92,7 @@ MonoBehaviour:
     m_Value: 2
   scatter:
     m_OverrideState: 1
-    m_Value: 0.3
+    m_Value: 0
   clamp:
     m_OverrideState: 0
     m_Value: 0.6
@@ -110,7 +111,26 @@ MonoBehaviour:
     dimension: 1
   dirtIntensity:
     m_OverrideState: 1
-    m_Value: 11.64
+    m_Value: 2
+--- !u!114 &2833570463042140718
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221518ef91623a7438a71fef23660601, type: 3}
+  m_Name: WhiteBalance
+  m_EditorClassIdentifier: 
+  active: 1
+  temperature:
+    m_OverrideState: 0
+    m_Value: 17
+  tint:
+    m_OverrideState: 0
+    m_Value: 13
 --- !u!114 &5192567181046461971
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -126,16 +146,16 @@ MonoBehaviour:
   active: 1
   postExposure:
     m_OverrideState: 1
-    m_Value: -0.5
+    m_Value: 0.55
   contrast:
     m_OverrideState: 1
-    m_Value: 20
+    m_Value: -0.08
   colorFilter:
     m_OverrideState: 1
-    m_Value: {r: 0.9811321, g: 0.91634035, b: 0.8191527, a: 1}
+    m_Value: {r: 0.9811321, g: 0.8737629, b: 0.87527937, a: 1}
   hueShift:
     m_OverrideState: 0
     m_Value: -4
   saturation:
     m_OverrideState: 1
-    m_Value: -50
+    m_Value: -43
