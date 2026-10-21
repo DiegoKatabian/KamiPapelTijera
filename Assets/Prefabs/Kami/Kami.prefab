@@ -120,7 +120,7 @@ MonoBehaviour:
     materialsInsideMask: []
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
-  physicsPositionInheritanceFactor: {x: 0.25, y: 0.5}
+  physicsPositionInheritanceFactor: {x: 0.1, y: 0.3}
   physicsRotationInheritanceFactor: 1
   physicsMovementRelativeTo: {fileID: 0}
   updateTiming: 1
