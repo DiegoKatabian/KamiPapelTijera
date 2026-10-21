@@ -84,15 +84,16 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000001
-    m_Localized: "Snagged Hat"
+    m_Localized: Snagged Hat
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000002
-    m_Localized: "Stuck on a car's hood near the museum. Someone left in a hurry... and lost their cool."
+    m_Localized: Stuck on a car's hood near the museum. Someone left in a hurry...
+      and lost their cool.
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000003
-    m_Localized: Broken Wristwatch
+    m_Localized: Broken Watch
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000004
@@ -104,15 +105,16 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000008
-    m_Localized: "Pelusa. \"Untitled\". c.1913. This work by the legendary post-modern artist can move even the toughest of men. It is made of a very rare paper."
+    m_Localized: Pelusa. "Untitled". c.1913. This work by the legendary post-modern
+      artist can move even the toughest of men. It is made of a very rare paper.
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000009
-    m_Localized: "Lost Glove"
+    m_Localized: Lost Glove
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000010
-    m_Localized: "A single glove fished out of a trash can. Its other half is still out there, hand in hand with the thief."
+    m_Localized: A single glove fished out of a trash can.
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000011
@@ -124,19 +126,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000013
-    m_Localized: "Everyday outfit"
+    m_Localized: Everyday outfit
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000014
-    m_Localized: "The clothes Kami wears in her own book. Light as paper, and comfy."
+    m_Localized: The clothes Kami wears in her own book. Light as paper, and comfy.
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000015
-    m_Localized: "Detective outfit"
+    m_Localized: Detective outfit
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000016
-    m_Localized: "Just right for solving the mystery of the stolen painting."
+    m_Localized: Just right for solving the mystery of the stolen painting.
     m_Metadata:
       m_Items: []
   references:

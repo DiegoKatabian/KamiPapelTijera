@@ -414,7 +414,7 @@ public class FlapManager : Singleton<FlapManager>
     }
 
     //the Wardrobe tab is the last display (see the index list above). A level whose starting loadout says
-    //HasWardrobe = false (the Level 1 demo, one outfit) never shows it: no tab button, and R1/L1 skip it
+    //HasWardrobe = false (the Level 1 demo, one outfit) or ShowWardrobeTab = false (Level 2, unused for now) never shows it: no tab button, and R1/L1 skip it
     const int WARDROBE_INDEX = 4;
 
     bool WardrobeAvailable
@@ -423,7 +423,7 @@ public class FlapManager : Singleton<FlapManager>
         {
             Player player = LevelManager.Instance != null ? LevelManager.Instance.player : null;
             GearLoadout loadout = player != null ? player.StartingLoadout : null;
-            return loadout == null || loadout.HasWardrobe;
+            return loadout == null || (loadout.HasWardrobe && loadout.ShowWardrobeTab);
         }
     }
 

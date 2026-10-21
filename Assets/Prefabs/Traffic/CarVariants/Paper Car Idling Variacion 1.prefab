@@ -7,73 +7,114 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4935929856741195295, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
-      propertyPath: m_Name
-      value: Paper Car Idling Variacion 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.457271
-      objectReference: {fileID: 0}
-    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.92025
-      objectReference: {fileID: 0}
-    - target: {fileID: 4170600523956111289, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
+    - target: {fileID: 110599989919168813, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 7301192081552313719, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2, type: 3}
-    - target: {fileID: 7975331971201258968, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 7301192081552313719, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2, type: 3}
-    - target: {fileID: 8115123690853372154, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.13845
-      objectReference: {fileID: 0}
-    - target: {fileID: 8115123690853372154, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.440347
-      objectReference: {fileID: 0}
-    - target: {fileID: 8115123690853372154, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.12475
-      objectReference: {fileID: 0}
-    - target: {fileID: 287816497079144320, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
+      objectReference: {fileID: -8181369683151272063, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2,
+        type: 3}
+    - target: {fileID: 287816497079144320, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.137581
       objectReference: {fileID: 0}
-    - target: {fileID: 287816497079144320, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
+    - target: {fileID: 287816497079144320, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.440347
       objectReference: {fileID: 0}
-    - target: {fileID: 287816497079144320, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
+    - target: {fileID: 287816497079144320, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
       propertyPath: m_LocalPosition.z
       value: -0.12475
       objectReference: {fileID: 0}
-    - target: {fileID: 6823267929082692484, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
+    - target: {fileID: 1164294299702385051, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3861560922744973545, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4170600523956111289, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 3740193550752800412, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2, type: 3}
-    - target: {fileID: 110599989919168813, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}
+      objectReference: {fileID: 7301192081552313719, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2,
+        type: 3}
+    - target: {fileID: 4935929856741195295, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_Name
+      value: Paper Car Idling Variacion 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5176604054713968140, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6823267929082692484, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -8181369683151272063, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2, type: 3}
+      objectReference: {fileID: 3740193550752800412, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2,
+        type: 3}
+    - target: {fileID: 7975331971201258968, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 7301192081552313719, guid: 7c2c5ef28e49a3d47949c9262ba2a9a2,
+        type: 3}
+    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.457271
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028608272090910482, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.92025
+      objectReference: {fileID: 0}
+    - target: {fileID: 8115123690853372154, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.13845
+      objectReference: {fileID: 0}
+    - target: {fileID: 8115123690853372154, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.440347
+      objectReference: {fileID: 0}
+    - target: {fileID: 8115123690853372154, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.12475
+      objectReference: {fileID: 0}
+    - target: {fileID: 9007826680754917522, guid: b1fab6f665b24ec58a1a8e3122bec699,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b1fab6f665b24ec58a1a8e3122bec699, type: 3}

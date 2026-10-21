@@ -84,19 +84,20 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000001
-    m_Localized: "Sombrero enganchado"
+    m_Localized: Sombrero enganchado
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000002
-    m_Localized: "Enganchado en el cap\xF3 de un auto cerca del museo. Alguien se fue muy apurado... y perdi\xF3 el sombrero."
+    m_Localized: "Enganchado en el cap\xF3 de un auto cerca del museo. Alguien se
+      fue muy \napurado..."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000003
-    m_Localized: Reloj de Pulsera Roto
+    m_Localized: Reloj de Bolsillo Roto
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000004
-    m_Localized: Sus agujas se detuvieron justo en el horario del robo.
+    m_Localized: Sus agujas se detuvieron justo a la hora del robo.
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000007
@@ -104,15 +105,17 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000008
-    m_Localized: "Pelusa. \"Sin T\xEDtulo\". c.1913. Esta obra del legendario artista post-moderno tiene la capacidad de conmover hasta el m\xE1s duro de los hombres. Est\xE1 hecha de un papel muy raro."
+    m_Localized: "Pelusa. \"Sin T\xEDtulo\". c.1913. Esta obra del legendario artista
+      post-moderno tiene la capacidad de conmover hasta el m\xE1s duro de los hombres.
+      Est\xE1 hecha de un papel muy raro."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000009
-    m_Localized: "Guante perdido"
+    m_Localized: Guante perdido
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000010
-    m_Localized: "Un guante solito, rescatado de un tacho de basura. Su otra mitad sigue por ah\xED, mano a mano con el ladr\xF3n."
+    m_Localized: Un guante solo, rescatado de un tacho de basura.
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000011
@@ -124,19 +127,20 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000013
-    m_Localized: "Ropa de siempre"
+    m_Localized: Ropa de siempre
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000014
-    m_Localized: "La ropa que Kami usa en su propio libro. Liviana como el papel, y c\xF3moda."
+    m_Localized: "La ropa que Kami usa en su propio libro. Liviana como el papel,
+      y c\xF3moda."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000015
-    m_Localized: "Traje de detective"
+    m_Localized: Traje de detective
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000016
-    m_Localized: "Justo lo que hace falta para resolver el misterio del cuadro robado."
+    m_Localized: Justo lo que hace falta para resolver un misterio.
     m_Metadata:
       m_Items: []
   references:

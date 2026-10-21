@@ -101,7 +101,7 @@ ways, so the camera always returns to the player's mode. `CutsceneCamera.BlendSe
 Cinemachine track overrides priorities, so the two never fight (page 5's `CM Catapult Hold` serves both). Framing is the vcam, not code. Used by:
 
 - **Page 2, the cops leave** (`CrimeSceneGate`, shot `CM CopsLeave` inside `CrimeSceneGate.prefab`, Transposer following the car).
-- **Page 4, the Abuela falls** (`AbuelaEntrance._fallShot`, `PoliceStation/IntroCameras/CM Abuela Fall`, Composer looking at her; first time only).
+- **Page 4, the Abuela falls** (`AbuelaEntrance._fallShot`, `PoliceStation/IntroCameras/CM Abuela Fall`, Composer looking at her; first time only). Since 2026-10-20 the same vcam zooms in after she lands (`_landFieldOfView` 18 over `_landZoomSeconds` 0.6, from the authored 40) so she is close through her lines; the lens is only put back at the start of the next use, so the blend back to Kami's camera does not pop. Not played yet.
 - **Page 5, Grace shows the catapult** (`MuseumPage.ShowTheCatapult`, the catapult's own `CM Catapult Hold`).
 
 Detail of each beat: `nivel2-y-ui.md`. Kami is locked (`inCutscene`) by the script that owns each beat, never by the helper.

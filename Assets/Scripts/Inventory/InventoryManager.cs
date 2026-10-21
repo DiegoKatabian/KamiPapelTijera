@@ -73,36 +73,64 @@ public class InventoryManager : Singleton<InventoryManager>
             return;
         }
 
-        SetItemAmount(itemsByResourceType[rt], (int)parameters[1]);
+        InventoryItem item = itemsByResourceType[rt];
+        int total = (int)parameters[1];
+        SetItemAmount(item, total);
 
-        bool shouldClear = false;
-
-        if ((int)parameters[1] <= 0)
-        {
-            shouldClear = true;
-        }
-
+        //Look at EVERY slot before deciding: the old single pass claimed the first empty slot even when
+        //the item sat in a later one, and "amount 0" claimed one for an item that was not in the bag at all
+        int itemSlot = -1;
+        int firstEmptySlot = -1;
+        bool needsReorganize = false;
         for (int i = 0; i < _slots.Length; i++)
         {
-            //si el ivnentory ya tiene un inventoryslot con el item del tipo q es el resourcetype, actualizo su amount
-            if (_slots[i].currentItem == itemsByResourceType[rt]) //si ya esta en inventory, actualizo el amount
+            if (_slots[i].currentItem == item)
             {
-                if (shouldClear)
+                if (itemSlot < 0)
                 {
-                    _slots[i].ClearSlot();
-                    ReorganizeSlots();
-                    return;
+                    itemSlot = i;
                 }
-
-                _slots[i].SetItem(_slots[i].currentItem);
-                return;
+                else
+                {
+                    //one item in two slots is never right (Level 2 review 2026-10-20: four scissors in the bag): drop the copies
+                    Debug.LogWarning($"[InventoryManager] {rt} was in slot {itemSlot} and again in slot {i}: clearing the copy");
+                    _slots[i].ClearSlot();
+                    needsReorganize = true;
+                }
             }
-
-            if (_slots[i].currentItem == null) //si no, lo agrego en el primer slot vacio
+            else if (_slots[i].currentItem == null && firstEmptySlot < 0)
             {
-                _slots[i].SetItem(itemsByResourceType[rt]);
-                return;
+                firstEmptySlot = i;
             }
+        }
+
+        if (total <= 0)
+        {
+            //nothing left: free its slot if it has one, never claim one for it
+            if (itemSlot >= 0)
+            {
+                _slots[itemSlot].ClearSlot();
+                needsReorganize = true;
+                Debug.Log($"[InventoryManager] {rt} gone from the bag (slot {itemSlot} freed)");
+            }
+        }
+        else if (itemSlot >= 0)
+        {
+            _slots[itemSlot].SetItem(item); //already in the bag: refresh its amount
+        }
+        else if (firstEmptySlot >= 0)
+        {
+            _slots[firstEmptySlot].SetItem(item);
+            Debug.Log($"[InventoryManager] {rt} (x{total}) takes slot {firstEmptySlot} of {_slots.Length}");
+        }
+        else
+        {
+            Debug.LogWarning($"[InventoryManager] the bag is full ({_slots.Length} slots): {rt} was not shown");
+        }
+
+        if (needsReorganize)
+        {
+            ReorganizeSlots();
         }
     }
 

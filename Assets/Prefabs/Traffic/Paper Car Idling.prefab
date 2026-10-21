@@ -7,20 +7,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 221259144142933531, guid: bf51fd150295d2c4e84a0fcb4be38445,
-        type: 3}
-      propertyPath: m_Name
-      value: Paper Car Idling
-      objectReference: {fileID: 0}
     - target: {fileID: 52668803354285576, guid: bf51fd150295d2c4e84a0fcb4be38445,
         type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 52668803354285576, guid: bf51fd150295d2c4e84a0fcb4be38445,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 52668803354285581, guid: bf51fd150295d2c4e84a0fcb4be38445,
         type: 3}
       propertyPath: moveWithTransform
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 52668803354285581, guid: bf51fd150295d2c4e84a0fcb4be38445,
+        type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 52668803354285581, guid: bf51fd150295d2c4e84a0fcb4be38445,
         type: 3}
@@ -32,10 +37,30 @@ PrefabInstance:
       propertyPath: EmissionModule.rateOverDistance.scalar
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 52668803354285581, guid: bf51fd150295d2c4e84a0fcb4be38445,
+    - target: {fileID: 221259144142933531, guid: bf51fd150295d2c4e84a0fcb4be38445,
         type: 3}
-      propertyPath: InitialModule.startSize.scalar
-      value: 4
+      propertyPath: m_Name
+      value: Paper Car Idling
+      objectReference: {fileID: 0}
+    - target: {fileID: 221259144142933531, guid: bf51fd150295d2c4e84a0fcb4be38445,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210824614824190102, guid: bf51fd150295d2c4e84a0fcb4be38445,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 6288581396935616927, guid: bf51fd150295d2c4e84a0fcb4be38445,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 8285186502913267949, guid: bf51fd150295d2c4e84a0fcb4be38445,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf51fd150295d2c4e84a0fcb4be38445, type: 3}

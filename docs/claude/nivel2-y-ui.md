@@ -171,6 +171,12 @@ drive off after the second clue so the police tape can be cut, and the quest han
   faces' `m_SubmeshIndex`, so a ProBuilder rebuild keeps the split) with `[Newspaper 4, Newspaper Seamless Texture 2]`. Left
   as they were: the musicians, the saxophone, `Mesa`, `Cube (51)` and the inactive "for export" copy. Pattern size depends on
   each mesh's UVs: tune a material's tiling if it reads too big or small.
+  **Clean UVs on the shell (2026-10-20, YAML only, not seen in the Editor yet)**: both `Edificio` meshes (the live one and the
+  "for export" copy, same geometry) had 21 hand-edited (manual-UV) front-facade faces and 44 faces whose stored UVs were stale
+  after geometry edits (up to 25x too sparse). All 65 were re-projected with ProBuilder's own auto-UV formula and set back to
+  auto, so all 464 faces are now auto UVs, Tile, scale 1: 1 UV unit = 1 world unit, continuous across coplanar faces (the
+  four tilted front faces read 0.97 by geometry). The baked Mesh was patched to match (the changed faces' corners got split
+  vertices, 834 -> 1026). Not touched: `Puertas` (Diego was tuning its UV offset), the Contrabajo's `Cube (54)`.
 - **The museum fence is bars (#155, 2026-10-13)**: every fence panel (`RejasYColumnas/Reja1-8` in
   `Museum Page Parent.prefab`, and both fallen doors in `Reja Central Rota.prefab`) is an instance of
   `Prefabs/Level2/Reja/`: one base `Reja.prefab` (root + `Panel` with the BoxCollider, Navigation Static) and one
@@ -396,6 +402,17 @@ uses the new UITexts key `overlay_mainquest_level2` (scene override on the neste
 if Kami lands off-NavMesh). 6.D: `Timeline_MuseumArrival` (its car arrival was removed by #182: everyone is already
 there). Patrolling cops are cuttable
 (`PoliceOfficerCortable`): knocked out 12s, then resume. `PageAmbience` is placed in the scene.
+
+**Level 2 review "martes 20" (2026-10-20, `specs/018-level2-review-oct20/`, built, not played).** The page number
+(`FlapManager` > `PaginaActualHUD`/`PaginaActualText`) is off in the prefab and Level 1's Main Canvas turns it on; Level 2's scene
+instance now does too, with its gradient and the page-change sparkle tinted neutral grays (luminance of Level 1's peach; tune in the
+scene instance). Posters 2-5 now throw off the BOTTOM torn piece and keep the top (sprites swapped between the `SpriteBottom` /
+`SpriteTop` slots, z swapped to match; no new script). `CrimeSceneGate` has two guard triggers, `GuardTalk` around the `Policia 2`
+cop (`CrimeScene_Guard_Policia2`) and `GuardTalkB` around the `Policia 3` cop (`CrimeScene_Guard_Policia3`), same keys, own portraits;
+the old `CrimeScene_Guard` asset is unused. The Wardrobe tab is hidden by `GearLoadout._showWardrobeTab` (off in
+`Level2_StartLoadout`), outfits stay in the bag. `InventoryManager.AddItem` looks at all slots before claiming an empty one,
+never claims one for amount 0, drops duplicate slots of one item (with a warning) and logs which slot an item takes: the
+"4 scissors in the bag" report was not reproduced from code, so if the warning shows up, that log is the trail.
 
 **Page exits are earned (2026-10-08).** `Level2/PageExitLock` (scene root) keeps a page's next-page sphere off until its
 task is done, latched: page 1 `OnCafeWrapperFolded`, page 2 `OnAllCluesFound`, page 3 `OnArrestSequenceEnded`, page 4

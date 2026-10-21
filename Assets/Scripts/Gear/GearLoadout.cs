@@ -24,6 +24,12 @@ public class GearLoadout : ScriptableObject
 
     public bool HasWardrobe => _hasWardrobe;
 
+    [Tooltip("Hides only the Flap's Wardrobe tab (and R1/L1 skip it). Unlike 'Has Wardrobe' the outfits stay " +
+             "in the bag and tapping one still swaps it. Level 2 turns it off for now: nothing uses the tab yet.")]
+    [SerializeField] bool _showWardrobeTab = true;
+
+    public bool ShowWardrobeTab => _showWardrobeTab;
+
     public IReadOnlyList<GearItem> Equipped => _equipped;
     public IReadOnlyList<GearItem> AlsoOwned => _alsoOwned;
 

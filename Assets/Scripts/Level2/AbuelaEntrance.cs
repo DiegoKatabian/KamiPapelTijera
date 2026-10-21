@@ -77,7 +77,14 @@ public class AbuelaEntrance : MonoBehaviour
     [SerializeField, Tooltip("The shot that looks up at her and follows her down (its Composer looks at the Abuela, set in code). Drag it to reframe. Empty = the fall plays in the player's camera.")]
     CinemachineVirtualCamera _fallShot;
 
+    [SerializeField, Tooltip("Field of view the fall shot zooms to once she has landed, so the camera is close on her through her lines (#232 follow-up, Diego 2026-10-20). Zero or the shot's own value = no zoom.")]
+    float _landFieldOfView = 18f;
+
+    [SerializeField, Tooltip("Seconds the zoom from the shot's own field of view to the close-up takes after the impact.")]
+    float _landZoomSeconds = 0.6f;
+
     Coroutine _running;
+    float _fallShotFieldOfView; //the vcam's authored value, kept to put it back before the next use
     bool _lockedKami;
 
     public bool HasLanded { get; private set; }
@@ -85,6 +92,11 @@ public class AbuelaEntrance : MonoBehaviour
 
     void Awake()
     {
+        if (_fallShot != null)
+        {
+            _fallShotFieldOfView = _fallShot.m_Lens.FieldOfView;
+        }
+
         if (_abuela == null || _landingPoint == null)
         {
             Debug.LogWarning($"[AbuelaEntrance] {gameObject.name}: _abuela or _landingPoint is not assigned, the Abuela will never come");
@@ -165,6 +177,7 @@ public class AbuelaEntrance : MonoBehaviour
         if (useShot)
         {
             _fallShot.LookAt = _abuela.transform;
+            SetFallShotFieldOfView(_fallShotFieldOfView); //undo the last use's close-up (it is left on while the camera blends away)
         }
 
         yield return Rumble(delaySeconds, useShot);
@@ -196,6 +209,11 @@ public class AbuelaEntrance : MonoBehaviour
 
         Impact();
         PlayPose(_landPose);
+
+        if (useShot)
+        {
+            StartCoroutine(ZoomFallShot());
+        }
 
         if (_abuela.navAgent != null)
         {
@@ -269,6 +287,40 @@ public class AbuelaEntrance : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
+    }
+
+    //the close-up on her: the same vcam, narrower lens (its Composer keeps her centred). Not restored
+    //on Hide, or the picture would pop wider while the camera blends back to Kami's; the next use
+    //of the shot starts from the authored value again
+    IEnumerator ZoomFallShot()
+    {
+        float from = _fallShot.m_Lens.FieldOfView;
+        if (_landFieldOfView <= 0f || Mathf.Approximately(from, _landFieldOfView))
+        {
+            yield break;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < _landZoomSeconds)
+        {
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / Mathf.Max(0.01f, _landZoomSeconds));
+            SetFallShotFieldOfView(Mathf.Lerp(from, _landFieldOfView, t));
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        SetFallShotFieldOfView(_landFieldOfView);
+    }
+
+    void SetFallShotFieldOfView(float fieldOfView)
+    {
+        if (_fallShot == null || fieldOfView <= 0f)
+        {
+            return;
+        }
+
+        LensSettings lens = _fallShot.m_Lens;
+        lens.FieldOfView = fieldOfView;
+        _fallShot.m_Lens = lens;
     }
 
     void StopRumble()

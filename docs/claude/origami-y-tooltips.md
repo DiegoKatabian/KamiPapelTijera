@@ -44,6 +44,7 @@ its own clip with the keys in reverse order) dragged **upwards**; the letter use
 (`OrigamiSheet_Envelope.controller`), dragged **upwards** like the flap lifts (the Puente placeholder went
 right to left). `Ruta.prefab` points down unrotated; `OSU-Puente` turns it -90 (right to left), the routes
 override its rotation to 0 (down) or 180 (up). `_textDisplay` on the text-reveal routes is set in the scene.
+**Slider fix (2026-10-20, not seen in the Editor)**: the three routes each overrode the white `route` slider with `m_LocalScale.y = 11.27` (about 5900 tall against the base's 525), so it ran off the screen; the override is gone and they use `Ruta.prefab`'s own 100 x 525 slider, which matches its arrows. Level 1's `OrigamiRoute 1-Easy` instead pushes the arrows to the sheet's edge (start y 277, route 120 x 643); do that here too if Diego wants longer sliders.
 **The café ticket is localized**: its receipt has words printed on it, so there are `EN`/`PT` copies of the
 sheet and of the bag icon, made by `tools/localize-cafe-ticket.py` (re-run it if Valentino redraws the
 ticket; its word boxes are measured on this art). `LocalizedFlipbook` (`Scripts/Localization/`, added to

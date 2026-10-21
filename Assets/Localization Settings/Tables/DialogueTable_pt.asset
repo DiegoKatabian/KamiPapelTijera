@@ -300,19 +300,21 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000196
-    m_Localized: "Narrador"
+    m_Localized: Narrador
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000197
-    m_Localized: "???"
+    m_Localized: ???
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000001
-    m_Localized: "[Kami encontra uma garota com cara de preocupada.]"
+    m_Localized: '[Kami encontra uma garota com cara de preocupada.]'
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000002
-    m_Localized: "...entre o Ariel que n\xE3o me deixa em paz, os roubos no museu e este caf\xE9 que estava car\xEDssimo, n\xE3o sei o que vou fazer. J\xE1 estou far-"
+    m_Localized: "...entre o Ariel que n\xE3o me deixa em paz, os roubos no museu
+      e este caf\xE9 que estava car\xEDssimo, n\xE3o sei o que vou fazer. J\xE1 estou
+      far-"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000003
@@ -320,35 +322,42 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000004
-    m_Localized: "[...]"
+    m_Localized: '[...]'
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000005
-    m_Localized: "Ent\xE3o te trouxeram de outro livro? Com raz\xE3o a sua tinta \xE9 t\xE3o diferente!"
+    m_Localized: "Ent\xE3o te trouxeram de outro livro? Com raz\xE3o a sua tinta
+      \xE9 t\xE3o diferente!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000006
-    m_Localized: "Meu nome \xE9 Natalia, sou detetive particular. Estava tomando um caf\xE9 enquanto tentava resolver um caso."
+    m_Localized: "Meu nome \xE9 Natalia, sou detetive particular. Estava tomando
+      um caf\xE9 enquanto tentava resolver um caso."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000190
-    m_Localized: "Houve uma s\xE9rie de roubos no museu, e ningu\xE9m consegue encontrar o ladr\xE3o."
+    m_Localized: "Houve uma s\xE9rie de roubos no museu, e ningu\xE9m consegue encontrar
+      o ladr\xE3o."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000191
-    m_Localized: "...\xFAltima hora: outro incidente no museu da cidade! Teria sido roubado um Pelusa original, avaliado em 20 milh\xF5es de d\xF3lares..."
+    m_Localized: "...\xFAltima hora: outro incidente no museu da cidade! Teria sido
+      roubado um Pelusa original, avaliado em 20 milh\xF5es de d\xF3lares..."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000192
-    m_Localized: "Mais um? Justo agora?! As obras desse artista s\xE3o muito valiosas, temos que ir investigar j\xE1!"
+    m_Localized: "Mais um? Justo agora?! As obras desse artista s\xE3o muito valiosas,
+      temos que ir investigar j\xE1!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000193
-    m_Localized: "Te proponho uma coisa: me ajude a resolver este caso, e eu te ajudo a voltar para o seu livro."
+    m_Localized: 'Te proponho uma coisa: me ajude a resolver este caso, e eu te ajudo
+      a voltar para o seu livro.'
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000194
-    m_Localized: "Ah, mas antes: voc\xEA poderia guardar o recibo da compra? Pode ser \xFAtil pra n\xF3s."
+    m_Localized: "Ah, mas antes: voc\xEA poderia guardar o recibo da compra? Pode
+      ser \xFAtil pra n\xF3s."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000125
@@ -356,7 +365,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000195
-    m_Localized: "Agora sim! Vamos ao museu procurar pistas!"
+    m_Localized: Agora sim! Vamos ao museu procurar pistas!
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000198
@@ -368,7 +377,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000100
-    m_Localized: "[Kami encontra uma pista dentro da lixeira.]"
+    m_Localized: '[Kami encontra uma pista dentro da lixeira.]'
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000200
@@ -392,7 +401,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000103
-    m_Localized: "Os policiais que vigiavam a entrada foram embora. \xC9 a nossa chance de entrar escondido no museu!"
+    m_Localized: "Os policiais que vigiavam a entrada foram embora. \xC9 a nossa
+      chance de entrar escondido no museu!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000102
@@ -400,15 +410,17 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000204
-    m_Localized: "Olha, Kami, parece que o ladr\xE3o deixou o rel\xF3gio cair no ch\xE3o e ele quebrou."
+    m_Localized: "Olha, Kami, parece que o ladr\xE3o deixou o rel\xF3gio cair no
+      ch\xE3o e ele quebrou."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000205
-    m_Localized: "Hora do roubo: 20:30."
+    m_Localized: 'Hora do roubo: 20:30.'
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000105
-    m_Localized: "O tempo do ladr\xE3o acabou! Vamos levar essas tr\xEAs pistas pra minha casa, analisar tudo e desvendar esse mist\xE9rio."
+    m_Localized: "O tempo do ladr\xE3o acabou! Vamos levar essas tr\xEAs pistas pra
+      minha casa, analisar tudo e desvendar esse mist\xE9rio."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000107
@@ -424,7 +436,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000110
-    m_Localized: "Ariel"
+    m_Localized: Ariel
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000111
@@ -432,11 +444,12 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000112
-    m_Localized: "Kami, n\xE3o acredito, \xE9 o Pelusa original! O ladr\xE3o trouxe isso pra c\xE1?!"
+    m_Localized: "Kami, n\xE3o acredito, \xE9 o Pelusa original! O ladr\xE3o trouxe
+      isso pra c\xE1?!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000113
-    m_Localized: "Temos que devolver ao museu, mas..."
+    m_Localized: Temos que devolver ao museu, mas...
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000114
@@ -456,11 +469,13 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000120
-    m_Localized: "N\xF3s n\xE3o roubamos nada. Que brincadeira de mau gosto \xE9 essa?"
+    m_Localized: "N\xF3s n\xE3o roubamos nada. Que brincadeira de mau gosto \xE9
+      essa?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000119
-    m_Localized: "Aqui tem uma carta! Diz... bl\xE1 bl\xE1 bl\xE1... bl\xE1 bl\xE1 bl\xE1... \"esta \xE9 a sua parte do roubo\"."
+    m_Localized: "Aqui tem uma carta! Diz... bl\xE1 bl\xE1 bl\xE1... bl\xE1 bl\xE1
+      bl\xE1... \"esta \xE9 a sua parte do roubo\"."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000118
@@ -472,11 +487,13 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000186
-    m_Localized: "Voc\xEAs duas v\xE3o ficar trancadas aqui para sempre! Malditas mentirosas!"
+    m_Localized: "Voc\xEAs duas v\xE3o ficar trancadas aqui para sempre! Malditas
+      mentirosas!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000207
-    m_Localized: "E nem pensem em fugir. Se eu vir voc\xEAs, vou mandar de volta pra cela na base do chute!"
+    m_Localized: "E nem pensem em fugir. Se eu vir voc\xEAs, vou mandar de volta
+      pra cela na base do chute!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000187
@@ -484,7 +501,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000208
-    m_Localized: "Kami, a gente precisa achar um jeito de sair!"
+    m_Localized: Kami, a gente precisa achar um jeito de sair!
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000123
@@ -492,7 +509,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000209
-    m_Localized: "[Mas, de repente, um forte tremor sacode a delegacia.]"
+    m_Localized: '[Mas, de repente, um forte tremor sacode a delegacia.]'
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000121
@@ -500,23 +517,26 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000122
-    m_Localized: "Que barulho foi esse?"
+    m_Localized: Que barulho foi esse?
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000210
-    m_Localized: "Bom, depois eu te conto. Vamos pegar as nossas coisas e sair daqui."
+    m_Localized: Bom, depois eu te conto. Vamos pegar as nossas coisas e sair daqui.
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000188
-    m_Localized: "Obrigada por me salvar, Kami! Oi! Essa \xE9 a sua av\xF3 que tamb\xE9m se perdeu?"
+    m_Localized: "Obrigada por me salvar, Kami! Oi! Essa \xE9 a sua av\xF3 que tamb\xE9m
+      se perdeu?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000211
-    m_Localized: "Bom, depois voc\xEA nos conta. Agora a gente precisa fugir por aquela janela l\xE1 em cima. Mas como a gente faz pra chegar l\xE1?"
+    m_Localized: "Bom, depois voc\xEA nos conta. Agora a gente precisa fugir por
+      aquela janela l\xE1 em cima. Mas como a gente faz pra chegar l\xE1?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000212
-    m_Localized: "Incr\xEDvel! Eu n\xE3o sabia que voc\xEA era uma especialista em origami."
+    m_Localized: "Incr\xEDvel! Eu n\xE3o sabia que voc\xEA era uma especialista em
+      origami."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000213
@@ -542,11 +562,12 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000189
-    m_Localized: "[Kami e as garotas chegam ao museu, onde a pol\xEDcia e o Ariel interrogam uma mo\xE7a.]"
+    m_Localized: "[Kami e as garotas chegam ao museu, onde a pol\xEDcia e o Ariel
+      interrogam uma mo\xE7a.]"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000214
-    m_Localized: "...e deve ter sido por volta das oito e meia."
+    m_Localized: ...e deve ter sido por volta das oito e meia.
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000215
@@ -558,7 +579,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000152
-    m_Localized: "Ningu\xE9m se mexa! Voc\xEAs duas v\xE3o direto de volta para as suas celas!"
+    m_Localized: "Ningu\xE9m se mexa! Voc\xEAs duas v\xE3o direto de volta para as
+      suas celas!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000153
@@ -570,7 +592,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000155
-    m_Localized: "Esperem, oficiais. Se essas garotas roubaram o Pelusa, por que o trariam de volta?"
+    m_Localized: Esperem, oficiais. Se essas garotas roubaram o Pelusa, por que o
+      trariam de volta?
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000216
@@ -578,7 +601,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000217
-    m_Localized: "N\xF3s n\xE3o roubamos o Pelusa! Armaram pra cima da gente para parecermos as ladras, mas n\xE3o fomos n\xF3s."
+    m_Localized: "N\xF3s n\xE3o roubamos o Pelusa! Armaram pra cima da gente para
+      parecermos as ladras, mas n\xE3o fomos n\xF3s."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000218
@@ -586,7 +610,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000219
-    m_Localized: "Eu posso provar, olhem!"
+    m_Localized: Eu posso provar, olhem!
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000220
@@ -594,11 +618,12 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000232
-    m_Localized: "Eita! Que caro!"
+    m_Localized: Eita! Que caro!
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000172
-    m_Localized: "Viram? Diz 20:30! Na hora do roubo n\xF3s est\xE1vamos na cafeteria! \xC9 imposs\xEDvel que tenha sido a gente!"
+    m_Localized: "Viram? Diz 20:30! Na hora do roubo n\xF3s est\xE1vamos na cafeteria!
+      \xC9 imposs\xEDvel que tenha sido a gente!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000173
@@ -610,7 +635,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000175
-    m_Localized: "Encontramos o chap\xE9u do Ariel e uma das luvas dele na cena do roubo. E justo a ele faltam um chap\xE9u e uma luva."
+    m_Localized: "Encontramos o chap\xE9u do Ariel e uma das luvas dele na cena do
+      roubo. E justo a ele faltam um chap\xE9u e uma luva."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000176
@@ -618,23 +644,27 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000177
-    m_Localized: "Incr\xEDvel... Al\xE9m disso, Ariel, seu pai \xE9 o maior benfeitor do museu. Com certeza voc\xEA usou as chaves dele para entrar na sala do Pelusa."
+    m_Localized: "Incr\xEDvel... Al\xE9m disso, Ariel, seu pai \xE9 o maior benfeitor
+      do museu. Com certeza voc\xEA usou as chaves dele para entrar na sala do Pelusa."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000178
-    m_Localized: "Hmm, tudo se encaixa. Isso explica os outros roubos tamb\xE9m. Mo\xE7as, acho que devemos desculpas a voc\xEAs."
+    m_Localized: "Hmm, tudo se encaixa. Isso explica os outros roubos tamb\xE9m.
+      Mo\xE7as, acho que devemos desculpas a voc\xEAs."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000179
-    m_Localized: "O senhor, Ariel, vai ter que nos acompanhar."
+    m_Localized: O senhor, Ariel, vai ter que nos acompanhar.
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000180
-    m_Localized: "N\xE3o, voc\xEAs est\xE3o loucas! Voc\xEAs n\xE3o sabem o que est\xE3o dizendo!"
+    m_Localized: "N\xE3o, voc\xEAs est\xE3o loucas! Voc\xEAs n\xE3o sabem o que est\xE3o
+      dizendo!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000181
-    m_Localized: "Voc\xEA \xE9 uma p\xE9ssima pessoa, Ariel. Por que voc\xEA queria que botassem a culpa em mim?"
+    m_Localized: "Voc\xEA \xE9 uma p\xE9ssima pessoa, Ariel. Por que voc\xEA queria
+      que botassem a culpa em mim?"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000221
@@ -642,27 +672,29 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000222
-    m_Localized: "..."
+    m_Localized: ...
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000223
-    m_Localized: "..."
+    m_Localized: ...
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000224
-    m_Localized: "..."
+    m_Localized: ...
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000225
-    m_Localized: "..."
+    m_Localized: ...
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000226
-    m_Localized: "\xC9 que eu tinha medo de que uma boa detetive como voc\xEA descobrisse os meus roubos."
+    m_Localized: "\xC9 que eu tinha medo de que uma boa detetive como voc\xEA descobrisse
+      os meus roubos."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000227
-    m_Localized: "E tudo teria dado certo se n\xE3o fosse por aquela garota com a tesoura!"
+    m_Localized: "E tudo teria dado certo se n\xE3o fosse por aquela garota com a
+      tesoura!"
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000228
@@ -670,15 +702,17 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000182
-    m_Localized: "Excelente trabalho, meninas. O Pelusa voltou para casa gra\xE7as a voc\xEAs."
+    m_Localized: "Excelente trabalho, meninas. O Pelusa voltou para casa gra\xE7as
+      a voc\xEAs."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000183
-    m_Localized: "Tem mais uma coisa, Grace. A Kami n\xE3o \xE9 daqui, ela precisa voltar para o livro dela."
+    m_Localized: "Tem mais uma coisa, Grace. A Kami n\xE3o \xE9 daqui, ela precisa
+      voltar para o livro dela."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000184
-    m_Localized: "Hmm..."
+    m_Localized: Hmm...
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000185
@@ -690,7 +724,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000230
-    m_Localized: "\xD3timo, ent\xE3o! Quando estiverem prontas para ir, subam na catapulta."
+    m_Localized: "\xD3timo, ent\xE3o! Quando estiverem prontas para ir, subam na
+      catapulta."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000231
@@ -698,11 +733,13 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000145
-    m_Localized: "Ent\xE3o \xE9 isso que \xE9 resolver um caso com uma parceira. Muito melhor do que fazer isso sozinha."
+    m_Localized: "Ent\xE3o \xE9 isso que \xE9 resolver um caso com uma parceira.
+      Muito melhor do que fazer isso sozinha."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000146
-    m_Localized: "Obrigada pela sua ajuda, Kami. Espero que a gente se veja de novo em breve."
+    m_Localized: Obrigada pela sua ajuda, Kami. Espero que a gente se veja de novo
+      em breve.
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000147
@@ -715,8 +752,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000149
-    m_Localized: "...at\xE9 que bateram em algo grande, redondo e azul: a lumin\xE1ria
-      da escrivaninha do Narrador."
+    m_Localized: "...at\xE9 que bateram em algo grande e azul: a lumin\xE1ria da
+      escrivaninha do Narrador."
     m_Metadata:
       m_Items: []
   - m_Id: 661900000000150

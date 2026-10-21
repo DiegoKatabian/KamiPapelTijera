@@ -89,11 +89,12 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000002
-    m_Localized: "Preso no cap\xF4 de um carro perto do museu. Algu\xE9m saiu com muita pressa... e perdeu o chap\xE9u."
+    m_Localized: "Preso no cap\xF4 de um carro perto do museu. Algu\xE9m saiu com
+      muita pressa... e perdeu o chap\xE9u."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000003
-    m_Localized: "Rel\xF3gio de Pulso Quebrado"
+    m_Localized: "Rel\xF3gio Quebrado"
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000004
@@ -105,15 +106,17 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000008
-    m_Localized: "Pelusa. \"Sem T\xEDtulo\". c.1913. Esta obra do lend\xE1rio artista p\xF3s-moderno tem o poder de comover at\xE9 o mais dur\xE3o dos homens. \xC9 feita de um papel muito raro."
+    m_Localized: "Pelusa. \"Sem T\xEDtulo\". c.1913. Esta obra do lend\xE1rio artista
+      p\xF3s-moderno tem o poder de comover at\xE9 o mais dur\xE3o dos homens. \xC9
+      feita de um papel muito raro."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000009
-    m_Localized: "Luva perdida"
+    m_Localized: Luva perdida
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000010
-    m_Localized: "Uma luva sozinha, tirada de uma lixeira. A outra metade ainda est\xE1 por a\xED, de m\xE3os dadas com o ladr\xE3o."
+    m_Localized: Uma luva sozinha, tirada de uma lixeira.
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000011
@@ -125,15 +128,16 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000013
-    m_Localized: "Roupa de sempre"
+    m_Localized: Roupa de sempre
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000014
-    m_Localized: "A roupa que a Kami usa no pr\xF3prio livro. Leve como papel, e confort\xE1vel."
+    m_Localized: "A roupa que a Kami usa no pr\xF3prio livro. Leve como papel, e
+      confort\xE1vel."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000015
-    m_Localized: "Roupa de detetive"
+    m_Localized: Roupa de detetive
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000016
