@@ -106,4 +106,5 @@ public static class AudioId
     public const string CarEngineIdleLoop = "CarEngineIdleLoop";
     public const string CarHornIdling = "CarHornIdling";
     public const string PlaneRumbleLoop = "PlaneRumbleLoop";
+    public const string CarPassBy = "CarPassBy";
 }

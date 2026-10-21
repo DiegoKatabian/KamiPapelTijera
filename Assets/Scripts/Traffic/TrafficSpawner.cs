@@ -85,7 +85,8 @@ public class TrafficSpawner : MonoBehaviour
             return;
         }
         _lastEngineTime = Time.time;
-        AudioManager.instance.Play(AudioId.CarEngine);
+        // Not CarEngine: that id is the real ignition now (drive-offs), which would sound like a car starting every spawn
+        AudioManager.instance.Play(AudioId.CarPassBy);
 
         if (Time.time - _lastHornTime >= hornMinInterval && Random.value < hornChance)
         {

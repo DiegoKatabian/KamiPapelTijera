@@ -43,8 +43,8 @@ bus unless noted; all 2D. Ids and where they fire:
   `PoliceSirenLoop` (loop, starts at `CUE_CopsBehindGirls`, stops at `CUE_TurnPage`/WrapUp/OnDestroy),
   `CarEngine` + `PoliceHorn` at `CUE_DriveOff` and when `CrimeSceneGate`'s car leaves (page 2; since #231 page 2's exit also loops
   `PoliceSirenLoop` for the whole cutscene and plays `CarDoor` as each cop gets in).
-- `PlaneRumbleLoop` (#232, 2026-10-17): placeholder (`CarEngine`'s clip at pitch 0.22, loop) under page 4's countdown before the Abuela
-  falls (`AbuelaEntrance._rumbleSound`), stopped by her crash. Swap the clip in the bank row.
+- `PlaneRumbleLoop` (#232, 2026-10-17): the loop under page 4's countdown before the Abuela falls (`AbuelaEntrance._rumbleSound`),
+  stopped by her crash. Real `RumbleLoop.ogg` since 2026-10-21 (it was `CarEngine`'s clip at pitch 0.22).
 - Page 4: `CellBarsSlam` (`PoliceStationPage.StartSequence`, also after a capture), `PadlockClank`
   (`CandadoCortable.ApplyCut`, so Level 1's chest padlocks clank too), `FenceRattle` (Natalia's door
   in `PoliceStationPage`, Kami's fence in `AbuelaEntrance.Impact`), `AbuelaFall` + `AbuelaCrash`
@@ -93,8 +93,21 @@ New sounds tied to a sentence are one YAML/Inspector field, not a Timeline signa
 **Real clips (2026-10-19, `Assets/Sounds/Level 2 SFXs/` and `Pencil Write/`)**: Diego's recordings, all rows at volume
 0.5 and pitch 1 (his clips are already levelled). In so far: `CafeAmbience`, `CityAmbience`, `CarHorn` / `CarHornIdling`
 (five clips each, pitch spread 0.08), `CopWhistle`, `Handcuffs`, `RadioStatic`, `Dialogue_PencilWrite`. Ambience beds
-over 30s import as Streaming. `Dialogue_Sigh` and `NewsJingle` were removed (Diego). Still placeholders: every other row
-above. Positional rows (spatial blend 1) must be played with `PlayAt`: a plain `Play` sounds from the world origin.
+over 30s import as Streaming. `Dialogue_Sigh` and `NewsJingle` were removed (Diego). Positional rows (spatial blend 1)
+must be played with `PlayAt`: a plain `Play` sounds from the world origin.
+
+**Real clips pt 2 (2026-10-20 import, wired 2026-10-21, bank only, no scene touched, compile-checked, not heard in play)**: 14 more
+rows on Diego's clips, all volume 0.5 / pitch 1 except `PlaneRumbleLoop` (0.35, as before). `CarDoor` <- Car Door Close;
+`PoliceSirenLoop` <- Police car Siren Loop; `PoliceHorn` <- the three Police Horn Siren Short clips (random pick, pitch spread 0.05);
+`CarBrake` <- Car Break Tires Squeak; `CellBarsSlam`; `PadlockClank`; `FenceRattle` (was sharing the padlock + manhole clips);
+`AbuelaCrash`; `CarEngine` <- Car Engine Start (the drive-offs); `RopeCreak`; `CatapultThud` <- CatapultThud;
+`CatapultWhoosh` <- Catapult Swish and Thud (so the launch plays two thuds, one at 0 s and one at 0.5 s: if it sounds doubled, drop
+the `CatapultThud` row's volume or swap which clip it uses); `CarEngineIdleLoop` <- Car Engine Idle Loop (still positional 25-75);
+`PlaneRumbleLoop` <- RumbleLoop. New id **`CarPassBy`**: `TrafficSpawner` used to play `CarEngine` on every ambient spawn, which
+with a real ignition would be a car starting every 6 s, so it now plays `CarPassBy`, a row that keeps the old placeholder engine
+clip and settings (0.12, pitch 0.5). Swap its clip when a real pass-by exists. Still placeholders or without a clip: see the issue
+that lists the leftovers (`AbuelaFall`, `CaughtSting`, `TypewriterClack`, `ClothRip`, `GiftBoxOpen`, `ClueFound`, `ManholeClank`,
+`CopKnockedOut`, `RunningFootsteps`, `Car Door Open.ogg` and `Catapult.ogg` unused).
 
 **Dialogue pencil (2026-10-19)**: `DialogueManager` chains `Dialogue_PencilWrite`'s ten clips back to back while a line is
 written (`PencilStream`): it fills the typewriter's time for that line (characters / `_charsPerSecond`), picking each

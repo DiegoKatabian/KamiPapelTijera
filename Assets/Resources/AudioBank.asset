@@ -1114,8 +1114,8 @@ MonoBehaviour:
     interruptSelf: 0
   - id: CarDoor
     clips:
-    - {fileID: 8300000, guid: 2134304ff51945348ba80263bd471f4b, type: 3}
-    volume: 0.3
+    - {fileID: 8300000, guid: d6c28b3bd8b581c459dd44af69274620, type: 3}
+    volume: 0.5
     pitch: 1
     pitchVariation: 0
     loop: 0
@@ -1129,8 +1129,8 @@ MonoBehaviour:
     interruptSelf: 0
   - id: PoliceSirenLoop
     clips:
-    - {fileID: 8300000, guid: a01ea5b4d8912ae48ac12e8f12bc1646, type: 3}
-    volume: 0.12
+    - {fileID: 8300000, guid: 07155ea6384044343b6b4b09fcdd5c66, type: 3}
+    volume: 0.5
     pitch: 1
     pitchVariation: 0
     loop: 1
@@ -1144,10 +1144,12 @@ MonoBehaviour:
     interruptSelf: 0
   - id: PoliceHorn
     clips:
-    - {fileID: 8300000, guid: 8d681e10a3e1cb84297a1167db0cb5e0, type: 3}
-    volume: 0.3
-    pitch: 1.4
-    pitchVariation: 0
+    - {fileID: 8300000, guid: 9f642256456ec4147a6492ad19371922, type: 3}
+    - {fileID: 8300000, guid: 4e173dd8c5393d5488a902710ecae15c, type: 3}
+    - {fileID: 8300000, guid: be04859599d40694c86278d839b3cf1f, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0.05
     loop: 0
     bus: 1
     maxSimultaneous: 2
@@ -1159,9 +1161,9 @@ MonoBehaviour:
     interruptSelf: 0
   - id: CarBrake
     clips:
-    - {fileID: 8300000, guid: 1a7b33ca8967feb4fb64d352ef6e3d4c, type: 3}
-    volume: 0.4
-    pitch: 0.6
+    - {fileID: 8300000, guid: a58cf483dd24aba4f8ee54b3228adfbe, type: 3}
+    volume: 0.5
+    pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
@@ -1207,9 +1209,9 @@ MonoBehaviour:
     interruptSelf: 0
   - id: CellBarsSlam
     clips:
-    - {fileID: 8300000, guid: 2f2d3d4b85e02bf43a7dba7059797912, type: 3}
+    - {fileID: 8300000, guid: 76dbeefea1a2574488d3e7a963e5734c, type: 3}
     volume: 0.5
-    pitch: 1.3
+    pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
@@ -1222,9 +1224,9 @@ MonoBehaviour:
     interruptSelf: 0
   - id: PadlockClank
     clips:
-    - {fileID: 8300000, guid: 6d69eac966988d444ad3df983134ff55, type: 3}
-    volume: 0.6
-    pitch: 1.3
+    - {fileID: 8300000, guid: efd34493c2e3c9c4d88c108ac61e49b1, type: 3}
+    volume: 0.5
+    pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
@@ -1237,11 +1239,10 @@ MonoBehaviour:
     interruptSelf: 0
   - id: FenceRattle
     clips:
-    - {fileID: 8300000, guid: 6d69eac966988d444ad3df983134ff55, type: 3}
-    - {fileID: 8300000, guid: f4c9cdd0eb65d594b84d6b0962b1f4c4, type: 3}
-    volume: 0.4
-    pitch: 1.8
-    pitchVariation: 0.1
+    - {fileID: 8300000, guid: 95669e4ef837caf419837d894953c9ca, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
     loop: 0
     bus: 1
     maxSimultaneous: 2
@@ -1268,8 +1269,8 @@ MonoBehaviour:
     interruptSelf: 0
   - id: AbuelaCrash
     clips:
-    - {fileID: 8300000, guid: 2f2d3d4b85e02bf43a7dba7059797912, type: 3}
-    volume: 0.6
+    - {fileID: 8300000, guid: 1489dda6cd1467d48b9de20e796f4885, type: 3}
+    volume: 0.5
     pitch: 1
     pitchVariation: 0
     loop: 0
@@ -1419,10 +1420,10 @@ MonoBehaviour:
     interruptSelf: 0
   - id: CarEngine
     clips:
-    - {fileID: 8300000, guid: 1a7b33ca8967feb4fb64d352ef6e3d4c, type: 3}
-    volume: 0.12
-    pitch: 0.5
-    pitchVariation: 0.05
+    - {fileID: 8300000, guid: 069e3ed2451d8504cb06eb8f9c609eea, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
     loop: 0
     bus: 1
     maxSimultaneous: 2
@@ -1484,10 +1485,10 @@ MonoBehaviour:
     interruptSelf: 0
   - id: RopeCreak
     clips:
-    - {fileID: 8300000, guid: 2134304ff51945348ba80263bd471f4b, type: 3}
-    volume: 0.4
-    pitch: 0.5
-    pitchVariation: 0.05
+    - {fileID: 8300000, guid: c6c69d3bbf3320b4993daf9423446a69, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
     loop: 0
     bus: 1
     maxSimultaneous: 1
@@ -1499,9 +1500,9 @@ MonoBehaviour:
     interruptSelf: 0
   - id: CatapultThud
     clips:
-    - {fileID: 8300000, guid: 2f2d3d4b85e02bf43a7dba7059797912, type: 3}
-    volume: 0.7
-    pitch: 0.8
+    - {fileID: 8300000, guid: 3a0ca2e35df4feb47b0378923884fc5e, type: 3}
+    volume: 0.5
+    pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
@@ -1514,9 +1515,9 @@ MonoBehaviour:
     interruptSelf: 0
   - id: CatapultWhoosh
     clips:
-    - {fileID: 8300000, guid: f36d33a5c30a1104b873fdefc888b2d1, type: 3}
-    volume: 0.8
-    pitch: 0.9
+    - {fileID: 8300000, guid: 824e5d5c2b6aa09439221d833eee49b2, type: 3}
+    volume: 0.5
+    pitch: 1
     pitchVariation: 0
     loop: 0
     bus: 1
@@ -1544,10 +1545,10 @@ MonoBehaviour:
     interruptSelf: 0
   - id: CarEngineIdleLoop
     clips:
-    - {fileID: 8300000, guid: 1a7b33ca8967feb4fb64d352ef6e3d4c, type: 3}
-    volume: 0.1
-    pitch: 0.45
-    pitchVariation: 0.05
+    - {fileID: 8300000, guid: c7d29a72c6118d34fa2627bb6a6eeeee, type: 3}
+    volume: 0.5
+    pitch: 1
+    pitchVariation: 0
     loop: 1
     bus: 1
     maxSimultaneous: 4
@@ -1578,13 +1579,28 @@ MonoBehaviour:
     interruptSelf: 0
   - id: PlaneRumbleLoop
     clips:
-    - {fileID: 8300000, guid: 1a7b33ca8967feb4fb64d352ef6e3d4c, type: 3}
+    - {fileID: 8300000, guid: 64ce6191b1f69e4439d3dde978f77b8b, type: 3}
     volume: 0.35
-    pitch: 0.22
+    pitch: 1
     pitchVariation: 0
     loop: 1
     bus: 1
     maxSimultaneous: 1
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
+    priority: 128
+    interruptSelf: 0
+  - id: CarPassBy
+    clips:
+    - {fileID: 8300000, guid: 1a7b33ca8967feb4fb64d352ef6e3d4c, type: 3}
+    volume: 0.12
+    pitch: 0.5
+    pitchVariation: 0.05
+    loop: 0
+    bus: 1
+    maxSimultaneous: 2
     spatialBlend: 0
     minDistance: 1
     maxDistance: 500
