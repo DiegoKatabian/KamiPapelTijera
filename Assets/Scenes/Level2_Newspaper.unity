@@ -39194,7 +39194,7 @@ MonoBehaviour:
   - {fileID: 1552561451}
   - {fileID: 965064140}
   - {fileID: 620715592}
-  startingPage: 2
+  startingPage: 1
   activePageIndex: 0
   esferaPrev: {fileID: 1768877052}
   esferaNext: {fileID: 344292683}
@@ -150238,6 +150238,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2684831585979483659}
     m_Modifications:
+    - target: {fileID: 2823341039572687102, guid: c07bae58f8124c7b83f9f03dfee8533e,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7320000000000000001, guid: c07bae58f8124c7b83f9f03dfee8533e,
         type: 3}
       propertyPath: m_Name
