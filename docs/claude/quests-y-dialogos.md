@@ -127,7 +127,7 @@ design: `specs/006-nivel2-detective-natalia/`. The old spec
 - **Page 2, after the last clue (V5, 2026-10-21)**: she appears at the end of the page waving, and waits there until Kami comes within a radius
   (not-following in the meantime, so she is not talkable and not in the page-turn ride until she rejoins): `Level2/NataliaPageEndBeat`, see
   `nivel2-y-ui.md`.
-- **Page 4 arrival (V6, 2026-10-21)**: the camera pans to her in her cell and she waves before the intro: `cutscenes.md`.
+- **Page 4 arrival (V6, corrected 2026-10-21)**: she waves when the intro's camera tour first frames her cell (`NataliaWave` signal): `cutscenes.md`.
 - **Page 5**: `MuseumPage` stops her follow, walks her to `Marks/NataliaStayMark` (a few units from Grace, so
   their two talk triggers never overlap, #184) and then calls `StayBehind()`: talkable again, and every talk
   from then on is `_farewellDialogue` (`Natalia_Farewell`).

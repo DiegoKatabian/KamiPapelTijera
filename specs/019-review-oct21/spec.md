@@ -151,3 +151,23 @@ names, and read the `[InventoryManager]` slot logs (no duplicate-slot warning ap
 
 **Status: all lanes built 2026-10-21, compile-checked (`tools/compile-check.py`), scenes checked for unique ids and resolved
 refs. Nothing played, nothing committed.**
+
+## Corrections after Diego's playtest (2026-10-21, built, compile-checked, not played)
+
+Diego played and committed the above (69edb728, "everything is working just fine"). Then:
+- **V6 corrected**: Natalia's wave belongs inside page 4's intro tour, not in a pan of its own before it. `ArrestCutscene.ArriveInTheCells`
+  now only fades in on Kami and releases (the pan, `_cellHoldSeconds`, `_nataliaCellShot`, `_nataliaWavePose`/`Seconds` and the scene
+  override are gone). New signal `PoliceIntro_NataliaWave` at 4.4 s on `Timeline_PoliceIntro` (as the NataliaCell shot arrives), a
+  `SignalReceiver` on `Page 4/PoliceStation` -> `PoliceStationPage.CUE_NataliaWave` (`_nataliaWavePose` "Wave", `_nataliaWaveSeconds` 2.4).
+- **Catapult**: `CatapultLaunch` (swoosh + thud) plays in `Catapult.OnRopeCut`, on the same frame as the cut, instead of on the `Launch`
+  signal 0.6 s later. The arm's visual launch is still on that signal.
+- **Kami magenta**: Valen's aa7dddfc pointed the Spine URP package at his own Desktop, so on Diego's machine it did not resolve and
+  `Kami/Spine/Sprite Fill URP` failed its includes; Diego moved the package into the repo (relative path, committed) and switched the three
+  Atlas 14 materials to the package's shader to see Kami again (no hit flash). They point at the fork again; the fork needs a Reimport if
+  the Inspector still shows the include errors. Documented in `docs/claude/spine-kami.md`.
+- **Page 1 café fold** (Diego, 2026-10-21): the scene instance gets `_repromptAfterCancel`, so cancelling holds Kami and reopens the fold
+  (like the letter and the page 5 ticket). `TriggerOrigami` now always owns a code-driven pedestal's check, so the re-prompt also works with
+  Kami standing in the pedestal's trigger.
+- **Page 5, Ariel's car** (Diego, 2026-10-21, page 2's recipe): `MuseumArrest` stops the timeline `_cameraReturnLeadSeconds` (1.5) before the car
+  reaches its mark (`CutsceneDirector.StopKeepingControl`, new), the camera blends back to the girls, Kami stays locked until the car is gone;
+  siren + run fade over `_loopsFadeSeconds` (2). Not played.

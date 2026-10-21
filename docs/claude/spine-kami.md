@@ -193,6 +193,14 @@ read on enable.
 - Hueso con typo: `tiejraBack`.
 - Anchors sobre el skeleton (el 3DModel viejo fue borrado del prefab en julio 2026): `particleAnchor` (BoneFollower → hueso `Smoke`; ya NO se usa para el polvo de salto, que ahora sale de `Player.FeetPosition`) y PaperPlaneAnchor (BoneFollower → `9_HEAD`, escala local 0.927).
 - Flash de daño: `_FillColor`/`_FillPhase` vía MaterialPropertyBlock (`Player.SetFlash`). Since 2026-10-15 the Atlas 14 materials use `Kami/Spine/Sprite Fill URP` (`Assets/Shaders/KamiSpineFill/`): a fork of the Spine URP package's `Universal Render Pipeline/Spine/Sprite` (Kami receives and casts shadows) whose two colour passes mix the package's own fragment result toward the fill colour *last*, so the flash stays flat red in shadow, premultiplied like the old `Spine/Skeleton Fill`. Same properties as the package shader, so a material keeps its values when its shader is swapped; only the input headers (`Include/KamiSpine-Input-*.hlsl`, copies with the 2 fill members added) and the 2 wrapper fragments differ, so diff against the package's `Spine-Sprite-URP.shader` after updating it. **A Spine re-import that regenerates a `.mat` brings back the package shader: re-pick `Kami/Spine/Sprite Fill URP` on it** (without it the flash does nothing).
+- **Where the Spine URP package lives (2026-10-21)**: `Packages/manifest.json` points `com.esotericsoftware.spine.urp-shaders` at
+  `file:../Spine URP Shaders/com.esotericsoftware.spine.urp-shaders-4.2-2019.1`, a folder at the **repo root, committed**, so every clone
+  resolves it. It used to be an absolute path on one machine (Diego's Downloads, then Valen's Desktop in aa7dddfc): on the other machine the
+  package failed to resolve, the fork above failed to compile ("Couldn't open include file 'Packages/com.esotericsoftware...'") and Kami
+  rendered magenta. **If Kami turns magenta again**: check the Package Manager resolves the package, then right-click
+  `Assets/Shaders/KamiSpineFill` > Reimport (a shader that failed on a missing include keeps its error until reimported), and make sure the
+  three Atlas 14 materials use `Kami/Spine/Sprite Fill URP`, not the package's `Universal Render Pipeline/Spine/Sprite` (that one renders but
+  has no hit flash). Never put a second copy of the package under `Assets/`: its shaders include by `Packages/...` path and duplicate the names.
 - Flip: `Skeleton.ScaleX = ±1` en `PlayerView.SetFacing`.
 - Muerte en 3 tiempos: `Die()` dispara anim+música+OnPlayerDie; overlay tras `Player.defeatOverlayDelay`; respawn recién al cerrar el overlay con E. La anim `Death` queda congelada en el último frame.
 - RunStop: estados de locomoción con `GetAxisRaw` (el smoothing de GetAxis metía Walking entre Skip e Idle); solo suena si venía `runstopMinFullSpeedTime` seguidos a velocidad máxima (`runstopReady`).

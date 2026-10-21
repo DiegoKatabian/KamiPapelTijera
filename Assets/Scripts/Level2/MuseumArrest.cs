@@ -73,11 +73,18 @@ public class MuseumArrest : MonoBehaviour
     [SerializeField, Tooltip("Seconds after the car begins to move before the engine run loop starts.")]
     float _engineRunDelaySeconds = 1f;
 
+    [SerializeField, Tooltip("Seconds BEFORE the car reaches the drive-off mark that the timeline stops and the camera starts blending back to the girls, so the car is never seen vanishing (same as page 2's cops, CrimeSceneGate). Kami stays locked until the car is gone. 0 = the old way (the car-follow shot holds until it arrives).")]
+    float _cameraReturnLeadSeconds = 1.5f;
+
+    [SerializeField, Tooltip("Seconds the siren and the engine run fade out, ending as the car arrives (it starts after the run loop does).")]
+    float _loopsFadeSeconds = 2f;
+
     const float RepathSeconds = 0.25f;
 
     CutsceneDirector _cutscene;
     Action _onFinished;
     bool _started;
+    bool _endingEarly; //the camera already left the car: CUE_Finish must not run the ending a second time
     bool _escorting;
     bool _carDrivingOff;
 
@@ -217,11 +224,56 @@ public class MuseumArrest : MonoBehaviour
         PlaySound(AudioId.PoliceHorn);
         PatrolCarAudio.CarMoves(_engineRunDelaySeconds);
         Debug.Log("[MuseumArrest] the patrol car drives off");
+
+        if (_loopsFadeSeconds > 0f)
+        {
+            //the fade starts after the run loop does, or it would cancel it (the page 2 fix, review 2026-10-21)
+            float fadeStart = Mathf.Max(_engineRunDelaySeconds + 0.25f, _driveOffSeconds - _loopsFadeSeconds);
+            PatrolCarAudio.FadeOutLoopsAfter(fadeStart, Mathf.Max(0.5f, _driveOffSeconds - fadeStart));
+        }
+
+        if (_cameraReturnLeadSeconds > 0f)
+        {
+            StartCoroutine(LeaveTheCarBeforeItVanishes());
+        }
+    }
+
+    //the car-follow shot would hold until the car is destroyed at the mark, in view: stop the timeline early so
+    //the brain blends back to the player's camera while it still drives, and finish once it is gone
+    IEnumerator LeaveTheCarBeforeItVanishes()
+    {
+        yield return new WaitForSeconds(Mathf.Max(0f, _driveOffSeconds - _cameraReturnLeadSeconds));
+
+        _endingEarly = true;
+        Debug.Log("[MuseumArrest] the camera goes back to the girls before the car leaves the page");
+        _cutscene.StopKeepingControl();
+        yield return new WaitForSeconds(CutsceneCamera.BlendSeconds);
+
+        float waited = 0f;
+        float maxWait = (_driveOffSeconds * 3f) + 1f; //the same safety net the car itself despawns with
+        while (_patrolCar != null && waited < maxWait)
+        {
+            waited += Time.deltaTime;
+            yield return null;
+        }
+
+        StopSiren();
+        _cutscene.Release();
+        Debug.Log("[MuseumArrest] Ariel is gone, back to MuseumPage");
+
+        Action finished = _onFinished;
+        _onFinished = null;
+        finished?.Invoke();
     }
 
     /// <summary>Signal: the end. Holds the timeline until the car has left, then MuseumPage closes the case.</summary>
     public void CUE_Finish()
     {
+        if (_endingEarly)
+        {
+            return; //LeaveTheCarBeforeItVanishes owns the ending
+        }
+
         StartCoroutine(FinishWhenCarArrives());
     }
 

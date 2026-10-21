@@ -256,7 +256,7 @@ starts. Where things are:
   drive-off target).
 
 **Page 3 to 4 transition (V6, 2026-10-21, built, not played)**: the arrest now fades to black as the patrol car drives off, stays black through
-the page turn and the placing, fades in on Kami already in her cell and pans to Natalia waving before page 4's intro starts. Detail and tuning
+the page turn and the placing, fades in on Kami already in her cell, and page 4's intro starts (Natalia waves inside it, when its tour first frames her cell). Detail and tuning
 in `cutscenes.md` ("The screen is black from the car leaving...").
 
 **Phase 4 (page 4, "Escape from the police station") built 2026-09-27, played in Diego's full playthrough (2026-09-28).**

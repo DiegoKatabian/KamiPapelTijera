@@ -60,6 +60,12 @@ public class PoliceStationPage : MonoBehaviour
     [SerializeField, Tooltip("The intro cutscene (Timeline_PoliceIntro), played the first time only and not skippable: camera tour, the cop's taunt, Natalia's reply. Empty = no intro.")]
     CutsceneDirector _introCutscene;
 
+    [SerializeField, Tooltip("Pose id on Natalia's SpineCharacter for her wave ('Saludo'), played by the intro's NataliaWave signal when the camera first frames her cell. Drag the signal on Timeline_PoliceIntro to retime it.")]
+    string _nataliaWavePose = "Wave";
+
+    [SerializeField, Tooltip("Seconds the wave holds before she goes back to her angry rest pose.")]
+    float _nataliaWaveSeconds = 2.4f;
+
     [SerializeField, Tooltip("Seconds Kami can look around on her own once the intro is over, before the narrator's lines and the tremor. First time only.")]
     float _freeExploreSeconds = 5f;
 
@@ -440,6 +446,22 @@ public class PoliceStationPage : MonoBehaviour
 
         _restartPending = false;
         StartSequence(firstTime: false);
+    }
+
+    /// <summary>
+    /// Timeline_PoliceIntro's NataliaWave signal (spec 019 V6, as corrected by Diego 2026-10-21): she waves at
+    /// Kami the moment the intro's camera tour first frames her cell, instead of in a pan of its own before it.
+    /// </summary>
+    public void CUE_NataliaWave()
+    {
+        if (_natalia == null || _natalia.Character == null || string.IsNullOrEmpty(_nataliaWavePose))
+        {
+            Debug.LogWarning("[PoliceStationPage] Natalia has no SpineCharacter or no wave pose id: nobody waves in the intro");
+            return;
+        }
+
+        _natalia.Character.PlayPose(_nataliaWavePose, _nataliaWaveSeconds);
+        Debug.Log("[PoliceStationPage] Natalia waves from her cell");
     }
 
     /// <summary>Called by EscapeWindow when Kami goes through the 2nd floor window.</summary>

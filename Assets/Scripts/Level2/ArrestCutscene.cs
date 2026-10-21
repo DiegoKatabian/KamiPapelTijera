@@ -59,20 +59,8 @@ public class ArrestCutscene : MonoBehaviour
     [SerializeField, Tooltip("Seconds the screen stays black once the page has turned and both girls are in their cells, before it fades in.")]
     float _arrivalBlackHoldSeconds = 0.4f;
 
-    [SerializeField, Tooltip("Seconds to fade in on Kami, already in her cell.")]
+    [SerializeField, Tooltip("Seconds to fade in on Kami, already in her cell. Page 4's intro starts once it is done (Natalia waves inside that intro, PoliceStationPage.CUE_NataliaWave).")]
     float _cellFadeInSeconds = 0.8f;
-
-    [SerializeField, Tooltip("Seconds Kami is seen alone in her cell before the camera goes to Natalia.")]
-    float _cellHoldSeconds = 1.2f;
-
-    [SerializeField, Tooltip("The shot that shows Natalia in her cell (page 4): a static vcam, drag it to reframe. Page 4's intro Timeline uses the same shot. Empty = no pan, she just waves off camera.")]
-    CinemachineVirtualCamera _nataliaCellShot;
-
-    [SerializeField, Tooltip("Pose id on Natalia's SpineCharacter: her wave ('Saludo'). Played once the camera has arrived.")]
-    string _nataliaWavePose = "Wave";
-
-    [SerializeField, Tooltip("Seconds she waves with the camera on her. The page 4 intro starts after the camera is back on Kami.")]
-    float _nataliaWaveSeconds = 3f;
 
     [Header("Music (#176)")]
     [SerializeField, Tooltip("Page 3's live jazz band (an AudioSource in the scene). Stopped when the police show up, and kept off for the rest of the level.")]
@@ -967,9 +955,9 @@ public class ArrestCutscene : MonoBehaviour
     }
 
     /// <summary>
-    /// V6: still black from the drive-off. Fade in on Kami already in her cell, a beat later the camera goes to
-    /// Natalia in hers, she waves, and the camera comes back; only then is Kami given back, which lets page 4's
-    /// intro start. Nothing here moves anyone: the placing already happened behind the black.
+    /// V6: still black from the drive-off. Fade in on Kami already in her cell, then give Kami back, which lets
+    /// page 4's intro start (Natalia's wave lives in that intro, Diego 2026-10-21). Nothing here moves anyone:
+    /// the placing already happened behind the black.
     /// </summary>
     IEnumerator ArriveInTheCells()
     {
@@ -979,31 +967,6 @@ public class ArrestCutscene : MonoBehaviour
             Debug.Log("[ArrestCutscene] fading in on Kami in her cell");
             yield return _screenFader.FadeIn(_cellFadeInSeconds);
         }
-
-        yield return new WaitForSeconds(_cellHoldSeconds);
-
-        if (_nataliaCellShot == null)
-        {
-            Debug.LogWarning("[ArrestCutscene] no _nataliaCellShot assigned: Natalia waves without the camera going to her");
-        }
-
-        CutsceneCamera.Show(_nataliaCellShot);
-        float blend = _nataliaCellShot != null ? CutsceneCamera.BlendSeconds : 0f;
-        yield return new WaitForSeconds(blend);
-
-        if (_natalia != null && _natalia.Character != null && !string.IsNullOrEmpty(_nataliaWavePose))
-        {
-            _natalia.Character.PlayPose(_nataliaWavePose, _nataliaWaveSeconds);
-        }
-        else
-        {
-            Debug.LogWarning("[ArrestCutscene] Natalia has no SpineCharacter or no wave pose id: nobody waves in the cell");
-        }
-
-        yield return new WaitForSeconds(_nataliaWaveSeconds);
-
-        CutsceneCamera.Hide(_nataliaCellShot);
-        yield return new WaitForSeconds(blend);
 
         _cutscene.Release();
         Debug.Log("[ArrestCutscene] the arrival in the cells is over: Kami is free to start page 4's intro");

@@ -3626,6 +3626,11 @@ PrefabInstance:
       propertyPath: _promptAutomatically
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5352563962349730642, guid: 4daee682af30a0d478a24755589a8b2d,
+        type: 3}
+      propertyPath: _repromptAfterCancel
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5352563962349730644, guid: 4daee682af30a0d478a24755589a8b2d,
         type: 3}
       propertyPath: m_IsActive
@@ -38238,7 +38243,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &620715591
 Transform:
   m_ObjectHideFlags: 0
@@ -40630,7 +40635,7 @@ MonoBehaviour:
   - {fileID: 1552561451}
   - {fileID: 965064140}
   - {fileID: 620715592}
-  startingPage: 1
+  startingPage: 5
   activePageIndex: 0
   esferaPrev: {fileID: 1768877052}
   esferaNext: {fileID: 344292683}
@@ -98149,7 +98154,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1657797273
 Transform:
   m_ObjectHideFlags: 0
@@ -119329,7 +119334,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-637290
+  m_Name: pb_Mesh-216138
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -148492,6 +148497,8 @@ MonoBehaviour:
   _maxWaitForArrivalSeconds: 40
   _waitAtCarSeconds: 1.5
   _engineRunDelaySeconds: 1
+  _cameraReturnLeadSeconds: 1.5
+  _loopsFadeSeconds: 2
 --- !u!4 &1431290399051876343 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1580771314855888646, guid: f9e6efb209614c368ad9bf9021c6b8ac,
@@ -149540,11 +149547,6 @@ PrefabInstance:
       propertyPath: _policeStation
       value: 
       objectReference: {fileID: 7431645461299364578}
-    - target: {fileID: 4372101511210729490, guid: 5cbb6dc6024e4cdba4c02dc20a8f137f,
-        type: 3}
-      propertyPath: _nataliaCellShot
-      value: 
-      objectReference: {fileID: 2443635114451149838}
     - target: {fileID: 4425315944512936696, guid: 5cbb6dc6024e4cdba4c02dc20a8f137f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -154126,6 +154128,7 @@ GameObject:
   - component: {fileID: 5406560976700229359}
   - component: {fileID: 3175561262066488454}
   - component: {fileID: 7429015090288422337}
+  - component: {fileID: 8276860634362010618}
   m_Layer: 0
   m_Name: PoliceStation
   m_TagString: Untagged
@@ -154660,6 +154663,8 @@ MonoBehaviour:
   _nataliaInCellRestPose: Angry
   _abuelaEntrance: {fileID: 5828617772423878024}
   _introCutscene: {fileID: 5406560976700229359}
+  _nataliaWavePose: Wave
+  _nataliaWaveSeconds: 2.4
   _freeExploreSeconds: 5
   _narratorLine: {fileID: 11400000, guid: 55a7ea1714ab4d188f3968c4c41b986f, type: 2}
   _cameraAfterIntro: 4
@@ -156097,6 +156102,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5320052842529090854}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &8276860634362010618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6700241945947154488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: a7366c27fbfc42aa9ffe8e902fa11e59, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7431645461299364578}
+          m_TargetAssemblyTypeName: PoliceStationPage, Assembly-CSharp
+          m_MethodName: CUE_NataliaWave
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &8277236174240988955
 GameObject:
   m_ObjectHideFlags: 3

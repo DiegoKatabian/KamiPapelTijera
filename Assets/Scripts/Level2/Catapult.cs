@@ -316,6 +316,10 @@ public class Catapult : TriggerScript
         _launched = true;
         Debug.Log("[Catapult] the rope is cut, launching");
 
+        //one clip, the swish of the girls leaving and the thud of the arm hitting its stop, on the cut itself
+        //(Diego 2026-10-21): played on the Launch signal 0.6 s later it read as a second, separate sound
+        AudioManager.instance.Play(AudioId.CatapultLaunch);
+
         if (TooltipManager.Instance != null)
         {
             TooltipManager.Instance.HideTooltip(_cutRopeColor, this);
@@ -355,10 +359,6 @@ public class Catapult : TriggerScript
         }
 
         AnimationCue.RunAll(_launchCues, "Catapult launch");
-
-        //one clip: the swish of the girls leaving and the thud of the arm hitting its stop. The rope's own
-        //cut sound (TijeraHit + PaperCut) already played when Kami cut it
-        AudioManager.instance.Play(AudioId.CatapultLaunch);
 
         if (_flyingGirls != null && _flightTarget != null)
         {

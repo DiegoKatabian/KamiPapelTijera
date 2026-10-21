@@ -25,6 +25,7 @@ public class CutsceneDirector : MonoBehaviour, INotificationReceiver
     PlayableDirector _director;
     DialogueSO _waitingFor;
     bool _playing;
+    bool _stoppedEarly; //StopKeepingControl: the stop must not hand Kami back, the caller does
 
     public bool IsPlaying => _playing;
 
@@ -55,6 +56,7 @@ public class CutsceneDirector : MonoBehaviour, INotificationReceiver
         }
 
         _playing = true;
+        _stoppedEarly = false;
         LevelManager.Instance.inCutscene = true;
         BindCinemachineTracks();
 
@@ -154,6 +156,22 @@ public class CutsceneDirector : MonoBehaviour, INotificationReceiver
     /// For a signal handler that has to wait for gameplay (e.g. Kami still walking to the car). Do not
     /// overlap it with a dialogue marker: both write the same speed.
     /// </summary>
+    /// <summary>
+    /// Ends the timeline before its last marker: its Cinemachine track lets go and the brain blends back to the
+    /// player's camera, but Kami stays locked; the caller calls <see cref="Release"/> when its own beat is over
+    /// (page 5: the camera leaves Ariel's car before it drives out of the book, like page 2's cops).
+    /// </summary>
+    public void StopKeepingControl()
+    {
+        if (!_playing)
+        {
+            return;
+        }
+
+        _stoppedEarly = true;
+        _director.Stop();
+    }
+
     public void HoldTimeline()
     {
         SetTimelineSpeed(0);
@@ -176,7 +194,7 @@ public class CutsceneDirector : MonoBehaviour, INotificationReceiver
     {
         Debug.Log($"[CutsceneDirector] {gameObject.name}: timeline finished");
 
-        if (_releaseControlWhenTimelineEnds)
+        if (_releaseControlWhenTimelineEnds && !_stoppedEarly)
         {
             Release();
         }

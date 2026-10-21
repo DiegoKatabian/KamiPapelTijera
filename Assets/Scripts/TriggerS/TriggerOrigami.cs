@@ -318,7 +318,9 @@ public class TriggerOrigami : TriggerScript
         if (currentCheck == null)
         {
             currentCheck = Instantiate(checkPrefab).SetOrigami(origami);
-            _autoCheckOwned = !triggerBool;
+            //a code-driven pedestal never cleans up on exit, so its check is always ours to clean up (and to
+            //re-prompt from), even when Kami happens to be standing inside its trigger
+            _autoCheckOwned = _openOnlyByCode || !triggerBool;
         }
 
         currentCheck.StartOrigami(origami);

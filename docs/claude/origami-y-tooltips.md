@@ -110,6 +110,10 @@ pedestal (`SelloOrigami CafeTicket`, scene instance) got the same three flags.
 **Kami stays still until the re-prompt (spec 019 D, 2026-10-21, not played)**: between a cancel and the automatic reopen
 (~`_autoPromptDelay`) the pedestal holds `LevelManager.inCutscene` itself (`TriggerOrigami.HoldKami`/`ReleaseKami`) and its
 own `CanAutoPrompt` ignores that hold; she could walk off the pedestal in that gap.
+**Page 1's café fold too (2026-10-21, Diego)**: its scene instance now also has `_repromptAfterCancel`, so a cancel no longer lets Kami walk
+away and talk to Natalia again: she stays still and the fold reopens, like the letter and the page 5 ticket (Natalia's reminder path is
+still there as a fallback). A code-driven pedestal now always owns its check (`_autoCheckOwned = _openOnlyByCode || !triggerBool`), so the
+re-prompt works even if Kami is standing inside the pedestal's trigger.
 **No pedestal says "Hold E" any more**: the five `SelloOrigami*.prefab` tooltips use the `origami_tooltip` key ("Press E to...").
 
 ## A failed fold restarts the fold, not the origami (spec 019 V1 + I, built 2026-10-21, not played)

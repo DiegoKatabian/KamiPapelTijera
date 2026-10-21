@@ -48,14 +48,13 @@ timeline while still black (so the StreetCops clip ends unseen), holds black and
 mark (it starts `_driveOffSeconds` minus that after the signal). `TurnPage` then waits for black (and holds the timeline, so the car-follow shot
 is never cut short), the page turns and Kami is placed behind the black, and `WrapUp` (the page-turn-finished handler) does everything it
 always did **except** `_cutscene.Release()`: the director's lock (`inCutscene`) is kept by `ArriveInTheCells`. That coroutine waits
-`_arrivalBlackHoldSeconds` (0.4), fades in over `_cellFadeInSeconds` (0.8) on Kami in her cell (HUD still hidden by the lock), holds
-`_cellHoldSeconds` (1.2), raises `_nataliaCellShot` (the existing `PoliceStation/IntroCameras/CM Intro NataliaCell`, shared with the intro
-timeline: reframe it there), plays Natalia's `Wave` pose for `_nataliaWaveSeconds` (3), drops the shot, waits the blend and **then**
-`Release()`s. `PoliceStationPage.BeginFromArrest` is still called inside `WrapUp` (behind the black: the bars slam, the gear is taken,
+`_arrivalBlackHoldSeconds` (0.4), fades in over `_cellFadeInSeconds` (0.8) on Kami in her cell (HUD still hidden by the lock) and **then**
+`Release()`s. (A first version also panned to Natalia waving before the intro; Diego, 2026-10-21: the wave belongs inside the intro's tour,
+so the pan is gone and the intro's `NataliaWave` signal plays it, see "Tuning the page 4 intro".) `PoliceStationPage.BeginFromArrest` is still called inside `WrapUp` (behind the black: the bars slam, the gear is taken,
 Natalia's angry rest pose is set); its `IntroThenAbuela` already waits for `inCutscene` to clear before playing `Timeline_PoliceIntro`,
-so the intro starts after the pan with no change to it, and its first shot (`CM Intro KamiCell`) blends from the player's camera as before.
+so the intro starts right after the fade-in, and its first shot (`CM Intro KamiCell`) blends from the player's camera as before.
 First time only because the arrest is: a capture restart never goes through `ArrestCutscene`, and a test started on page 4 skips the fade
-and the pan. No `ScreenFader` in the scene = no fades, the pan still runs. The black lasts the whole page turn (about `delayTime` +
+No `ScreenFader` in the scene = no fades. The black lasts the whole page turn (about `delayTime` +
 `popupDelayTime` + the sheet's turn, roughly 5-6 s): shorten `PageScrollerManager`'s delays if it feels long.
 
 **The arrest cuts the jazz (#176).** When the cutscene starts (about 0.5s before the shout line), `ArrestCutscene`
@@ -103,7 +102,9 @@ the fired art, Kami and the Abuela vanish and `FlyingGirls_PLACEHOLDER` arcs to 
 (`PlayableDirector` + `CutsceneDirector`, started by `PoliceStationPage`, first time only, not
 skippable). Cameras track: KamiCell, PatrolRoute, NataliaCell, Window (static vcams under
 `PoliceStation/IntroCameras`: drag the vcam itself to reframe), then CopFollow (Transposer following the
-patrolling cop) and NataliaCell again. Two dialogue markers: `Jail_CopTaunt` (9.2s), `Jail_NataliaReply`
+patrolling cop) and NataliaCell again. One signal, `NataliaWave` (4.4s, as the NataliaCell shot arrives; `PoliceIntro_NataliaWave.signal`, received
+by a `SignalReceiver` on `PoliceStation` -> `PoliceStationPage.CUE_NataliaWave`: Natalia's `Wave` pose for `_nataliaWaveSeconds` 2.4; spec 019 V6 as
+corrected 2026-10-21, not played; drag the signal to retime it). Two dialogue markers: `Jail_CopTaunt` (9.2s), `Jail_NataliaReply`
 (12.8s) (the narrator marker at 13.9s was removed on 2026-10-17: the narrator now plays from `PoliceStationPage` after Kami has had
 `_freeExploreSeconds` (5) of free play, then the Abuela's countdown rumbles, #232). No signals: the cell-bars sound comes from
 `PoliceStationPage.StartSequence`. Once the timeline is over and the Abuela has landed and spoken (Kami is free again) `PoliceStationPage` switches the live camera to `BookCenter` (the whole station in view; `_cameraAfterIntro`, the player cycles or picks as usual afterwards; first time only, a capture restart leaves the camera alone, 2026-10-16, not played). The free seconds start when the timeline ends.
@@ -123,8 +124,6 @@ Cinemachine track overrides priorities, so the two never fight (page 5's `CM Cat
   the cutscene (the Street group appearing), and the girls wait `_waitAtCarSeconds` at the door while the timeline holds; page 5's `BoardCar` does the same wait.
 - **Page 2, Natalia waves from the end of the page** (`NataliaPageEndBeat`, shot `CM Natalia Wave`, V5, 2026-10-21, built, not played): see
   "Page 2's last-clue beat" in `nivel2-y-ui.md`. A Transposer in world space following the `Natalia Wave Spot` mark (Follow set in code), Follow Offset (0, 6.5, -24), X tilt 8.
-- **Page 4, Natalia in her cell** (`ArrestCutscene._nataliaCellShot`, V6): reuses `CM Intro NataliaCell`; it is put back to priority 0 before the intro
-  timeline plays, which drives it through its own Cinemachine track as before.
 - **Page 4, the Abuela falls** (`AbuelaEntrance._fallShot`, `PoliceStation/IntroCameras/CM Abuela Fall`, Composer looking at her; first time only). Since 2026-10-20 the same vcam zooms in after she lands (`_landFieldOfView` 18 over `_landZoomSeconds` 0.6, from the authored 40) so she is close through her lines; the lens is only put back at the start of the next use, so the blend back to Kami's camera does not pop. Not played yet.
 - **Page 5, Grace shows the catapult** (`MuseumPage.ShowTheCatapult`, the catapult's own `CM Catapult Hold`).
 
@@ -150,6 +149,11 @@ Ariel` (0-3.8s, follows Ariel) then `CM MuseumArrest CarFollow` (3.2-7.1s, follo
 (Transposer in world space: framing = `Follow Offset` + X tilt). Signals: `StartEscort` (0.3s) -> `BoardCar` (3.0s,
 holds until Ariel is at `Marks/CarDoor`) -> `DriveOff` (4.2s since 2026-10-21, 1.2 s after boarding like page 2; siren on, `TrafficObstacle.Launch` to
 `Marks/DriveOffTarget`) -> `Finish` (6.6s, holds until the car has arrived, then hands back to `MuseumPage`).
+**The camera leaves the car before it vanishes (2026-10-21, same as page 2's cops, built, not played)**: `_cameraReturnLeadSeconds` (1.5) before
+the car reaches the mark, `MuseumArrest` stops the timeline early with `CutsceneDirector.StopKeepingControl()` (the Cinemachine track lets go,
+so the brain blends back to the player's camera; Kami stays locked), waits the blend and the car, stops the loops, `Release()`s and hands back
+to `MuseumPage`; `Finish` never fires on that path. The siren and engine run fade out over `_loopsFadeSeconds` (2), after the run starts.
+`_cameraReturnLeadSeconds` 0 = the old ending.
 
 - **Everyone walks on a NavMeshAgent** (Diego's playtest, 2026-10-13: sliding them along the route's corners floated
   them over the yard's slope). Ariel's prefab has no agent and page 3 shares it, so `MuseumArrest` adds one to him at

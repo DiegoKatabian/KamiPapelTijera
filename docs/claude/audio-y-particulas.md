@@ -64,8 +64,8 @@ bus unless noted; all 2D. Ids and where they fire:
 - Page 3: the gift opening plays the same chest sound (`GiftDialogueTrigger.Open`, `MagicSuccess` at 1.4), `Handcuffs` (dialogue line).
 - Page 5: `RopeCreak` once, when the arm is pulled down while Grace shows the catapult (`Catapult.ArmRoutine`,
   Diego 2026-10-19; it used to creak every 3-6s while Kami sat in the bucket). Cutting the rope plays the
-  cuttable's own `TijeraHit` + `PaperCut`; the launch timeline's `Launch` signal 0.6s later plays
-  `CatapultLaunch` (the "Swish and Thud" clip, `Catapult.CUE_Launch`, replacing `Jump_Paperplane`; the old `CatapultThud` row and
+  cuttable's own `TijeraHit` + `PaperCut` and, on the same frame, `CatapultLaunch` (the "Swish and Thud" clip, `Catapult.OnRopeCut`
+  since 2026-10-21: on the `Launch` signal 0.6s later it read as a second sound; it replaced `Jump_Paperplane`; the old `CatapultThud` row and
   its duplicate clip are gone).
 - Ambience bus, loops: `CafeAmbience` (page 1) and `BarAmbience` (page 3) on top of `CityAmbience`, a 2D bed under every page
   (`PageAmbience._bedAmbience`, started once at level start and never switched, Diego 2026-10-19), driven by `PageAmbience`
