@@ -107,7 +107,40 @@ frame it closed (the press that cancels the fold must not reopen her dialogue, s
 free, so the story-required letter can't be left unreachable). It had only the auto prompt, so Kami standing on it still got
 the pedestal tooltip, and the E that closed Natalia's reaction dialogue also answered the idle check. Page 5's ticket
 pedestal (`SelloOrigami CafeTicket`, scene instance) got the same three flags.
+**Kami stays still until the re-prompt (spec 019 D, 2026-10-21, not played)**: between a cancel and the automatic reopen
+(~`_autoPromptDelay`) the pedestal holds `LevelManager.inCutscene` itself (`TriggerOrigami.HoldKami`/`ReleaseKami`) and its
+own `CanAutoPrompt` ignores that hold; she could walk off the pedestal in that gap.
 **No pedestal says "Hold E" any more**: the five `SelloOrigami*.prefab` tooltips use the `origami_tooltip` key ("Press E to...").
+
+## A failed fold restarts the fold, not the origami (spec 019 V1 + I, built 2026-10-21, not played)
+
+Releasing the dragged arrow outside the red target, or pressing anywhere but on the green arrow, used to call
+`EndOrigami` (everything lost, the pedestal reopened by the auto prompt). Now `MultipleRectCheck.FailFold()` keeps the
+origami open and calls `Origami.RestartCurrentFold()`:
+
+- Only the CURRENT fold starts over (`OrigamiRoute.RestartFold()`: the green arrow back to its start, the flipbook slider back
+  to 0, which `ResetImagePosition` alone did not do because the route object is never switched off now). `currentRouteIndex`,
+  the earlier routes' `wasCompleted` and every route's `m_IsActive` are untouched, so the "OSU `m_IsActive` gotcha" below
+  holds: the active route stays the active one. `FailOrigami` (which resets ALL folds) is still the closing path.
+- The crumble sound plays on both failures (pressing off the arrow used to be silent), `PaperFoldLoop` stops, the cursor goes
+  back to the open hand and, with a joystick, the virtual cursor jumps back onto the green arrow.
+- **Feedback** = `OrigamiFailFeedback` (`Scripts/Origami/`), authored in `CurrentFold.prefab`, which every route already nests, so
+  Level 1 and Level 2 share it and there is nothing to wire per route (`Origami` finds it among its children; a route without it
+  warns and just restarts). The sheet (`OrigamiRoute.SheetGraphic`, the flipbook Image) is tinted `_flashColor` and eases back over
+  `_flashSeconds` (0.2); a red message (`FailMessage` child: the `Cutscene` TMP font asset, the one with the outline, so it reads over
+  any background) floats `_risePixels` (140) up from the sheet's centre and fades over `_messageSeconds` (1.5, fully opaque for the
+  first `_holdFraction`). Text = UITexts key `origami_fail_retry`, written through `LocalizedText.Escribir`. A second failure
+  restarts both (no stacking). Closing the origami (cancel, completion, walking off) calls `ResetNow()`, and `OnDisable` does too:
+  a coroutine dies with its object, which would leave the sheet red for the next opening.
+- `LocalizedText.Opciones.sinResaltado` (new, 2026-10-21) writes a TMP without the keyword highlighter: "Wrong fold!" would
+  otherwise get `fold` wrapped in its own colour tag. It is remembered per TMP, so the device-change refresh keeps it.
+- Cancelling on purpose (B / E / Enter / walking off the pedestal) closes the origami exactly as before.
+
+**"Fold N/N" no longer sits on the sheets (#I).** `CurrentFold.prefab`'s root `m_AnchoredPosition.y` is -480 (was -331; every sheet is
+700 x 700 around the route's centre, so its bottom is -350, and the red arrow of the 1-fold Puente routes reaches about -435).
+It is the one place to tune: the three per-route overrides that put it at -400 / -410 (`3-Medium`, `AbuelaFold`, `AbuelaUnfold`)
+were removed. `Pag7 Animal` keeps its own corner position. The reveal panel's picture (up to 1000 x 860) cannot overlap it: the
+text belongs to the origami object, which `EndOrigami` switches off in the same frame the panel opens.
 
 ## Canvas de costo en pedestales de origami
 
@@ -199,3 +232,20 @@ as-is, in every language (Natalia's "Press E to talk" was English for that reaso
 `dialogue_tooltip`). Older NPCs/pedestals still hold literal Spanish, which only looks right in
 Spanish. Level 2's Azul post-it (trash cans, page-turn spheres) is placed by a scene override:
 bottom-centre anchor, y = -260 (under the player on purpose, so it covers neither Kami nor the can).
+
+## The dialogue globe (`GlobitoDialogo.prefab`, spec 019 V2, built 2026-10-21, not played)
+
+The bubble over a talkable NPC is animated art now (Valentino's `Globo Dialogo 0-3`, sprite mode Single, 250 px per unit so one
+bubble is about 3 world units wide like the old one). The loop is `Animations/GlobitoDialogo/GlobitoDialogo_Loop.anim`
+(3 s: frames 1, 2, 3 at 0 / 0.3 / 0.6 s with a squash-and-stretch pop each, back to frame 0 at 1.5 s, then 1.5 s still on 0;
+the squash is anchored at the bubble's tail tip, so its position curve moves with its scale). Retime it in the Animation window.
+
+`UI/DialogueGlobe` (on the prefab root) is the "when": the globe shows while its `_talkTrigger` is alive, enabled and its collider
+is on, and hides while `LevelManager.inDialogue` / `inCutscene` is on. That covers Natalia's `SetTalkable(false)` (collider off while
+she follows Kami), a guard that leaves, a trigger object switched off by its page and a `_burnAfterReading` trigger. It toggles only
+its animated child (the Animator is on that child, so the pop replays every time the globe appears); the root stays free for
+`AbuelaDialogueTrigger.Lock/Unlock`, which still switch it directly. `_talkTrigger` empty = always shown, the old behaviour
+(Norberto, the Level 1 sign, Chino's stub). Wired today: Dalia (`NPC_Florista.prefab`, which had an unpacked copy of the old art),
+Tiburcio and Chino in `Nivel1_KamiPapelTijera.unity` (also unpacked copies of the old art, now instances), Grace
+(`Grace.prefab`), and page 2's two guards (children of the cops inside `CrimeSceneGate.prefab`, so they walk away with them).
+Adding it to a new NPC = drop the prefab under it and drag the NPC's talk trigger into `_talkTrigger`.

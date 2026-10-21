@@ -35,10 +35,11 @@ mixer parameters is Task 23 of the refactor plan.
 **Level 2 SFX pass (task 6.E, 2026-09-28, compile-checked only)**: 27 placeholder rows, every one
 reusing an existing clip (clip list = the only thing to swap in 6.G, nothing in code changes). SFX
 bus unless noted; all 2D. Ids and where they fire:
-- Police (page 3 arrest, `ArrestCutscene` CUE_ methods): `CarBrake`, `PoliceHorn` (the cops' running steps were dropped 2026-10-21: NPC footsteps are #247),
-  `PoliceSirenLoop` (loop, starts at `CUE_CopsBehindGirls`, stops at `CUE_TurnPage`/WrapUp/OnDestroy),
-  `PoliceHorn` at `CUE_DriveOff` and when `CrimeSceneGate`'s car leaves (page 2; since #231 page 2's exit also loops
-  `PoliceSirenLoop` for the whole cutscene). The door and engine sounds of all three patrol car sites (page 2, 3 and 5) go through
+- Police (page 3 arrest, `ArrestCutscene`): `CarBrake` + `PoliceSirenLoop` + the engine idle start with the cutscene (as the street and car
+  appear, #256; they used to start at `CUE_CopsBehindGirls`, and the arrival horn beep there is gone), the siren stops at `CUE_TurnPage`/WrapUp/OnDestroy.
+  (The cops' running steps were dropped 2026-10-21: NPC footsteps are #247.)
+  `PoliceHorn` at `CUE_DriveOff` on pages 2, 3 and 5 (Diego, 2026-10-21; page 2's exit also loops
+  `PoliceSirenLoop` for the whole cutscene, fading out as the car leaves, see below). The door and engine sounds of all three patrol car sites (page 2, 3 and 5) go through
   `Level2/PatrolCarAudio`, see "Patrol car sequence" below.
 - `PlaneRumbleLoop` (#232, 2026-10-17): the loop under page 4's countdown before the Abuela falls (`AbuelaEntrance._rumbleSound`),
   stopped by her crash. Real `RumbleLoop.ogg` since 2026-10-21 (it was `CarEngine`'s clip at pitch 0.22).
@@ -50,6 +51,11 @@ bus unless noted; all 2D. Ids and where they fire:
   the capture (`Player.Die` on `DeathCause.Caught`) is `CopWhistle` on top of `GameOverOrchestral` (Diego, 2026-10-21; the
   `CaughtSting` row is gone). The typewriters and the drapes have no extra sound for now (`TypewriterClack` and `ClothRip` rows
   deleted; `_extraCutSound` is empty on `CuttableTypewriter.prefab`).
+- `CopWhistle` at the arrests (#257, 2026-10-21, built, not heard): `DialogueEvent.soundOnLine` on the exact line where the cop's `Arrest` pose cue
+  fires, so the sound and the pose start together (same moment in `DialogueManager.WriteText`): page 3 `Arrest_Shout` line 0, page 5
+  `Grace_MeetingAccusation` line 1 (the cop's "Nadie se mueva"). One whistle per arrest, not one per cop (the cue is addressed to every `Police` actor but
+  the sound is on the line); neither line had another per-line sound. `AnimationCue` has no sound field (not needed): if the whistle must land later than the
+  pose's start, add a delay there instead of moving the line.
 - Pages 1-2: a clue found plays `MagicSuccess` at pitch 1.4, the same as opening a chest in Level 1 (`FindCluesTracker.PlayClueSounds`;
   Diego 2026-10-21, the `ClueFound` and `ManholeClank` rows are gone), `RadioStatic` (dialogue line, below), `CarPassBy`/`CarHorn` on ambient
   traffic (`TrafficSpawner.PlayTrafficSounds`: pass-by at most once per 6s; horn at most once per 40s at
@@ -101,15 +107,27 @@ all volume 0.5 / pitch 1 except `PlaneRumbleLoop` (0.35, as before) and `CarEngi
 positional 25-75); `PlaneRumbleLoop` <- RumbleLoop. Ambient traffic plays **`CarPassBy`** (an old placeholder engine clip at 0.12 / pitch 0.5)
 instead of `CarEngine`, which is now the real ignition and only the police cars use it.
 
-**Patrol car sequence (`Level2/PatrolCarAudio`, Diego's design 2026-10-21, not heard in play).** Everyone who gets in: `CarDoorOpen`, then
-`CarDoor` (the close) when the open ends (`AudioManager.PlayOnEnd`). The drive-off waits for any door-open still sounding, plays `CarEngine`
-(Car Engine Start) together with that last close, and when the start ends loops `CarEngineRun` (the idle loop pitched up 1.35; "a transformed
-idle") beside the siren. `StopLoops()` (the sites' old `StopSiren`) stops both and cancels a run loop still waiting on the start. The siren is
-started by each site at its own moment (page 3: when the squad arrives, so it is already on when the girls get in).
+**Patrol car sequence (`Level2/PatrolCarAudio`, #256, redone 2026-10-21, built, not heard in play).** The first version chained open -> close ->
+start by itself and the timing did not land, so `PatrolCarAudio` is now a set of single steps and each site calls them when it wants
+(`Brake`, `StartIdle(position)`, `OpenDoor`, `CloseDoor`, `EngineStart`, `CarMoves(runDelay)`, `StopLoops`, `FadeOutLoopsAfter(delay, seconds)`).
+The siren and `PoliceHorn` stay with each site. The three sequences:
+- **Page 2 (`CrimeSceneGate`)**: the first cop to reach the door plays `CarDoorOpen`; the cops stand there `_waitAtCarSeconds` (1.5) after the last
+  one arrives, then get in: `CarDoor` + `CarEngine` (the start, about 2 s) together; `_boardingSeconds` (prefab, 1.2; was 0.5) later the car moves
+  (`PoliceHorn`); `CarEngineRun` starts `_engineRunDelaySeconds` (1) after it moves. One open/close pair for both cops (it was one pair each).
+- **Page 3 (`ArrestCutscene`)**: at the cutscene start `CarBrake`, the siren and `CarEngineIdleLoop` (positional, `PlayAt` at the car: the same
+  row the four jammed cars use, so the patrol idle is kept as a handle and stopped by handle, never `StopById`; the row's `maxSimultaneous` went 4 -> 6
+  for it) run through the whole dialogue. At the door: `CarDoorOpen`, the girls wait `_waitAtCarSeconds` (the timeline holds), `CarDoor`; no engine start.
+  When the car moves (`CUE_DriveOff`, `PoliceHorn`) the idle gives way to `CarEngineRun` after `_engineRunDelaySeconds` (0 = straight over).
+- **Page 5 (`MuseumArrest`)**: as page 2 (open when Ariel arrives, hold `_waitAtCarSeconds`, close + `CarEngine` on `BoardCar`), then the `DriveOff`
+  signal (1.2 s after `BoardCar` on the timeline since 2026-10-21, it was 0.6: move that marker to change the start-to-moving gap) plays siren + `PoliceHorn` and `CarMoves`.
+- Loops stop on every exit: each site's end (`StopLoops`), `OnDisable` (pages 2 and 5), `OnDestroy` on scene unload (pages 2 and 3). A run loop or fade still
+  waiting is cancelled by a generation counter.
+- **`AudioManager.FadeOutById(id, seconds)` / `FadeOut(handle, seconds)`** (new, generic): fades the live instances over real time, then stops them.
+  Page 2 uses it so the siren and the run die away as the car leaves (`_sirenFadeSeconds` 2, ending when the car reaches the mark).
 
 **The Abuela's entrance sounds (page 4, `AbuelaEntrance`)**: `PlaneRumbleLoop` starts with the shake, `AbuelaFall` the instant she appears,
-`AbuelaCrash` + `FenceRattle` on impact. The fall now lasts `_fallDuration` 2.7 s from `_startHeight` 60 (new field names: the scene kept the old
-`_fallSeconds` 1.4 and `_dropHeight` 45, which are ignored now) so the fall and its 2.97 s clip end together; the fall shot looks at a point below her
+`AbuelaCrash` + `FenceRattle` on impact. The fall lasts `_fallSeconds` 2.7 s from `_dropHeight` 60 (the original field names again since 2026-10-21: the
+temporary `_startHeight` / `_fallDuration` were folded back and the scene's values set to 60 / 2.7) so the fall and its 2.97 s clip end together; the fall shot looks at a point below her
 start while it rumbles (`_offscreenFactor`) so she enters from above the frame, then follows her. Not seen in the Editor.
 
 **Dialogue pencil (2026-10-19)**: `DialogueManager` chains `Dialogue_PencilWrite`'s ten clips back to back while a line is

@@ -14,6 +14,8 @@ using UnityEngine;
 ///   Quest05_FindClues through QuestManager.
 /// - When that quest completes, queues her "let's head home" line, closes Quest05 and starts
 ///   Quest06_GoBackToNataliasHouse.
+/// - Right after that line, queues the page-end beat (NataliaPageEndBeat, V5): Natalia appears at the
+///   far end of the page waving at Kami, in a short camera shot.
 ///
 /// Why the dialogue queue: DialogueManager.ShowDialogue silently drops a request while another
 /// dialogue is open, and the third clue alone produces two lines back to back (the clue comment
@@ -23,11 +25,12 @@ using UnityEngine;
 /// </summary>
 public class FindCluesTracker : MonoBehaviour
 {
-    //a dialogue to show, or (callOffCops) the moment the cops leave
+    //a dialogue to show, or (callOffCops) the moment the cops leave, or (playPageEndBeat) Natalia's wave
     struct Step
     {
         public DialogueSO dialogue;
         public bool callOffCops;
+        public bool playPageEndBeat;
     }
 
     [System.Serializable]
@@ -51,6 +54,9 @@ public class FindCluesTracker : MonoBehaviour
 
     [SerializeField, Tooltip("Natalia's line once every clue is in. Optional.")]
     DialogueSO _allCluesComment;
+
+    [SerializeField, Tooltip("Plays right after Natalia's 'every clue is in' line: she appears at the end of the page and waves, with a camera shot. Optional.")]
+    NataliaPageEndBeat _allCluesBeat;
 
     [SerializeField, Tooltip("Quest05_FindClues: closed once every clue is found.")]
     QuestSO _findCluesQuest;
@@ -167,6 +173,11 @@ public class FindCluesTracker : MonoBehaviour
 
         _findCluesClosed = true;
         QueueComment(_allCluesComment);
+        if (_allCluesBeat != null)
+        {
+            //after the line in the queue, which only moves on once that dialogue is closed
+            _pending.Enqueue(new Step { playPageEndBeat = true });
+        }
         StartCoroutine(HandOffQuestNextFrame());
     }
 
@@ -244,6 +255,14 @@ public class FindCluesTracker : MonoBehaviour
             //CrimeSceneGate takes the cutscene lock inside this call, so the next step waits for it
             Debug.Log("[FindCluesTracker] the clue comment is read: the cops leave");
             EventManager.Trigger(Evento.OnCrimeSceneUnguarded);
+            return;
+        }
+
+        if (step.playPageEndBeat)
+        {
+            //the beat takes the cutscene lock inside this call, so nothing queued behind it runs until it is over
+            Debug.Log("[FindCluesTracker] the last clue's line is read: Natalia waves from the end of the page");
+            _allCluesBeat.Play();
             return;
         }
 

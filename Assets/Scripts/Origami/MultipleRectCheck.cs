@@ -99,8 +99,9 @@ public class MultipleRectCheck : MonoBehaviour
             }
             else
             {
-                Debug.Log("invocaci?n cancelada x empezar en un lugar incorrecto");
-                EndOrigami(desiredOrigami);
+                //ya no cierra el origami: el pliegue actual vuelve a empezar (ver FailFold)
+                Debug.Log("[MultipleRectCheck] pliegue fallado: empezo en un lugar incorrecto");
+                FailFold();
             }
         }
 
@@ -131,9 +132,8 @@ public class MultipleRectCheck : MonoBehaviour
             }
             else
             {
-                //Debug.Log("invocaci?n cancelada x soltar mal");
-                AudioManager.instance.Play(AudioId.Origami_Fail_Crumble, 1, 0.05f);
-                EndOrigami(desiredOrigami);
+                Debug.Log("[MultipleRectCheck] pliegue fallado: solto el puntero fuera de la meta");
+                FailFold();
             }
 
             arrastrando = false;
@@ -163,6 +163,28 @@ public class MultipleRectCheck : MonoBehaviour
         //    EndOrigami(desiredOrigami);
         //}
 
+    }
+
+    /// <summary>
+    /// El jugador fallo el pliegue (solto fuera de la meta o apreto fuera de la flecha verde). Antes cerraba
+    /// todo el origami y perdia los pliegues ya hechos; ahora el origami queda abierto y SOLO el pliegue
+    /// fallido vuelve a empezar, con el flash rojo y el cartel que flota (<see cref="OrigamiFailFeedback"/>).
+    /// Cancelar a proposito (B / E / Enter / irse del pedestal) sigue cerrando por EndOrigami.
+    /// </summary>
+    void FailFold()
+    {
+        arrastrando = false;
+
+        //el crujido suena en las dos formas de fallar (apretar mal antes era mudo: ahora tambien avisa)
+        AudioManager.instance.Play(AudioId.Origami_Fail_Crumble, 1, 0.05f);
+        AudioManager.instance.StopById(AudioId.PaperFoldLoop);
+        CursorManager.Instance.SetCursor(CursorType.OpenHand);
+        SetAgarrandoCursorJoystick(false);
+
+        desiredOrigami.RestartCurrentFold();
+
+        //el cursor del joystick vuelve a la flecha verde, no queda donde solto
+        ColocarCursorJoystickEnInicio();
     }
 
     /// <summary>

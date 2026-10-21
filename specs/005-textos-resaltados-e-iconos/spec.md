@@ -119,6 +119,9 @@ original, nunca de su propia salida.
 Colours, vocabulary and emphasis are design values, not code, so they live in
 `Assets/Resources/TextHighlightSettings.asset` (`TextHighlightSettings.cs`). Colour pickers,
 bold/enlarge toggles per category, and the word lists as plain comma-or-newline text.
+`uppercase` (2026-10-21, spec 019 A) writes a category's matches in ALL CAPS: the one case where the
+table rewrites the text. Used by "Super jump" (a more saturated blue than Movement, so "SUPER JUMP"
+stands apart from "jump" in the paper plane tooltip).
 
 - **No wiring**: loaded by name via `Resources.Load`, so it works on Play with nothing dragged
   into any scene. `[CreateAssetMenu]` is there for making more of them.

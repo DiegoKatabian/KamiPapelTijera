@@ -44,8 +44,12 @@ public class InventorySlot : MonoBehaviour
 
         if (setNamePromised)
         {
-            StartCoroutine(SetLocalizedText(currentItem.itemName, nameTextComponent));
             setNamePromised = false;
+            //#254: a slot filled while hidden and emptied before showing used to throw here
+            if (currentItem != null)
+            {
+                StartNameLookup();
+            }
         }
 
         //an icon with words drawn on it (the cafe ticket) follows the language, also if it changed while this slot was hidden
@@ -58,6 +62,14 @@ public class InventorySlot : MonoBehaviour
 
     private void OnDisable()
     {
+        //Unity kills a name lookup still in flight when the slot hides (Flap closed, tab switched):
+        //promise it again so the name is written when the slot shows (#254)
+        if (_nameRoutine != null && currentItem != null)
+        {
+            setNamePromised = true;
+        }
+        _nameRoutine = null;
+
         if (LocalizationSettings.HasSettings)
         {
             LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
@@ -145,7 +157,7 @@ public class InventorySlot : MonoBehaviour
 
         if (gameObject.activeInHierarchy)
         {
-            StartCoroutine(SetLocalizedText(currentItem.itemName, nameTextComponent));
+            StartNameLookup();
         }
         else
         {
@@ -168,8 +180,31 @@ public class InventorySlot : MonoBehaviour
         RefreshWornBadge();
     }
 
+    //The name lookup is async and registers the text with LocalizedText only when the table answers
+    //(#254). A lookup still in flight when the slot changes item or is emptied would then write, and
+    //keep re-writing on every device or language change, the OLD item's name in this slot: so only
+    //the latest lookup may live.
+    void StartNameLookup()
+    {
+        StopNameLookup();
+        _nameRoutine = StartCoroutine(SetLocalizedText(currentItem.itemName, nameTextComponent));
+    }
+
+    void StopNameLookup()
+    {
+        if (_nameRoutine != null)
+        {
+            StopCoroutine(_nameRoutine);
+            _nameRoutine = null;
+        }
+    }
+
+    Coroutine _nameRoutine;
+
     public virtual void ClearSlot()
     {
+        StopNameLookup();
+        setNamePromised = false;
         currentItem = null;
         itemImageComponent.sprite = InventoryManager.Instance.emptyItemSprite;
         //fuera del registro de LocalizedText: si no, un cambio de device le devuelve el

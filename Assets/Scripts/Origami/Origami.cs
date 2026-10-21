@@ -17,9 +17,55 @@ public abstract class Origami : MonoBehaviour
     [SerializeField] bool _doesCameraChangeOnApply = false;
     [SerializeField] CameraMode _cameraModeOnApply = CameraMode.Normal;
 
+    [SerializeField, Tooltip("Flash + floating message for a failed fold. Empty = found among the children (it lives in CurrentFold.prefab, which every route nests).")]
+    OrigamiFailFeedback _failFeedback;
+    bool _failFeedbackSearched;
+
+    OrigamiFailFeedback FailFeedback
+    {
+        get
+        {
+            if (_failFeedback == null && !_failFeedbackSearched)
+            {
+                _failFeedbackSearched = true;
+                _failFeedback = GetComponentInChildren<OrigamiFailFeedback>(true);
+                if (_failFeedback == null)
+                {
+                    Debug.LogWarning($"[Origami] {name}: no OrigamiFailFeedback among its children (CurrentFold.prefab), a failed fold will restart without the red flash and message");
+                }
+            }
+            return _failFeedback;
+        }
+    }
+
+    /// <summary>
+    /// A fold failed but the player did not cancel: only the CURRENT fold starts over, with the origami still
+    /// open. currentRouteIndex, the earlier routes' wasCompleted and every route's active flag stay as they
+    /// are (that is why this is not FailOrigami, which resets all of them and is for closing).
+    /// </summary>
+    public void RestartCurrentFold()
+    {
+        OrigamiRoute route = origamiRoutes[currentRouteIndex];
+        Debug.Log($"[Origami] {name}: fold {currentRouteIndex + 1}/{origamiRoutes.Length} failed, restarting it");
+
+        route.RestartFold();
+
+        OrigamiFailFeedback feedback = FailFeedback;
+        if (feedback != null)
+        {
+            feedback.Play(route.SheetGraphic, route.SheetCenterWorld);
+        }
+    }
+
 
     public void FailOrigami()
     {
+        //closing: drop any red flash / floating message still running (the coroutines die with the object)
+        if (_failFeedback != null)
+        {
+            _failFeedback.ResetNow();
+        }
+
         //print("fallaste asi que arrancas de cero");
         origamiRoutes[currentRouteIndex].ResetImagePosition();
         currentRouteIndex = 0;

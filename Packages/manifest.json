@@ -9,7 +9,7 @@
     }
   ],
   "dependencies": {
-    "com.esotericsoftware.spine.urp-shaders": "file:C:/Users/Usuario/Desktop/com.esotericsoftware.spine.urp-shaders-4.2-Unity2019.3-2025-12-09/URP Spine Package",
+    "com.esotericsoftware.spine.urp-shaders": "file:../Spine URP Shaders/com.esotericsoftware.spine.urp-shaders-4.2-2019.1",
     "com.unity.2d.animation": "7.0.11",
     "com.unity.2d.psdimporter": "6.0.7",
     "com.unity.2d.sprite": "1.0.0",

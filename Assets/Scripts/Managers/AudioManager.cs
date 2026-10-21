@@ -236,6 +236,78 @@ public class AudioManager : MonoBehaviour
         _pool.StopEverything();
     }
 
+    /// <summary>
+    /// Fades every live instance of an id to silence over <paramref name="seconds"/> (real time), then
+    /// stops it. For a loop that should die away instead of cutting off (the patrol car driving away).
+    /// </summary>
+    public void FadeOutById(string id, float seconds)
+    {
+        List<SoundHandle> handles = new List<SoundHandle>();
+        _pool.CollectHandlesOf(id, handles);
+        FadeOutHandles(handles, seconds);
+    }
+
+    /// <summary>Same as <see cref="FadeOutById"/> for one instance; a stale handle does nothing.</summary>
+    public void FadeOut(SoundHandle handle, float seconds)
+    {
+        if (!handle.IsValid)
+        {
+            return;
+        }
+
+        FadeOutHandles(new List<SoundHandle> { handle }, seconds);
+    }
+
+    void FadeOutHandles(List<SoundHandle> handles, float seconds)
+    {
+        if (handles.Count == 0)
+        {
+            return;
+        }
+
+        if (seconds <= 0f)
+        {
+            foreach (SoundHandle handle in handles)
+            {
+                Stop(handle);
+            }
+            return;
+        }
+
+        StartCoroutine(FadeRoutine(handles, seconds));
+    }
+
+    IEnumerator FadeRoutine(List<SoundHandle> handles, float seconds)
+    {
+        //the volume each instance had when the fade began; the generation check inside Stop and
+        //IsCurrent keeps a source that was released and reused meanwhile from being touched
+        float[] startVolumes = new float[handles.Count];
+        for (int i = 0; i < handles.Count; i++)
+        {
+            startVolumes[i] = handles[i].source.volume;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < seconds)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float factor = 1f - Mathf.Clamp01(elapsed / seconds);
+            for (int i = 0; i < handles.Count; i++)
+            {
+                if (_pool.IsCurrent(handles[i].source, handles[i].generation))
+                {
+                    handles[i].source.volume = startVolumes[i] * factor;
+                }
+            }
+            yield return null;
+        }
+
+        foreach (SoundHandle handle in handles)
+        {
+            Stop(handle);
+        }
+    }
+
     public bool IsPlaying(string id)
     {
         return _pool.IsPlayingId(id);

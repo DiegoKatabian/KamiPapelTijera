@@ -52,6 +52,11 @@ public class TextHighlightSettings : ScriptableObject
         [Tooltip("How much bigger, in percent, when 'enlarge' is on.")]
         public float sizePercent = 110f;
 
+        [Tooltip("Write these words in ALL CAPS on screen, whatever the table says. The one " +
+                 "exception to 'the table decides the colour, never the text': it is for a " +
+                 "mechanic that must shout (SUPER JUMP).")]
+        public bool uppercase = false;
+
         [Tooltip("The words, separated by commas or one per line. Case-insensitive, and matched " +
                  "as WHOLE words, so 'flor' will not match inside 'Florista'.\n\n" +
                  "Put every language here (es/en/pt) and every conjugation that actually appears " +

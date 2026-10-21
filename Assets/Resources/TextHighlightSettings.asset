@@ -73,6 +73,14 @@ MonoBehaviour:
     sizePercent: 110
     words: "saltar, salt\xE1, salto, pular, pule, jump, run, interactuar, interact,
       interagir"
+  - categoryName: Super jump
+    color: {r: 0, g: 0.42, b: 1, a: 1}
+    bold: 1
+    enlarge: 0
+    sizePercent: 110
+    uppercase: 1
+    words: "super jump, super salto, s\xFAper salto, supersalto, super pulo, s\xFAper
+      pulo"
   protectedPhrases: Kami Papel y Tijera, Kami Papel Tijera, Kami Paper Scissors,
     Kami Papel e Tesoura
   cinematicSceneKeywords: Cutscene

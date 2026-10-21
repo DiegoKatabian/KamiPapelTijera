@@ -143,6 +143,22 @@ MonoBehaviour:
     m_Key: DefeatCar
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000009
+    m_Key: level1_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000010
+    m_Key: level2_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000011
+    m_Key: levelselect_back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000012
+    m_Key: origami_fail_retry
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

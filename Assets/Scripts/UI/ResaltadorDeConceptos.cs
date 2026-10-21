@@ -84,6 +84,7 @@ public static class ResaltadorDeConceptos
     {
         public string open;
         public string close;
+        public bool uppercase;
     }
 
     static readonly Dictionary<string, Style> _byWord = new Dictionary<string, Style>(StringComparer.OrdinalIgnoreCase);
@@ -147,6 +148,7 @@ public static class ResaltadorDeConceptos
             }
 
             Style style = BuildStyle(category.color, category.bold, category.enlarge, category.sizePercent);
+            style.uppercase = category.uppercase;
             AddWords(style, SplitList(category.words), category.categoryName);
         }
 
@@ -344,7 +346,12 @@ public static class ResaltadorDeConceptos
 
         // 'original' is re-inserted, NEVER the canonical form from the table: the player has to
         // read exactly what the translator wrote, with their capitals and their accents. The
-        // table is there to DECIDE the colour, not to rewrite the text.
+        // table is there to DECIDE the colour, not to rewrite the text. The only exception is a
+        // category marked uppercase, where shouting is the point (SUPER JUMP).
+        if (style.uppercase)
+        {
+            original = original.ToUpperInvariant();
+        }
         return style.open + original + style.close;
     }
 

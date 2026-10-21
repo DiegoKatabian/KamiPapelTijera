@@ -26,13 +26,11 @@ public class AbuelaEntrance : MonoBehaviour
     [SerializeField, Tooltip("Where she lands: just outside the cell fence, ON the NavMesh, so she can walk after Kami right away.")]
     Transform _landingPoint;
 
-    //new field names on purpose (2026-10-21): the scene still carries the old _dropHeight (45) and _fallSeconds (1.4),
-    //which would have overridden these defaults
-    [SerializeField, Tooltip("How high above the landing point she starts falling, in world units. Higher than the first version so she comes in from above the screen (Diego, 2026-10-21).")]
-    float _startHeight = 60f;
+    [SerializeField, Tooltip("How high above the landing point she starts falling, in world units. High enough that she comes in from above the screen (Diego, 2026-10-21).")]
+    float _dropHeight = 60f;
 
     [SerializeField, Tooltip("Seconds the fall takes. The Falling clip is 2.97 s and builds up to the crash, so this keeps the fall and its sound ending together; also long enough for the fall shot to follow her down (#232).")]
-    float _fallDuration = 2.7f;
+    float _fallSeconds = 2.7f;
 
     [SerializeField, Tooltip("While the rumble plays, the fall shot looks at a point below her start so she is just out of frame when she appears, and falls into view. 1 = her start sits exactly on the top edge of the picture, higher = further out of frame, lower than 1 = already visible. Needs the fall shot; without it nothing changes.")]
     float _offscreenFactor = 1.15f;
@@ -43,8 +41,6 @@ public class AbuelaEntrance : MonoBehaviour
     [SerializeField, Tooltip("Particles played at the landing point on impact (optional).")]
     ParticleSystem _impactParticles;
 
-    //new field names on purpose: the scene still carries the old serialized _impactSound
-    //(RockSmash), which would have overridden these defaults
     [SerializeField, Tooltip("Falling whistle, played as she starts to drop. Leave empty for none.")]
     string _fallSound = AudioId.AbuelaFall;
 
@@ -177,7 +173,7 @@ public class AbuelaEntrance : MonoBehaviour
         NavMeshAgent agent = _abuela.GetComponent<NavMeshAgent>();
         float pivotAboveFeet = agent != null ? agent.baseOffset * _abuela.transform.lossyScale.y : 0f;
         Vector3 landing = _landingPoint.position + Vector3.up * pivotAboveFeet;
-        Vector3 start = landing + Vector3.up * _startHeight;
+        Vector3 start = landing + Vector3.up * _dropHeight;
 
         //she waits up there, still hidden, so the shot already looks at the sky she will drop from. Her
         //agent goes off first: enabling one this far from the NavMesh fails with an engine warning
@@ -217,9 +213,9 @@ public class AbuelaEntrance : MonoBehaviour
         PlaySound(_fallSound);
 
         float elapsed = 0f;
-        while (elapsed < _fallDuration)
+        while (elapsed < _fallSeconds)
         {
-            float t = elapsed / Mathf.Max(0.01f, _fallDuration);
+            float t = elapsed / Mathf.Max(0.01f, _fallSeconds);
             _abuela.transform.position = Vector3.Lerp(start, landing, t * t); //t*t: accelerates like a real fall
             elapsed += Time.deltaTime;
             yield return null;

@@ -52,6 +52,13 @@ public static class LocalizedText
 
         /// <summary>Prefijo de los warnings (ej: "TooltipManager"). Solo para diagnostico.</summary>
         public string origen;
+
+        /// <summary>
+        /// Escribir este TMP SIN el resaltado de palabras clave. Para textos que tienen que salir de un
+        /// solo color (el cartel rojo de "doblaste mal"): el resaltador envolveria "fold" en su propio tag
+        /// de color. Se recuerda por TMP, asi el refresh por cambio de device tampoco lo resalta.
+        /// </summary>
+        public bool sinResaltado;
     }
 
     // ------------------------------------------------------------------- API
@@ -68,6 +75,8 @@ public static class LocalizedText
             Debug.LogWarning($"[LocalizedText] me pidieron escribir '{clave}' pero el TMP destino es null (origen: {opciones.origen})");
             yield break;
         }
+
+        MarcarSinResaltado(destino, opciones.sinResaltado);
 
         //clave vacia = "borrame el texto". Las copias viejas escribian el fallback tal cual,
         //que con clave vacia es cadena vacia (o solo el sufijo, en los TextUpdater).
@@ -160,7 +169,8 @@ public static class LocalizedText
         //editar los colores en el inspector repinte lo que ya esta en pantalla.
         //El resaltado va PRIMERO: si fuera al reves, las regex de InputPromptSystem tendrian
         //que matchear sobre texto ya lleno de tags.
-        destino.text = InputPromptSystem.Procesar(ResaltadorDeConceptos.Resaltar(crudo));
+        string resaltado = _sinResaltado.Contains(destino.GetInstanceID()) ? crudo : ResaltadorDeConceptos.Resaltar(crudo);
+        destino.text = InputPromptSystem.Procesar(resaltado);
 
         AnimadorDeIconos.Registrar(destino);
     }
@@ -204,6 +214,22 @@ public static class LocalizedText
 
     //Para no repetir el warning de arriba una vez por linea de dialogo.
     static readonly HashSet<int> _avisadosSpriteAssetPropio = new HashSet<int>();
+
+    //instance IDs de los TMP que se escriben sin resaltado (ver Opciones.sinResaltado). Son pocos y fijos
+    //(un cartel), asi que no hace falta limpiarlos al destruirse: un ID no se reusa en la corrida.
+    static readonly HashSet<int> _sinResaltado = new HashSet<int>();
+
+    static void MarcarSinResaltado(TMP_Text destino, bool sinResaltado)
+    {
+        if (sinResaltado)
+        {
+            _sinResaltado.Add(destino.GetInstanceID());
+        }
+        else
+        {
+            _sinResaltado.Remove(destino.GetInstanceID());
+        }
+    }
 
     /// <summary>
     /// Saca un TMP del registro. Hay que llamarla cuando alguien le asigna '.text' A MANO
@@ -256,6 +282,7 @@ public static class LocalizedText
         _muertos.Clear();
         _enganchados.Clear();
         _avisadosSpriteAssetPropio.Clear();
+        _sinResaltado.Clear();
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: skeleton_skeleton
-  m_Shader: {fileID: 4800000, guid: b6ca3168da724c929350b7dbf48ed7ae, type: 3}
+  m_Shader: {fileID: 4800000, guid: 9f253724b2d29a3438eeea48277c25cb, type: 3}
   m_ValidKeywords:
   - _ALPHAPREMULTIPLY_VERTEX_ONLY
   - _FULLRANGE_HARD_RAMP
@@ -63,6 +63,7 @@ Material:
     - _DstBlend: 10
     - _EmissionPower: 2
     - _Fill: 0
+    - _FillPhase: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _Hue: 0
@@ -90,6 +91,7 @@ Material:
     - _Black: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _FillColor: {r: 1, g: 0, b: 0, a: 1}
     - _FixedNormal: {r: 0, g: 0, b: 1, a: 1}
     - _OutlineColor: {r: 1, g: 1, b: 0, a: 1}
     - _OverlayColor: {r: 0, g: 0, b: 0, a: 0}

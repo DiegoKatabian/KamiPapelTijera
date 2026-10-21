@@ -116,13 +116,18 @@ design: `specs/006-nivel2-detective-natalia/`. The old spec
   `Natalia_01` (11 lines: narrator, Natalia still named `???`, Kami's silent `[...]`, her name and the
   robberies, the café's **radio** (`radio_name`) announcing the Pelusa, her reaction, the deal to get
   Kami back to her book, "keep this ticket"). Keys `natalia_01_01-11`; speaker keys `narrator_name`
-  and `unknown_name` (`???`) are new in `DialogueTable`; an empty `speakerName` writes no name. **The painting (Diego, 2026-10-16)**: the artwork is called "Sin Título" and its author is "Pelusa", a legendary post-modern (item text; he also said post-futurist once, 2026-10-16) plastic artist whose originals are worth millions. The theft is "el robo del Pelusa" (quest text, Natalia, the radio). **Premise (Diego, 2026-09-28)**: Natalia investigates a *series* of
+  and `unknown_name` (`???`) are new in `DialogueTable`; an empty `speakerName` writes no name. **V3 (Valentino, 2026-10-21)**: line 6 introduces
+  her as "Natalia, detective privada." / "Natalia, private detective." / "Natalia, detetive particular." (it used to open with "my name is Natalia"). **The painting (Diego, 2026-10-16)**: the artwork is called "Sin Título" and its author is "Pelusa", a legendary post-modern (item text; he also said post-futurist once, 2026-10-16) plastic artist whose originals are worth millions. The theft is "el robo del Pelusa" (quest text, Natalia, the radio). **Premise (Diego, 2026-09-28)**: Natalia investigates a *series* of
   museum robberies and does not know about the Pelusa until the radio. Her opening says Ariel was on
   her back all day at work and only just left her alone: he was at the museum. The girls' café
   receipt (20:30, the minute of the robbery) is the alibi of both on page 5; Ariel had privileged
   access to the museum through his rich father (the museum's biggest patron). This makes the ticket
   mandatory for page 5. Nothing stops Kami from leaving page 1 without folding it (same as before,
   when nothing stopped her leaving without talking to Natalia).
+- **Page 2, after the last clue (V5, 2026-10-21)**: she appears at the end of the page waving, and waits there until Kami comes within a radius
+  (not-following in the meantime, so she is not talkable and not in the page-turn ride until she rejoins): `Level2/NataliaPageEndBeat`, see
+  `nivel2-y-ui.md`.
+- **Page 4 arrival (V6, 2026-10-21)**: the camera pans to her in her cell and she waves before the intro: `cutscenes.md`.
 - **Page 5**: `MuseumPage` stops her follow, walks her to `Marks/NataliaStayMark` (a few units from Grace, so
   their two talk triggers never overlap, #184) and then calls `StayBehind()`: talkable again, and every talk
   from then on is `_farewellDialogue` (`Natalia_Farewell`).

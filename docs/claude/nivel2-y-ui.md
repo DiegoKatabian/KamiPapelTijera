@@ -118,13 +118,27 @@ drive off after the second clue so the police tape can be cut, and the quest han
   talked to: `CrimeSceneGate`'s `GuardTalk` child (a `TriggerDialogue` trigger box, listed in `_cops` so it goes away with them) plays
   `CrimeScene_Guard` (speaker `police_name`: "Policía Federal" in ES, "Police" in EN, "Polícia" in PT). Tune its box with the gizmo. The robbery
   happened at 20:30 (watch, café ticket, page 5 evidence).
+- **Page 2's last-clue beat (V5, 2026-10-21, built, not played)**: when `Natalia_AllClues` closes, `FindCluesTracker` (a queued step after that
+  line, so it never overlaps a dialogue) calls `Level2/NataliaPageEndBeat` (scene object `Page 2/Natalia Page End Beat`, with the children
+  `Natalia Wave Spot` and the vcam `CM Natalia Wave`). It locks Kami (`inCutscene`), stops Natalia following, raises the shot
+  (`CutsceneCamera`), and `_warpAtBlendFraction` (0.55) of the way through the blend `WarpTo`s her to the spot (snapped to the NavMesh within
+  `_sampleRadius` 15; with none near, a point `_fallbackAheadDistance` 25 ahead of Kami toward the exit, with a warning), facing Kami.
+  Once the camera has arrived she plays `Wave` ("Saludo", `_waveSeconds` 3), then the shot drops, the blend plays out and Kami is freed.
+  **Afterwards she waits at the spot instead of walking back** (Claude's call, the exit is where Kami goes next): she stays not-following until
+  Kami is within `_rejoinRadius` (16) horizontally, then `StartFollowingPlayer` again (side toward the page centre, #246), and also the moment
+  any page turn starts, so `PageRideFollowers` (which boards only `isFollowing` NPCs) can never leave her. Tune by dragging `Natalia Wave Spot`
+  (world about (33, 3.1, 4) as a first guess, **not checked against the baked NavMesh**) and `CM Natalia Wave`'s Follow Offset. The beat is
+  skipped with a warning if she is not following (she always is: the café fold gates page 2).
 - **The cops leave in a short cutscene (#231, 2026-10-17, compile-checked only)**: after the 2nd clue's comment is read (`FindCluesTracker`
   queues the exit as a step, so it can never overlap a line) `CrimeSceneGate` locks Kami, starts the siren, raises its `CM CopsLeave` shot
   (follows the patrol car, CarFollow's recipe), walks both cops on the NavMesh to `CarDoor` (each vanishes there with a door slam), launches
   the car, waits until it has left, blends back to the player's camera and frees Kami; only then does the tracker play `Natalia_CopsLeft`
   (it waits while `inCutscene` is on). Tuning: the `Leaving cutscene` header on `CrimeSceneGate` (walk speed, arrive distance, how much of
   the camera blend plays before they walk) and dragging `CarDoor` / `CM CopsLeave`'s Follow Offset. A page switched off mid-way
-  finishes the old instant way on return.
+  finishes the old instant way on return (silently, since 2026-10-21).
+  **2026-10-21 (V4 + #256, built, not seen/heard)**: the cops stand at the open door `_waitAtCarSeconds` (1.5) before getting in; the car drives only to the
+  page's edge (scene `DriveOffTarget` x 42.4 local = world 41), the shot goes back `_cameraReturnLeadSeconds` (1.5) before it arrives so it never vanishes in shot,
+  and the siren / engine run fade out over `_sirenFadeSeconds` (2). Sounds: `audio-y-particulas.md` "Patrol car sequence".
 - **Every trash can in Level 2 is now `Assets/Prefabs/Interactables/TrashCan.prefab`**
   (15 of them, pages 1-5; the scene instances used to be the bare `Kami_TrashCan.fbx`).
   Opening one runs the stock `Solapa`/`TriggerSolapa` flap flow (Kami's `PullSolapas`
@@ -241,6 +255,10 @@ starts. Where things are:
 - All positions are placeholders: the gift box, the cutscene (street group, car, car door mark,
   drive-off target).
 
+**Page 3 to 4 transition (V6, 2026-10-21, built, not played)**: the arrest now fades to black as the patrol car drives off, stays black through
+the page turn and the placing, fades in on Kami already in her cell and pans to Natalia waving before page 4's intro starts. Detail and tuning
+in `cutscenes.md` ("The screen is black from the car leaving...").
+
 **Phase 4 (page 4, "Escape from the police station") built 2026-09-27, played in Diego's full playthrough (2026-09-28).**
 `PoliceStationPage` (`Assets/Scripts/Level2/`, on `Page 4/PoliceStation`) owns the whole page
 sequence and is the only thing that restarts it:
@@ -259,9 +277,11 @@ sequence and is the only thing that restarts it:
    (reveal, not destruction), she follows Kami. After a capture the same lock covers the shorter countdown.
    **The fall shot (#232, 2026-10-17, compile-checked only)**: the first time, `PoliceStationPage/IntroCameras/CM Abuela Fall` (a static vcam
    with a Composer that looks at the Abuela, and an impulse listener so the crash shakes it) blends in during the rumble, already looking up
-   at the sky she drops from (she waits there, still hidden), follows her fall down (`_fallDuration` 2.7 s from `_startHeight` 60 since 2026-10-21, to match the Falling clip; she starts just out of frame, `_offscreenFactor`) and stays on her through
+   at the sky she drops from (she waits there, still hidden), follows her fall down (`_fallSeconds` 2.7 s from `_dropHeight` 60 since 2026-10-21, to match the Falling clip, the original field names again; she starts just out of frame, `_offscreenFactor`) and stays on her through
    her line; the camera goes back to the player's when Kami is freed. A capture restart has the rumble in the player's own camera. Rumble
    tuning: the `Rumble and fall camera` header on `AbuelaEntrance`; reframe by dragging the vcam.
+   **Camera after the escape (2026-10-21, built, not played)**: page 4 keeps its camera for gameplay beats (`_pagesThatKeepTheirCamera`), so once Kami lands on the
+   ground outside the window `PoliceStationPage.AfterEscapeLanding` switches to `_cameraAfterEscape` (Normal) directly with `SetCamera`, once, right before `Natalia_Escaped`.
 3. `ConfiscatedGearPickup` (where Diego had placed the TijeraPickup, just east of the cell) gives
    everything back. Kami cuts the `CandadoCortable` on Natalia's door (moved there, 1 paper as
    before) -> the door opens and Natalia follows. Freeing her also opens the pedestal:

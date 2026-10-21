@@ -218,6 +218,18 @@ public class AudioPool
         }
     }
 
+    /// <summary>Handles to every live instance of an id (for fades: each one can be checked with IsCurrent later).</summary>
+    public void CollectHandlesOf(string id, List<SoundHandle> into)
+    {
+        for (int i = 0; i < _sources.Count; i++)
+        {
+            if (_sources[i].inUse && _sources[i].id == id)
+            {
+                into.Add(new SoundHandle(_sources[i].source, _sources[i].generation));
+            }
+        }
+    }
+
     public bool IsPlayingId(string id) => CountPlaying(id) > 0;
 
     public void SetMuted(bool muted)

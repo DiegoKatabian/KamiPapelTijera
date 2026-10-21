@@ -154,6 +154,22 @@ MonoBehaviour:
     m_Localized: "Te atropell\xF3 un auto!\nToc\xE1 E para reiniciar."
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000009
+    m_Localized: "Kami Papel y Tijera"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000010
+    m_Localized: "Kami Tinta y Condena"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000011
+    m_Localized: "Volver"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000012
+    m_Localized: "\xA1Doblaste mal! \xA1Intent\xE1 de nuevo!"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

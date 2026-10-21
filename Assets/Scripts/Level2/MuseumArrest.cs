@@ -67,6 +67,12 @@ public class MuseumArrest : MonoBehaviour
     [SerializeField, Tooltip("Safety net: board anyway after this many seconds of holding at BoardCar (is the door reachable?).")]
     float _maxWaitForArrivalSeconds = 40f;
 
+    [SerializeField, Tooltip("Seconds Ariel and the cops stand at the open door (the door-open sound plays when Ariel arrives) before they get in and the door closes together with the engine start (#256). The timeline holds meanwhile; the DriveOff marker's own gap after BoardCar is then the time from the start to the car moving.")]
+    float _waitAtCarSeconds = 1.5f;
+
+    [SerializeField, Tooltip("Seconds after the car begins to move before the engine run loop starts.")]
+    float _engineRunDelaySeconds = 1f;
+
     const float RepathSeconds = 0.25f;
 
     CutsceneDirector _cutscene;
@@ -208,8 +214,8 @@ public class MuseumArrest : MonoBehaviour
         _carDrivingOff = true;
         PlaySound(AudioId.PoliceSirenLoop);
         SetCarSiren(true);
-        PatrolCarAudio.DriveOff();
         PlaySound(AudioId.PoliceHorn);
+        PatrolCarAudio.CarMoves(_engineRunDelaySeconds);
         Debug.Log("[MuseumArrest] the patrol car drives off");
     }
 
@@ -311,10 +317,12 @@ public class MuseumArrest : MonoBehaviour
 
     IEnumerator BoardWhenArielArrives()
     {
+        bool held = false;
         if (!ArielHasArrived())
         {
             Debug.Log("[MuseumArrest] Ariel hasn't reached the car yet, holding the timeline");
             _cutscene.HoldTimeline();
+            held = true;
 
             float waited = 0f;
             while (!ArielHasArrived() && waited < _maxWaitForArrivalSeconds)
@@ -327,7 +335,22 @@ public class MuseumArrest : MonoBehaviour
             {
                 Debug.LogWarning($"[MuseumArrest] Ariel did not reach the car in {_maxWaitForArrivalSeconds}s, boarding anyway");
             }
+        }
 
+        //at the door: it opens and they stand there a moment before getting in (#256)
+        PatrolCarAudio.OpenDoor();
+        if (_waitAtCarSeconds > 0f)
+        {
+            if (!held)
+            {
+                _cutscene.HoldTimeline();
+                held = true;
+            }
+            yield return new WaitForSeconds(_waitAtCarSeconds);
+        }
+
+        if (held)
+        {
             _cutscene.ResumeTimeline();
         }
 
@@ -346,7 +369,9 @@ public class MuseumArrest : MonoBehaviour
             }
         }
 
-        PatrolCarAudio.GetIn();
+        //the door closes together with the engine start; DriveOff follows on the timeline
+        PatrolCarAudio.CloseDoor();
+        PatrolCarAudio.EngineStart();
         Debug.Log("[MuseumArrest] Ariel and the cops get into the patrol car");
     }
 

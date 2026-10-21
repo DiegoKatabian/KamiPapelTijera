@@ -52,6 +52,28 @@ public class ArrestCutscene : MonoBehaviour
     [SerializeField, Tooltip("Seconds to fade back in.")]
     float _copsFadeInSeconds = 0.4f;
 
+    [Header("Leaving the street and arriving in the cells (V6)")]
+    [SerializeField, Tooltip("Seconds the screen takes to fade to black as the patrol car drives off. The fade is timed to reach black as the car arrives at the drive-off mark (it starts Drive Off Seconds minus this before). Stays black through the page turn.")]
+    float _leaveFadeSeconds = 1.2f;
+
+    [SerializeField, Tooltip("Seconds the screen stays black once the page has turned and both girls are in their cells, before it fades in.")]
+    float _arrivalBlackHoldSeconds = 0.4f;
+
+    [SerializeField, Tooltip("Seconds to fade in on Kami, already in her cell.")]
+    float _cellFadeInSeconds = 0.8f;
+
+    [SerializeField, Tooltip("Seconds Kami is seen alone in her cell before the camera goes to Natalia.")]
+    float _cellHoldSeconds = 1.2f;
+
+    [SerializeField, Tooltip("The shot that shows Natalia in her cell (page 4): a static vcam, drag it to reframe. Page 4's intro Timeline uses the same shot. Empty = no pan, she just waves off camera.")]
+    CinemachineVirtualCamera _nataliaCellShot;
+
+    [SerializeField, Tooltip("Pose id on Natalia's SpineCharacter: her wave ('Saludo'). Played once the camera has arrived.")]
+    string _nataliaWavePose = "Wave";
+
+    [SerializeField, Tooltip("Seconds she waves with the camera on her. The page 4 intro starts after the camera is back on Kami.")]
+    float _nataliaWaveSeconds = 3f;
+
     [Header("Music (#176)")]
     [SerializeField, Tooltip("Page 3's live jazz band (an AudioSource in the scene). Stopped when the police show up, and kept off for the rest of the level.")]
     AudioSource _bandMusic;
@@ -99,6 +121,12 @@ public class ArrestCutscene : MonoBehaviour
     [SerializeField, Tooltip("Seconds the car takes to reach _driveOffTarget. Duration, not speed, like all traffic.")]
     float _driveOffSeconds = 4f;
 
+    [SerializeField, Tooltip("Seconds the girls stand at the open door (the door-open sound plays when Kami arrives) before they get in and the door closes (#256). The timeline holds meanwhile.")]
+    float _waitAtCarSeconds = 1.5f;
+
+    [SerializeField, Tooltip("Seconds after the car begins to move before the engine run loop starts. The engine idles until then (page 3 has no engine start), so zero goes straight from idle to run.")]
+    float _engineRunDelaySeconds = 0f;
+
     [Header("Cameras")]
     [SerializeField, Tooltip("Shots that frame Kami: their Follow is set to her when the cutscene starts (a prefab cannot reference her).")]
     CinemachineVirtualCamera[] _camerasFollowingKami;
@@ -132,6 +160,9 @@ public class ArrestCutscene : MonoBehaviour
     bool _questsHandedOff;
     bool _warnedWalkClamp;
     bool _carDrivingOff;
+    bool _leaveFadeStarted;
+    bool _leaveFadeDone;
+    bool _warnedNoFader;
     bool _copsLead; //this escort runs with the cops leading (decided when it starts: needs a NavMesh route)
     NavMeshPath _copRoute; //created in Awake: NavMeshPath cannot be built in a field initializer
     float _nextRouteRefresh;
@@ -249,7 +280,30 @@ public class ArrestCutscene : MonoBehaviour
         Debug.Log("[ArrestCutscene] the letter was read, the police arrive");
         StopBand();
         EventManager.Trigger(Evento.OnArrestStarted); //PageMusicManager: the story music takes over
+        CarArrives();
         _cutscene.Play();
+
+        //the car belongs to the timeline's Street group, which switches on with the first evaluation:
+        //PoliceLights turns itself off when it enables, so the flashing lights wait for that
+        yield return null;
+        yield return null;
+        SetCarSiren(true);
+    }
+
+    //the squad rolls in (#256): tires squeak and the siren starts as the car appears with the street,
+    //then the engine idles under the whole dialogue. Stopped by TurnPage/WrapUp/OnDestroy.
+    void CarArrives()
+    {
+        PatrolCarAudio.Brake();
+        PlaySound(AudioId.PoliceSirenLoop);
+        if (_policeCar != null)
+        {
+            PatrolCarAudio.StartIdle(_policeCar.transform.position);
+        }
+        else
+        {
+            Debug.LogWarning("[ArrestCutscene] no _policeCar assigned: the engine idle is skipped");
+        }
     }
 
     //disabled, not only stopped: a play-on-awake source would start again when Kami walks back to
@@ -471,16 +525,25 @@ public class ArrestCutscene : MonoBehaviour
         StartCoroutine(CopsAppearBehindFade());
     }
 
-    IEnumerator CopsAppearBehindFade()
+    //the scene's fader, found once; null (with one warning) means every fade here is skipped
+    ScreenFader FindFader(string what)
     {
         if (_screenFader == null)
         {
             _screenFader = FindObjectOfType<ScreenFader>();
-            if (_screenFader == null)
+            if (_screenFader == null && !_warnedNoFader)
             {
-                Debug.LogWarning("[ArrestCutscene] no ScreenFader in the scene: the cops appear without a fade");
+                _warnedNoFader = true;
+                Debug.LogWarning($"[ArrestCutscene] no ScreenFader in the scene: {what} without a fade");
             }
         }
+
+        return _screenFader;
+    }
+
+    IEnumerator CopsAppearBehindFade()
+    {
+        FindFader("the cops appear");
 
         if (_screenFader != null)
         {
@@ -490,11 +553,8 @@ public class ArrestCutscene : MonoBehaviour
 
         PlaceCopsBehindGirls();
 
-        //the squad rolls in: brakes, a horn beep, and the siren stays on until the
-        //car leaves (stopped in CUE_TurnPage/WrapUp/OnDestroy)
-        PlaySound(AudioId.CarBrake);
-        PlaySound(AudioId.PoliceHorn);
-        PlaySound(AudioId.PoliceSirenLoop);
+        //the car's sounds started with the cutscene (CarArrives); this is only the lights again, in
+        //case the first call came before the street switched on
         SetCarSiren(true);
 
         if (_screenFader != null)
@@ -624,10 +684,12 @@ public class ArrestCutscene : MonoBehaviour
 
     IEnumerator BoardWhenKamiArrives()
     {
+        bool held = false;
         if (_escorting && !KamiHasArrived())
         {
             Debug.Log("[ArrestCutscene] Kami hasn't reached the car yet, holding the timeline");
             _cutscene.HoldTimeline();
+            held = true;
 
             float waited = 0f;
             while (_escorting && !KamiHasArrived() && waited < _maxWaitForArrivalSeconds)
@@ -640,7 +702,22 @@ public class ArrestCutscene : MonoBehaviour
             {
                 Debug.LogWarning($"[ArrestCutscene] Kami did not reach the car in {_maxWaitForArrivalSeconds}s, boarding anyway (is the car door mark reachable?)");
             }
+        }
 
+        //at the door: it opens and they stand there a moment before getting in (#256)
+        PatrolCarAudio.OpenDoor();
+        if (_waitAtCarSeconds > 0f)
+        {
+            if (!held)
+            {
+                _cutscene.HoldTimeline();
+                held = true;
+            }
+            yield return new WaitForSeconds(_waitAtCarSeconds);
+        }
+
+        if (held)
+        {
             _cutscene.ResumeTimeline();
         }
 
@@ -676,7 +753,7 @@ public class ArrestCutscene : MonoBehaviour
             }
         }
 
-        PatrolCarAudio.GetIn();
+        PatrolCarAudio.CloseDoor(); //doors only: the engine is already idling, there is no start on this page
         Debug.Log("[ArrestCutscene] the girls get into the patrol car");
     }
 
@@ -692,9 +769,36 @@ public class ArrestCutscene : MonoBehaviour
         //the lifetime is only a safety net; the car despawns itself on arrival
         _policeCar.Launch(_driveOffTarget.position, _driveOffSeconds, (_driveOffSeconds * 3f) + 1f);
         _carDrivingOff = true;
-        PatrolCarAudio.DriveOff();
         PlaySound(AudioId.PoliceHorn);
+        PatrolCarAudio.CarMoves(_engineRunDelaySeconds);
         Debug.Log("[ArrestCutscene] the patrol car drives off");
+
+        StartCoroutine(FadeOutAsCarLeaves());
+    }
+
+    /// <summary>
+    /// V6: the screen goes black as the car takes the girls away and stays black until Kami is in her
+    /// cell, so the page turn and the placing are never seen. Timed to reach black as the car arrives.
+    /// </summary>
+    IEnumerator FadeOutAsCarLeaves()
+    {
+        if (_leaveFadeStarted)
+        {
+            yield break;
+        }
+
+        _leaveFadeStarted = true;
+
+        if (FindFader("the page turns") == null)
+        {
+            _leaveFadeDone = true;
+            yield break;
+        }
+
+        yield return new WaitForSeconds(Mathf.Max(0f, _driveOffSeconds - _leaveFadeSeconds));
+        Debug.Log("[ArrestCutscene] fading to black as the car leaves");
+        yield return _screenFader.FadeOut(_leaveFadeSeconds);
+        _leaveFadeDone = true;
     }
 
     /// <summary>
@@ -709,11 +813,14 @@ public class ArrestCutscene : MonoBehaviour
 
     IEnumerator TurnPageWhenCarArrives()
     {
+        bool held = false;
+
         //TrafficObstacle destroys itself on arrival, which is how we know it reached the mark
         if (_carDrivingOff && _policeCar != null)
         {
             Debug.Log("[ArrestCutscene] the car is still driving, holding the timeline until it reaches the mark");
             _cutscene.HoldTimeline();
+            held = true;
 
             float waited = 0f;
             float maxWait = (_driveOffSeconds * 3f) + 1f; //the same safety net the car itself despawns with
@@ -722,7 +829,38 @@ public class ArrestCutscene : MonoBehaviour
                 waited += Time.deltaTime;
                 yield return null;
             }
+        }
 
+        //the page must not turn in front of the player (V6): wait for black. A drive-off marker that never
+        //fired (no car) starts the fade here instead
+        if (!_leaveFadeDone)
+        {
+            if (!held)
+            {
+                _cutscene.HoldTimeline();
+                held = true;
+            }
+
+            if (!_leaveFadeStarted)
+            {
+                _leaveFadeStarted = true;
+                if (FindFader("the page turns") != null)
+                {
+                    yield return _screenFader.FadeOut(_leaveFadeSeconds);
+                }
+                _leaveFadeDone = true;
+            }
+
+            float waitedForBlack = 0f;
+            while (!_leaveFadeDone && waitedForBlack < _leaveFadeSeconds + 2f)
+            {
+                waitedForBlack += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        if (held)
+        {
             _cutscene.ResumeTimeline();
         }
 
@@ -801,7 +939,6 @@ public class ArrestCutscene : MonoBehaviour
             _natalia.WarpTo(_nataliaCell.position);
         }
 
-        _cutscene.Release();
         Debug.Log("[ArrestCutscene] the girls are in their cells, closing Quest06");
 
         if (_policeStation != null)
@@ -823,6 +960,53 @@ public class ArrestCutscene : MonoBehaviour
             //a test started past page 2 never had Quest06: still start the next quest
             StartCoroutine(HandOffQuestNextFrame());
         }
+
+        //Kami stays locked (the director's cutscene lock) through the fade in and the pan to Natalia; the
+        //page 4 intro waits for the lock to go (PoliceStationPage.IntroThenAbuela), so it starts after them
+        StartCoroutine(ArriveInTheCells());
+    }
+
+    /// <summary>
+    /// V6: still black from the drive-off. Fade in on Kami already in her cell, a beat later the camera goes to
+    /// Natalia in hers, she waves, and the camera comes back; only then is Kami given back, which lets page 4's
+    /// intro start. Nothing here moves anyone: the placing already happened behind the black.
+    /// </summary>
+    IEnumerator ArriveInTheCells()
+    {
+        if (FindFader("the girls wake up in their cells") != null)
+        {
+            yield return new WaitForSeconds(_arrivalBlackHoldSeconds);
+            Debug.Log("[ArrestCutscene] fading in on Kami in her cell");
+            yield return _screenFader.FadeIn(_cellFadeInSeconds);
+        }
+
+        yield return new WaitForSeconds(_cellHoldSeconds);
+
+        if (_nataliaCellShot == null)
+        {
+            Debug.LogWarning("[ArrestCutscene] no _nataliaCellShot assigned: Natalia waves without the camera going to her");
+        }
+
+        CutsceneCamera.Show(_nataliaCellShot);
+        float blend = _nataliaCellShot != null ? CutsceneCamera.BlendSeconds : 0f;
+        yield return new WaitForSeconds(blend);
+
+        if (_natalia != null && _natalia.Character != null && !string.IsNullOrEmpty(_nataliaWavePose))
+        {
+            _natalia.Character.PlayPose(_nataliaWavePose, _nataliaWaveSeconds);
+        }
+        else
+        {
+            Debug.LogWarning("[ArrestCutscene] Natalia has no SpineCharacter or no wave pose id: nobody waves in the cell");
+        }
+
+        yield return new WaitForSeconds(_nataliaWaveSeconds);
+
+        CutsceneCamera.Hide(_nataliaCellShot);
+        yield return new WaitForSeconds(blend);
+
+        _cutscene.Release();
+        Debug.Log("[ArrestCutscene] the arrival in the cells is over: Kami is free to start page 4's intro");
     }
 
     void OnQuestCompleted(params object[] parameters)

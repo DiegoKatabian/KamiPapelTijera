@@ -17,6 +17,7 @@ MonoBehaviour:
   - text: arrest_police_01
     sprite: {fileID: 21300000, guid: 9d7614f3ccdc2ae49affb3153c708502, type: 3}
     speakerName: police_name
+    soundOnLine: CopWhistle
     animationCues:
     - actor: Natalia
       action: 0

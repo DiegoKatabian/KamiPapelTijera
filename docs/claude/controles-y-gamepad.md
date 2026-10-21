@@ -166,8 +166,10 @@ Traduce los textos de la UI al device activo. Ver la sección "Prompts" más aba
   eso, el apretón que abre agarraría en el mismo cuadro y un toque corto terminaría en
   "soltaste mal" al instante.
 - **Con joystick cancela B**, no A (si cancelara A, el apretón de agarrar cerraría el
-  origami). También cancelan E/Enter, soltar fuera de la ruta, o caminar fuera del
-  pedestal. El jugador nunca queda trabado.
+  origami). También cancelan E/Enter o caminar fuera del pedestal. **Soltar fuera de la meta o apretar fuera de la flecha verde
+  ya NO cierra el origami** (spec 019 V1, 2026-10-21, no jugado): reinicia solo ese pliegue, con flash rojo y cartel
+  (`OrigamiFailFeedback`, ver `origami-y-tooltips.md`), y el cursor del joystick vuelve a la flecha verde.
+  El jugador nunca queda trabado.
 - **Tolerancia generosa**: `MultipleRectCheck._toleranciaJoystickPx` (default 80 px) agranda
   la zona válida alrededor de la ruta. **Sólo aplica con joystick**: con mouse la ruta sigue
   siendo exacta como siempre. Es un `[SerializeField]` nuevo sobre un prefab que ya existía,

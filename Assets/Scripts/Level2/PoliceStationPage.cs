@@ -69,6 +69,9 @@ public class PoliceStationPage : MonoBehaviour
     [SerializeField, Tooltip("The camera the player starts with once the intro is over and the Abuela has landed (Kami is free), so the whole station is in view. The player changes it as usual afterwards. Only after the intro (first time), not after a capture.")]
     CameraMode _cameraAfterIntro = CameraMode.BookCenter;
 
+    [SerializeField, Tooltip("The camera Kami gets once she lands on the ground outside the station after the window escape. Page 4 keeps its camera for gameplay beats, so this is a direct switch.")]
+    CameraMode _cameraAfterEscape = CameraMode.Normal;
+
     [SerializeField, Tooltip("Seconds between the girls landing in their cells and the intro cutscene starting.")]
     float _introDelaySeconds = 0.5f;
 
@@ -478,10 +481,7 @@ public class PoliceStationPage : MonoBehaviour
             }
         }
 
-        if (_escapedLine != null)
-        {
-            StartCoroutine(SayEscapedLine());
-        }
+        StartCoroutine(AfterEscapeLanding());
 
         //always: PageExitLock opens page 4's next sphere on this event, and the way out must not depend
         //on quest bookkeeping (#169: a lost Quest07 kept the sphere locked for good)
@@ -494,8 +494,10 @@ public class PoliceStationPage : MonoBehaviour
         }
     }
 
-    //Kami crosses the window on her way down: a dialogue now would freeze her in the air, so let her land first
-    IEnumerator SayEscapedLine()
+    //Kami crosses the window on her way down: a dialogue now would freeze her in the air, so let her land first.
+    //The camera goes back to Normal at that same moment (page 4 keeps its camera for the gameplay beats, so
+    //it was still on the wide station shot out in the street)
+    IEnumerator AfterEscapeLanding()
     {
         Player player = LevelManager.Instance != null ? LevelManager.Instance.player : null;
 
@@ -513,6 +515,21 @@ public class PoliceStationPage : MonoBehaviour
             {
                 yield return null;
             }
+        }
+
+        if (CameraManager.Instance != null)
+        {
+            CameraManager.Instance.SetCamera(_cameraAfterEscape);
+            Debug.Log($"[PoliceStationPage] Kami is on the ground outside: camera back to {_cameraAfterEscape}");
+        }
+        else
+        {
+            Debug.LogWarning("[PoliceStationPage] no CameraManager: the camera stays as it was after the escape");
+        }
+
+        if (_escapedLine == null)
+        {
+            yield break;
         }
 
         while (DialogueManager.Instance == null || !DialogueManager.Instance.CanShowDialogueNow)

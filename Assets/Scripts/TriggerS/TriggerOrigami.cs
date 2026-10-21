@@ -60,6 +60,9 @@ public class TriggerOrigami : TriggerScript
     //the running check was opened by the auto prompt with Kami NOT on the pedestal: nobody's
     //OnExitBehaviour will clean it up, so we do it when the origami ends
     bool _autoCheckOwned;
+    //this pedestal set LevelManager.inCutscene so Kami stays still between a cancel and the
+    //automatic re-prompt (spec 019 D): without it she could walk off the pedestal for that moment
+    bool _holdingKami;
     ParticleSystem ps;
     ParticleSystem.MainModule mainModule;
     ParticleSystem.VelocityOverLifetimeModule velocityModule;
@@ -205,6 +208,34 @@ public class TriggerOrigami : TriggerScript
     {
         base.OnDisable();
         _waitingToPrompt.Remove(this);
+        ReleaseKami(); //the re-prompt coroutine dies with the object, so it can't give Kami back itself
+    }
+
+    void HoldKami()
+    {
+        //someone else already owns Kami (a cutscene): they release her, not us
+        if (LevelManager.Instance == null || LevelManager.Instance.inCutscene)
+        {
+            return;
+        }
+
+        LevelManager.Instance.inCutscene = true;
+        _holdingKami = true;
+        Debug.Log($"[TriggerOrigami] {gameObject.name}: holding Kami still until the fold re-prompts");
+    }
+
+    void ReleaseKami()
+    {
+        if (!_holdingKami)
+        {
+            return;
+        }
+
+        _holdingKami = false;
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.inCutscene = false;
+        }
     }
 
     //runs every time the pedestal appears until it has prompted once; a page turn that hides the
@@ -248,6 +279,8 @@ public class TriggerOrigami : TriggerScript
         yield return WaitUntilScreenIsFree();
         _waitingToPrompt.Remove(this);
         _promptPending = false;
+        //released right before opening: the fold puts Kami in Casting this same frame
+        ReleaseKami();
         OpenCheckFromCode();
     }
 
@@ -293,7 +326,9 @@ public class TriggerOrigami : TriggerScript
 
     bool CanAutoPrompt()
     {
-        if (LevelManager.Instance == null || LevelManager.Instance.inDialogue || LevelManager.Instance.inCutscene)
+        //our own hold must not stop our own re-prompt
+        if (LevelManager.Instance == null || LevelManager.Instance.inDialogue
+            || (LevelManager.Instance.inCutscene && !_holdingKami))
         {
             return false;
         }
@@ -347,7 +382,12 @@ public class TriggerOrigami : TriggerScript
         //the fold ended without finishing it (cancelled or failed): ask again
         if (_repromptAfterCancel && _openOnlyByCode && origami != null && !origami.wasUsed)
         {
+            HoldKami();
             PromptNow();
+            if (!_promptPending)
+            {
+                ReleaseKami(); //PromptNow refused (pedestal inactive): don't leave Kami frozen
+            }
         }
     }
 

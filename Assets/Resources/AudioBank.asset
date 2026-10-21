@@ -1426,7 +1426,7 @@ MonoBehaviour:
     pitchVariation: 0
     loop: 1
     bus: 1
-    maxSimultaneous: 4
+    maxSimultaneous: 6
     spatialBlend: 1
     minDistance: 25
     maxDistance: 75

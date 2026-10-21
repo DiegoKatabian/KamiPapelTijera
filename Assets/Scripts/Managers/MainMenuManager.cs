@@ -15,6 +15,20 @@ public class MainMenuManager : MonoBehaviour
 
     public GameObject LoadingAnimationCanvas;
 
+    [SerializeField, Tooltip("The black plate that fades the menu out when a level is picked (it used to be called by " +
+                             "the New Game button's own OnClick, before the level select).")]
+    ImageFadeIn _placaNegra;
+
+    [SerializeField, Tooltip("The Level 1 / Level 2 cards the New Game button opens. Empty, or a build without " +
+                             "Level 2 in it (the Steam demo), = New Game starts Level 1 directly, as before.")]
+    LevelSelectMenu _levelSelect;
+
+    [SerializeField, Tooltip("Seconds of fade to black after picking Level 2, before Level 1's end cutscene loads " +
+                             "(the loading animation covers the rest of the fade).")]
+    float _secondsBeforeLoadingLevel2 = 1.5f;
+
+    bool _levelChosen; //a level was picked: no second pick, no reselecting menu buttons
+
     //el boton de nuevo juego es una instancia de Assets/Prefabs/UI/Button.prefab renombrada en la escena
     const string NOMBRE_BOTON_NUEVO_JUEGO = "NewGameButton";
 
@@ -78,7 +92,7 @@ public class MainMenuManager : MonoBehaviour
     /// </summary>
     void ReintentarSeleccionSiHaceFalta()
     {
-        if (_dialogueStarted)
+        if (_dialogueStarted || _levelChosen)
         {
             return;
         }
@@ -95,10 +109,112 @@ public class MainMenuManager : MonoBehaviour
             return;
         }
 
+        //while the level select is up, its cards are the menu: the hidden New Game button must not get the focus back
+        if (_levelSelect != null && _levelSelect.IsOpen)
+        {
+            _levelSelect.SelectFirstCard();
+            return;
+        }
+
         SeleccionarBotonNuevoJuego();
     }
 
+    /// <summary>The level select closed: the joystick goes back to New Game.</summary>
+    public void SelectNewGameButtonAgain()
+    {
+        SeleccionarBotonNuevoJuego();
+    }
+
+    /// <summary>New Game: opens the level select, or starts Level 1 directly when there is nothing to choose.</summary>
     public void OnNewGameButtonDown()
+    {
+        if (_dialogueStarted || _levelChosen)
+        {
+            return;
+        }
+
+        if (_levelSelect == null)
+        {
+            Debug.LogWarning("[MainMenuManager] no _levelSelect wired: New Game starts Level 1 directly");
+            BTN_StartLevel1();
+            return;
+        }
+
+        if (!_levelSelect.IsAvailable)
+        {
+            Debug.Log("[MainMenuManager] Level 2 is not in this build (demo): New Game starts Level 1 directly");
+            BTN_StartLevel1();
+            return;
+        }
+
+        _levelSelect.Open();
+    }
+
+    /// <summary>Level 1 card: the original New Game flow (the intro storyboard dialogue, then Level 1).</summary>
+    public void BTN_StartLevel1()
+    {
+        if (_levelChosen)
+        {
+            return;
+        }
+        _levelChosen = true;
+        Debug.Log("[MainMenuManager] Level 1 picked: intro dialogue, then Level 1");
+
+        if (_levelSelect != null)
+        {
+            _levelSelect.LockChoice();
+        }
+        FadeToBlack();
+        StartIntroDialogue();
+    }
+
+    /// <summary>
+    /// Level 2 card: no saves, so Level 2 is reached the way the story reaches it, through Level 1's end
+    /// cutscene (the Narrator sends Kami into "Kami Tinta y Condena"), which then loads Level 2 (SceneFlow).
+    /// </summary>
+    public void BTN_StartLevel2()
+    {
+        if (_levelChosen)
+        {
+            return;
+        }
+        _levelChosen = true;
+        Debug.Log("[MainMenuManager] Level 2 picked: Level 1's end cutscene, then Level 2");
+
+        if (_levelSelect != null)
+        {
+            _levelSelect.LockChoice();
+        }
+        UISelector.Limpiar();
+        AudioManager.instance.StopById(AudioId._4S_IntroBigChords);
+        AudioManager.instance.StopById(AudioId.ForestAtNight);
+        FadeToBlack();
+        SceneFlow.RequestSceneAfterCutscene(GameScene.Level2);
+        StartCoroutine(LoadLevel2CutsceneAfterFade());
+    }
+
+    IEnumerator LoadLevel2CutsceneAfterFade()
+    {
+        yield return new WaitForSeconds(_secondsBeforeLoadingLevel2);
+        if (LoadingAnimationCanvas != null)
+        {
+            LoadingAnimationCanvas.SetActive(true);
+            yield return null; //let the loading animation draw once before the synchronous load freezes the frame
+        }
+        LevelManager.Instance.GoToScene(GameScene.Level1EndCutscene);
+    }
+
+    void FadeToBlack()
+    {
+        if (_placaNegra == null)
+        {
+            Debug.LogWarning("[MainMenuManager] no _placaNegra wired: the menu will not fade to black");
+            return;
+        }
+        _placaNegra.PlacaNegraOn();
+    }
+
+    void StartIntroDialogue()
     {
         _isNewGameButtonDown = true;
         if (_isNewGameButtonDown && !_dialogueStarted)

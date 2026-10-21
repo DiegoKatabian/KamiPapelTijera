@@ -192,6 +192,22 @@ MonoBehaviour:
     m_Localized: "A car ran you over!\nPress E to try again."
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000009
+    m_Localized: "Kami Paper Scissors"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000010
+    m_Localized: "Kami Ink and Punishment"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000011
+    m_Localized: "Back"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 244717600000000012
+    m_Localized: "Wrong fold! Try again!"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
