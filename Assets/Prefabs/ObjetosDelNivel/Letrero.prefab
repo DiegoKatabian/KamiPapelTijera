@@ -338,26 +338,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6980718598035059838}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8441818182716945990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3426771276408532176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4952b7bed03600c44b03592ee991afdb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  triggerBool: 0
-  showTooltip: 0
-  tooltipTextToShow: 
-  postItColor: 0
-  originalScale: {x: 1, y: 1, z: 1}
-  targetScale: {x: 4, y: 4, z: 4}
-  lerpDuration: 1
-  targetTransform: {fileID: 6083839241814262099}
 --- !u!4 &3426771276408532179 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5723557005826726061, guid: ec2adfa632176c64b8f793dffab5f997,

@@ -2495,21 +2495,6 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: dc7c64b9e9b8b62439c0ef063072cbda, type: 2}
-    - target: {fileID: 8441818182716945990, guid: a6af4c1709cd9304b98217f768cda031,
-        type: 3}
-      propertyPath: targetScale.x
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8441818182716945990, guid: a6af4c1709cd9304b98217f768cda031,
-        type: 3}
-      propertyPath: targetScale.y
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8441818182716945990, guid: a6af4c1709cd9304b98217f768cda031,
-        type: 3}
-      propertyPath: targetScale.z
-      value: 2.5
-      objectReference: {fileID: 0}
     - target: {fileID: 9121417168642794659, guid: a6af4c1709cd9304b98217f768cda031,
         type: 3}
       propertyPath: m_Name
@@ -34301,10 +34286,6 @@ MonoBehaviour:
     lightRotation: {x: 42, y: 37.2, z: 47.7}
     lightColor: {r: 0.9622642, g: 0.76708794, b: 0.88939834, a: 1}
     lightIntensity: 0.88
-  - lightPosition: {x: -80, y: 19, z: -88}
-    lightRotation: {x: 38, y: 34.8, z: 41.1}
-    lightColor: {r: 0.78432614, g: 0.66522783, b: 0.9339623, a: 1}
-    lightIntensity: 0.84
   - lightPosition: {x: -80, y: 17.8, z: -88}
     lightRotation: {x: 34, y: 31.9, z: 37.5}
     lightColor: {r: 0.5545048, g: 0.48616055, b: 0.8962264, a: 1}
@@ -76722,7 +76703,12 @@ PrefabInstance:
     - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
         type: 3}
       propertyPath: pagesAnimators.Array.size
-      value: 6
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
+        type: 3}
+      propertyPath: pagesToToggle.Array.size
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
         type: 3}
@@ -76748,11 +76734,6 @@ PrefabInstance:
         type: 3}
       propertyPath: pagesToToggle.Array.data[4]
       value: 
-      objectReference: {fileID: 1670187908}
-    - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
-        type: 3}
-      propertyPath: pagesToToggle.Array.data[5]
-      value: 
       objectReference: {fileID: 5549367393259815878}
     - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
         type: 3}
@@ -76777,11 +76758,6 @@ PrefabInstance:
     - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
         type: 3}
       propertyPath: pagesAnimators.Array.data[4]
-      value: 
-      objectReference: {fileID: 670692910}
-    - target: {fileID: 2466450927891767459, guid: df87262475a84ce428582318f125976c,
-        type: 3}
-      propertyPath: pagesAnimators.Array.data[5]
       value: 
       objectReference: {fileID: 5549367393259815876}
     - target: {fileID: 2466450927891767468, guid: df87262475a84ce428582318f125976c,
@@ -81406,7 +81382,7 @@ PrefabInstance:
     - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
         type: 3}
       propertyPath: _paginasConNavMesh.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
         type: 3}
@@ -81420,11 +81396,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
         type: 3}
-      propertyPath: _paginasConNavMesh.Array.data[2].pageIndex
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
-        type: 3}
       propertyPath: _paginasConNavMesh.Array.data[0].navMeshData
       value: 
       objectReference: {fileID: 23800000, guid: ebf68720ac4c6774a9290ed5e50d82df,
@@ -81432,12 +81403,6 @@ PrefabInstance:
     - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
         type: 3}
       propertyPath: _paginasConNavMesh.Array.data[1].navMeshData
-      value: 
-      objectReference: {fileID: 23800000, guid: 9d716217b718d1b48861abee72a24b74,
-        type: 2}
-    - target: {fileID: 8848336253380897678, guid: 19855524bfe83fb43a93c02223306e2b,
-        type: 3}
-      propertyPath: _paginasConNavMesh.Array.data[2].navMeshData
       value: 
       objectReference: {fileID: 23800000, guid: 30712e901f3ff1d4aa5a98231632a321,
         type: 2}
