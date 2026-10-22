@@ -107,8 +107,7 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1000000000008
     m_Localized: "Pelusa. \"Sem T\xEDtulo\". c.1913. Esta obra do lend\xE1rio artista
-      p\xF3s-moderno tem o poder de comover at\xE9 o mais dur\xE3o dos homens. \xC9
-      feita de um papel muito raro."
+      p\xF3s-moderno \xE9 feita de um papel muito raro."
     m_Metadata:
       m_Items: []
   - m_Id: 1000000000009
