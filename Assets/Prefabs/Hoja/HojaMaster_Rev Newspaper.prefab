@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4222273946691403385}
+  - component: {fileID: 7911214674594101674}
   m_Layer: 0
   m_Name: HojaMaster_Rev Newspaper
   m_TagString: Untagged
@@ -33,6 +34,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7911214674594101674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3884983670711628665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c7e49f48fe54f5d9db3a90d4fee2c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _turnsForward: 0
+  _leavingFace: {fileID: 4016725192273332693}
+  _arrivingFace: {fileID: 330453292388129081}
 --- !u!1001 &6220309803627732718
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -204,7 +220,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: d1b7b653a804cff459db225b1490940e, type: 2}
+      objectReference: {fileID: 2100000, guid: 036092e80a7341409ec9ac51b1253f8f, type: 2}
     - target: {fileID: 6013377714060626975, guid: 90cdd5fdf4640e5449121293e4ea11b0,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -355,7 +371,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: d1b7b653a804cff459db225b1490940e, type: 2}
+      objectReference: {fileID: 2100000, guid: 036092e80a7341409ec9ac51b1253f8f, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d8085652428b9c499d9280331d1395d, type: 3}
 --- !u!4 &2773206936701789905 stripped
@@ -433,3 +449,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03d5cb49b31b12c4282eb2d918dc7de7, type: 3}
+--- !u!137 &4016725192273332693 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6037043770845085245, guid: 5d8085652428b9c499d9280331d1395d,
+    type: 3}
+  m_PrefabInstance: {fileID: 7239999385778796520}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &330453292388129081 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5964168108464359383, guid: 90cdd5fdf4640e5449121293e4ea11b0,
+    type: 3}
+  m_PrefabInstance: {fileID: 6220309803627732718}
+  m_PrefabAsset: {fileID: 0}

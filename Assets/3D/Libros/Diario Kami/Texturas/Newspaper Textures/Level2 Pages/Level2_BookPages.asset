@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42308cff0df64500b53e5f922934e413, type: 3}
+  m_Name: Level2_BookPages
+  m_EditorClassIdentifier: 
+  _left:
+  - {fileID: 2800000, guid: b2e2f564618f4f05b887a9144661cf07, type: 3}
+  - {fileID: 2800000, guid: dd5c88fe09fc465eaccc2f9137af8381, type: 3}
+  - {fileID: 2800000, guid: 5f5400133f454aa7b3089a07ddc09196, type: 3}
+  - {fileID: 2800000, guid: 1e3124b87fac4c75a6d52fef6aab689b, type: 3}
+  - {fileID: 2800000, guid: bb6d0270dd9e4173aee84f8682c214b5, type: 3}
+  _right:
+  - {fileID: 2800000, guid: cb781cd501c34b9c81f6678907d4c063, type: 3}
+  - {fileID: 2800000, guid: 4098bb5c0eb748e2b06503761bcfe552, type: 3}
+  - {fileID: 2800000, guid: 4069201fbe5c48209404ae118a8f18be, type: 3}
+  - {fileID: 2800000, guid: ca098bd76ed14e3c888d88117838a4c0, type: 3}
+  - {fileID: 2800000, guid: 48ac1bad26e94186ac2f1b94bff1838c, type: 3}
+  _forwardLeaving:
+  - {fileID: 2800000, guid: 7bf64a30c9c146f1b358e0e243ada06e, type: 3}
+  - {fileID: 2800000, guid: 2d2bd743e481417c906a4df7167b416f, type: 3}
+  - {fileID: 2800000, guid: a30659359b6a43e38032e2744e17f850, type: 3}
+  - {fileID: 2800000, guid: 773a7d99ce0b427cb7d4518d95425391, type: 3}
+  - {fileID: 0}
+  _forwardArriving:
+  - {fileID: 2800000, guid: 7dcab2e4fbf04496932a220cc906d55a, type: 3}
+  - {fileID: 2800000, guid: 216e6ff0c2ef45dab5e40ff110e9030c, type: 3}
+  - {fileID: 2800000, guid: f819fa053fbe4db98f038737dab328e3, type: 3}
+  - {fileID: 2800000, guid: a884ac3cb5f746619092df733103718d, type: 3}
+  - {fileID: 0}
+  _backwardLeaving:
+  - {fileID: 0}
+  - {fileID: 2800000, guid: bda0f3b62bd847bf9a65521d49aea04e, type: 3}
+  - {fileID: 2800000, guid: b92cd635b0f547d7989a55f9aa80235a, type: 3}
+  - {fileID: 2800000, guid: 6b69c69e8a724eeba75459aebfdbc016, type: 3}
+  - {fileID: 2800000, guid: 6404754656e04f5189db835fbe8e5e35, type: 3}
+  _backwardArriving:
+  - {fileID: 0}
+  - {fileID: 2800000, guid: 61a9c1c24dea49cdbe9a0a6a738cec48, type: 3}
+  - {fileID: 2800000, guid: 49a34c2f0da144738c99b3e8fa0f9704, type: 3}
+  - {fileID: 2800000, guid: 647c219462284e5185adbeb15185e4b2, type: 3}
+  - {fileID: 2800000, guid: 55642237db2d4e8396bc7a5d831d765f, type: 3}

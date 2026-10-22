@@ -20,6 +20,14 @@ El reposicionamiento "de siempre" (`PlayerPageSpawnManager.PositionPlayerAtPoint
 
 `Assets/Scripts/PositionMarker.cs`, colgado del prefab `esferaPrev`/`esferaNext` (los triggers de borde), no de Kami. Mientras el player está parado en el trigger (`TriggerTurnPage.OnTriggerStay`), copia **solo la Z** de `player.transform.position` sobre su propio transform (X/Y quedan fijos en el borde del libro), y usa la distancia resultante para un alpha `_powerFactor / distancia²` (indicador visual de proximidad). Esta es la convención de "posición sobre el borde" que reutiliza el enganche de Kami: Z es el eje que corre a lo largo del filo del libro, X/Y son la posición "de salto" a la página siguiente (confirmado en `PlayerPageSpawnManager.GetProjectedPositionInNewPage`: sólo `desiredX`/`spawnY` cambian entre páginas, `playerCurrentPosition.z` se preserva tal cual).
 
+## Level 2: a different newspaper on every page and sheet (2026-10-22)
+
+Level 2's `HojaMaster Newspaper` / `HojaMaster_Rev Newspaper` carry a `PageTurnSheet` and the book a `BookPageSpread`, so each page shows its own two
+newspaper halves and each turning sheet carries the page it lifts and the one it lands as. Level 1's `HojaMaster`/`HojaMaster_Rev` are untouched.
+Detail, and how the sheet faces were fitted to the skinned mesh: "The book is a real newspaper" in `nivel2-y-ui.md`.
+Fact worth knowing: each sheet is two skinned meshes with identical UVs and opposite winding (HojaOriginal = up when a turn ends,
+PORFAVORANDA2 = up when it starts), animated by `Take 001` then held by `HojaIdle(2)`; the backward prefab is the same rig with its root unrotated.
+
 ## Page turns forced from code (2026-09-25)
 
 `PageScrollerManager.TurnToNextPage(bool ridePage)` runs the same next-page flow without Kami on

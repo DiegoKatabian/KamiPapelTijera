@@ -383,6 +383,27 @@ page 3 the Pelusa), granted quietly (`ownedAtLevelStart`, no sticker), skipping 
 before `StartSequence`, so the confiscation takes the Pelusa and the pickup gives it back like in the real flow. Page 4
 and 5 test starts also raise `OnArrestStarted`, so the story music plays as it would after the arrest.
 
+**The book is a real newspaper (2026-10-22, built, not seen in the Editor yet)**: ten pages of one issue of "The Daily Ink" (Valentino's
+vintage reference, 1940s copy, only game art printed: the dialogue portraits, the Pelusa, Valentino's posters), two per level page: level page N
+shows `Level2_News_P<N>_Left` on the book's left half and `_Right` on its right half, whose lower outer corner prints N. The page-turn sheet is a
+real sheet: forward from N it leaves with P<N>_Right and lands as P<N+1>_Left (backward: leaves with P<N>_Left, lands as P<N-1>_Right).
+- **Pieces** (`Assets/Scripts/Book/`): `BookPageSet` (`Level2 Pages/Level2_BookPages.asset`, the 10 page and 16 sheet-face textures),
+  `BookPageSpread` (scene root object `BookPageSpread`: puts the current page on Diario's slots 1 = right, 2 = left through MaterialPropertyBlocks;
+  the half a sheet uncovers switches when the sheet is created, the half it lands on when `OnPageFinishTurning` destroys it) and `PageTurnSheet`
+  (on the roots of `HojaMaster Newspaper` / `HojaMaster_Rev Newspaper`: which skinned face is up at the start and at the end; it dresses the
+  sheet from `Awake`, the same frame `CreateHoja` instantiates it).
+- **Materials** (`Level2 Pages/`): `Level2 Book Left|Right` on Diario's slots 2|1 (slot 0, the cover, keeps `Newspaper 4 Dark`) and
+  `Level2 Page Sheet` on the four sheet faces, all copies of `Newspaper 4 Dark` so the sheets have the book's tint (0.236) and shading. Their
+  tiling/offset maps each mesh's measured UV rectangle onto the whole picture. `Newspaper 3/4/4 Dark` are untouched (fences and props share them).
+- **Fit**: `tools/measure-book-pages.py` reads the book and sheet meshes, bind poses and the turn clip from Library/Artifacts and the transforms
+  from the scene/prefab/anim YAML, and writes `tools/data/level2-book-pages.json`. The pages have the halves' exact world proportions (0.650,
+  2048 x 3148) and each sheet face is warped triangle by triangle onto where the skinned sheet lies flat (the sheet floats ~2.9 above the book
+  and overhangs ~3 units: the overhang is paper bleed). Checked top-down in world space: every face lands within 0.15 units of the page under it.
+  Re-run the measure tool if Diario, the sheet rig or their transforms change, then the generator.
+- **Edit the text**: `tools/make-level2-newspaper-pages.py` (page functions, the shared pool of short news, the ad rows); re-running keeps every
+  `.meta`, so the references hold. It warns if an article is cut or the pool runs dry.
+- Textures are JPG, `nPOTScale: 0` (the template's power-of-two rescale would stretch 3148 to 4096), Clamp, max 4096 (sheets 2048).
+
 **A sun per page (#179, 2026-10-13).** `LightCycler` on `Nivel (Mesa y Libro)/Luces/EL SOL` is on in Level 2 with
 5 states (index 0 = page 1), all at the light's authored rotation and position: page 1 is the authored warm 0.3, then
 cooler and dimmer (0.255 / 0.195 / night blue 0.135), page 5 = page 2. It eases position, rotation (slerp), colour and
