@@ -175,6 +175,12 @@ to `MuseumPage`; `Finish` never fires on that path. The siren and engine run fad
   disabled Animator leaves it there. Any script that parks an animated object on a page must do it in `Awake`.
 - `ArielArrest` lives under page 5 (unlike page 3's arrest at the scene root): the page never turns away during it.
 
+## Level 2's opening transformation (spec 020)
+
+Not a Timeline: `Level2/MagicalGirlChange` drives Kami's Spine animation, the fill, the sound, the sparkles and the camera cuts from code, every
+beat in normalized time of the animation, so Valen's animation can land with any length. Cameras are the existing `CameraManager` modes (a list
+of `at` + mode on the prefab). Detail in `nivel2-y-ui.md`.
+
 ## Character animation beats (spec 014)
 
 The characters' animations are NOT on the timelines (no Spine Timeline package): beats tied to a line live on that

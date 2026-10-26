@@ -67,6 +67,9 @@ public class CameraManager : Singleton<CameraManager>
 
     public CameraMode CurrentMode => (CameraMode)currentCamera;
 
+    /// <summary>Seconds after load at which the level-start cut to Normal happens: a level-start beat waits for it, or it cuts over the beat's first shot.</summary>
+    public float LevelStartDelayTime => levelStartDelayTime;
+
     //The game drives these two (PlayerView, while casting an origami and while receiving a
     //reward): the player can't pick them, and can't leave them either, or a press of L2 would
     //pull the camera off the fold/reward mid-way (#43). Everything else is the player's.

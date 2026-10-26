@@ -404,6 +404,17 @@ real sheet: forward from N it leaves with P<N>_Right and lands as P<N+1>_Left (b
   `.meta`, so the references hold. It warns if an article is cut or the pool runs dry.
 - Textures are JPG, `nPOTScale: 0` (the template's power-of-two rescale would stretch 3148 to 4096), Clamp, max 4096 (sheets 2048).
 
+**Kami's magical girl outfit change opens the level (spec 020, #274, built 2026-10-26, not played).** `Level2/MagicalGirlChange`
+(`Prefabs/Level2/MagicalGirlChange.prefab`, one instance at the scene root, `[DefaultExecutionOrder(100)]`) runs only on a page 1 start:
+it locks Kami (`inCutscene`), dresses her in `_classicLook` (`Gear_OutfitDefault` + `Gear_ShoesBase`), lifts her `_dropHeight` (6) above her
+scene spot (which stays her respawn point) and, once she has landed and `CameraManager`'s level-start cut is done, plays the beat. Every beat is in
+normalized time of her animation (0-1): the Spine animation `_animationName` (`MagicalGirlChangeOutfit`; until the export has it, `Casting`
+loops for `_placeholderSeconds` 4 with a warning), the sound (`KamiMagicalChange`), camera cuts between the existing `CameraManager` modes
+(CloseUp, OrigamiCasting, ReceiveReward, CloseUp; blend shortened to `_cutBlendSeconds` 0.35 while it runs, the brain's own blends restored for
+the cut back to Normal), a white-silver fill (`Player.SetSkinFill`, the hit flash's property block) from 0.3 to 0.7 shaped by `_fillCurve`, and
+at its middle the swap to the starting loadout's items plus the `Sparkles Burst`; the `Sparkles Aura` runs throughout, both placed at Kami's body
+centre. Then `Player.ResumeBodyAnimation`, Normal camera, Kami free. Disabled mid-way, it finishes at once. All tuning is on the prefab.
+
 **A sun per page (#179, 2026-10-13).** `LightCycler` on `Nivel (Mesa y Libro)/Luces/EL SOL` is on in Level 2 with
 5 states (index 0 = page 1), all at the light's authored rotation and position: page 1 is the authored warm 0.3, then
 cooler and dimmer (0.255 / 0.195 / night blue 0.135), page 5 = page 2. It eases position, rotation (slerp), colour and

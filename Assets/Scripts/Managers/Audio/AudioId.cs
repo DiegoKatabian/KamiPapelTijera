@@ -101,4 +101,5 @@ public static class AudioId
     public const string CarPassBy = "CarPassBy";
     public const string CarDoorOpen = "CarDoorOpen";
     public const string CarEngineRun = "CarEngineRun";
+    public const string KamiMagicalChange = "KamiMagicalChange";
 }

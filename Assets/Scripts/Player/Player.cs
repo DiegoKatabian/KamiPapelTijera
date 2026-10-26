@@ -696,6 +696,31 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         _flashCoroutine = null;
     }
 
+    /// <summary>
+    /// Paints Kami's whole skeleton toward a colour for a beat that is not damage (Level 2's outfit change,
+    /// spec 020): phase 0 = her own colours, 1 = flat colour. Same property block as the hit flash, so it
+    /// needs the fill shader on her materials.
+    /// </summary>
+    public void SetSkinFill(Color color, float phase)
+    {
+        if (_skeletonMeshRenderer == null || _fillPropertyBlock == null)
+        {
+            Debug.LogWarning("[Player] SetSkinFill before Start: no renderer yet, ignored");
+            return;
+        }
+
+        _fillPropertyBlock.SetColor(FillColorId, color);
+        _fillPropertyBlock.SetFloat(FillPhaseId, phase);
+        _skeletonMeshRenderer.SetPropertyBlock(_fillPropertyBlock);
+    }
+
+    /// <summary>After a cutscene played its own animation on her body track: back to her state's animation and overrides.</summary>
+    public void ResumeBodyAnimation()
+    {
+        _view.RefreshBodyAnimation();
+        _view.RefreshOverrides();
+    }
+
     void SetFlash(float intensity)
     {
         switch (hitFeedback.flashMode)
