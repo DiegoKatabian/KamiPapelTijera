@@ -1,7 +1,7 @@
 # Spec 021: The magnifier and tool switching (Level 2)
 
 **Status**: Draft, 2026-10-26. Asked by Diego; nothing built. Approved 2026-10-26: Diego answered every question
-("Answered by Diego" near the end) and accepted the rest of the defaults. To be built later, under milestone M10. Issue: none yet. Branch: none yet (written on `020-kami-magical-girl-change`, uncommitted).
+("Answered by Diego" near the end) and accepted the rest of the defaults. To be built later, under milestone M10. Epic #315 (milestone M10, issues #316-#327); older related experiment: #42. Branch: none yet (written on `020-kami-magical-girl-change`, uncommitted).
 
 ## Request (Diego, 2026-10-26)
 
