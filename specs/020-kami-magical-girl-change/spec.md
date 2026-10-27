@@ -79,7 +79,7 @@ the real material). Those are Diego's playtest, tuned in the prefab's Inspector.
 
 ## As built
 
-Built 2026-10-26 on branch `020-kami-magical-girl-change`. **Compile-checked and statically verified, not played.**
+Built 2026-10-26 on branch `020-kami-magical-girl-change` (928230a3). **Played by Diego on 2026-10-27: works as intended; #274 closed.** The placeholder `Casting` stays until Valen's `MagicalGirlChangeOutfit` is in the export.
 
 - Code: `Assets/Scripts/Level2/MagicalGirlChange.cs` (new); `Player.SetSkinFill` and `Player.ResumeBodyAnimation` (new,
   additive); `CameraManager.LevelStartDelayTime` (new getter).
