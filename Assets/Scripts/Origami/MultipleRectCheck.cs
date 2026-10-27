@@ -43,6 +43,59 @@ public class MultipleRectCheck : MonoBehaviour
         EsconderCursorJoystick();
     }
 
+    // ------------------------------------------------------------------ Flap pause (spec 024 2.D)
+
+    bool _pausedByFlap;
+
+    /// <summary>
+    /// While the Flap is open the origami takes no input at all: the mouse and the stick belong to the menu, and a
+    /// drag must not go on behind it. The frame it closes is skipped too, because the press that closed it (B, a
+    /// click) would otherwise reach the fold in the same frame and cancel it or count as a missed grab.
+    /// </summary>
+    bool PausedByFlap()
+    {
+        bool open = FlapManager.Instance != null && FlapManager.Instance.IsMenuOpen;
+        if (open == _pausedByFlap)
+        {
+            return open;
+        }
+
+        _pausedByFlap = open;
+        if (invocando)
+        {
+            if (open)
+            {
+                OnFlapOpened();
+            }
+            else
+            {
+                Debug.Log("[MultipleRectCheck] Flap closed: the fold resumes");
+                ColocarCursorJoystickEnInicio();
+            }
+        }
+        return true;
+    }
+
+    void OnFlapOpened()
+    {
+        if (arrastrando)
+        {
+            //the button will be released inside the menu, so the drag can't end normally; drop it with no
+            //penalty: the arrow goes back to the start of this fold, no crumble, no red flash
+            arrastrando = false;
+            AudioManager.instance.StopById(AudioId.PaperFoldLoop);
+            desiredOrigami.origamiRoutes[desiredOrigami.currentRouteIndex].RestartFold();
+            Debug.Log("[MultipleRectCheck] Flap opened mid-drag: the drag is dropped and the fold restarts quietly");
+        }
+        else
+        {
+            Debug.Log("[MultipleRectCheck] Flap opened: the fold is paused");
+        }
+        CursorManager.Instance.SetCursor(CursorType.OpenHand);
+        SetAgarrandoCursorJoystick(false);
+        EsconderCursorJoystick(); //it draws above every canvas, the open menu included
+    }
+
     // ------------------------------------------------------------------ puntero
 
     Vector3 PosicionPuntero
@@ -63,6 +116,11 @@ public class MultipleRectCheck : MonoBehaviour
 
     void Update()
     {
+        if (PausedByFlap())
+        {
+            return;
+        }
+
         //toggle: E/Enter/B arranca el minijuego, apretar de nuevo lo cancela. ya no hay que holdear
         if (!invocando)
         {

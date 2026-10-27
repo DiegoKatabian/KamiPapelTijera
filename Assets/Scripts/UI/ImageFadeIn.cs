@@ -17,6 +17,9 @@ public class ImageFadeIn : MonoBehaviour
     Image image; // la imagen que hace fade in (en este caso, yo mismo)
     bool _isHolding; 
     bool _isOn; //true es TODO NEGRO
+
+    /// <summary>The image has finished fading away (the main menu waits for the kimmiarts logo's, spec 024 2.B).</summary>
+    public bool IsFadedOut => !_isOn;
     private void Start()
     {
         image = GetComponent<Image>();

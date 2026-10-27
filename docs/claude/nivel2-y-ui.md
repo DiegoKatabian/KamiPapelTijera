@@ -72,7 +72,8 @@ now, ready for pages 1-5 to wire up:
   `CuttablePoliceTape.prefab`, `CuttableRibbon.prefab`, `CuttableRope.prefab` — all built
   on the same bush pattern as `Arbusto 1.prefab` (`ObjetoCortable`: whole sprite off →
   base + top on → top thrown in an arc and shrunk). The poster uses **stock
-  `ObjetoCortable`** with no new script. The other three use `CuttableTwoPieces`
+  `PickupCortable`** with no new script: since spec 024 1.C (2026-10-26) `CuttablePoster 1` (and so its variants 2-5) gives
+  **2 paper** with the reward sticker, no respawn; it was a plain `ObjetoCortable` and gave nothing. The other three use `CuttableTwoPieces`
   (`Assets/Scripts/Cortables/`), a subclass for strips that split sideways into two halves
   that BOTH fly out, reusing the inherited slots as whole/left/right and adding a
   `UnityEvent onCut` for the ribbon (gift box) and rope (catapult). Each prefab root has a
@@ -142,11 +143,14 @@ drive off after the second clue so the police tape can be cut, and the quest han
 - **Every trash can in Level 2 is now `Assets/Prefabs/Interactables/TrashCan.prefab`**
   (15 of them, pages 1-5; the scene instances used to be the bare `Kami_TrashCan.fbx`).
   Opening one runs the stock `Solapa`/`TriggerSolapa` flap flow (Kami's `PullSolapas`
-  gesture) and gives 2 paper once. `TrashCan_ClueGlove.prefab` is a variant that gives the
+  gesture) and gives 4 paper once (2 until spec 024 1.C, 2026-10-26). `TrashCan_ClueGlove.prefab` is a variant that gives the
   glove (page 2's `TrashCan_ClueGlove`). The contents are a `GrantResourcePickup`
   (`Assets/Scripts/TriggerS/Pickups/`) in Revealed mode: opening = collecting, and it
   switches itself off (shrunk to nothing; it used to destroy itself), so later opens find the can
-  empty. `TriggerSolapa.ResetToFresh()` closes a can silently and refills it (`Solapa.ResetClosed`,
+  empty. Its "look inside" tooltip (spec 024 2.E) shows on every approach until the can is opened and again after a refill
+  (`TriggerSolapa._tooltipOnlyUntilOpened`, on in the prefab; it used to show once per session, often spent under a dialogue). Page 4's
+  left can (x ≈ -42) shares the blue post-it with `esferaPrev`, whose trigger covers it.
+  `TriggerSolapa.ResetToFresh()` closes a can silently and refills it (`Solapa.ResetClosed`,
   `GrantResourcePickup.ResetPickup`); only page 4's restart calls it (#219). The per-can "Newspaper 1" material
   override the old instances had was carried over. The model sits under a `Wobble` pivot at
   scale 0.012876 so the placeholder open/close squash (`Assets/Animations/TrashCan/`) has
@@ -213,7 +217,7 @@ drive off after the second clue so the police tape can be cut, and the quest han
   prefab: if the model is rotated again, rotate those two with it. The old `Catapult_PLACEHOLDER_POSITION` stays in the
   scene switched off (safe to delete).
 - Page 5 is page 2 after the clues (Diego): none of the page 2 gameplay objects live there. Its copy of the museum's
-  glove can (inside `Museum Page Parent.prefab`) is overridden on page 5's instance into a plain paper can (2 paper, #241).
+  glove can (inside `Museum Page Parent.prefab`) is overridden on page 5's instance into a plain paper can (4 paper since spec 024 1.C, a scene override of its `_amount`; #241).
 - **No moving traffic on the museum street (#234, 2026-10-17)**: the `TrafficSpawner_Vertical (1)` that lived inside
   `Museum Page Parent.prefab` was removed, so pages 2 and 5 only have parked cars and the patrol cars.
 - **Page 2's guards board quickly (#235, 2026-10-17, not played)**: on the scene instance of `CrimeSceneGate` the patrol car
@@ -404,7 +408,7 @@ real sheet: forward from N it leaves with P<N>_Right and lands as P<N+1>_Left (b
   `.meta`, so the references hold. It warns if an article is cut or the pool runs dry.
 - Textures are JPG, `nPOTScale: 0` (the template's power-of-two rescale would stretch 3148 to 4096), Clamp, max 4096 (sheets 2048).
 
-**Kami's magical girl outfit change opens the level (spec 020, #274, built 2026-10-26, not played).** `Level2/MagicalGirlChange`
+**Kami's magical girl outfit change opens the level (spec 020, #274, built 2026-10-26, played by Diego 2026-10-27).** `Level2/MagicalGirlChange`
 (`Prefabs/Level2/MagicalGirlChange.prefab`, one instance at the scene root, `[DefaultExecutionOrder(100)]`) runs only on a page 1 start:
 it locks Kami (`inCutscene`), dresses her in `_classicLook` (`Gear_OutfitDefault` + `Gear_ShoesBase`), lifts her `_dropHeight` (6) above her
 scene spot (which stays her respawn point) and, once she has landed and `CameraManager`'s level-start cut is done, plays the beat. Every beat is in
@@ -571,6 +575,10 @@ and the HUD strip hanging under it (pull tab, health, paper ammo) is always on s
 HUD strip, so since 2026-10-05 (spec 011 task 4.A) **every tab button is inactive while the Flap is closed**
 (`FlapManager.SetTabsVisible`: on in `OpenFlap`, off when the closing slide ends). Anything new that must
 not show or be clicked during gameplay has to sit above the paper's bottom edge or be hidden the same way.
+**The Flap draws above everything (spec 024 2.D, played by Diego 2026-10-27)**: the prefab root has its own `Canvas` (override sorting,
+order 5) and `GraphicRaycaster`, so in both levels it is in front of the scene canvas (origamis, overlays, post-its, Level 2's
+`ScreenFade`, all order 0) and Level 1's dialogue canvas (order 2), and takes clicks first. Something that must cover the Flap needs a
+canvas above 5 (the gamepad cursor is 32000). Before, the canvas order put it behind the origamis and the overlays.
 **The HUD leaves during cutscenes (#188, 2026-10-13)**: the prefab root has a `CanvasGroup` (`_hudGroup`, authored
 in the prefab) that `FlapManager.UpdateHudVisibility` fades to 0 over `_hudFadeSeconds` (0.25, unscaled) and stops
 raycasts while `LevelManager.inCutscene` is on and the Flap is `Closed`, so it follows every lock: Timeline

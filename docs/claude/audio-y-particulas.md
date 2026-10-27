@@ -140,6 +140,21 @@ lines get long strokes and every line ends on short ones. The row's 0.05 pitch s
 typewriter stops the pencil; a line written to the end lets the last stroke finish. `AudioManager.PlayClip` /
 `ClipsOf` exist for this: callers that pick the clip themselves.
 
+**Cut sounds go through `CutSoundGate` (spec 024 1.B, 2026-10-26, played by Diego 2026-10-27).** Every cuttable plays
+its own `TijeraHit` (and most also `PaperCut`), so one swing through two bushes started the same clip twice at the same
+instant and it phased into a doubled thump. The eight callers (`ObjetoCortable` and its subclasses, `HongoCortable`,
+`CuttableDrapes`, `EntityCortable`, `PuertaCortable`, `PoliceOfficerCortable`, `RocosoCortable`, `Arbol3DCortable`) now call
+`CutSoundGate.Play(id)` (`Managers/Audio/`, a component on `AudioManager.prefab`). Cuts of one id within `_burstWindow` (0.1 s,
+unscaled) of the burst's first one are a burst: the first plays at once as before; the 2nd and 3rd wait 15-40 ms (`_minDelay` /
+`_maxDelay`, the phase fix) and are pitched by `_semitones` (0 / +2 / +4); every voice is rescaled to 1/sqrt(N) (0.71 for two, 0.58
+for three, the live first voice included, through `AudioManager.ScaleVolume`, a generation-checked handle); a 4th cut in the burst
+plays nothing (`_maxVoices` 3). Delayed voices run from the gate's own `Update`, never as AudioManager coroutines
+(`EncounterManager` stops those). Without the component it warns once and plays unthinned. `TijeraHitbox`'s miss logic is
+untouched. A bus/global volume change during a burst resets its voices to the row level (harmless, 0.1 s).
+
+**Bank volumes (spec 024 1.A, 2026-10-26, played by Diego 2026-10-27)**: `CarHornIdling` 0.5 -> 0.251 (-6 dB), `QuestCompleted02` 0.252 -> 0.178
+(-3 dB; `QuestCompleted02Pitched` untouched), `RopeCreak` 0.5 -> 0.6.
+
 **Gotchas worth knowing:**
 - A `SoundHandle` carries a generation counter. A stale handle can never stop whatever is playing on
   that pooled source now — always stop through the handle or the id, never by grabbing the source.

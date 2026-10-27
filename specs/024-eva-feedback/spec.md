@@ -1,7 +1,8 @@
 # Spec 024: EVA feedback batch (Oct 23-26 playtests)
 
-**Status**: Draft, 2026-10-26. Triaged with Diego item by item (22 raw notes -> 20 tasks in 4 phases). Nothing built.
-Milestone M9. Epic **#275**, tasks #276-#295 (1.A = #276 ... 4.G = #295, in spec order). Branch: none yet (written on `level-2-sounds`, uncommitted).
+**Status**: Phases 1 and 2 built, played by Diego and committed (2026-10-27; #276-#284 closed). Phase 3 next: its kickoff is
+`kickoff-phase3.md`. Triaged with Diego item by item on 2026-10-26 (22 raw notes -> 20 tasks in 4 phases).
+Milestone M9. Epic **#275**, tasks #276-#295 (1.A = #276 ... 4.G = #295, in spec order). Branch: `after-eva-feedback`.
 Siblings from the same triage: 022 (flying paper stickers) and 023 (settings menu), each its own epic.
 **Not related**: specs 020 and 021 (magical girl change, magnifier and tool switching) are Diego's design work on another
 branch; don't touch them. Note 021 adds a tool selector to the HUD strip: keep that in mind when touching the Flap.
@@ -151,6 +152,42 @@ Don't change when it becomes cuttable (the trigger stays off until Kami boards).
 every `LateUpdate` (`GroundVelocity`): spin at `speed / radius`. First check whether the wheels are separate objects in
 the car fbx variants (`PaperCar variacion 1-3`, `PaperCar Policia`, and the original mesh); if a car is one mesh, that car
 needs a `[POCHI]` issue and is skipped.
+
+## As built
+
+**Phase 1 (2026-10-26, branch `after-eva-feedback`; played by Diego 2026-10-27, all good; committed with Phase 2).**
+- 1.A: `CarHornIdling` 0.5 -> 0.251, `QuestCompleted02` 0.252 -> 0.178, `RopeCreak` 0.5 -> 0.6 (`AudioBank.asset`).
+- 1.B: `Managers/Audio/CutSoundGate.cs`, a component on `AudioManager.prefab` (every scene instances that prefab), plus
+  `AudioManager.ScaleVolume(handle, factor)`. The eight callers listed above call `CutSoundGate.Play`. Burst = same id within
+  0.1 s of its first cut (unscaled time, so a burst never waits for the Flap); the first voice plays at once, the 2nd/3rd after
+  15-40 ms at +2/+4 semitones, all voices rescaled to 1/sqrt(N), a 4th dropped. All of it is Inspector-tunable on the
+  component. Detail: `audio-y-particulas.md`.
+- 1.C: `CuttablePoster 1.prefab`'s script switched from `ObjetoCortable` to `PickupCortable` (paper x2, no respawn, Diego's
+  OK), which posters 2-5 inherit as variants. `TrashCan.prefab` `_amount` 2 -> 4 (Level 1 has no trash cans), and the scene
+  override that turns page 5's glove can into a paper can 2 -> 4. `TrashCan_ClueGlove` has no paper part (it gives only the
+  glove), so it is unchanged.
+- 1.D: the 56 fixes of `es-punctuation-audit.md` applied to the five `*_es.asset` tables exactly as listed (each string
+  checked against the file before writing; Portuguese untouched). No font work needed.
+
+**Phase 2 (2026-10-27, same branch; played by Diego 2026-10-27, all good; committed with Phase 1).**
+- 2.A: cause confirmed in the TMP 3.0.6 source: Middle alignment centres on `maxVisibleDescender`, the lowest *revealed* line
+  (`useMaxVisibleDescender`, on by default), so each new line moved the block up. `DialogueManager.EjecutarTypewriter` sets
+  `useMaxVisibleDescender = false` on its text: centred on the whole line from the first character. Covers every
+  `DialogueSystem2` (both levels, both end cutscenes, the main menu intro). No prefab change.
+- 2.B: the logo is `MainMenu.unity`'s `kimmiarts` (fades in, holds 2 s, fades out, about 4 s). `ImageFadeIn.IsFadedOut` (new) +
+  `MainMenuManager._studioLogo` / `_secondsAfterLogo` (1): `OnNewGameButtonDown` refuses the press until 1 s after the fade-out
+  ends. The joystick selection retry (#41.4) is untouched, so New Game can be selected early but not pressed. Esc/Start do nothing.
+- 2.C: each card's `Caption` (a child of the card's `Button`, hanging below it) had raycasts off; switched on for both cards, so a
+  click or hover on the title bubbles to the card. No code.
+- 2.D: `FlapManager.prefab`'s root got its own `Canvas` (override sorting, order 5) + `GraphicRaycaster`: above the scene canvas
+  (origamis, overlays, post-its, `ScreenFade`, order 0) and Level 1's dialogue canvas (order 2) in both levels, with click priority
+  to match. The loading canvas (order 2) only exists in `MainMenu`, which has no Flap, so it was left alone. `MultipleRectCheck`
+  takes no input while `FlapManager.IsMenuOpen` and on the frame it closes (so the B or click that closes it never reaches the
+  fold); a drag in progress is dropped without penalty (arrow back to the fold's start, no crumble or red flash), the gamepad
+  cursor hides and reappears on the arrow. Side effect: the HUD strip now draws over the paper particles flying to it (spec 022).
+- 2.E: diagnosis on #284 (once-per-session show spent by dialogues' hide-all; not reset by a capture; the left can shares the
+  blue post-it with `esferaPrev`). Fix: `TriggerSolapa._tooltipOnlyUntilOpened` (on in `TrashCan.prefab`, `_maxTooltipShows` 1 -> 0):
+  shown on every approach to an unopened can, hidden when opened, back after `ResetToFresh`. The can/sphere overlap was not moved.
 
 ## Verification
 

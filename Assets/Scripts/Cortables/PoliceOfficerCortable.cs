@@ -33,7 +33,7 @@ public class PoliceOfficerCortable : MonoBehaviour, ICortable
             return;
         }
 
-        AudioManager.instance.Play(AudioId.TijeraHit);
+        CutSoundGate.Play(AudioId.TijeraHit);
         _officer.KnockOut();
     }
 }

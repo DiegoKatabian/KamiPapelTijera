@@ -267,6 +267,10 @@ public class DialogueManager : Singleton<DialogueManager>
     /// </summary>
     IEnumerator EjecutarTypewriter(TMPro.TextMeshProUGUI textElement)
     {
+        //spec 024 2.A: the globe text is vertically centred, and by default TMP centres it on the lines
+        //revealed so far, so every new line pushed the whole block up. Centre on the full line instead.
+        textElement.useMaxVisibleDescender = false;
+
         //ForceMeshUpdate para poder leer characterCount YA: sin esto TMP recalcula recien en
         //su propio LateUpdate y characterCount todavia tendria el valor de la linea anterior
         textElement.ForceMeshUpdate();

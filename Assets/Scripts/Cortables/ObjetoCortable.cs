@@ -45,8 +45,8 @@ public class ObjetoCortable : MonoBehaviour, ICortable
     protected virtual void ApplyCut()
     {
         //print("cortaste este objeto");
-        AudioManager.instance.Play(AudioId.TijeraHit);
-        AudioManager.instance.Play(AudioId.PaperCut);
+        CutSoundGate.Play(AudioId.TijeraHit);
+        CutSoundGate.Play(AudioId.PaperCut);
 
         //apago el entero y prendo las partes
         SepararSprites();

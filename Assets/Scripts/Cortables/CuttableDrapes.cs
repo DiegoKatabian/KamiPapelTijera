@@ -42,8 +42,8 @@ public class CuttableDrapes : ObjetoCortable
 
     protected override void ApplyCut()
     {
-        AudioManager.instance.Play(AudioId.TijeraHit);
-        AudioManager.instance.Play(AudioId.PaperCut);
+        CutSoundGate.Play(AudioId.TijeraHit);
+        CutSoundGate.Play(AudioId.PaperCut);
 
         SepararSprites();
         StartCoroutine(DropBottomHalf());

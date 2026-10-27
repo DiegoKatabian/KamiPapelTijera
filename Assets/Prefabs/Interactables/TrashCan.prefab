@@ -86,10 +86,11 @@ MonoBehaviour:
   showTooltip: 1
   tooltipTextToShow: trashcan_tooltip
   postItColor: 0
-  _maxTooltipShows: 1
+  _maxTooltipShows: 0
   solapaAfectada: {fileID: 500537903020343122}
   objetoParaMostrar: {fileID: 8327981459683865522}
   tiempoHastaMostrarObjeto: 0.35
+  _tooltipOnlyUntilOpened: 1
 --- !u!65 &8404982236005931605
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -235,7 +236,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _collectMode: 1
   _resource: 2
-  _amount: 2
+  _amount: 4
   _popHeight: 1.5
   _popSeconds: 0.6
   _collectDelay: 0

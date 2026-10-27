@@ -13,6 +13,12 @@ public class TriggerSolapa : TriggerScript
     [SerializeField] Solapa solapaAfectada;
     [SerializeField] GameObject objetoParaMostrar;
     [SerializeField] float tiempoHastaMostrarObjeto;
+
+    [SerializeField, Tooltip("Show the tooltip only until the flap is first opened, and again after ResetToFresh refills it. " +
+                             "On for the trash cans: 'look inside' means nothing once it has been emptied.")]
+    bool _tooltipOnlyUntilOpened;
+
+    bool _tooltipSpent; //this trigger switched its own tooltip off when the flap was opened
     bool isShowing;
     Coroutine _toggleRoutine;
 
@@ -35,6 +41,15 @@ public class TriggerSolapa : TriggerScript
 
             // Si estaba abierta, kami la va a cerrar y la animacion de tironear va en reversa
             bool estabaAbierta = solapaAfectada.IsOpen;
+            if (!estabaAbierta && _tooltipOnlyUntilOpened && showTooltip)
+            {
+                showTooltip = false;
+                _tooltipSpent = true;
+                if (TooltipManager.Instance != null)
+                {
+                    TooltipManager.Instance.HideTooltip(postItColor, this);
+                }
+            }
             LevelManager.Instance.player.PlayPullSolapa(estabaAbierta);
             solapaAfectada.CambiarEstado();
             _toggleRoutine = StartCoroutine(ToggleObject(objetoParaMostrar));
@@ -53,6 +68,12 @@ public class TriggerSolapa : TriggerScript
             _toggleRoutine = null;
         }
         isShowing = false;
+
+        if (_tooltipSpent)
+        {
+            showTooltip = true;
+            _tooltipSpent = false;
+        }
 
         if (solapaAfectada != null)
         {

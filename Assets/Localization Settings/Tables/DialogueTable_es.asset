@@ -35,7 +35,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 332300250890240
-    m_Localized: Empezamos?
+    m_Localized: "\xBFEmpezamos?"
     m_Metadata:
       m_Items: []
   - m_Id: 332305120477184
@@ -43,12 +43,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 332307267960832
-    m_Localized: "Lo conoc\xE9s? "
+    m_Localized: "\xBFLo conoc\xE9s? "
     m_Metadata:
       m_Items: []
   - m_Id: 332309033762816
-    m_Localized: "Claro que lo conoc\xE9s! Si este es tu libro! Te acord\xE1s como
-      empieza? "
+    m_Localized: "\xA1Claro que lo conoc\xE9s! \xA1Si este es tu libro! \xBFTe acord\xE1s como empieza? "
     m_Metadata:
       m_Items: []
   - m_Id: 344823507304448
@@ -80,26 +79,23 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 655499480121344
-    m_Localized: "Kami! Qu\xE9 bueno que viniste! Me ca\xED del barranco y no s\xE9
-      c\xF3mo volver."
+    m_Localized: "\xA1Kami! \xA1Qu\xE9 bueno que viniste! Me ca\xED del barranco y no s\xE9 c\xF3mo volver."
     m_Metadata:
       m_Items: []
   - m_Id: 655541179891712
-    m_Localized: "Encima hay un Rocoso de graande! Por suerte est\xE1 dormido."
+    m_Localized: "\xA1Encima hay un Rocoso de graande! Por suerte est\xE1 dormido."
     m_Metadata:
       m_Items: []
   - m_Id: 655586474180608
-    m_Localized: "Por qu\xE9 no cort\xE1s la represa y le das un buen chapuz\xF3n?
-      :)"
+    m_Localized: "\xBFPor qu\xE9 no cort\xE1s la represa y le das un buen chapuz\xF3n? :)"
     m_Metadata:
       m_Items: []
   - m_Id: 655892767424512
-    m_Localized: "Qu\xE9 grande mi nietita! Ahora vamos para casa que tengo un hammmbre!"
+    m_Localized: "\xA1Qu\xE9 grande mi nietita! \xA1Ahora vamos para casa que tengo un hammmbre!"
     m_Metadata:
       m_Items: []
   - m_Id: 656053900001280
-    m_Localized: "Ay, no sab\xE9s c\xF3mo me duele la espalda! No me dobl\xE1s y
-      me llev\xE1s en tu morralcito?"
+    m_Localized: "\xA1Ay, no sab\xE9s c\xF3mo me duele la espalda! \xBFNo me dobl\xE1s y me llev\xE1s en tu morralcito?"
     m_Metadata:
       m_Items: []
   - m_Id: 656153699270656
@@ -107,7 +103,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 656247265804288
-    m_Localized: Muchas gracias por traerme Kami. Bueno, ya! Vamos a comer!
+    m_Localized: "Muchas gracias por traerme Kami. \xA1Bueno, ya! \xA1Vamos a comer!"
     m_Metadata:
       m_Items: []
   - m_Id: 656294703382528
@@ -124,21 +120,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 656721972936704
-    m_Localized: "Buenas buenas! Mir\xE1 qui\xE9n lleg\xF3!"
+    m_Localized: "\xA1Buenas buenas! \xA1Mir\xE1 qui\xE9n lleg\xF3!"
     m_Metadata:
       m_Items: []
   - m_Id: 656803698950144
-    m_Localized: "Che, sab\xE9s que no estoy pudiendo prender el horno? Est\xE1 muy
-      fuerte el viento hoy..."
+    m_Localized: "Che, \xBFsab\xE9s que no estoy pudiendo prender el horno? Est\xE1 muy fuerte el viento hoy..."
     m_Metadata:
       m_Items: []
   - m_Id: 656879393554432
-    m_Localized: "Pod\xE9s traerme 100 papeles? No hace falta que los traigas ahora.
-      Pod\xE9s ir y volver entre p\xE1ginas cuando quieras."
+    m_Localized: "\xBFPod\xE9s traerme 100 papeles? No hace falta que los traigas ahora. Pod\xE9s ir y volver entre p\xE1ginas cuando quieras."
     m_Metadata:
       m_Items: []
   - m_Id: 657038307344384
-    m_Localized: "Bien ah\xED! Muchas gracias por los papeles."
+    m_Localized: "\xA1Bien ah\xED! Muchas gracias por los papeles."
     m_Metadata:
       m_Items: []
   - m_Id: 657081387040768
@@ -146,11 +140,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 657144913969152
-    m_Localized: "Listo, ahora pod\xE9s cortar piedras! \nEspero que te sirva!"
+    m_Localized: "\xA1Listo, ahora pod\xE9s cortar piedras! \n\xA1Espero que te sirva!"
     m_Metadata:
       m_Items: []
   - m_Id: 657248433586176
-    m_Localized: "Buen d\xEDa Kami!"
+    m_Localized: "\xA1Buen d\xEDa Kami!"
     m_Metadata:
       m_Items: []
   - m_Id: 657286689832960
@@ -158,25 +152,23 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 657288740847616
-    m_Localized: "Estoy haciendo unas pociones especiales pero me qued\xE9 sin flores!"
+    m_Localized: "\xA1Estoy haciendo unas pociones especiales pero me qued\xE9 sin flores!"
     m_Metadata:
       m_Items: []
   - m_Id: 657290133356544
-    m_Localized: "Son grandotas y llamativas, pero no puedo dejar mi puestito para
-      ir a buscarlas! Vos podr\xE1s traerme tres de ellas?"
+    m_Localized: "\xA1Son grandotas y llamativas, pero no puedo dejar mi puestito para ir a buscarlas! \xBFVos podr\xE1s traerme tres de ellas?"
     m_Metadata:
       m_Items: []
   - m_Id: 657748046495744
-    m_Localized: "Kami, no podr\xE1s traerme tres flores por favor? "
+    m_Localized: "Kami, \xBFno podr\xE1s traerme tres flores por favor? "
     m_Metadata:
       m_Items: []
   - m_Id: 657925180342272
-    m_Localized: "Gracias por traerme las flores! Sos lo m\xE1s!"
+    m_Localized: "\xA1Gracias por traerme las flores! \xA1Sos lo m\xE1s!"
     m_Metadata:
       m_Items: []
   - m_Id: 657926950338560
-    m_Localized: "Por haber sido taan buena conmigo te voy a regalar estos papeles.
-      S\xE9 que sos re talentosa con los origamis, seguro te sirven para algo!"
+    m_Localized: "Por haber sido taan buena conmigo te voy a regalar estos papeles. \xA1S\xE9 que sos re talentosa con los origamis, seguro te sirven para algo!"
     m_Metadata:
       m_Items: []
   - m_Id: 657928351236096
@@ -184,21 +176,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 658716536455168
-    m_Localized: Gracias por traerme las flores!
+    m_Localized: "\xA1Gracias por traerme las flores!"
     m_Metadata:
       m_Items: []
   - m_Id: 660063197446144
-    m_Localized: "Kami, Kami! Me ten\xE9s que ayudar!"
+    m_Localized: "\xA1Kami, Kami! \xA1Me ten\xE9s que ayudar!"
     m_Metadata:
       m_Items: []
   - m_Id: 660088149360640
-    m_Localized: "La abuela se perdi\xF3 de nuevo. Se fue a hacer su caminata y todav\xEDa
-      no volvi\xF3!"
+    m_Localized: "La abuela se perdi\xF3 de nuevo. \xA1Se fue a hacer su caminata y todav\xEDa no volvi\xF3!"
     m_Metadata:
       m_Items: []
   - m_Id: 660089567035392
-    m_Localized: "Pod\xE9s ir a buscarla? Yo acabo de tirar los choris y tengo miedo
-      que se me quemen."
+    m_Localized: "\xBFPod\xE9s ir a buscarla? Yo acabo de tirar los choris y tengo miedo que se me quemen."
     m_Metadata:
       m_Items: []
   - m_Id: 660091592884224
@@ -206,13 +196,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 660424608038912
-    m_Localized: "Us\xE1 tu tijera y tu magia de origami para encontrar a la abuela
-      y traerla!"
+    m_Localized: "\xA1Us\xE1 tu tijera y tu magia de origami para encontrar a la abuela y traerla!"
     m_Metadata:
       m_Items: []
   - m_Id: 660494095073280
-    m_Localized: "Volviste a buscar tus Botas de Lectura R\xE1pida, no? Las dejaste
-      ac\xE1. Con estas pod\xE9s ir m\xE1s r\xE1pido por el libro."
+    m_Localized: "\xBFVolviste a buscar tus Botas de Lectura R\xE1pida, no? Las dejaste ac\xE1. Con estas pod\xE9s ir m\xE1s r\xE1pido por el libro."
     m_Metadata:
       m_Items: []
   - m_Id: 660496028647424
@@ -221,7 +209,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 660498415206400
-    m_Localized: "Y? Encontraste a la abuela? D\xF3nde est\xE1?"
+    m_Localized: "\xBFY? \xBFEncontraste a la abuela? \xBFD\xF3nde est\xE1?"
     m_Metadata:
       m_Items: []
   - m_Id: 660504731828224
@@ -229,37 +217,35 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661274998980608
-    m_Localized: "Qu\xE9 ingenioso traer a la Abuela doblada. Nunca vi eso!"
+    m_Localized: "Qu\xE9 ingenioso traer a la Abuela doblada. \xA1Nunca vi eso!"
     m_Metadata:
       m_Items: []
   - m_Id: 661432029528064
-    m_Localized: "Kami, Kami! Me ten\xE9s que ayudar!"
+    m_Localized: "\xA1Kami, Kami! \xA1Me ten\xE9s que ayudar!"
     m_Metadata:
       m_Items: []
   - m_Id: 661435837956096
-    m_Localized: "Las gallinas quedaron atrapadas del otro lado del r\xEDo! "
+    m_Localized: "\xA1Las gallinas quedaron atrapadas del otro lado del r\xEDo! "
     m_Metadata:
       m_Items: []
   - m_Id: 661449255534592
-    m_Localized: "Vos podr\xEDas cortar el \xE1rbol para hacerles un puente?"
+    m_Localized: "\xBFVos podr\xEDas cortar el \xE1rbol para hacerles un puente?"
     m_Metadata:
       m_Items: []
   - m_Id: 661548048171008
-    m_Localized: "Necesito que cortes ese \xE1rbol!"
+    m_Localized: "\xA1Necesito que cortes ese \xE1rbol!"
     m_Metadata:
       m_Items: []
   - m_Id: 661576607186944
-    m_Localized: "Gracias! Mir\xE1, las gallinas ya est\xE1n cruzando. Tom\xE1 esto
-      como recompensa."
+    m_Localized: "\xA1Gracias! Mir\xE1, las gallinas ya est\xE1n cruzando. Tom\xE1 esto como recompensa."
     m_Metadata:
       m_Items: []
   - m_Id: 661588523204608
-    m_Localized: "[Ahora pod\xE9s caminar sobre el agua!]"
+    m_Localized: "[\xA1Ahora pod\xE9s caminar sobre el agua!]"
     m_Metadata:
       m_Items: []
   - m_Id: 661653480390656
-    m_Localized: "Gracias por darme una mano Kami! Las gallinas est\xE1n felices
-      en el rancho."
+    m_Localized: "\xA1Gracias por darme una mano Kami! Las gallinas est\xE1n felices en el rancho."
     m_Metadata:
       m_Items: []
   - m_Id: 661833231482880
@@ -271,16 +257,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 661838587609088
-    m_Localized: "Qu\xE9 hiciste?! Ven\xED para ac\xE1."
+    m_Localized: "\xA1\xBFQu\xE9 hiciste?! Ven\xED para ac\xE1."
     m_Metadata:
       m_Items: []
   - m_Id: 661840252747776
-    m_Localized: "Qu\xE9 es eso de hacer origamis de los dem\xE1s personajes?"
+    m_Localized: "\xBFQu\xE9 es eso de hacer origamis de los dem\xE1s personajes?"
     m_Metadata:
       m_Items: []
   - m_Id: 661841552982016
-    m_Localized: "No pod\xE9s andar cambiando las historias! Se supon\xEDa que la
-      abuela no lograba salir de esa p\xE1gina..."
+    m_Localized: "\xA1No pod\xE9s andar cambiando las historias! Se supon\xEDa que la abuela no lograba salir de esa p\xE1gina..."
     m_Metadata:
       m_Items: []
   - m_Id: 661842916130816

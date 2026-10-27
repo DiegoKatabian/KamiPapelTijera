@@ -226,6 +226,19 @@ public class AudioManager : MonoBehaviour
         _pool.StopSource(handle.source);
     }
 
+    /// <summary>
+    /// Multiplies one live instance's volume (CutSoundGate thins a burst of cuts this way). A stale
+    /// handle does nothing. A later bus or global volume change resets it to the row's level.
+    /// </summary>
+    public void ScaleVolume(SoundHandle handle, float factor)
+    {
+        if (!handle.IsValid || !_pool.IsCurrent(handle.source, handle.generation))
+        {
+            return;
+        }
+        handle.source.volume *= factor;
+    }
+
     public void StopById(string id)
     {
         _pool.StopId(id);

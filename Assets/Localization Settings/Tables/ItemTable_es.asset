@@ -23,7 +23,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 7627980800
-    m_Localized: '"Dale querida metele que tengo hambre!"'
+    m_Localized: "\"\xA1Dale querida metele que tengo hambre!\""
     m_Metadata:
       m_Items: []
   - m_Id: 295034273792
@@ -51,8 +51,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 620076056576
-    m_Localized: "Si sobre agua est\xE1s caminando, con estas botas de mojarte te
-      pod\xE9s ir olvidando!"
+    m_Localized: "\xA1Si sobre agua est\xE1s caminando, con estas botas de mojarte te pod\xE9s ir olvidando!"
     m_Metadata:
       m_Items: []
   - m_Id: 666192429056
@@ -72,7 +71,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 893766975488
-    m_Localized: "CLIC para cortar!\n Estas tijeras eran de tu madre."
+    m_Localized: "\xA1CLIC para cortar!\n Estas tijeras eran de tu madre."
     m_Metadata:
       m_Items: []
   - m_Id: 960443826176

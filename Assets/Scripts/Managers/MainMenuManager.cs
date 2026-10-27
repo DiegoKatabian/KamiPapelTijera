@@ -27,6 +27,16 @@ public class MainMenuManager : MonoBehaviour
                              "(the loading animation covers the rest of the fade).")]
     float _secondsBeforeLoadingLevel2 = 1.5f;
 
+    [SerializeField, Tooltip("The kimmiarts logo's fade. New Game does nothing until it has faded away, plus the seconds below. " +
+                             "Empty = no lock (with a warning).")]
+    ImageFadeIn _studioLogo;
+
+    [SerializeField, Tooltip("Seconds New Game stays locked after the kimmiarts logo has faded away.")]
+    float _secondsAfterLogo = 1f;
+
+    float _logoGoneAt = -1f; //unscaled time the logo finished fading; -1 = still showing
+    bool _logoMissingWarned;
+
     bool _levelChosen; //a level was picked: no second pick, no reselecting menu buttons
 
     //el boton de nuevo juego es una instancia de Assets/Prefabs/UI/Button.prefab renombrada en la escena
@@ -133,6 +143,12 @@ public class MainMenuManager : MonoBehaviour
             return;
         }
 
+        if (StudioLogoStillShowing())
+        {
+            Debug.Log("[MainMenuManager] New Game ignored: the kimmiarts logo is still on screen");
+            return;
+        }
+
         if (_levelSelect == null)
         {
             Debug.LogWarning("[MainMenuManager] no _levelSelect wired: New Game starts Level 1 directly");
@@ -148,6 +164,25 @@ public class MainMenuManager : MonoBehaviour
         }
 
         _levelSelect.Open();
+    }
+
+    /// <summary>
+    /// Spec 024 2.B: players pressed New Game while the studio logo was still up. Only the press is refused:
+    /// the joystick selection (#41.4) keeps landing on New Game as early as it can.
+    /// </summary>
+    bool StudioLogoStillShowing()
+    {
+        if (_studioLogo == null)
+        {
+            if (!_logoMissingWarned)
+            {
+                _logoMissingWarned = true;
+                Debug.LogWarning("[MainMenuManager] no _studioLogo wired: New Game is not locked during the logo");
+            }
+            return false;
+        }
+
+        return _logoGoneAt < 0f || Time.unscaledTime < _logoGoneAt + _secondsAfterLogo;
     }
 
     /// <summary>Level 1 card: the original New Game flow (the intro storyboard dialogue, then Level 1).</summary>
@@ -238,6 +273,12 @@ public class MainMenuManager : MonoBehaviour
         if (InputHub.InteractDown)
         {
             EventManager.Trigger(Evento.OnPlayerPressedE); //como no tengo PlayerController, lo hago aca.
+        }
+
+        if (_logoGoneAt < 0f && _studioLogo != null && _studioLogo.IsFadedOut)
+        {
+            _logoGoneAt = Time.unscaledTime;
+            Debug.Log($"[MainMenuManager] kimmiarts logo gone, New Game unlocks in {_secondsAfterLogo}s");
         }
 
         ReintentarSeleccionSiHaceFalta();

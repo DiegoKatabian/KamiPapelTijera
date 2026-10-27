@@ -10,8 +10,8 @@ public class HongoCortable : PickupCortable
     protected override void ApplyCut()
     {
         print("cortaste el hongo!");
-        AudioManager.instance.Play(AudioId.TijeraHit);
-        AudioManager.instance.Play(AudioId.PaperCut);
+        CutSoundGate.Play(AudioId.TijeraHit);
+        CutSoundGate.Play(AudioId.PaperCut);
         AudioManager.instance.Play(AudioId.MagicSuccess, 2f);
         gallinaSounds.PlayCortadaSound();
 

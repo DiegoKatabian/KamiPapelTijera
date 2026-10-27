@@ -59,7 +59,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7000001}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acbad5eb27924f24e8c7a42bea4412cb, type: 3}
+  m_Script: {fileID: 11500000, guid: ce131e03b3e708b4b9dd289b5d5ee62b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spriteEntero: {fileID: 7000012}
@@ -71,6 +71,9 @@ MonoBehaviour:
   doesRespawn: 0
   respawnTime: 30
   doesShrink: 1
+  pickupType: 2
+  pickupAmount: 2
+  _extraCutSound: 
 --- !u!54 &7000005
 Rigidbody:
   m_ObjectHideFlags: 0

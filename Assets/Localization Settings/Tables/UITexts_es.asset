@@ -56,7 +56,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 13120817446912
-    m_Localized: "Quer\xE9s salir en serio? :("
+    m_Localized: "\xBFQuer\xE9s salir en serio? :("
     m_Metadata:
       m_Items: []
   - m_Id: 13503983894528
@@ -73,8 +73,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 38029492862976
-    m_Localized: "Encontraste a la abuela pero tal vez queden secretos por revelar.\nQuer\xE9s
-      terminar este libro o prefer\xEDs quedarte a explorar?"
+    m_Localized: "Encontraste a la abuela pero tal vez queden secretos por revelar.\n\xBFQuer\xE9s terminar este libro o prefer\xEDs quedarte a explorar?"
     m_Metadata:
       m_Items: []
   - m_Id: 38147315056640
@@ -111,15 +110,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 244717383034994688
-    m_Localized: "Ca\xEDste al agua!\nToc\xE1 E para reiniciar."
+    m_Localized: "\xA1Ca\xEDste al agua!\nToc\xE1 E para reiniciar."
     m_Metadata:
       m_Items: []
   - m_Id: 244717473178976256
-    m_Localized: "El Rocoso te derrot\xF3!\nToc\xE1 E para reiniciar."
+    m_Localized: "\xA1El Rocoso te derrot\xF3!\nToc\xE1 E para reiniciar."
     m_Metadata:
       m_Items: []
   - m_Id: 244717600000000001
-    m_Localized: "Te atraparon!\nToc\xE1 E para reiniciar."
+    m_Localized: "\xA1Te atraparon!\nToc\xE1 E para reiniciar."
     m_Metadata:
       m_Items: []
   - m_Id: 244717555555000000
@@ -151,7 +150,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 244717600000000008
-    m_Localized: "Te atropell\xF3 un auto!\nToc\xE1 E para reiniciar."
+    m_Localized: "\xA1Te atropell\xF3 un auto!\nToc\xE1 E para reiniciar."
     m_Metadata:
       m_Items: []
   - m_Id: 244717600000000009

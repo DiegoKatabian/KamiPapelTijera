@@ -23,7 +23,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 12325601280
-    m_Localized: "Tra\xE9 de vuelta a la abuela!"
+    m_Localized: "\xA1Tra\xE9 de vuelta a la abuela!"
     m_Metadata:
       m_Items: []
   - m_Id: 182454960128
@@ -36,8 +36,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 269067337728
-    m_Localized: "Las gallinas de Tiburcio tienen hongos en la cabeza! Cort\xE1 3
-      y llev\xE1selos a Tiburcio."
+    m_Localized: "\xA1Las gallinas de Tiburcio tienen hongos en la cabeza! Cort\xE1 3 y llev\xE1selos a Tiburcio."
     m_Metadata:
       m_Items: []
   - m_Id: 226763587584

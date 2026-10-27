@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 39571800064
-    m_Localized: Dejaste a la abuela en casa!
+    m_Localized: "\xA1Dejaste a la abuela en casa!"
     m_Metadata:
       m_Items: []
   - m_Id: 216298799104
@@ -31,7 +31,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 489079554048
-    m_Localized: La gallina intenta esquivarte!
+    m_Localized: "\xA1La gallina intenta esquivarte!"
     m_Metadata:
       m_Items: []
   - m_Id: 2542224916480
@@ -55,12 +55,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3105733853184
-    m_Localized: "Cuidado con el agua! Us\xE1 el pedestal de origami para doblar
-      un puente"
+    m_Localized: "\xA1Cuidado con el agua! Us\xE1 el pedestal de origami para doblar un puente"
     m_Metadata:
       m_Items: []
   - m_Id: 3175216693248
-    m_Localized: "Cuidado con el agua! \nSalt\xE1 usando ESPACIO."
+    m_Localized: "\xA1Cuidado con el agua! \nSalt\xE1 usando ESPACIO."
     m_Metadata:
       m_Items: []
   - m_Id: 3266073706496
@@ -72,8 +71,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3418658291712
-    m_Localized: Cuidado con los Rocosos! Resisten tus tijeras... Pero no un arbolazo
-      en la cabeza.
+    m_Localized: "\xA1Cuidado con los Rocosos! Resisten tus tijeras... Pero no un arbolazo en la cabeza."
     m_Metadata:
       m_Items: []
   - m_Id: 3511264329728
@@ -85,11 +83,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 4182503964672
-    m_Localized: Despertaste al Rocoso!
+    m_Localized: "\xA1Despertaste al Rocoso!"
     m_Metadata:
       m_Items: []
   - m_Id: 5736808169472
-    m_Localized: "Arrastr\xE1 hasta el final y solt\xE1. \nNo te salgas del camino!"
+    m_Localized: "Arrastr\xE1 hasta el final y solt\xE1. \n\xA1No te salgas del camino!"
     m_Metadata:
       m_Items: []
   - m_Id: 7000000000001

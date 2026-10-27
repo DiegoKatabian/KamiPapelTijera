@@ -10,7 +10,7 @@ public class EntityCortable : MonoBehaviour, ICortable
     public virtual void GetCut(float dmg)
     {
         //print("entity: me cortaron");
-        AudioManager.instance.Play(AudioId.TijeraHit);
+        CutSoundGate.Play(AudioId.TijeraHit);
         //_thisEntity.TakeDamage(dmg);
     }
 }

@@ -165,6 +165,11 @@ Traduce los textos de la UI al device activo. Ver la sección "Prompts" más aba
   `MultipleRectCheck.Update()` corta el frame (`return`) después de `StartOrigami`: sin
   eso, el apretón que abre agarraría en el mismo cuadro y un toque corto terminaría en
   "soltaste mal" al instante.
+- **The Flap pauses the origami (spec 024 2.D, played by Diego 2026-10-27)**: `MultipleRectCheck.PausedByFlap` skips the whole
+  `Update` while `FlapManager.IsMenuOpen` and on the frame it closes (the B or click that closed it must not cancel the fold or
+  count as a missed grab). A drag in progress when it opens is dropped quietly (the arrow back to the fold's start, no crumble,
+  no red flash), the gamepad cursor hides and comes back on the green arrow. The Flap draws above the origami (its own canvas,
+  see "Flap UI" in `nivel2-y-ui.md`).
 - **Con joystick cancela B**, no A (si cancelara A, el apretón de agarrar cerraría el
   origami). También cancelan E/Enter o caminar fuera del pedestal. **Soltar fuera de la meta o apretar fuera de la flecha verde
   ya NO cierra el origami** (spec 019 V1, 2026-10-21, no jugado): reinicia solo ese pliegue, con flash rojo y cartel

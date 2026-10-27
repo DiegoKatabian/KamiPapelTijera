@@ -376,7 +376,7 @@ MonoBehaviour:
   - id: QuestCompleted02
     clips:
     - {fileID: 8300000, guid: a345a89d2d3af63499c353bf4882f439, type: 3}
-    volume: 0.252
+    volume: 0.178
     pitch: 1
     pitchVariation: 0
     loop: 0
@@ -1376,7 +1376,7 @@ MonoBehaviour:
   - id: RopeCreak
     clips:
     - {fileID: 8300000, guid: c6c69d3bbf3320b4993daf9423446a69, type: 3}
-    volume: 0.5
+    volume: 0.6
     pitch: 1
     pitchVariation: 0
     loop: 0
@@ -1440,7 +1440,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: f82af45a5f224760b2caefb94961b93e, type: 3}
     - {fileID: 8300000, guid: dcab9cda86e746359f68ab6f5044e3ac, type: 3}
     - {fileID: 8300000, guid: b9aa51dbde40426ebd268d9c94837c99, type: 3}
-    volume: 0.5
+    volume: 0.251
     pitch: 1
     pitchVariation: 0.08
     loop: 0
