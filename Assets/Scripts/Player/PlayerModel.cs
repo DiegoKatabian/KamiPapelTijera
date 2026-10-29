@@ -38,7 +38,17 @@ public class PlayerModel
 
         UpdateLandingTimer();
 
-        if (IsInputLocked())
+        if (_player.CurrentState == PlayerState.Sitting)
+        {
+            //moving or jumping is "stand up": she gets up first, then the next input moves her
+            bool wantsUp = new Vector2(input.horRaw, input.verRaw).sqrMagnitude > 0.01f || input.jumpDown;
+            if (wantsUp)
+            {
+                _player.StandUp();
+            }
+            input = default;
+        }
+        else if (IsInputLocked())
         {
             input = default;
         }

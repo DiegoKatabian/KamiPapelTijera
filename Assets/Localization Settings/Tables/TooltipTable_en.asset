@@ -102,6 +102,10 @@ MonoBehaviour:
     m_Localized: Cut the rope to launch!
     m_Metadata:
       m_Items: []
+  - m_Id: 7000000000004
+    m_Localized: '{INPUT:accion} to sit down'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

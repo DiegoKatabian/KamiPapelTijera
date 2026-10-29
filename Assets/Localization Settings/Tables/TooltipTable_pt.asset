@@ -105,6 +105,10 @@ MonoBehaviour:
     m_Localized: "Corta a corda para decolar!"
     m_Metadata:
       m_Items: []
+  - m_Id: 7000000000004
+    m_Localized: '{INPUT:accion} para sentar'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

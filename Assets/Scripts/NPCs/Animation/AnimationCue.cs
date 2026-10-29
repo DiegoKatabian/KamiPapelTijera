@@ -19,7 +19,7 @@ public enum AnimationCueAction
 [System.Serializable]
 public struct AnimationCue
 {
-    [Tooltip("Who: the Actor Id on the character's SpineCharacter (Natalia, Ariel, Police, Guard). Every active character with that id gets the cue.")]
+    [Tooltip("Who: the Actor Id on the character's SpineCharacter (Natalia, Ariel, Police, Guard). Every active character with that id gets the cue. 'Kami' reaches the player (PlayPose / EndPose, poses listed on the Player's Kami Anims).")]
     public string actor;
 
     [Tooltip("What to do.")]
@@ -46,6 +46,13 @@ public struct AnimationCue
             if (string.IsNullOrEmpty(cue.actor))
             {
                 Debug.LogWarning($"[AnimationCue] {source}: a cue with no actor, skipped");
+                continue;
+            }
+
+            //Kami is not a SpineCharacter (PlayerView owns her tracks), so her cues go to the Player
+            Player kami = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+            if (kami != null && kami.TryApplyAnimationCue(cue))
+            {
                 continue;
             }
 

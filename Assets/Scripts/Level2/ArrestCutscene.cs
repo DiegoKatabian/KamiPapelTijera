@@ -595,6 +595,13 @@ public class ArrestCutscene : MonoBehaviour
     {
         _escorting = true;
 
+        //out of the surprise the shout gave her (Arrest_Shout's Kami cue), scared until the Abuela comes (page 4)
+        if (_player != null)
+        {
+            _player.EndAnimationPose();
+            _player.SetScaredFace(true);
+        }
+
         if (_natalia != null)
         {
             //out of the shock she has been in since the shout, and walked, never run, to the car (spec 014)

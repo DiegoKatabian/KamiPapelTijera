@@ -73,6 +73,9 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     [Header("Mezcla de animaciones")]
     public AnimationMixConfig animMix = new AnimationMixConfig();
 
+    [Header("Idle variety, benches, reflections and story poses")]
+    public KamiAnimationConfig kamiAnims = new KamiAnimationConfig();
+
     [Header("Movimiento y Salto")]
     [Range(0f, 1f)] public float walkThreshold = 0.5f; //con joystick: debajo de esta magnitud camina (walk), arriba trota (skip)
     [Range(0f, 1f)] public float jumpCutMultiplier = 0.4f; //al soltar BARRA subiendo se corta la velocidad: tap = saltito, hold = salto completo
@@ -356,6 +359,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         }
 
         _model.Tick(_controller.Inputs);
+        _view.Tick(Time.deltaTime);
     }
 
     void LateUpdate()
@@ -424,6 +428,11 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
             _frameSalidaDeEstadoQueBloqueaAtaque = Time.frameCount;
         }
 
+        if (previous == PlayerState.Sitting)
+        {
+            IsStandingUp = false; //anything that takes her off the bench (death, a cutscene) ends the stand-up too
+        }
+
         CurrentState = newState;
         _view.OnStateChanged(previous, newState);
     }
@@ -438,6 +447,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
             case PlayerState.ReceivingReward:
             case PlayerState.Dead:
             case PlayerState.RidingPage:
+            case PlayerState.Sitting:
                 return true;
             default:
                 return false;
@@ -548,6 +558,124 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     public void StopCutsceneWalk()
     {
         _controller.SetCutsceneMove(Vector2.zero);
+    }
+
+    //---------- Benches, reflections and story poses (Atlas 15) ----------
+
+    public bool IsSitting => CurrentState == PlayerState.Sitting;
+    public bool IsStandingUp { get; private set; }
+
+    int _reflectionZones; //a counter, not a flag: two pools' zones can overlap
+    public bool IsNearReflection => _reflectionZones > 0;
+
+    public void EnterReflectionZone() => _reflectionZones++;
+    public void ExitReflectionZone() => _reflectionZones = Mathf.Max(0, _reflectionZones - 1);
+
+    /// <summary>
+    /// Sits Kami down on a bench (TriggerBench). <paramref name="seat"/>: where she sits, only its X/Z (her
+    /// feet stay on the floor; the animation lowers her onto the bench). Null = where she stands.
+    /// Refused unless she is on the ground and free to move.
+    /// </summary>
+    public bool SitDown(Transform seat, bool? faceRight)
+    {
+        switch (CurrentState)
+        {
+            case PlayerState.Idle:
+            case PlayerState.Walking:
+            case PlayerState.Skipping:
+            case PlayerState.Running:
+            case PlayerState.Landing:
+                break;
+            default:
+                Debug.Log($"[Player] SitDown refused in state {CurrentState}");
+                return false;
+        }
+
+        if (!cc.isGrounded || IsPullingSolapa)
+        {
+            Debug.Log("[Player] SitDown refused: not on the ground or opening a flap");
+            return false;
+        }
+
+        if (seat != null)
+        {
+            //a short slide inside the bench's own trigger, with the controller on: no trigger exit is lost,
+            //so no TriggerScript.ExitAll. SyncTransforms, or the controller's next Move puts her back
+            transform.position = new Vector3(seat.position.x, transform.position.y, seat.position.z);
+            Physics.SyncTransforms();
+            ResetSkeletonPhysicsMemory();
+        }
+
+        if (faceRight.HasValue)
+        {
+            _view.SetFacing(faceRight.Value ? 1f : -1f);
+        }
+
+        SetState(PlayerState.Sitting);
+        Debug.Log($"[Player] sits down at {transform.position}");
+        return true;
+    }
+
+    /// <summary>Plays Sit to Idle, then she is Idle again. Moving, jumping or Interact on the bench call it.</summary>
+    public void StandUp()
+    {
+        if (!IsSitting || IsStandingUp)
+        {
+            return;
+        }
+
+        StartCoroutine(StandUpRoutine());
+    }
+
+    IEnumerator StandUpRoutine()
+    {
+        IsStandingUp = true;
+        float duration = _view.PlayStandUp();
+        Debug.Log($"[Player] stands up ({duration:0.00}s)");
+
+        yield return new WaitForSeconds(duration);
+
+        //something else may have taken her off the bench meanwhile (SetState cleared the flag then)
+        if (IsStandingUp && CurrentState == PlayerState.Sitting)
+        {
+            IsStandingUp = false;
+            SetState(PlayerState.Idle);
+        }
+    }
+
+    /// <summary>Plays a story pose from kamiAnims.poses (Surprised, Celebrate...). Only while she stands still.</summary>
+    public bool PlayAnimationPose(string id) => _view.PlayPose(id);
+
+    /// <summary>Ends the story pose that is playing, back to her idle. Nothing playing = nothing happens.</summary>
+    public void EndAnimationPose() => _view.EndPose();
+
+    /// <summary>The Asustada Override face (track 6) on or off: walking under arrest and inside the cell.</summary>
+    public void SetScaredFace(bool on) => _view.SetScaredFace(on);
+
+    /// <summary>
+    /// An AnimationCue addressed to actor "Kami": lets a DialogueSO line make her react, like the NPCs'
+    /// SpineCharacters. Returns false when the cue is for someone else.
+    /// </summary>
+    public bool TryApplyAnimationCue(AnimationCue cue)
+    {
+        if (!string.Equals(cue.actor, "Kami", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        switch (cue.action)
+        {
+            case AnimationCueAction.PlayPose:
+                PlayAnimationPose(cue.value);
+                break;
+            case AnimationCueAction.EndPose:
+                EndAnimationPose();
+                break;
+            default:
+                Debug.LogWarning($"[Player] Kami only takes PlayPose / EndPose cues: '{cue}' ignored");
+                break;
+        }
+        return true;
     }
 
     void CalibrateHitboxPlacement()

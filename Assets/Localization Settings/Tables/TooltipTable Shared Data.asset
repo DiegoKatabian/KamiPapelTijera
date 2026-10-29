@@ -99,6 +99,10 @@ MonoBehaviour:
     m_Key: catapult_cut_rope
     m_Metadata:
       m_Items: []
+  - m_Id: 7000000000004
+    m_Key: bench_sit
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

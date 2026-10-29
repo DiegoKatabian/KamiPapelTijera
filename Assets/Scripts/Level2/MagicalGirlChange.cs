@@ -42,7 +42,7 @@ public class MagicalGirlChange : MonoBehaviour
 
     [Header("Animation")]
     [SerializeField, Tooltip("Kami's Spine animation for the change. Name it exactly this in Spine, or type the exported name here.")]
-    string _animationName = "MagicalGirlChangeOutfit";
+    string _animationName = "Transformacion";
     [SerializeField, Tooltip("Played (looped) while the skeleton has no animation called Animation Name.")]
     string _placeholderAnimation = "Casting";
     [SerializeField, Tooltip("How long the beat lasts while the placeholder plays. With the real animation the beat lasts as long as it.")]

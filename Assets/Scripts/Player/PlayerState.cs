@@ -13,5 +13,6 @@ public enum PlayerState
     Casting,         //origami: no puede hacer nada mas
     ReceivingReward,
     Dead,
-    RidingPage       //enganchada al borde de la hoja mientras gira: bloquea input y fisica, la mueve Player.LateUpdate
+    RidingPage,      //enganchada al borde de la hoja mientras gira: bloquea input y fisica, la mueve Player.LateUpdate
+    Sitting          //on a bench (TriggerBench): moving, jumping or Interact again stands her up
 }

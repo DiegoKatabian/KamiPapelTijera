@@ -62,6 +62,9 @@ public class AbuelaEntrance : MonoBehaviour
     [SerializeField, Tooltip("Pose played once on impact, then she goes back to idle. Empty = none.")]
     string _landPose = "Land";
 
+    [SerializeField, Tooltip("Kami's pose (Player > Kami Anims > Poses) from the moment the Abuela appears until Kami is free again. It also takes off her scared face. Empty = none.")]
+    string _kamiPose = "Surprised";
+
     [Header("Rumble and fall camera (#232)")]
     [SerializeField, Tooltip("Shake of the first rumble pulse, as a fraction of the crash (1 = the crash's shake).")]
     float _rumbleStartForce = 0.05f;
@@ -138,6 +141,7 @@ public class AbuelaEntrance : MonoBehaviour
         }
 
         //a reset in the middle of the fall must not leave Kami locked, the rumble going or the shot live
+        SetKamiSurprised(false);
         SetKamiLocked(false);
         StopRumble();
         CutsceneCamera.Hide(_fallShot);
@@ -211,6 +215,7 @@ public class AbuelaEntrance : MonoBehaviour
         _abuela.ResetSkeletonPhysics(); //she was parked up there by hand: her bun must not swing from it
         PlayPose(_fallPose);
         PlaySound(_fallSound);
+        SetKamiSurprised(true);
 
         float elapsed = 0f;
         while (elapsed < _fallSeconds)
@@ -257,6 +262,7 @@ public class AbuelaEntrance : MonoBehaviour
         {
             CutsceneCamera.Hide(_fallShot);
         }
+        SetKamiSurprised(false);
         SetKamiLocked(false);
 
         //a prefab cannot hold a scene reference to Kami, and the Abuela's base prefab comes from Level 1
@@ -400,6 +406,27 @@ public class AbuelaEntrance : MonoBehaviour
         }
 
         _abuela.Character.PlayPose(poseId);
+    }
+
+    //the Abuela coming through the roof surprises her out of being scared: scared face off for good, pose on
+    //until she is free (the pose's end is skipped when nothing is playing, so a reset can call it any time)
+    void SetKamiSurprised(bool on)
+    {
+        Player kami = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+        if (kami == null || string.IsNullOrEmpty(_kamiPose))
+        {
+            return;
+        }
+
+        if (on)
+        {
+            kami.SetScaredFace(false);
+            kami.PlayAnimationPose(_kamiPose);
+        }
+        else
+        {
+            kami.EndAnimationPose();
+        }
     }
 
     static void PlaySound(string id)

@@ -1,6 +1,6 @@
 # Spine: skeleton y animaciones de Kami
 
-Runtime: **spine-unity 4.2** (package 2026-05-29, installed 2026-09-14 in `7f9706bd`; corrected here 2026-10-02, this doc used to say 3.8). Kami's active export is `Atlas 13/skeleton.json` (Spine 4.2.43, gameplay Kami since 2026-10-06; see "Skins: Kami Gear"), the one before it `Atlas 12 Spine4.2` (Kami.prefab and MainMenu's skeletons from 2026-10-05, referenced by nothing since 2026-10-08) (spec 011 #140; before that they pointed at `Atlas 11`, a 3.8 export the 4.2 runtime refuses to load, and only the level scenes' overrides made Kami render). Verify any API against `Assets/Spine/Runtime/spine-csharp/` before using it.
+Runtime: **spine-unity 4.2** (package 2026-05-29, installed 2026-09-14 in `7f9706bd`; corrected here 2026-10-02, this doc used to say 3.8). Kami's active export is `Atlas 15/skeleton.json` since 2026-10-29 (see "Atlas 15" below), Atlas 14 from 2026-10-15, before that `Atlas 13/skeleton.json` (Spine 4.2.43, gameplay Kami since 2026-10-06; see "Skins: Kami Gear"), the one before it `Atlas 12 Spine4.2` (Kami.prefab and MainMenu's skeletons from 2026-10-05, referenced by nothing since 2026-10-08) (spec 011 #140; before that they pointed at `Atlas 11`, a 3.8 export the 4.2 runtime refuses to load, and only the level scenes' overrides made Kami render). Verify any API against `Assets/Spine/Runtime/spine-csharp/` before using it.
 
 ## Tracks (PlayerView)
 
@@ -14,6 +14,23 @@ El cuerpo va abajo y el resto se superpone, en este orden:
 | 3 | attack | one-shots: Attack, AttackMOVE, PullSolapas |
 | 4 | paperplane | override loop con el paper plane hat |
 | 5 | hit | one-shot de daño (modo override) |
+| 6 | face | `Asustada Override` (scared face, mouth + eyebrows only), on from the arrest escort until the Abuela crashes in |
+
+Track 1 is used since Atlas 15: `NoScissortsOverride` is layered there while an Atlas 15 extra (below) plays and Kami holds no scissors, because those animations have no NoScissors version and the confiscated scissors stay in her skin (page 4). It also poses the arm, so a seated or surprised Kami without scissors has the open-hand arm.
+
+## Atlas 15 (2026-10-29, Pochi's export, the active one for `Kami.prefab`)
+
+New animations and where they play (built 2026-10-29, compile-checked, not played):
+- `Transformacion`: Level 2's outfit change (`MagicalGirlChange._animationName`, prefab and script default).
+- `Idle Break`: once after 5-10 s standing still (`Player.kamiAnims` idle break min/max, a new random wait after each), then back to idle. Never during a cutscene lock.
+- `Idle to Sit` -> `Sit Tijera` (loop) -> `Sit to Idle`: new state `PlayerState.Sitting`. `TriggerS/TriggerBench` (prefab `Prefabs/Interactables/BenchSeat.prefab`: trigger box + `Seat` child, tooltip `bench_sit`) sits her down on Interact; Interact again, moving or jumping stands her up (Sit to Idle plays, then Idle). Only X/Z of `Seat` are used. No attack while seated.
+- `Look into reflection` (loop): standing still `lookIntoReflectionDelay` (1 s) inside a `TriggerS/TriggerReflection` zone (prefab `ReflectionZone.prefab`, no tooltip); moving ends it. Replaces the idle break there.
+- `Sorprendida` -> `Sorprendida Loop`: the `Surprised` pose. Played by an `AnimationCue` with actor `Kami` (they go to `Player.TryApplyAnimationCue`; Kami takes PlayPose / EndPose only): `Arrest_Shout` line 0, beside Natalia's Shock; ended by `ArrestCutscene.CUE_StartEscort`. Also from the moment the Abuela appears until Kami is free (`AbuelaEntrance._kamiPose`).
+- `Asustada Override`: `Player.SetScaredFace`: on at `CUE_StartEscort` and in `PoliceStationPage.StartSequence` (so again after a capture), off when the Abuela appears.
+- `Reward` -> `RewardLoop` for 3 s: the `Celebrate` pose, in `Museum_Evidence`'s cues on end next to the Abuela's Celebrate (Ariel's arrest).
+
+Poses live in `Player > Kami Anims > Poses` (id, intro, main, loop, hold seconds). A pose only plays while Kami is Idle and any state change ends it. Missing animations warn once and the beat is skipped.
+Re-export chores done on Atlas 15 like on 13/14: `tools/add-placeholder-rain-boots.py` (it had dropped the boots skin again) and `tools/move-default-skin-into-diario.py` (the detective thigh was back in `default`); the three materials were switched to `Kami/Spine/Sprite Fill URP` (copies of Atlas 14's with Atlas 15's textures). The main menu's title Kami still uses Atlas 13.
 
 Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del SkeletonDataAsset es 0.2, pero `jump`/`jumpNoScissors` siempre fuerzan `jumpMixDuration` (0 = instantáneo) por código — no tocar el defaultMix del asset para esto. Los one-shots encolan `AddEmptyAnimation` con delay = duración de la anim (con delay 0, el mix se comía el final de la anim).
 
@@ -194,7 +211,12 @@ read on enable.
 - Hueso con typo: `tiejraBack`.
 - Anchors sobre el skeleton (el 3DModel viejo fue borrado del prefab en julio 2026): `particleAnchor` (BoneFollower → hueso `Smoke`; ya NO se usa para el polvo de salto, que ahora sale de `Player.FeetPosition`) y PaperPlaneAnchor (BoneFollower → `9_HEAD`, escala local 0.927).
 - Flash de daño: `_FillColor`/`_FillPhase` vía MaterialPropertyBlock (`Player.SetFlash`). Since 2026-10-15 the Atlas 14 materials use `Kami/Spine/Sprite Fill URP` (`Assets/Shaders/KamiSpineFill/`): a fork of the Spine URP package's `Universal Render Pipeline/Spine/Sprite` (Kami receives and casts shadows) whose two colour passes mix the package's own fragment result toward the fill colour *last*, so the flash stays flat red in shadow, premultiplied like the old `Spine/Skeleton Fill`. Same properties as the package shader, so a material keeps its values when its shader is swapped; only the input headers (`Include/KamiSpine-Input-*.hlsl`, copies with the 2 fill members added) and the 2 wrapper fragments differ, so diff against the package's `Spine-Sprite-URP.shader` after updating it. **A Spine re-import that regenerates a `.mat` brings back the package shader: re-pick `Kami/Spine/Sprite Fill URP` on it** (without it the flash does nothing).
-- **Where the Spine URP package lives (2026-10-21)**: `Packages/manifest.json` points `com.esotericsoftware.spine.urp-shaders` at
+- **The Spine URP package is EMBEDDED since 2026-10-29**: `Packages/com.esotericsoftware.spine.urp-shaders/` (a copy of the repo-root
+  folder below, same `.meta` GUIDs, no line in `manifest.json`: Unity picks up folders in `Packages/` by itself). Why: with the `file:../Spine
+  URP Shaders/...` local package (path with spaces, outside the project) Diego opened Unity on 2026-10-29 and the startup refresh served the
+  fork from the local import cache with the "Couldn't open include file" errors although the package was resolved (Kami magenta again). An
+  embedded package's `Packages/...` include path is a real folder in the project. The repo-root `Spine URP Shaders/` folder is now unused.
+  History: from 2026-10-21 `Packages/manifest.json` pointed `com.esotericsoftware.spine.urp-shaders` at
   `file:../Spine URP Shaders/com.esotericsoftware.spine.urp-shaders-4.2-2019.1`, a folder at the **repo root, committed**, so every clone
   resolves it. It used to be an absolute path on one machine (Diego's Downloads, then Valen's Desktop in aa7dddfc): on the other machine the
   package failed to resolve, the fork above failed to compile ("Couldn't open include file 'Packages/com.esotericsoftware...'") and Kami

@@ -87,3 +87,6 @@ MonoBehaviour:
   - actor: Abuela
     action: 0
     value: Celebrate
+  - actor: Kami
+    action: 0
+    value: Celebrate

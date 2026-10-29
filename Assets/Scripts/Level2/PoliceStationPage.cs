@@ -229,6 +229,13 @@ public class PoliceStationPage : MonoBehaviour
             AudioManager.instance.Play(AudioId.CellBarsSlam);
         }
 
+        //scared in the cell until the Abuela crashes in (AbuelaEntrance turns it off). Again after a capture
+        Player kami = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+        if (kami != null)
+        {
+            kami.SetScaredFace(true);
+        }
+
         //before anything moves: riders must be off the plane, or the warps below would fight their seats
         if (_planeRide != null)
         {
