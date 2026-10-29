@@ -1,8 +1,9 @@
 # Spec 024: EVA feedback batch (Oct 23-26 playtests)
 
 **Status**: Phases 1 and 2 built, played by Diego and committed (2026-10-27; #276-#284 closed). Phase 3 next: its kickoff is
-`kickoff-phase3.md`. Triaged with Diego item by item on 2026-10-26 (22 raw notes -> 20 tasks in 4 phases).
-Milestone M9. Epic **#275**, tasks #276-#295 (1.A = #276 ... 4.G = #295, in spec order). Branch: `after-eva-feedback`.
+`kickoff-phase3.md`. Triaged with Diego item by item on 2026-10-26 (22 raw notes -> 20 tasks in 4 phases); on 2026-10-29
+Phase 3 grew a second half, Kami's Atlas 15 beats (3.E-3.J = #329-#334).
+Milestone M9. Epic **#275**, tasks #276-#295 (1.A = #276 ... 4.G = #295, in spec order) plus #329-#334. Branch: `after-eva-feedback`.
 Siblings from the same triage: 022 (flying paper stickers) and 023 (settings menu), each its own epic.
 **Not related**: specs 020 and 021 (magical girl change, magnifier and tool switching) are Diego's design work on another
 branch; don't touch them. Note 021 adds a tool selector to the HUD strip: keep that in mind when touching the Flap.
@@ -113,6 +114,49 @@ as the placeholder) and the normal page-turn sequence continues after it, with t
 players stood a bit short or past it and the cut didn't register though it looked right. The issue exists to track it;
 close it when he says it's done. (If he asks me instead: the trigger's box in Level 1's dam prefab.)
 
+### Phase 3, second half: Kami's Atlas 15 beats (added 2026-10-29)
+
+Pochi's Atlas 15 export (committed in 74edc838 "kami new animations") brought nine new Kami animations. The code for all
+of them is built (see "Atlas 15" in `docs/claude/spine-kami.md`). Diego played and confirmed: the shader fix, `Transformacion`, and the
+arrest's `Surprised`. Built but **not played yet**: idle break, scared face, the Abuela-fall surprise, the museum `Celebrate`, the
+no-scissors overlay in the cell, and the bench and reflection logic (no instance is placed anywhere yet). Diego agreed to every extra
+beat suggested on 2026-10-29. These tasks add those beats and place what is built. Story beats use the existing pieces:
+`Player.PlayAnimationPose` / `EndAnimationPose` / `SetScaredFace`, or an `AnimationCue` with actor `Kami` on a `DialogueSO` line (PlayPose /
+EndPose only today). A pose plays only while Kami is Idle and ends on any state change.
+
+**3.E Benches in the levels [O].** Place `Prefabs/Interactables/BenchSeat.prefab` (trigger + `Seat`, tooltip `bench_sit`) on the
+benches Kami can reach. `Kami_Bench.fbx` is used about 20 times in Level 2 (`Level2_Newspaper.unity`, and `Museum Page Parent.prefab`,
+which pages 2 and 5 share); none are known in Level 1 (check). For each bench: the `Seat` X/Z on the seat, facing, a trigger box
+that doesn't overlap a page sphere, a trash can or an NPC's talk trigger (all of them use E), and the bench's own collider not pushing
+her off the seat. Put the trigger inside the bench's prefab when the bench is a prefab instance; otherwise use a scene instance.
+Sit / stand with E, by moving, by jumping, with gamepad A.
+
+**3.F Reflecting pools [O].** `Prefabs/Interactables/ReflectionZone.prefab` (`TriggerReflection`, no tooltip; standing still
+`kamiAnims.lookIntoReflectionDelay` = 1 s inside it loops `Look into reflection`). **Neither level has a pool, puddle or fountain
+object today** (searched by name 2026-10-29). Decide with Diego where they go (question below), then place and tune the zones.
+On the river, the zone must be on dry ground outside `Rio`'s trigger, or she drowns while looking. If the animation looks at the
+ground in front of her, the zone may need a facing like `TriggerBench._facing` (add it only if the play shows she looks away from the water).
+
+**3.G Surprised at the gift (page 3) [O].** When the box opens and the Pelusa pops out (`GiftDialogueTrigger.Open`, during its
+`_revealSeconds` hold, before `Natalia_GiftOpened`), Kami plays `Surprised`. It ends when Natalia's reaction ends, or when she moves.
+Kami is not locked there, so check that the press that cut the ribbon doesn't skip it.
+
+**3.H Surprised and scared at Ariel's accusation (page 5) [O].** On `Grace_MeetingAccusation`'s first line ("¡Ahí están las
+fugitivas...!") Kami plays `Surprised` (a cue), and her scared face goes on until the evidence clears the girls. Default for the end:
+off when `Museum_Evidence` starts, before its `Celebrate`. The cue system has no face action today. Recommended: Kami's
+`TryApplyAnimationCue` reads `SetIdleOverlay` as "face overlay" (value = animation name, empty = off), so it stays data on the
+DialogueSO. The alternative is code in `MuseumPage`.
+
+**3.I Celebrate: Natalia freed, the escape, the third clue [O].** `Celebrate` (Reward -> RewardLoop, 3 s) on: `Natalia_Freed` (page 4
+padlock, first time only, `PoliceStationPage._nataliaFreedLine`), `Natalia_Escaped` (page 4, back on the ground outside the window),
+`Natalia_AllClues` (page 2, Natalia is happy there too). As `AnimationCue`s on each dialogue's first line. Check Kami is Idle at each
+one (after the padlock cut she may still be in the attack's track 3, which is fine; after the window drop she may still be Landing).
+
+**3.J Idle break on the title-screen Kami [O].** `MainMenu.unity`'s `kami_spine_titlescreen` is still on Atlas 13, dressed by
+`Gear/LoadoutSkin`. Move it to Atlas 15 (its materials are already on the fill shader; check `LoadoutSkin` still composes the same look),
+then play `Idle Break` every 5-10 s over her title animation. That needs a small component, since she is neither the Player nor a
+`SpineCharacter`. Watch for a pop between `TitleScreen` and the break (mix time).
+
 ## Phase 4: Level 2 world (scene work, Opus only)
 
 **4.A Sorting of background buildings and the newsstand [O].** Some background buildings and objects draw **over** Kami
@@ -199,3 +243,8 @@ lists the playtest checklist per phase; every issue's close comment says what wa
 1. 1.A: `QuestCompleted02Pitched` (-3 dB already, used by the dam and the Rocoso fight): **leave it alone.**
 2. 3.B: when the plane is disabled, show a small tooltip? **No, just disabled** (Diego said "deshabilitado").
 3. 2.B: while the logo shows, does Esc/Start do anything? **No.**
+4. 3.E: which benches are sittable? **Every bench Kami can walk up to; skip decorative ones behind fences or off the walkable area.**
+5. 3.F: where are the reflecting pools? **Ask Diego at the start of the session; the default is Level 1's river shore, on dry
+   ground, at one or two calm spots.** Level 2 has no water.
+6. 3.H: the scared face's end on page 5. **When `Museum_Evidence` starts.**
+7. 3.J: title Kami's break interval. **Same 5-10 s as gameplay.**

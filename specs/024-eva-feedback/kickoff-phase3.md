@@ -11,8 +11,13 @@ everything you add to the repo is English.
 
 ## State
 
-- Branch `after-eva-feedback`. HEAD is the commit "Spec 024 Phases 1-2" (2026-10-27): Phases 1 and 2 are built, played by Diego
-  and closed (#276-#284, ticked in epic #275). Nothing of Phase 3 is started.
+- Branch `after-eva-feedback`. Phases 1 and 2 are built, played by Diego and closed (#276-#284, ticked in epic #275). After them
+  came 74edc838 "kami new animations" (2026-10-29): Atlas 15 on `Kami.prefab`, the Spine URP package embedded in `Packages/`, and the
+  logic for every new Kami animation (idle break, `PlayerState.Sitting` + `TriggerBench`, `TriggerReflection`, story poses through
+  `AnimationCue` actor `Kami`, scared face on track 6). Diego played the shader, `Transformacion` and the arrest surprise: fine. Nothing of
+  Phase 3 is started.
+- Unity re-serialized the three Atlas 15 `.mat` files after that commit (it added the `_COLOR_ADJUST` keyword). They show as modified:
+  that is Unity's doing, not a change of yours. Commit them with Phase 3, or ask Diego.
 - Left unstaged on purpose, not yours: `Assets/Scenes/Nivel1_KamiPapelTijera.unity` (Diego's working changes) and
   `specs/020-kami-magical-girl-change/spec.md` (another session's status note). Diego's Level 2 test setup
   (`startingPage` 4, page 4's folder on) is in his working copy: never commit it (playbook, "Committing the scene").
@@ -21,7 +26,7 @@ everything you add to the repo is English.
 - Filed for later, **not part of Phase 3**: Natalia and the Abuela jump out of page 4's window instead of reappearing below it
   (#328, milestone M4). Don't build it unless Diego asks.
 
-## Phase 3 tasks (spec 024 "Phase 3", issues #285-#288)
+## Phase 3 tasks, first half (spec 024 "Phase 3", issues #285-#288)
 
 Triangulate each against HEAD before planning. Starting points, not conclusions:
 
@@ -41,6 +46,24 @@ Triangulate each against HEAD before planning. Starting points, not conclusions:
   through `IsPullingSolapa`. Lengthen `delayTime` in both scenes only as much as the animation needs (measure the clip in the
   skeleton json, don't guess).
 - **3.D #288, the dam's hitbox** is Diego's manual fix: just ask him whether it's done; close it when he says so.
+
+## Phase 3 second half: Kami's Atlas 15 beats (#329-#334, spec "Phase 3, second half")
+
+The logic exists. These tasks are placement and data, plus small hooks. Read "Atlas 15" in `docs/claude/spine-kami.md` first. Pieces:
+`Player.PlayAnimationPose(id)` / `EndAnimationPose()` / `SetScaredFace(bool)`, poses in `Player > Kami Anims > Poses` (`Surprised`,
+`Celebrate`), and `AnimationCue` actor `Kami` (`Player.TryApplyAnimationCue`, PlayPose / EndPose only). A pose plays only while Kami is Idle.
+
+- **3.E #329 benches**: `BenchSeat.prefab` on the reachable `Kami_Bench.fbx` instances (Level 2 scene + `Museum Page Parent.prefab`;
+  grep Level 1). Scene YAML: follow the playbook's scene rules, and Diego's test setup is never committed.
+- **3.F #330 pools**: no water object exists in either level. **Ask Diego where first** (default: Level 1 river shore, outside `Rio`'s trigger).
+- **3.G #331 gift**: `GiftDialogueTrigger.Open` -> `Surprised`; end with `Natalia_GiftOpened` (or let her moving end it).
+- **3.H #332 accusation**: a `Surprised` cue on `Grace_MeetingAccusation` line 0; scared face on until `Museum_Evidence` starts. Recommended:
+  `SetIdleOverlay` read as Kami's face overlay in `TryApplyAnimationCue`, so the beat stays data.
+- **3.I #333 celebrate**: Kami cues on the first line of `Natalia_Freed`, `Natalia_Escaped`, `Natalia_AllClues`. Check her state there.
+- **3.J #334 title Kami**: MainMenu `kami_spine_titlescreen` to Atlas 15 + a small idle-break component.
+
+Order: run the second half after 3.A-3.C. It does not touch those scripts except `Player`/`PlayerView` (3.C uses track 3; the poses
+are on track 0, so they don't conflict).
 
 ## Notes from Phases 1-2 that matter here
 
