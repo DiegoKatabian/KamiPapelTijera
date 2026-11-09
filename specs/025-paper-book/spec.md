@@ -1,6 +1,6 @@
 # 025 - The paper book: paper page turns and the level intro
 
-Asked by Diego on 2026-11-06. Designed and reviewed 2026-11-06; built 2026-11-07, not imported or played yet (section "As built"). Branch `025-paper-book`.
+Asked by Diego on 2026-11-06. Designed and reviewed 2026-11-06; built 2026-11-07; played by Diego and committed in 126d5ce7 + b7c90a94 (2026-11-09), see "As built" and "First play". Open: #356 (retire the old pop-up path, needs Diego's OK), #365 (covers). Branch `025-paper-book`.
 Tasks: `tasks.md`. GitHub: epic #366, milestone M11 (table at the end).
 
 This spec merges two requests from the same day:

@@ -1,7 +1,7 @@
 # Spec 024: EVA feedback batch (Oct 23-26 playtests)
 
-**Status**: Phases 1 and 2 built, played by Diego and committed (2026-10-27; #276-#284 closed). Phases 3 and 4 built 2026-11-07,
-uncommitted and not played, except 3.D (Diego's), 3.F (waiting for the pools' place) and 4.G (waiting for #369): "As built". Triaged with Diego item by item on 2026-10-26 (22 raw notes -> 20 tasks in 4 phases); on 2026-10-29
+**Status**: Phases 1 and 2 built, played by Diego and committed (2026-10-27; #276-#284 closed). Phases 3 and 4 built 2026-11-07/09,
+played by Diego and committed in b7c90a94 (2026-11-09; 3.D was his manual fix); only 4.G #295 is open, waiting for `[POCHI]` #369. Next: specs 022, 023. Triaged with Diego item by item on 2026-10-26 (22 raw notes -> 20 tasks in 4 phases); on 2026-10-29
 Phase 3 grew a second half, Kami's Atlas 15 beats (3.E-3.J = #329-#334).
 Milestone M9. Epic **#275**, tasks #276-#295 (1.A = #276 ... 4.G = #295, in spec order) plus #329-#334. Branch: `after-eva-feedback`.
 Siblings from the same triage: 022 (flying paper stickers) and 023 (settings menu), each its own epic.
