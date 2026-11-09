@@ -191,7 +191,7 @@ on a page 1 start, once per load. The Timeline (`CutsceneDirector`) has the hand
 `tools/make-book-intro-clips.py` (Inspector "Beats"): hides the level book (renderers only), carries Kami
 (`Player.StartCarry`, one frame after Start), unfolds page 1 on the cover (`PaperTurn.BeginIntro`; `_unfoldWithPaper` off
 = the old pop-up when the cover is half open), sounds, releases Kami over her spawn (`StopCarry`, `SavePosition`), and
-the skip (hold Interact 1 s after the prompt; `ApplyEndState` runs every beat, each idempotent). `BookIntro.Pending` is
+the skip (hold Interact 1 s; since 2026-11-09 the prompt is `UI/HoldToSkipPrompt`, the key icon in a ring that fills, invisible until pressed; `ApplyEndState` runs every beat, each idempotent). `BookIntro.Pending` is
 what `MagicalGirlChange` waits for (Level 2: no lift of its own after the intro).
 The prefab's default pose is the open book (Timeline restores it when it stops); the closed pose is evaluated at t 0.
 Debug: `_overlay`, `_startAtSeconds`, F9 pause, F10 x4, F11 restart (Editor). Logs `[BookIntro]`.

@@ -53,6 +53,10 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
     [Header("Pull before a turn (spec 024 3.C)")]
     [Tooltip("A page turn Kami starts herself opens with her PullSolapas gesture; the turn's delays grow by the gesture's length. Forced turns (cutscenes) never pull.")]
     [SerializeField] bool _pullBeforeTurn = true;
+    [Tooltip("Playback speed of the pull before a turn (below 1 = slower, e.g. 0.7). The turn waits for it at that speed.")]
+    [SerializeField, Range(0.2f, 2f)] float _pullSpeed = 1f;
+    [Tooltip("Seconds from the end of the pull to the sheet starting to lift (replaces Delay Time on turns with a pull). Negative = the sheet starts before the pull has finished.")]
+    [SerializeField] float _gapAfterPull = 0.1f;
     float _pullExtraDelay; //this turn's extra delay for the pull
 
     int _turnFrom; //page index a turn leaves
@@ -143,8 +147,11 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
             Debug.LogWarning("[PageScrollerManager] no player: the page turns without the pull");
             return;
         }
-        _pullExtraDelay = kami.PlayPullSolapa(false);
-        Debug.Log($"[PageScrollerManager] Kami pulls the page first: the turn waits {_pullExtraDelay:F2}s more");
+        float pull = kami.PlayPullSolapa(false, _pullSpeed);
+        //CerrarPagina waits delayTime + this: the sheet lifts _gapAfterPull after the pull ends, and the page opening keeps
+        //its distance from the sheet as authored (popupDelayTime - delayTime)
+        _pullExtraDelay = Mathf.Max(pull + _gapAfterPull, 0f) - delayTime;
+        Debug.Log($"[PageScrollerManager] Kami pulls the page first ({pull:F2}s): the sheet lifts {delayTime + _pullExtraDelay:F2}s after the press");
     }
 
     /// <summary>

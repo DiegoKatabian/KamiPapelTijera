@@ -372,6 +372,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
 
     void LateUpdate()
     {
+        UpdateSitHeight();
+
         if (IsCarried && _carrySocket != null)
         {
             transform.position = _carrySocket.position + _carryOffset;
@@ -494,14 +496,14 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     }
 
     /// <returns>The gesture's length in seconds (Kami can't move or jump for that long).</returns>
-    public float PlayPullSolapa(bool closing = false)
+    public float PlayPullSolapa(bool closing = false, float speed = 1f)
     {
         //PullSolapas takes over TRACK_ATTACK, wiping any Attack still playing on it -- and with it
         //the pending HandleAttack that hands the scissors back. Resolve the attack BEFORE the
         //takeover, never after: see CancelAttack.
         CancelAttack();
 
-        float duration = _view.PlayPullSolapa(closing);
+        float duration = _view.PlayPullSolapa(closing, speed);
         _pullSolapaLockEndTime = Time.time + duration;
         return duration;
     }
@@ -621,6 +623,40 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
     //---------- Benches, reflections and story poses (Atlas 15) ----------
 
     public bool IsSitting => CurrentState == PlayerState.Sitting;
+
+    [Header("Sitting (spec 024 3.E)")]
+    [Tooltip("Seconds her drawn body takes to rise or sink to the bench's seat height when she sits down or stands up.")]
+    [SerializeField] float _sitHeightBlendSeconds = 0.3f;
+    float _sitLift;         // world units her drawn body is raised (or lowered) while seated
+    float _sitLiftNow;
+    float _skeletonBaseY = float.NaN;
+
+    //Seated, the CharacterController stays on whatever she stood on (the floor or the bench's top) and gravity keeps it
+    //there, so the seat's height is applied to her drawn body only (Diego, 2026-11-09: from the floor she sank into the
+    //bench, from its top she floated above it)
+    void UpdateSitHeight()
+    {
+        if (SkeletonAnimation == null)
+        {
+            return;
+        }
+        Transform body = SkeletonAnimation.transform;
+        if (float.IsNaN(_skeletonBaseY))
+        {
+            _skeletonBaseY = body.localPosition.y;
+        }
+        float target = IsSitting && !IsStandingUp ? _sitLift : 0f;
+        if (Mathf.Approximately(target, _sitLiftNow) && Mathf.Approximately(_sitLiftNow, 0f))
+        {
+            return;
+        }
+        float speed = Mathf.Max(Mathf.Abs(_sitLift), 0.01f) / Mathf.Max(0.01f, _sitHeightBlendSeconds);
+        _sitLiftNow = Mathf.MoveTowards(_sitLiftNow, target, speed * Time.deltaTime);
+        float parentScale = body.parent != null ? Mathf.Max(Mathf.Abs(body.parent.lossyScale.y), 1e-5f) : 1f;
+        Vector3 lp = body.localPosition;
+        lp.y = _skeletonBaseY + _sitLiftNow / parentScale;
+        body.localPosition = lp;
+    }
     public bool IsStandingUp { get; private set; }
 
     int _reflectionZones; //a counter, not a flag: two pools' zones can overlap
@@ -662,6 +698,12 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
             transform.position = new Vector3(seat.position.x, transform.position.y, seat.position.z);
             Physics.SyncTransforms();
             ResetSkeletonPhysicsMemory();
+            //the seat's height is where her feet would be for the sit pose to land on the bench
+            _sitLift = seat.position.y - FeetPosition.y;
+        }
+        else
+        {
+            _sitLift = 0f;
         }
 
         if (faceRight.HasValue)

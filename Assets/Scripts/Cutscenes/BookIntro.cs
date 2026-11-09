@@ -38,7 +38,10 @@ public class BookIntro : MonoBehaviour
     [SerializeField] Transform _hinge;
     [SerializeField] Renderer _introFixed;
     [SerializeField] Renderer _introMoving;
+    [Tooltip("The skip prompt's object (it holds the key icon and the HoldToSkipPrompt).")]
     [SerializeField] TMP_Text _skipPrompt;
+    [Tooltip("The ring that fills while Interact is held. Empty = looked up on the Skip Prompt object.")]
+    [SerializeField] HoldToSkipPrompt _holdPrompt;
 
     [Header("Kami")]
     [Tooltip("Kami's root relative to the Carry socket while she hangs from the pinch.")]
@@ -61,7 +64,9 @@ public class BookIntro : MonoBehaviour
     [SerializeField, Range(0f, 1f)] float _popAtOpen = 0.5f;
 
     [Header("Skip")]
+    [Tooltip("Seconds into the intro before a hold can skip it.")]
     [SerializeField] float _skipPromptAfter = 1f;
+    [Tooltip("Seconds Interact must be held to skip.")]
     [SerializeField] float _holdToSkip = 1f;
 
     [Header("Debug")]
@@ -265,22 +270,26 @@ public class BookIntro : MonoBehaviour
         {
             _holdStartedBefore = false;
         }
-        if (_skipPrompt != null)
+        // the prompt object is live once skipping is allowed; it stays invisible until the player presses (HoldToSkipPrompt)
+        if (_skipPrompt != null && t >= _skipPromptAfter && !_skipPrompt.gameObject.activeSelf)
         {
-            bool show = t >= _skipPromptAfter;
-            if (show != _skipPrompt.gameObject.activeSelf)
+            _skipPrompt.gameObject.SetActive(true);
+            if (_holdPrompt == null)
             {
-                _skipPrompt.gameObject.SetActive(show);
-                if (show)
+                _holdPrompt = _skipPrompt.GetComponent<HoldToSkipPrompt>();
+                if (_holdPrompt == null)
                 {
-                    StartCoroutine(LocalizedText.Escribir(_skipPrompt, "book_intro_skip", "UITexts",
-                        new LocalizedText.Opciones { origen = "BookIntro", sinResaltado = true }));
+                    Debug.LogWarning("[BookIntro] the Skip Prompt has no HoldToSkipPrompt: the skip works but shows nothing");
                 }
             }
         }
         if (held && !_holdStartedBefore && t >= _skipPromptAfter)
         {
             _holdTime += Time.unscaledDeltaTime;
+            if (_holdPrompt != null)
+            {
+                _holdPrompt.SetHold(_holdTime / Mathf.Max(0.01f, _holdToSkip), true);
+            }
             if (_holdTime >= _holdToSkip)
             {
                 Debug.Log($"[BookIntro] skipped at {t:0.00}s");
@@ -290,6 +299,10 @@ public class BookIntro : MonoBehaviour
         else
         {
             _holdTime = 0;
+            if (_holdPrompt != null && _skipPrompt != null && _skipPrompt.gameObject.activeSelf)
+            {
+                _holdPrompt.SetHold(0f, false);
+            }
         }
     }
 
@@ -424,6 +437,10 @@ public class BookIntro : MonoBehaviour
         if (_levelBook != null)
         {
             _levelBook.forceRenderingOff = false;
+        }
+        if (_holdPrompt != null)
+        {
+            _holdPrompt.Hide();
         }
         if (_skipPrompt != null)
         {

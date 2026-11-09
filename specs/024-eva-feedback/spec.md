@@ -281,6 +281,42 @@ tests everything together; compile-check clean, YAML block/id/reference checks c
   when the catapult is armed. `RopeCreak`'s volume was already raised in 1.A.
 - 4.G: blocked: every car model is one mesh (only the windows are separate). Filed #369 `[POCHI]`.
 
+
+**Diego's play of Phases 3-4 (2026-11-08/09) and the fixes after it** (compile-check clean, YAML checks clean, not played again):
+- Level 1, pages 2-5 of Level 2 and the main menu: all fine. Page 2's hat: Diego tuned its pickup trigger and the page sphere by hand.
+- The Kami hidden behind something on Level 2 page 1 was the floor's material set to transparent; Diego made it opaque.
+- 3.C: after the 0.8 s pull Kami stood still for `delayTime` (0.5 s) before the sheet lifted. Turns with a pull now use their own
+  timing on `PageScrollerManager`: `_pullSpeed` (playback speed, 1) and `_gapAfterPull` (seconds from the pull's end to the sheet, 0.1,
+  negative overlaps). The page opening keeps its authored distance from the sheet. `Player.PlayPullSolapa` / `PlayerView` take a speed.
+- 3.E benches: seated, her CharacterController stays on whatever she stood on, so from the floor she sank into the bench and from its
+  top she floated; and the fit overwrote the `Seat` at Awake, so moving it did nothing. Now the `Seat`'s Y is where her feet go for the
+  sit pose, and `Player.UpdateSitHeight` raises or lowers her drawn body (the skeleton object, never the controller) to it over
+  `_sitHeightBlendSeconds` (0.3), back down when she stands up. The fit puts the `Seat` at the bench's top centre plus
+  `TriggerBench._seatOffset` (0, -1.8, 0 world units, from Kami_Bench's slab top 2.44 and her seated hips 2.4 above her feet): tune it
+  once on `BenchSeat.prefab`.
+- Spec 025's intro skip: the "Hold E to skip" line became `UI/HoldToSkipPrompt` on the intro prefabs' Skip Prompt: the Interact key
+  icon (44 x 44, bottom right) inside a ring (`2D/UI/HoldToSkip/HoldToSkipRing.png`) that fills while it is held. Invisible until the
+  first press, it fades in, drains when let go and fades out 1.2 s later. Reusable by any cutscene (`SetHold(progress, held)`, `Hide()`).
+  The UITexts key `book_intro_skip` is no longer used. **Kami > Book Intro > Build** still makes the old text prompt on a fresh prefab.
+
+- 3.F reflection (Diego picked "mirror Kami, other look", 2026-11-09; built, compile-checked, not seen): `ReflectingPool.prefab` now
+  has `Pool Inside` (the old Water disc, `Kami/Pool Hole`: deep water colour, depth pushed to just short of the far plane, queue 2500),
+  `Surface` (`Kami/Pool Surface`: tint, rings moving out, bright rim, queue 3100), a `Reflection Plane` mark at the disc's top, and
+  `Mirror Kami`: a second Atlas 15 skeleton dressed by `LoadoutSkin` with `Level2_StartLoadout` (the detective look), drawn with
+  `Materials/Reflection/KamiReflection_1-3` (Kami's materials with `_RECEIVE_SHADOWS_OFF`: under the floor it would sit in the floor's
+  shadow). `TriggerS/ReflectionMirror` on the root places it upside down under the plane every frame, plays the real Kami's tracks at her
+  times under its own skin (attachments, draw order) and then copies her bones' world pose (mixes and physics). It is seen only
+  through the pool: the floor's depth hides it everywhere else, and a ray through the pool can't reach anything standing behind it.
+  Knobs on `ReflectionMirror`: `_tint`, `_extraAnimation` (something only the reflection plays, on track 8, e.g. a face), `_maxDistance`.
+  **Reworked the same day after Diego's play**: the upside-down copy under the floor went down through the book and showed outside
+  the pool (the book didn't hide it by depth). Now the copy lies flat on the water at her feet, upside down with her head towards the
+  camera and her face up (`ReflectionMirror` rotates her up axis +90 on x and flips y), and the pool is a real mask: `Kami/Pool Hole`
+  writes stencil 1 (normal depth again, no far-plane trick) and `KamiReflection_1-3` draw only where the stencil is 1
+  (`_StencilComp` 3 = Equal). Heights in the prefab: inside top 0.05, `Reflection Plane` 0.052, `Surface` top 0.055 (pool-local).
+  The water look is on `Materials/Reflection/PoolInside|PoolSurface`. `ReflectingPoolWater.mat` (Diego's metallic tweak) is no longer
+  used by the prefab and was kept. Risks: the cylinder caps' UVs drive the rings and the gradient; a depth-of-field effect reads the pool
+  as far and may blur it.
+
 ## Verification
 
 `python tools/compile-check.py` is compilation only. Nothing here was heard or seen from this machine. The kickoff prompt

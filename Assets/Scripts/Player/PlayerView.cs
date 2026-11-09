@@ -654,7 +654,8 @@ public class PlayerView
 
     //---------- Ataque ----------
 
-    public float PlayPullSolapa(bool closing = false)
+    /// <param name="speed">Playback speed (below 1 = slower). Returns the gesture's length at that speed.</param>
+    public float PlayPullSolapa(bool closing = false, float speed = 1f)
     {
         string animName = ANIMATION_PULLSOLAPA;
         if (closing)
@@ -667,8 +668,11 @@ public class PlayerView
 
         Spine.TrackEntry solapaEntry = _skeletonAnimation.AnimationState.SetAnimation(TRACK_ATTACK, animName, false);
         solapaEntry.MixDuration = _player.animMix.attackMixIn;
-        float duration = solapaEntry.Animation.Duration;
-        _skeletonAnimation.AnimationState.AddEmptyAnimation(TRACK_ATTACK, _player.animMix.attackMixOut, duration);
+        speed = Mathf.Max(0.05f, speed);
+        solapaEntry.TimeScale = speed;
+        //the empty entry's delay is in the solapa entry's own (scaled) track time, so it stays the clip's length
+        _skeletonAnimation.AnimationState.AddEmptyAnimation(TRACK_ATTACK, _player.animMix.attackMixOut, solapaEntry.Animation.Duration);
+        float duration = solapaEntry.Animation.Duration / speed;
 
         Debug.Log($"[PlayerView] pullsolapa triggered con '{animName}' ({(closing ? "cierre" : "apertura")})");
         return duration;

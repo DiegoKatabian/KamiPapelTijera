@@ -62,8 +62,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 4980da1ea89b77f44a7cd6c7e19f7a69, type: 2}
+  m_Materials: []
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -367,6 +366,21 @@ MonoBehaviour:
     overrideMixOut: 0.2
     jumpMixDuration: 0
     changePageJumpToRideMix: 0.5
+  kamiAnims:
+    idleBreakMinSeconds: 10
+    idleBreakMaxSeconds: 20
+    lookIntoReflectionDelay: 1
+    poses:
+    - id: Surprised
+      intro: Sorprendida
+      main: Sorprendida Loop
+      loop: 1
+      holdSeconds: 0
+    - id: Celebrate
+      intro: Reward
+      main: RewardLoop
+      loop: 1
+      holdSeconds: 3
   walkThreshold: 0.5
   jumpCutMultiplier: 0.4
   landingDuration: 0.15
@@ -395,6 +409,7 @@ MonoBehaviour:
   OriginalRideRootOffset: {x: 0, y: 0, z: 0}
   TurnOffTijeraTrailsDuringChangePage: 1
   nuevoTooltipPapelSalto: {fileID: 0}
+  _poseCueMaxWait: 1
   windVelocity: {x: 0, y: 0, z: 0}
 --- !u!114 &7567128660997737820
 MonoBehaviour:

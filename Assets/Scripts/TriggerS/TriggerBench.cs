@@ -16,7 +16,7 @@ public class TriggerBench : TriggerScript
 
     public override bool EsInteractuable => true;
 
-    [SerializeField, Tooltip("Where she sits: only its X/Z are used, her feet stay on the floor and the animation lowers her onto the bench. Empty = she sits where she stands.")]
+    [SerializeField, Tooltip("Where she sits: X/Z = where she stands, Y = the height her feet would be at for the sit pose to land on the bench (her drawn body is raised or lowered to it). With 'Fit To Bench' on it is placed at Awake from Seat Offset, so moving it by hand does nothing then. Empty = she sits where she stands.")]
     Transform _seat;
 
     [SerializeField, Tooltip("Which way she faces once seated.")]
@@ -28,6 +28,9 @@ public class TriggerBench : TriggerScript
 
     [SerializeField, Tooltip("World units added around the bench's meshes on each side (x, along the bench's own axes) and above it (y).")]
     Vector3 _fitPadding = new Vector3(1.5f, 2.5f, 1.5f);
+
+    [SerializeField, Tooltip("Fit To Bench only: the Seat relative to the middle of the bench's top, in world units. Y is where her feet go for the sit pose: about -1.8 puts her bottom on Kami_Bench's slab. Tune it here, once, for every bench.")]
+    Vector3 _seatOffset = new Vector3(0f, -1.8f, 0f);
 
     void Awake()
     {
@@ -90,8 +93,8 @@ public class TriggerBench : TriggerScript
 
         if (_seat != null)
         {
-            Vector3 middle = transform.TransformPoint(new Vector3(0.5f * (min.x + max.x), min.y, 0.5f * (min.z + max.z)));
-            _seat.position = middle;
+            Vector3 top = transform.TransformPoint(new Vector3(0.5f * (min.x + max.x), max.y, 0.5f * (min.z + max.z)));
+            _seat.position = top + _seatOffset;
         }
         Debug.Log($"[TriggerBench] {gameObject.name}: fitted to '{transform.parent.name}' (seat at {(_seat != null ? _seat.position.ToString() : "-")})");
     }

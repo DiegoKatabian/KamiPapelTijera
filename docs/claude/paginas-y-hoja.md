@@ -32,7 +32,8 @@ PORFAVORANDA2 = up when it starts), animated by `Take 001` then held by `HojaIdl
 
 A turn started at an edge sphere plays `PullSolapas` (`Player.PlayPullSolapa`, which cancels an attack in flight) and both
 turn delays grow by its real length (`PageScrollerManager._pullBeforeTurn`, measured at runtime, so a re-export can't make it
-drift). Forced turns (`TurnToNextPage`) never pull.
+drift). Forced turns (`TurnToNextPage`) never pull. Timing of pulled turns (2026-11-09): `_pullSpeed` (playback speed) and
+`_gapAfterPull` (pull end to sheet lift, 0.1 s) replace `delayTime` for them; the page opening keeps its distance from the sheet.
 
 ## Page turns forced from code (2026-09-25)
 
