@@ -135,10 +135,24 @@ public class MagicalGirlChange : MonoBehaviour
 
         _running = true;
         _swapped = false;
-        LevelManager.Instance.inCutscene = true;
-
         Wear(_classicLook);
-        LiftKami();
+
+        // spec 025 D20: the level intro's hand brings Kami first; its drop is her landing, so no lift of our own
+        bool afterIntro = BookIntro.Pending;
+        if (afterIntro)
+        {
+            Debug.Log("[MagicalGirlChange] waiting for the level intro");
+            while (BookIntro.Pending)
+            {
+                yield return null;
+            }
+        }
+
+        LevelManager.Instance.inCutscene = true;
+        if (!afterIntro)
+        {
+            LiftKami();
+        }
 
         yield return WaitForLanding();
         yield return WaitForLevelStartCamera();

@@ -15,6 +15,16 @@ public class RocosoCortable : MonoBehaviour, ICortable
     [Tooltip("Si esta prendido, este rocoso NO muere ni con la tijera mejorada (para rocosos de puzzle que se matan de otra forma)")]
     [SerializeField] bool _isImmuneToTijeraMejorada = false;
 
+    [Header("Bounce feedback (spec 024 3.A)")]
+    [Tooltip("Sparks shot where the scissors bounce off (Prefabs/Particulas/RocosoBounceSparks, a variant of BrillitosSolapa). Empty = no sparks.")]
+    [SerializeField] ParticleSystem _bounceSparks;
+
+    [Tooltip("Seconds before the spawned sparks are destroyed.")]
+    [SerializeField] float _sparksLifetime = 1.5f;
+
+    [Tooltip("Kami plays her take-hit animation when the scissors bounce (no damage), so it reads as a blocked cut.")]
+    [SerializeField] bool _kamiReacts = true;
+
     public virtual void GetCut(float receivedDamage)
     {
         if (_thisRocoso == null)
@@ -33,11 +43,17 @@ public class RocosoCortable : MonoBehaviour, ICortable
         {
             //tijera comun: no le hace nada (el umbral distingue comun de mejorada)
             Debug.Log($"[RocosoCortable] {gameObject.name}: corte de {receivedDamage} no alcanza el minimo ({_minDamageParaCortarlo}), rebota");
+            Bounce();
             return;
         }
 
         Debug.Log($"[RocosoCortable] {gameObject.name}: corte de {receivedDamage} aceptado, recibe daño");
         CutSoundGate.Play(AudioId.TijeraHit);
         _thisRocoso.TakeDamage(receivedDamage);
+    }
+
+    void Bounce()
+    {
+        CutBounce.Play(this, _bounceSparks, _sparksLifetime, _kamiReacts);
     }
 }

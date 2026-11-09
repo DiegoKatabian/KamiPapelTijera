@@ -122,7 +122,9 @@ drive off after the second clue so the police tape can be cut, and the quest han
 - **Page 2's last-clue beat (V5, 2026-10-21, built, not played)**: when `Natalia_AllClues` closes, `FindCluesTracker` (a queued step after that
   line, so it never overlaps a dialogue) calls `Level2/NataliaPageEndBeat` (scene object `Page 2/Natalia Page End Beat`, with the children
   `Natalia Wave Spot` and the vcam `CM Natalia Wave`). It locks Kami (`inCutscene`), stops Natalia following, raises the shot
-  (`CutsceneCamera`), and `_warpAtBlendFraction` (0.55) of the way through the blend `WarpTo`s her to the spot (snapped to the NavMesh within
+  (`CutsceneCamera`), fades to black (`Canvas/ScreenFade`, found by itself; 0.4 s out, 0.2 s black, 0.5 s in, 2026-11-07,
+  so she is never seen vanishing or popping in), `WarpTo`s her to the spot behind the black (without a fader: at
+  `_warpAtBlendFraction` 0.55 of the blend) (snapped to the NavMesh within
   `_sampleRadius` 15; with none near, a point `_fallbackAheadDistance` 25 ahead of Kami toward the exit, with a warning), facing Kami.
   Once the camera has arrived she plays `Wave` ("Saludo", `_waveSeconds` 3), then the shot drops, the blend plays out and Kami is freed.
   **Afterwards she waits at the spot instead of walking back** (Claude's call, the exit is where Kami goes next): she stays not-following until
@@ -419,6 +421,8 @@ the cut back to Normal), a white-silver fill (`Player.SetSkinFill`, the hit flas
 at its middle the swap to the starting loadout's items plus the `Sparkles Burst`; the `Sparkles Aura` runs throughout, both placed at Kami's body
 centre. Then `Player.ResumeBodyAnimation`, Normal camera, Kami free. Disabled mid-way, it finishes at once. All tuning is on the prefab.
 
+**The level intro comes first (spec 025 D20, 2026-11-07, not played)**: when the scene starts on page 1, the Narrator's hand (`BookIntro`) brings Kami before `MagicalGirlChange` runs; the change waits while `BookIntro.Pending`, wears the classic look from the start, and skips its own 6-unit lift (the hand's drop is her landing). `BookPageSpread.DressIntroBook` dresses the intro book with page 1's newspaper.
+
 **A sun per page (#179, 2026-10-13).** `LightCycler` on `Nivel (Mesa y Libro)/Luces/EL SOL` is on in Level 2 with
 5 states (index 0 = page 1), all at the light's authored rotation and position: page 1 is the authored warm 0.3, then
 cooler and dimmer (0.255 / 0.195 / night blue 0.135), page 5 = page 2. It eases position, rotation (slerp), colour and
@@ -469,6 +473,8 @@ the old `CrimeScene_Guard` asset is unused. The Wardrobe tab is hidden by `GearL
 `Level2_StartLoadout`), outfits stay in the bag. `InventoryManager.AddItem` looks at all slots before claiming an empty one,
 never claims one for amount 0, drops duplicate slots of one item (with a warning) and logs which slot an item takes: the
 "4 scissors in the bag" report was not reproduced from code, so if the warning shows up, that log is the trail.
+
+**Spec 024 Phase 4 (2026-11-07, not played)**: background building sprites sort 10 lower (behind every order-0 sprite); `ClueLupa`'s sprite sorts at 1 (its material's queue 2982 put it under every sprite); fence `Panel` boxes 16 fbx units thick (were 5.2, 0.4 world); `CrimeSceneGate` gates every tape under it; the hat pickup's trigger is 7 x 5 x 6, leaning toward the page; the catapult rope fades in with a sparkle burst (`Catapult.RopeAppears`). Car wheels wait for #369. Detail: spec 024 "As built".
 
 **Page exits are earned (2026-10-08).** `Level2/PageExitLock` (scene root) keeps a page's next-page sphere off until its
 task is done, latched: page 1 `OnCafeWrapperFolded`, page 2 `OnAllCluesFound`, page 3 `OnArrestSequenceEnded`, page 4
@@ -635,3 +641,4 @@ wheel read it as a button index: L2 onto Normal lit General). Its only listener 
 The click sound stays on player picks only.
 `SplashCamaraController` es un sistema aparte y más simple (dos cámaras que alternan
 solas cada 5s) solo para la pantalla de splash/intro.
+**Main menu camera stays close (2026-11-06, Diego)**: in `MainMenu.unity` the `SplashCamaraController` component is disabled, so the menu never switches to `vcam PlanoGeneral` (the pull-back it did after 10 s): the close camera on the title Kami stays for the whole menu. Tick the component back on to restore the pull-back.

@@ -71,8 +71,9 @@ public class CrimeSceneGate : MonoBehaviour
     [SerializeField, Tooltip("The shot starts blending back to Kami this many seconds BEFORE the car reaches the drive-off mark, so the car is not seen vanishing in the shot. Kami stays locked until the blend ends.")]
     float _cameraReturnLeadSeconds = 1.5f;
 
-    CuttableTwoPieces _tape;
-    Collider _tapeCollider;
+    //every tape under the gate (spec 024 4.D): the scene stacks a second PoliceTape on the prefab's own, and both
+    //must stay uncut until the cops have gone
+    CuttableTwoPieces[] _tapes = new CuttableTwoPieces[0];
     bool _unguarded;
     bool _carLaunched;
     bool _lockedKami;
@@ -80,25 +81,29 @@ public class CrimeSceneGate : MonoBehaviour
 
     void Awake()
     {
-        _tape = GetComponentInChildren<CuttableTwoPieces>(true);
+        _tapes = GetComponentsInChildren<CuttableTwoPieces>(true);
 
-        if (_tape == null)
+        if (_tapes.Length == 0)
         {
             Debug.LogWarning($"[CrimeSceneGate] {gameObject.name}: no CuttableTwoPieces (police tape) found in children, the gate can never open.");
             return;
         }
 
-        _tapeCollider = _tape.GetComponent<Collider>();
-        if (_tapeCollider == null)
+        foreach (CuttableTwoPieces tape in _tapes)
         {
-            Debug.LogWarning($"[CrimeSceneGate] {gameObject.name}: the police tape has no Collider, it cannot be gated.");
-        }
-        else
-        {
-            _tapeCollider.enabled = false;
-        }
+            Collider tapeCollider = tape.GetComponent<Collider>();
+            if (tapeCollider == null)
+            {
+                Debug.LogWarning($"[CrimeSceneGate] {gameObject.name}: the police tape '{tape.name}' has no Collider, it cannot be gated.");
+            }
+            else
+            {
+                tapeCollider.enabled = false;
+            }
 
-        _tape.OnCut.AddListener(OpenGap);
+            tape.OnCut.AddListener(OpenGap);
+        }
+        Debug.Log($"[CrimeSceneGate] {gameObject.name}: {_tapes.Length} police tape(s) uncuttable while guarded");
     }
 
     void Start()
@@ -358,9 +363,13 @@ public class CrimeSceneGate : MonoBehaviour
     void LaunchCar(bool withSound)
     {
         //the tape opens once the guards are gone, not when the car is out of sight
-        if (_tapeCollider != null)
+        foreach (CuttableTwoPieces tape in _tapes)
         {
-            _tapeCollider.enabled = true;
+            Collider tapeCollider = tape != null ? tape.GetComponent<Collider>() : null;
+            if (tapeCollider != null)
+            {
+                tapeCollider.enabled = true;
+            }
         }
 
         _carLaunched = true;
@@ -454,9 +463,12 @@ public class CrimeSceneGate : MonoBehaviour
 
     void OnDestroy()
     {
-        if (_tape != null)
+        foreach (CuttableTwoPieces tape in _tapes)
         {
-            _tape.OnCut.RemoveListener(OpenGap);
+            if (tape != null)
+            {
+                tape.OnCut.RemoveListener(OpenGap);
+            }
         }
 
         if (!gameObject.scene.isLoaded)

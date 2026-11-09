@@ -25,14 +25,24 @@ New animations and where they play (built 2026-10-29, compile-checked, not playe
 - `Idle Break`: once after 5-10 s standing still (`Player.kamiAnims` idle break min/max, a new random wait after each), then back to idle. Never during a cutscene lock.
 - `Idle to Sit` -> `Sit Tijera` (loop) -> `Sit to Idle`: new state `PlayerState.Sitting`. `TriggerS/TriggerBench` (prefab `Prefabs/Interactables/BenchSeat.prefab`: trigger box + `Seat` child, tooltip `bench_sit`) sits her down on Interact; Interact again, moving or jumping stands her up (Sit to Idle plays, then Idle). Only X/Z of `Seat` are used. No attack while seated.
 - `Look into reflection` (loop): standing still `lookIntoReflectionDelay` (1 s) inside a `TriggerS/TriggerReflection` zone (prefab `ReflectionZone.prefab`, no tooltip); moving ends it. Replaces the idle break there.
-- `Sorprendida` -> `Sorprendida Loop`: the `Surprised` pose. Played by an `AnimationCue` with actor `Kami` (they go to `Player.TryApplyAnimationCue`; Kami takes PlayPose / EndPose only): `Arrest_Shout` line 0, beside Natalia's Shock; ended by `ArrestCutscene.CUE_StartEscort`. Also from the moment the Abuela appears until Kami is free (`AbuelaEntrance._kamiPose`).
+- `Sorprendida` -> `Sorprendida Loop`: the `Surprised` pose. Played by an `AnimationCue` with actor `Kami` (they go to `Player.TryApplyAnimationCue`; Kami takes PlayPose, EndPose and, since spec 024 3.H, SetIdleOverlay = her scared face, any value on, empty off; a PlayPose waits up to `_poseCueMaxWait` 1 s for her to stand still): `Arrest_Shout` line 0, beside Natalia's Shock; ended by `ArrestCutscene.CUE_StartEscort`. Also from the moment the Abuela appears until Kami is free (`AbuelaEntrance._kamiPose`).
 - `Asustada Override`: `Player.SetScaredFace`: on at `CUE_StartEscort` and in `PoliceStationPage.StartSequence` (so again after a capture), off when the Abuela appears.
 - `Reward` -> `RewardLoop` for 3 s: the `Celebrate` pose, in `Museum_Evidence`'s cues on end next to the Abuela's Celebrate (Ariel's arrest).
 
 Poses live in `Player > Kami Anims > Poses` (id, intro, main, loop, hold seconds). A pose only plays while Kami is Idle and any state change ends it. Missing animations warn once and the beat is skipped.
-Re-export chores done on Atlas 15 like on 13/14: `tools/add-placeholder-rain-boots.py` (it had dropped the boots skin again) and `tools/move-default-skin-into-diario.py` (the detective thigh was back in `default`); the three materials were switched to `Kami/Spine/Sprite Fill URP` (copies of Atlas 14's with Atlas 15's textures). The main menu's title Kami still uses Atlas 13.
+Re-export chores done on Atlas 15 like on 13/14: `tools/add-placeholder-rain-boots.py` (it had dropped the boots skin again) and `tools/move-default-skin-into-diario.py` (the detective thigh was back in `default`); the three materials were switched to `Kami/Spine/Sprite Fill URP` (copies of Atlas 14's with Atlas 15's textures). The main menu's title Kami is on Atlas 15 since spec 024 3.J, playing only `TitleScreen` (Diego, 2026-11-08: no idle break on the menu, her sitting pose is the menu's); its inactive `(1) fake` twin is still on Atlas 13.
+
+**Spec 024 Phase 3 placements (2026-11-07, not played)**: `BenchSeat` under 7 Level 2 benches with `TriggerBench._fitToBench` (box and seat fitted to the bench's meshes at Awake); Kami `Surprised` at the gift (`GiftDialogueTrigger._kamiPose`) and at Ariel's accusation (with the scared face until `Museum_Evidence`), `Celebrate` on `Natalia_Freed` / `Natalia_Escaped` / `Natalia_AllClues`; a turn she starts at an edge sphere opens with `PullSolapas` (`PageScrollerManager._pullBeforeTurn`); the Rocoso's bounce plays her take-hit (`Player.PlayCutBounceReaction`). Reflecting pools are for Level 3: for now `Prefabs/Interactables/ReflectingPool.prefab` in the test scene `Scenes/Tests/ReflectionPoolTest.unity`. Detail: spec 024 "As built".
 
 Los tiempos de mezcla viven en `Player.animMix` (inspector). El `defaultMix` del SkeletonDataAsset es 0.2, pero `jump`/`jumpNoScissors` siempre fuerzan `jumpMixDuration` (0 = instantáneo) por código — no tocar el defaultMix del asset para esto. Los one-shots encolan `AddEmptyAnimation` con delay = duración de la anim (con delay 0, el mix se comía el final de la anim).
+
+## Carried by the Narrator's hand (spec 025, built 2026-11-07, not played)
+
+`Player.StartCarry(socket, offset)` / `StopCarry(releasePoint)`: the level intro's hand carries Kami. Separate from the page
+ride on purpose (`IsRidingPage` makes followers board and `FinishRide` teleport her): `IsCarried`, and `IsHeld` (ride or
+carry) is what `PlayerModel.Tick` and impacts check. She follows the socket on all three axes plus `offset` (her root
+below the pinch), playing `falling` (Diego, 2026-11-07: `RidePage` read as flying); `StopCarry` puts her straight over the release point and lets
+her fall. Both reset the skeleton's physics memory and `TriggerScript.ExitAll()`.
 
 ## Animaciones (nombres exactos, Atlas 11)
 

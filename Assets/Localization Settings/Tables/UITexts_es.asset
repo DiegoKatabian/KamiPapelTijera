@@ -169,6 +169,10 @@ MonoBehaviour:
     m_Localized: "\xA1Doblaste mal! \xA1Intent\xE1 de nuevo!"
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000013
+    m_Localized: "Manten\xE9 {INPUT:accion} para saltear"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

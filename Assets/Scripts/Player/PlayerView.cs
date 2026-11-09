@@ -269,7 +269,13 @@ public class PlayerView
                 break;
 
             case PlayerState.RidingPage:
-                if (_skeletonAnimation.Skeleton.Data.FindAnimation(ANIMATION_RIDING_PAGE) != null)
+                if (_player.IsCarried)
+                {
+                    // carried by the Narrator's hand (spec 025): dangling from the pinch, so the falling loop (Diego,
+                    // 2026-11-07: RidePage read as flying), the same loop as the real fall after the hand lets go
+                    SetBodyAnimation(ANIMATION_FALLING, true);
+                }
+                else if (_skeletonAnimation.Skeleton.Data.FindAnimation(ANIMATION_RIDING_PAGE) != null)
                 {
                     // ChangePage: primero pasa por Jump (mix 0f, misma excepcion que el salto normal)
                     // y desde ahi mezcla hacia RidePage con un mix configurable, para que se vea como

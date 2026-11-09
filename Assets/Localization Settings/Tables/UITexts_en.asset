@@ -208,6 +208,10 @@ MonoBehaviour:
     m_Localized: "Wrong fold! Try again!"
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000013
+    m_Localized: "Hold {INPUT:accion} to skip"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

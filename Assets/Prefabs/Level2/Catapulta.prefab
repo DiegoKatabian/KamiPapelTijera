@@ -906,6 +906,9 @@ MonoBehaviour:
   _cutRopeTooltip: catapult_cut_rope
   _cutRopeColor: 1
   _rope: {fileID: 2313026362640087315}
+  _ropeFadeSeconds: 0.6
+  _ropeAppearSparkles: {fileID: 1526349819628205247, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+  _ropeSparklesScale: 4
   _animator: {fileID: 3280037992119557200}
   _armTrigger: Arm
   _shootTrigger: Shoot

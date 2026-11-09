@@ -51,6 +51,15 @@ public class Catapult : TriggerScript
     [SerializeField, Tooltip("The rope holding the arm down. Cutting it launches.")]
     CuttableTwoPieces _rope;
 
+    [SerializeField, Tooltip("Seconds the rope takes to fade in when the catapult is armed (spec 024 4.F: it used to pop in). 0 = it appears at once.")]
+    float _ropeFadeSeconds = 0.6f;
+
+    [SerializeField, Tooltip("One-shot sparkle burst played on the rope as it appears (BrillitosSolapa, an existing one-shot particle prefab). Empty = none.")]
+    ParticleSystem _ropeAppearSparkles;
+
+    [SerializeField, Tooltip("Scale of the sparkle burst (the prefab is sized for a flap).")]
+    float _ropeSparklesScale = 4f;
+
     [Header("Arm animation")]
     [SerializeField, Tooltip("The Animator on the prefab root that swings the arm (states Disarmed / Arming / Armed / Shooting).")]
     Animator _animator;
@@ -158,6 +167,53 @@ public class Catapult : TriggerScript
     }
 
     //the arm comes down first, so Kami never boards a bucket that is still in the air
+    //fades the rope's sprites in from transparent to the colours they are authored with, and sparkles once
+    IEnumerator RopeAppears()
+    {
+        if (_ropeAppearSparkles != null)
+        {
+            Bounds b = new Bounds(_rope.transform.position, Vector3.zero);
+            foreach (Renderer r in _rope.GetComponentsInChildren<Renderer>())
+            {
+                if (!(r is ParticleSystemRenderer))
+                {
+                    b.Encapsulate(r.bounds);
+                }
+            }
+            ParticleSystem burst = Instantiate(_ropeAppearSparkles, b.center, Quaternion.identity);
+            burst.transform.localScale = Vector3.one * _ropeSparklesScale;
+            burst.Play();
+            Destroy(burst.gameObject, 3f);
+        }
+
+        if (_ropeFadeSeconds <= 0f)
+        {
+            yield break;
+        }
+
+        SpriteRenderer[] sprites = _rope.GetComponentsInChildren<SpriteRenderer>();
+        Color[] authored = new Color[sprites.Length];
+        for (int i = 0; i < sprites.Length; i++)
+        {
+            authored[i] = sprites[i].color;
+            sprites[i].color = new Color(authored[i].r, authored[i].g, authored[i].b, 0f);
+        }
+        float t = 0f;
+        while (t < _ropeFadeSeconds)
+        {
+            t += Time.deltaTime;
+            float k = Mathf.Clamp01(t / _ropeFadeSeconds);
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                if (sprites[i] != null)
+                {
+                    sprites[i].color = new Color(authored[i].r, authored[i].g, authored[i].b, authored[i].a * k);
+                }
+            }
+            yield return null;
+        }
+    }
+
     IEnumerator ArmRoutine()
     {
         //the rope tightens as the arm is pulled down: once, while Grace shows the catapult (Diego, 2026-10-19)
@@ -194,6 +250,7 @@ public class Catapult : TriggerScript
         if (_rope != null)
         {
             _rope.gameObject.SetActive(true);
+            StartCoroutine(RopeAppears());
         }
 
         //Kami may already be standing in the trigger: register and prompt her now

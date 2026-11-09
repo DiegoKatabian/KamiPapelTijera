@@ -181,6 +181,24 @@ Not a Timeline: `Level2/MagicalGirlChange` drives Kami's Spine animation, the fi
 beat in normalized time of the animation, so Valen's animation can land with any length. Cameras are the existing `CameraManager` modes (a list
 of `at` + mode on the prefab). Detail in `nivel2-y-ui.md`.
 
+## The level intro (spec 025 Part B, built 2026-11-07, not played yet)
+
+`Cutscenes/BookIntro` on `Prefabs/BookIntro/BookIntro_Level1|2.prefab`, one instance at each level scene's root, placed by
+**Kami > Book Intro > Build (missing only)** (Diego's one click; it also builds the prefabs and
+`Assets/Timelines/BookIntro/BookIntro_LevelN.playable` from the imported `.kgen` files, and never overwrites). Plays only
+on a page 1 start, once per load. The Timeline (`CutsceneDirector`) has the hand's and the cover's clips and three shots
+(`CM Intro Establishing / Opening / Placing`); `BookIntro` does the rest at beat times that match
+`tools/make-book-intro-clips.py` (Inspector "Beats"): hides the level book (renderers only), carries Kami
+(`Player.StartCarry`, one frame after Start), unfolds page 1 on the cover (`PaperTurn.BeginIntro`; `_unfoldWithPaper` off
+= the old pop-up when the cover is half open), sounds, releases Kami over her spawn (`StopCarry`, `SavePosition`), and
+the skip (hold Interact 1 s after the prompt; `ApplyEndState` runs every beat, each idempotent). `BookIntro.Pending` is
+what `MagicalGirlChange` waits for (Level 2: no lift of its own after the intro).
+The prefab's default pose is the open book (Timeline restores it when it stops); the closed pose is evaluated at t 0.
+Debug: `_overlay`, `_startAtSeconds`, F9 pause, F10 x4, F11 restart (Editor). Logs `[BookIntro]`.
+The hand, intro books and clips are generated: `tools/make-narrator-hand.py`, `tools/make-intro-books.py`,
+`tools/make-book-covers.py`, `tools/make-book-intro-clips.py`, imported by `Assets/Editor/Generated/KamiGenImporter.cs`;
+`python tools/verify-gen.py [--artifacts]` checks them; previews in `specs/025-paper-book/previews/`.
+
 ## Character animation beats (spec 014)
 
 The characters' animations are NOT on the timelines (no Spine Timeline package): beats tied to a line live on that

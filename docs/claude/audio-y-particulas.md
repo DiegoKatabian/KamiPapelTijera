@@ -92,6 +92,8 @@ so the globe never shows the previous line's or dialogue's portrait. Not played 
 **Kami's outfit change (spec 020, 2026-10-26)**: `KamiMagicalChange` (SFX, 2D, placeholder = `MagicSuccess`'s clip at pitch 1.15),
 played by `Level2/MagicalGirlChange` at `_soundAt` of the beat. Swap the clip in the bank when the real one exists.
 
+**Level intro (spec 025, 2026-11-07)**: `BookCoverOpen` (PageTurn01's clip at 0.8), `BookCoverLand` (AbuelaCrash's at 1.3, quiet), `NarratorHandMove` (PageTurn02's at 0.6), all SFX 2D placeholders played by `BookIntro`; swap the clips in the bank. `AudioId.cs` was extended by hand in the generator's format (run Kami/Audio/Regenerate AudioId to confirm).
+
 **Per-line dialogue sounds**: `DialogueEvent.soundOnLine` (an AudioId, empty = none) is played by
 `DialogueManager.WriteText` when that line starts being written. Set today: `Arrest_Cuffs` line 1
 -> `Handcuffs`; `Natalia_01` line 7 -> `RadioStatic` (`NewsJingle` on line 8 was removed on 2026-10-19).

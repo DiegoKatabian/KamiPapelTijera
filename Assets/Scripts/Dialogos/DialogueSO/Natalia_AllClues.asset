@@ -21,4 +21,7 @@ MonoBehaviour:
     - actor: Natalia
       action: 2
       value: Happy
+    - actor: Kami
+      action: 0
+      value: Celebrate
   currentText: 0

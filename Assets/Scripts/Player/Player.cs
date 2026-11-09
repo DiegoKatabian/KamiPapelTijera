@@ -146,6 +146,14 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
 
     public bool IsRidingPage { get; private set; }
     Transform _rideEdgeBone;
+
+    // spec 025 D15: the Narrator's hand carries Kami in the level intro (BookIntro). Separate from the page ride on
+    // purpose: IsRidingPage makes followers board and the page-turn placement teleport her.
+    public bool IsCarried { get; private set; }
+    Transform _carrySocket;
+    Vector3 _carryOffset;
+    /// <summary>Riding a page or carried by the hand: movement, gravity and impacts leave her alone.</summary>
+    public bool IsHeld => IsRidingPage || IsCarried;
     float _rideZOffset;
     bool _rideLoggedFirstFrame;
 
@@ -364,6 +372,12 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
 
     void LateUpdate()
     {
+        if (IsCarried && _carrySocket != null)
+        {
+            transform.position = _carrySocket.position + _carryOffset;
+            return;
+        }
+
         if (!IsRidingPage || _rideEdgeBone == null) return;
 
         Vector3 bonePos = _rideEdgeBone.position;
@@ -479,7 +493,8 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         }
     }
 
-    public void PlayPullSolapa(bool closing = false)
+    /// <returns>The gesture's length in seconds (Kami can't move or jump for that long).</returns>
+    public float PlayPullSolapa(bool closing = false)
     {
         //PullSolapas takes over TRACK_ATTACK, wiping any Attack still playing on it -- and with it
         //the pending HandleAttack that hands the scissors back. Resolve the attack BEFORE the
@@ -488,6 +503,7 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
 
         float duration = _view.PlayPullSolapa(closing);
         _pullSolapaLockEndTime = Time.time + duration;
+        return duration;
     }
 
     public void StartRidingPage(Transform edgeBone, bool? faceRight = null)
@@ -517,6 +533,48 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
 
         SetState(PlayerState.RidingPage);
         Debug.Log($"[Player] StartRidingPage: enganchada a '{edgeBone.name}' (bone pos {edgeBone.position}, kami pos {transform.position}, offset Z {_rideZOffset:F2}), cc.enabled={cc.enabled}, estado={CurrentState}");
+    }
+
+    /// <summary>
+    /// The level intro's hand picks Kami up (spec 025 D15): she follows `socket` on all three axes plus `offset` (her
+    /// root below the pinch) and hangs in the RidePage pose, without the page ride's jump or sprint particles.
+    /// </summary>
+    public void StartCarry(Transform socket, Vector3 offset)
+    {
+        if (socket == null)
+        {
+            Debug.LogWarning("[Player] StartCarry: no socket, Kami is not carried");
+            return;
+        }
+        _carrySocket = socket;
+        _carryOffset = offset;
+        TriggerScript.ExitAll(); //switching her collider off sends no OnTriggerExit (#168)
+        cc.enabled = false;
+        IsCarried = true;
+        transform.position = socket.position + offset;
+        ResetSkeletonPhysicsMemory();
+        SetState(PlayerState.RidingPage);
+        Debug.Log($"[Player] StartCarry: on '{socket.name}' at {transform.position}");
+    }
+
+    /// <summary>
+    /// The hand lets go: Kami is put straight over `releasePoint` (x/z) and falls from where she is. Her respawn point is
+    /// the caller's to save (BookIntro saves her scene position).
+    /// </summary>
+    public void StopCarry(Vector3 releasePoint)
+    {
+        if (!IsCarried)
+        {
+            return;
+        }
+        IsCarried = false;
+        _carrySocket = null;
+        transform.position = new Vector3(releasePoint.x, transform.position.y, releasePoint.z);
+        ResetSkeletonPhysicsMemory();
+        TriggerScript.ExitAll();
+        cc.enabled = true;
+        SetState(PlayerState.Idle);
+        Debug.Log($"[Player] StopCarry: let go at {transform.position}, falling to {releasePoint}");
     }
 
     public void StopRidingPage()
@@ -666,16 +724,59 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         switch (cue.action)
         {
             case AnimationCueAction.PlayPose:
-                PlayAnimationPose(cue.value);
+                PlayAnimationPoseSoon(cue.value);
                 break;
             case AnimationCueAction.EndPose:
                 EndAnimationPose();
                 break;
+            case AnimationCueAction.SetIdleOverlay:
+                //Kami's one face overlay (spec 024 3.H): any value = her scared face on, empty = off, so a story beat
+                //stays data on the DialogueSO line
+                SetScaredFace(!string.IsNullOrEmpty(cue.value));
+                break;
             default:
-                Debug.LogWarning($"[Player] Kami only takes PlayPose / EndPose cues: '{cue}' ignored");
+                Debug.LogWarning($"[Player] Kami only takes PlayPose / EndPose / SetIdleOverlay cues: '{cue}' ignored");
                 break;
         }
         return true;
+    }
+
+    [Tooltip("A story pose cued while Kami is not standing still (still landing, finishing a step) waits up to this many seconds for her to stand still, then is dropped.")]
+    [SerializeField] float _poseCueMaxWait = 1f;
+    Coroutine _poseCueRoutine;
+
+    /// <summary>A pose now if she is standing still, otherwise as soon as she is (spec 024 3.I: after the window drop she is still Landing).</summary>
+    public void PlayAnimationPoseSoon(string id)
+    {
+        if (_poseCueRoutine != null)
+        {
+            StopCoroutine(_poseCueRoutine);
+            _poseCueRoutine = null;
+        }
+        if (CurrentState == PlayerState.Idle)
+        {
+            PlayAnimationPose(id);
+            return;
+        }
+        _poseCueRoutine = StartCoroutine(PoseWhenIdle(id));
+    }
+
+    IEnumerator PoseWhenIdle(string id)
+    {
+        float until = Time.time + _poseCueMaxWait;
+        while (CurrentState != PlayerState.Idle && Time.time < until)
+        {
+            yield return null;
+        }
+        _poseCueRoutine = null;
+        if (CurrentState == PlayerState.Idle)
+        {
+            PlayAnimationPose(id);
+        }
+        else
+        {
+            Debug.Log($"[Player] pose '{id}' dropped: Kami did not stand still within {_poseCueMaxWait}s (state {CurrentState})");
+        }
     }
 
     void CalibrateHitboxPlacement()
@@ -781,6 +882,16 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
         _readyToAttack = true;
 
         Debug.Log("[Player] attack cancelled: the scissors are available again");
+    }
+
+    /// <summary>The scissors bounced off something they can't cut yet (spec 024 3.A): the take-hit animation, no damage or stun.</summary>
+    public void PlayCutBounceReaction()
+    {
+        if (CurrentState == PlayerState.Dead || IsHeld)
+        {
+            return;
+        }
+        _view.PlayTakeHitAnimation();
     }
 
     public void StartTijeraParticles() => tijeraManager.EnableTijeraParticles();
@@ -1264,9 +1375,9 @@ public class Player : Entity, IMojable, IGolpeable, ICurable, IWindable, IImpact
             return;
         }
 
-        if (IsRidingPage)
+        if (IsHeld)
         {
-            Debug.Log("[Player] impact ignored: Kami is riding a page");
+            Debug.Log("[Player] impact ignored: Kami is riding a page or carried");
             return;
         }
 

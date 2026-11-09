@@ -1,7 +1,7 @@
 # Spec 024: EVA feedback batch (Oct 23-26 playtests)
 
-**Status**: Phases 1 and 2 built, played by Diego and committed (2026-10-27; #276-#284 closed). Phase 3 next: its kickoff is
-`kickoff-phase3.md`. Triaged with Diego item by item on 2026-10-26 (22 raw notes -> 20 tasks in 4 phases); on 2026-10-29
+**Status**: Phases 1 and 2 built, played by Diego and committed (2026-10-27; #276-#284 closed). Phases 3 and 4 built 2026-11-07,
+uncommitted and not played, except 3.D (Diego's), 3.F (waiting for the pools' place) and 4.G (waiting for #369): "As built". Triaged with Diego item by item on 2026-10-26 (22 raw notes -> 20 tasks in 4 phases); on 2026-10-29
 Phase 3 grew a second half, Kami's Atlas 15 beats (3.E-3.J = #329-#334).
 Milestone M9. Epic **#275**, tasks #276-#295 (1.A = #276 ... 4.G = #295, in spec order) plus #329-#334. Branch: `after-eva-feedback`.
 Siblings from the same triage: 022 (flying paper stickers) and 023 (settings menu), each its own epic.
@@ -232,6 +232,54 @@ needs a `[POCHI]` issue and is skipped.
 - 2.E: diagnosis on #284 (once-per-session show spent by dialogues' hide-all; not reset by a capture; the left can shares the
   blue post-it with `esferaPrev`). Fix: `TriggerSolapa._tooltipOnlyUntilOpened` (on in `TrashCan.prefab`, `_maxTooltipShows` 1 -> 0):
   shown on every approach to an unopened can, hidden when opened, back after `ResetToFresh`. The can/sphere overlap was not moved.
+
+**Phases 3 and 4 (2026-11-07, built on branch `025-paper-book` on top of spec 025's uncommitted work, at Diego's request: he
+tests everything together; compile-check clean, YAML block/id/reference checks clean on every touched file, nothing played).**
+- 3.A: the stone is the Rocoso (`RocosoCortable` is used only by `Rocoso.prefab`; the normal scissors bounce off under
+  `_minDamageParaCortarlo`). On a bounce: `Prefabs/Particulas/RocosoBounceSparks.prefab` (a variant of `BrillitosSolapa`: faster,
+  0.35 s, orange, 18 particles, gravity) on the rock's surface on Kami's side, and `Player.PlayCutBounceReaction` (the take-hit
+  animation, no damage or stun). `_bounceSparks` / `_kamiReacts` on the component. No `cut-pushback` art requested yet: Diego judges the take-hit.
+  2026-11-08 (Diego): every cuttable stone too (`PiedraCortable`, on `Piedra Prefab` and so all its variants): on top of its existing
+  `Tijera_Miss_Roca` clink. Both go through `Cortables/CutBounce`.
+- 3.B: `TriggerOrigami._lockedWhileHatReady` (on by default, only matters when the pedestal's origami is an `OrigamiPaperPlaneHat`,
+  so no instance needed wiring): while `isPaperPlaneHat && augmentedJumpsLeft > 0` no cost canvas, no prompt, no check; a pedestal
+  Kami stands on when the hat is given switches off one frame later; it comes back on `OnPaperPlaneHatLost` if she is still on it
+  (checked by collider overlap, since a teleport sends a locked pedestal no exit). No tooltip (open question 2's default).
+- 3.C: `PageScrollerManager._pullBeforeTurn`: a turn started at an edge sphere plays `PullSolapas` (0.8 s, through
+  `Player.PlayPullSolapa`, which cancels the attack first) and both turn delays grow by the clip's real length at runtime, instead of
+  editing `delayTime` in each scene. `TurnToNextPage` (forced turns) never pulls.
+- 3.D: not touched (Diego's manual fix).
+- 3.E: `BenchSeat` placed under 7 benches: page 1's three, page 3's two and the museum yard's two (`Museum Page Parent`, so pages
+  2 and 5). Skipped: page 4's four (two sit past the book's edge walls, two are on the previous-page sphere, where E would both sit
+  her and turn the page). `TriggerBench._fitToBench` fits the trigger box and the seat to the parent bench's meshes at Awake
+  (benches are scaled 0.016 and rotated differently), padding 1.5 / 2.5 / 1.5 world units.
+- 3.F (2026-11-08): the pools are for Level 3 (Diego), so for now they live in a test scene: `Prefabs/Interactables/ReflectingPool.prefab`
+  (a blue `ReflectingPoolWater.mat` disc, no collider, plus a nested `ReflectionZone`) and `Assets/Scenes/Tests/ReflectionPoolTest.unity`, a copy
+  of Level 1 (as on 2026-11-08) with the level intro off and one pool 9 units right of Kami's start, at a height worked out from her
+  start (drag it onto the ground if it floats). Not in the build.
+- 3.G: `GiftDialogueTrigger._kamiPose` (`Surprised`) on the box opening; an EndPose cue on `Natalia_GiftOpened`'s end.
+- 3.H: `Grace_MeetingAccusation` line 0: Kami `Surprised` + `SetIdleOverlay` (her scared face on); `Museum_Evidence` line 0:
+  `SetIdleOverlay` empty (off). `Player.TryApplyAnimationCue` now reads `SetIdleOverlay` as the scared face (any value = on).
+- 3.I: Kami `Celebrate` cues on the first line of `Natalia_Freed`, `Natalia_Escaped` and `Natalia_AllClues`. Kami's PlayPose cues
+  now wait up to `Player._poseCueMaxWait` (1 s) for her to stand still (she is still Landing after the window drop).
+- 3.J: MainMenu's `kami_spine_titlescreen` on Atlas 15's SkeletonData, and **no idle break** (Diego, 2026-11-08: the menu Kami
+  sits in `TitleScreen`, the idle break doesn't belong there; the `TitleIdleBreak` component built the day before was removed).
+- 4.A: the 21 background building sprites (`Assets/2D/Props/Edificios`) sort 10 lower than before (Valen's -4..0 became -14..-10),
+  so they keep their order among themselves and are behind every order-0 sprite and Kami. The newsstand (`PaperRevisteria`) is an
+  opaque mesh that writes depth: it only covers Kami when she is behind it, so it was left alone.
+- 4.B: the lupas' material (`Sprites Unlit`) is in queue 2982, below every other sprite (3000), and URP sorts by queue before distance:
+  other sprites always drew over the lupas. `ClueLupa.prefab`'s sprite now has sorting order 1 (in front of order-0 sprites); the
+  fences are opaque, so the watch's lupa inside the yard is still hidden behind the bars by depth.
+- 4.C: the fence `Panel` boxes were 0.4 world units thick against Kami's 1-unit CharacterController radius; now 16 fbx units
+  (about 1.2 world) in `Reja.prefab` and the six panel variants (not the two fallen gate doors). **Unverified**: whether the leak
+  was the thin panels or a gap at the columns (their colliders are inside `KamiMuseo.fbx`): Diego, note where players get out.
+- 4.D: `CrimeSceneGate` gates every `CuttableTwoPieces` under it (the scene's second `PoliceTape (1)` was never gated).
+- 4.E: the hat was next to page 2's **previous**-page sphere (world x -39.8), not `esferaNext`. Its walk-into trigger is now 7 x 5 x 6
+  (was 2.5 x 3 x 2.5), leaning 2 units toward the page's middle, so walking up collects it before the sphere. The hat itself was not
+  moved (it sits on a parked car's hood that couldn't be checked from here).
+- 4.F: `Catapult.RopeAppears`: the rope's sprites fade in over `_ropeFadeSeconds` (0.6) and a `BrillitosSolapa` burst (x4) plays on it
+  when the catapult is armed. `RopeCreak`'s volume was already raised in 1.A.
+- 4.G: blocked: every car model is one mesh (only the windows are separate). Filed #369 `[POCHI]`.
 
 ## Verification
 

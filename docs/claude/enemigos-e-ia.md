@@ -128,6 +128,8 @@ horizontal y Rocoso "atacaría" a través de la plataforma sin poder llegar.
 `_nodosEstrategicos` (array de `Transform`, vacío por default — hay que ubicarlos a
 mano en la escena, mismo patrón que los waypoints de `GallinaAgent`).
 
+**Rebote de la tijera comun (spec 024 3.A, 2026-11-07, not played)**: under `_minDamageParaCortarlo` the cut bounces: `RocosoBounceSparks` (a `BrillitosSolapa` variant) on the rock's surface on Kami's side, and Kami's take-hit animation with no damage (`Player.PlayCutBounceReaction`). Same for the cuttable stones (`PiedraCortable`, next to their `Tijera_Miss_Roca` clink); both call `Cortables/CutBounce`.
+
 **Ataque**: `RocosoHeadbuttHitBox` — mismo patrón que `TijeraHitbox`
 (`audio-y-particulas.md`): collider trigger deshabilitado por default, se habilita
 ~0.2s durante la animación de headbutt, chequea `IGolpeable` en `OnTriggerEnter` y

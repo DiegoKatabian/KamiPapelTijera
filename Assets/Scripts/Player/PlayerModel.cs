@@ -31,7 +31,7 @@ public class PlayerModel
 
     public void Tick(PlayerInputs input)
     {
-        if (_player.IsRidingPage)
+        if (_player.IsHeld)
             return;
 
         bool grounded = _player.cc.isGrounded;

@@ -99,6 +99,9 @@ def _tree(data, p):
         return strings[off:strings.index(b'\0', off)].decode()
 
     nodes = [TNode(s(t), s(nm), size, flags, meta, level) for _, level, flags, t, nm, size, _, meta, _ in raw]
+    if not nodes:
+        # a type stored without a tree (the Prefab root, class 1001480554, of a ScriptedImporter's GameObject)
+        return None, p
     stack = []
     for node in nodes:
         while stack and stack[-1].level >= node.level:
@@ -171,6 +174,8 @@ def artifact_objects(file):
         pid, start, size, tidx = struct.unpack_from('<qQIi', data, p)
         p += 24
         cid, tree = types[tidx]
+        if tree is None:
+            continue
         out.append((cid, _read(tree, data, data_offset + start)[0]))
     return out
 

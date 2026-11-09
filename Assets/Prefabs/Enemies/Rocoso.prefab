@@ -120,6 +120,9 @@ MonoBehaviour:
   _thisRocoso: {fileID: 2429854604947804655}
   _minDamageParaCortarlo: 100
   _isImmuneToTijeraMejorada: 0
+  _bounceSparks: {fileID: 2910384549396816510, guid: 8af81a937dfc4164b209713284cc59bd, type: 3}
+  _sparksLifetime: 1.5
+  _kamiReacts: 1
 --- !u!1 &1231572168594761324
 GameObject:
   m_ObjectHideFlags: 0

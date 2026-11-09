@@ -38,6 +38,9 @@ public class GiftDialogueTrigger : TriggerDialogue
     [SerializeField, Tooltip("What Natalia says once the reveal is over. Optional.")]
     DialogueSO _openedComment;
 
+    [SerializeField, Tooltip("Kami's pose when the box opens (Player > Kami Anims > Poses). Empty = none.")]
+    string _kamiPose = "Surprised";
+
     [SerializeField, Tooltip("Turned on after _revealSeconds, once Natalia's reaction is up: the letter pedestal.")]
     GameObject[] _showAfterReveal;
 
@@ -104,6 +107,15 @@ public class GiftDialogueTrigger : TriggerDialogue
         }
 
         SetAllActive(_showOnOpen, true);
+
+        //spec 024 3.G: Kami is surprised by the Pelusa popping out; it ends when Natalia's reaction ends (the
+        //EndPose cue on Natalia_GiftOpened's end) or when she moves
+        Player kami = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+        if (kami != null && !string.IsNullOrEmpty(_kamiPose))
+        {
+            kami.PlayAnimationPoseSoon(_kamiPose);
+        }
+
         StartCoroutine(RevealRoutine());
     }
 

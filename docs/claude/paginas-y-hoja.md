@@ -28,6 +28,12 @@ Detail, and how the sheet faces were fitted to the skinned mesh: "The book is a 
 Fact worth knowing: each sheet is two skinned meshes with identical UVs and opposite winding (HojaOriginal = up when a turn ends,
 PORFAVORANDA2 = up when it starts), animated by `Take 001` then held by `HojaIdle(2)`; the backward prefab is the same rig with its root unrotated.
 
+## Kami pulls the page first (spec 024 3.C, 2026-11-07, not played)
+
+A turn started at an edge sphere plays `PullSolapas` (`Player.PlayPullSolapa`, which cancels an attack in flight) and both
+turn delays grow by its real length (`PageScrollerManager._pullBeforeTurn`, measured at runtime, so a re-export can't make it
+drift). Forced turns (`TurnToNextPage`) never pull.
+
 ## Page turns forced from code (2026-09-25)
 
 `PageScrollerManager.TurnToNextPage(bool ridePage)` runs the same next-page flow without Kami on
@@ -64,3 +70,42 @@ outward: Kami lands at the book's edge, and the floor's NavMesh continues past t
 sampled fine and stranded the follower outside. A spot is taken only if `NavMesh.CalculatePath` from it to Kami's own
 NavMesh point is `PathComplete`; if neither is, the follower lands on Kami's point. After landing its follow side points at
 the page centre, and the follow spot itself never falls past the page's edge (#246, see "Following changed" in `quests-y-dialogos.md`).
+
+## Paper page turns (spec 025, built 2026-11-07, not played yet)
+
+With `PageScrollerManager._paperPages` on (both level scenes), a turn no longer instantiates `HojaMaster`: `PaperTurn`
+(scene root object `PaperTurn`, referenced by `_paperTurn`) runs it. Off = the old flow, untouched. Spec:
+`specs/025-paper-book/spec.md` (Part A).
+
+- **The sheet** is procedural (`Book/Paper/PaperSheet`, prefab `Prefabs/Book/PaperSheet.prefab`): an inextensible strip
+  on `Book/Paper/Core/PaperCurl` that rests exactly on the measured book surface (gutter dip included) at the start and
+  the end, so nothing jumps; it curls like the old clip (fitted by `tools/fit-paper-curl.py`). Its faces use the book's
+  own half materials and mesh UVs; Level 2's newspaper is dressed by `BookPageSpread.DressPaperSheet`. Kami hangs from its
+  `Edge` as before (`StartRidingPage`); it raises `OnPageFinishTurning` itself after `curl.duration` (3.33 s).
+- **Page objects never move.** At the sheet's start (`delayTime` after the press) both pages' renderers are copied into
+  draw-only proxies (`Graphics.DrawMesh`, `PaperPieces`), the real ones get `forceRenderingOff`, and at the end the proxies
+  go and the real ones show again. Page activation, `OnNewPageOpen` and the NavMesh swap keep their old timing; only page
+  N's `isShrink` is skipped. Spine characters on the page arriving and skinned meshes of an inactive page can't be copied:
+  they appear when the turn ends (logged as "hidden only").
+- **Pieces** (`PaperPieces.Group`): a `PagePiece` starts a piece; otherwise a child under the page folder is a piece unless
+  it spans more than `maxPieceSize`, then it is split into its children. Classes (`PaperPieces.Classify`, or the
+  `PagePiece`): Card (sprites and thin props, fall backwards away from the camera), Volume (tip outward on the outer base
+  edge, squash at the end), Rider (sits on another piece, moves with it), Flat (captured from above into textures drawn on
+  the sheet and on the halves, so roads bend with the paper), Hidden, Excluded. Kami and following NPCs are never touched.
+- **Folding** (`Core/PaperTurnModel`, `Core/PaperFold`): each piece leans just enough that its bounds stay under the other
+  page of its spread, which counts as `pageThicknessShare` of its tallest piece thick (so facing pop-ups fold in step).
+  The test points are the box's outline sampled along its edges (`SampleOutline`), not only its 8 corners, and only the
+  part on the piece's own half (from 0.5 outward): with corners alone the sheet passed through the middle of a wide
+  building (page 3's, 2026-11-07).
+- **Renderers that appear mid-turn** (spawned cars, objects switched on when the arriving page opens) are hidden until the
+  turn ends (`PaperTurn.HideLateRenderers`, every frame): they have no proxy and would stand still on the folding paper.
+- **Tuning** lives in `Assets/Data/PaperBook/PaperBook_Level1|2.asset` (`PaperBookData`): the curl (lead, shape, duration,
+  `heightScale` < 1 flattens the curl like the old sheet), thresholds of each class, `pageThicknessShare`, `sheetLift`.
+- **Debugging**: `PaperTurn`'s Debug header (pause, speed, scrub slider, class toggles, gizmos, `_logPieces`), F7 pause /
+  F8 slow motion in the Editor. Every turn logs `[PaperTurn] page a -> b: N pieces (...)`, what could only be hidden
+  (static batched, inactive Spine), what could not fit, and `cleaned up: N renderers shown again`.
+- **Batching Static is off for page props** (`tools/unbatch-page-props.py`): a statically batched renderer reports the
+  combined mesh and can't be copied. Keep new page props off Batching Static (the tagging tool warns).
+- **Checks from outside Unity**: `python tools/run-paper-tests.py` (the C# core against the Python reference
+  `tools/paper_core.py`), `python tools/preview-paper-turn.py` (side views). In Unity: Test Runner > EditMode >
+  `PaperBookTests`; **Kami > Pages > Tag Page Pieces - Report** shows how a page folder will be grouped.

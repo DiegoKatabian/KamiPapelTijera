@@ -89,6 +89,44 @@ public class BookPageSpread : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// The paper page turn's sheet (spec 025): its faces use the book's own half materials and mesh UVs, so they show the
+    /// book's pictures, not the warped sheet textures. The leaving face shows the half it lifts from, the arriving face
+    /// the half it lands as; the uncovered half switches to the new page right away, as with DressSheet.
+    /// </summary>
+    public void DressPaperSheet(Renderer leavingFace, Renderer arrivingFace, int from, int to, bool forward)
+    {
+        if (_pages == null)
+        {
+            return;
+        }
+        Debug.Log($"[BookPageSpread] dressing the paper sheet, page {from + 1} -> {to + 1}");
+        SetTexture(leavingFace, -1, forward ? _pages.Right(from) : _pages.Left(from), "paper sheet's leaving face");
+        SetTexture(arrivingFace, -1, forward ? _pages.Left(to) : _pages.Right(to), "paper sheet's arriving face");
+        if (forward)
+        {
+            SetTexture(_book, _rightSlot, _pages.Right(to), $"right half of page {to + 1}");
+        }
+        else
+        {
+            SetTexture(_book, _leftSlot, _pages.Left(to), $"left half of page {to + 1}");
+        }
+    }
+
+    /// <summary>
+    /// The level intro's book (spec 025 D11): its two halves have the level book's material slots, so they show the
+    /// same page's pictures.
+    /// </summary>
+    public void DressIntroBook(Renderer fixedHalf, Renderer movingHalf, int page)
+    {
+        if (_pages == null)
+        {
+            return;
+        }
+        SetTexture(fixedHalf, _rightSlot, _pages.Right(page), $"intro book's right half (page {page + 1})");
+        SetTexture(movingHalf, _leftSlot, _pages.Left(page), $"intro book's left half (page {page + 1})");
+    }
+
     void OnPageFinishTurning(params object[] parameters)
     {
         ShowPage(CurrentPage());

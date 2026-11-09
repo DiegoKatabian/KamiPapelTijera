@@ -43,6 +43,21 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
 
     public float DelayBetweenCamCloseUpAndCamBook = 2;
 
+    [Header("Paper page turns (spec 025)")]
+    [Tooltip("On: pages turn with the procedural paper sheet and the page objects fold with it (PaperTurn). " +
+             "Off: the old HojaMaster sheet and the pop-up shrink/enlarge.")]
+    [SerializeField] bool _paperPages;
+    [Tooltip("The PaperTurn that runs paper turns. Empty = the one on this object.")]
+    [SerializeField] PaperTurn _paperTurn;
+
+    [Header("Pull before a turn (spec 024 3.C)")]
+    [Tooltip("A page turn Kami starts herself opens with her PullSolapas gesture; the turn's delays grow by the gesture's length. Forced turns (cutscenes) never pull.")]
+    [SerializeField] bool _pullBeforeTurn = true;
+    float _pullExtraDelay; //this turn's extra delay for the pull
+
+    int _turnFrom; //page index a turn leaves
+    bool _paperThisTurn; //this turn runs on PaperTurn
+
 
     protected override void Awake()
     {
@@ -53,6 +68,14 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
 
         activePageIndex = startingPage - 1;
         CheckSpheres(activePageIndex);
+        if (_paperPages && _paperTurn == null)
+        {
+            _paperTurn = GetComponent<PaperTurn>();
+            if (_paperTurn == null)
+            {
+                Debug.LogWarning("[PageScrollerManager] _paperPages is on but there is no PaperTurn: pages turn the old way");
+            }
+        }
         GetAllParticleSystemsInChildren(glitterParent);
         //esferaPrev.gameObject.SetActive(false);
 
@@ -61,6 +84,12 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
     private void Start()
     {
         
+    }
+
+    /// <summary>A page's folder (0-based), or null.</summary>
+    public GameObject PageFolder(int index)
+    {
+        return pagesToToggle != null && index >= 0 && index < pagesToToggle.Length ? pagesToToggle[index] : null;
     }
 
     public void GetAllParticleSystemsInChildren(GameObject glitterParent)
@@ -80,20 +109,42 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
 
         if (!OverlayManager.Instance.isLocked)
         {
-            if (esferaNext.triggerBool 
-                && !_isTurning 
+            if (esferaNext.triggerBool
+                && !_isTurning
                 /*&& activePageIndex < pagesToToggle.Length - 1*/)
             {
+                PlayPullBeforeTurn();
                 ChangeToNextPage();
             }
 
-            if (esferaPrev.triggerBool 
-                && !_isTurning 
+            if (esferaPrev.triggerBool
+                && !_isTurning
                 /*&& activePageIndex > 0*/)
             {
+                PlayPullBeforeTurn();
                 ChangeToPrevPage();
             }
         }
+    }
+
+    //spec 024 3.C: a turn Kami starts herself opens with her pulling the page (PullSolapas, a placeholder for a page
+    //gesture); the turn's delays grow by the gesture's own length, so they follow the clip if it is re-exported.
+    //Forced turns (TurnToNextPage, the arrest) never come through here and skip it.
+    void PlayPullBeforeTurn()
+    {
+        _pullExtraDelay = 0f;
+        if (!_pullBeforeTurn)
+        {
+            return;
+        }
+        Player kami = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+        if (kami == null)
+        {
+            Debug.LogWarning("[PageScrollerManager] no player: the page turns without the pull");
+            return;
+        }
+        _pullExtraDelay = kami.PlayPullSolapa(false);
+        Debug.Log($"[PageScrollerManager] Kami pulls the page first: the turn waits {_pullExtraDelay:F2}s more");
     }
 
     /// <summary>
@@ -110,6 +161,7 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
         }
 
         _skipRideThisTurn = !ridePage;
+        _pullExtraDelay = 0f; //a forced turn has no pull
         Debug.Log($"[PageScrollerManager] TurnToNextPage forced from code (ridePage {ridePage})");
         ChangeToNextPage();
         return true;
@@ -119,8 +171,13 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
     {
         //Debug.Log("shrink page index " + activePageIndex);
 
-        pagesAnimators[activePageIndex].SetBool("isEnlarge", false);
-        pagesAnimators[activePageIndex].SetBool("isShrink", true);
+        _turnFrom = activePageIndex;
+        _paperThisTurn = _paperPages && _paperTurn != null;
+        if (!_paperThisTurn) //a paper turn folds the page's objects itself: no shrink
+        {
+            pagesAnimators[activePageIndex].SetBool("isEnlarge", false);
+            pagesAnimators[activePageIndex].SetBool("isShrink", true);
+        }
 
         activePageIndex--; //el paso de pagina posta, para atras
         //convert active page index teniendo en cuenta la cantidad total de paginas. tal que si estoy en la primera pagina y voy para atras  me mande a la ultima
@@ -132,15 +189,21 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
         EventManager.Trigger(Evento.OnPageTurnStart, activePageIndex, _isNext);
         StartChangePageFX();
 
-        StartCoroutine(CerrarPaginaCoroutine(delayTime));
-        StartCoroutine(AbrirPaginaCoroutine(popupDelayTime));
+        StartCoroutine(CerrarPaginaCoroutine(delayTime + _pullExtraDelay));
+        StartCoroutine(AbrirPaginaCoroutine(popupDelayTime + _pullExtraDelay));
+        _pullExtraDelay = 0f;
     }
 
     private void ChangeToNextPage()
     {
         //Debug.Log("shrink page index " + activePageIndex);
-        pagesAnimators[activePageIndex].SetBool("isEnlarge", false);
-        pagesAnimators[activePageIndex].SetBool("isShrink", true);
+        _turnFrom = activePageIndex;
+        _paperThisTurn = _paperPages && _paperTurn != null;
+        if (!_paperThisTurn) //a paper turn folds the page's objects itself: no shrink
+        {
+            pagesAnimators[activePageIndex].SetBool("isEnlarge", false);
+            pagesAnimators[activePageIndex].SetBool("isShrink", true);
+        }
 
         activePageIndex++; //el paso de pagina posta
         //convert active page index teniendo en cuenta la cantidad total de paginas. tal que si me paso, cicle de vuelta a la primera. asi cuando estoy en la ultima pagina, me manda a la primera. 
@@ -153,8 +216,9 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
         EventManager.Trigger(Evento.OnPageTurnStart, activePageIndex, _isNext);
         StartChangePageFX();
 
-        StartCoroutine(CerrarPaginaCoroutine(delayTime));
-        StartCoroutine(AbrirPaginaCoroutine(popupDelayTime));
+        StartCoroutine(CerrarPaginaCoroutine(delayTime + _pullExtraDelay));
+        StartCoroutine(AbrirPaginaCoroutine(popupDelayTime + _pullExtraDelay));
+        _pullExtraDelay = 0f;
     }
 
     void StartChangePageFX()
@@ -237,8 +301,21 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
     {
         yield return new WaitForSeconds(cerrarDelayTime);
         LevelManager.Instance.inDialogue = true;  //freezeo a kami
+        hojaAux = null;
+        if (_paperThisTurn)
+        {
+            //before ClosePUBs: the proxies copy the page as it is now
+            hojaAux = _paperTurn.Begin(_turnFrom, activePageIndex, _isNext, pagesToToggle[_turnFrom], pagesToToggle[activePageIndex]);
+            if (hojaAux == null)
+            {
+                _paperThisTurn = false;
+            }
+        }
         PUBManager.Instance.ClosePUBs();
-        CreateHoja(_isNext); //instancio la hoja que corresponda
+        if (!_paperThisTurn)
+        {
+            CreateHoja(_isNext); //instancio la hoja que corresponda
+        }
         if (!_skipRideThisTurn)
         {
             StartPlayerRide();
@@ -287,6 +364,18 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
         //engancha a kami al borde de la hoja recien instanciada para que viaje agarrada durante el giro.
         //ojo: el componente Hoja NO esta en la raiz de HojaMaster/HojaMaster_Rev, esta en el hijo HojaCaraAbajo
         //(instancia anidada de Hoja.prefab/Hoja_Rev.prefab) -> hace falta GetComponentInChildren, no GetComponent.
+        if (_paperThisTurn)
+        {
+            if (_paperTurn.Edge != null)
+            {
+                LevelManager.Instance.player.StartRidingPage(_paperTurn.Edge, _isNext);
+            }
+            else
+            {
+                Debug.LogWarning("[PageScrollerManager] the paper sheet has no edge: kami no queda agarrada");
+            }
+            return;
+        }
         Hoja hojaComponent = hojaAux.GetComponentInChildren<Hoja>(true);
         Debug.Log($"[PageScrollerManager] StartPlayerRide en '{hojaAux.name}': hojaComponent {(hojaComponent == null ? "NO encontrado" : $"encontrado en '{hojaComponent.name}'")}, edgeBone {(hojaComponent != null && hojaComponent.EdgeBone != null ? $"'{hojaComponent.EdgeBone.name}' @ {hojaComponent.EdgeBone.position}" : "NULO")}");
 
@@ -305,7 +394,11 @@ public class PageScrollerManager : Singleton<PageScrollerManager>
         _isTurning = false;
         _skipRideThisTurn = false;
         CameraManager.Instance.SetCamera(CameraMode.Normal);
-        Destroy(hojaAux);
+        if (hojaAux != null)
+        {
+            Destroy(hojaAux);
+        }
+        _paperThisTurn = false;
     } //este se dispara cuando la hoja termina de girar y avisa "che ya termine de girar" a traves el evento onpagefinishturnng
     void PlayPageSound()
     {

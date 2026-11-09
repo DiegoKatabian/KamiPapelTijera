@@ -72,6 +72,9 @@ MonoBehaviour:
   doesShrink: 1
   pickupType: 2
   pickupAmount: 2
+  _bounceSparks: {fileID: 2910384549396816510, guid: 8af81a937dfc4164b209713284cc59bd, type: 3}
+  _sparksLifetime: 1.5
+  _kamiReacts: 1
 --- !u!1 &2832541976246457833
 GameObject:
   m_ObjectHideFlags: 0

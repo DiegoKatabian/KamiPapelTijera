@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4417305836410279617
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6679400547164310947, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+      propertyPath: m_Name
+      value: RocosoBounceSparks
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+      propertyPath: lengthInSec
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+      propertyPath: InitialModule.gravityModifier.scalar
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+      propertyPath: ShapeModule.radius.value
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1526349819628205247, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}
+      propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
+      value: 18
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 99eade2ceb9cfde4597f79545034ea12, type: 3}

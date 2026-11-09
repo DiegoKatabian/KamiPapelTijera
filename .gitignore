@@ -79,3 +79,6 @@ crashlytics-build.properties
 
 # Subagent-driven development scratch (ledger, briefs, review packages)
 .superpowers/
+
+# Python bytecode of tools/*.py
+__pycache__/

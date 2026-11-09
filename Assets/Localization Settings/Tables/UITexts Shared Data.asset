@@ -159,6 +159,10 @@ MonoBehaviour:
     m_Key: origami_fail_retry
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000013
+    m_Key: book_intro_skip
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -60,6 +60,10 @@ paper as authored. The close prompt sits 85 up from the paper's bottom (was 30):
 shadow strip along their bottom edge. The receipt's prices (6800 + 9900 = 16700) differ from the old
 text's $24.000; nothing else in the dialogue names a price.
 
+**Paper plane pedestals lock while the hat's jump is ready (spec 024 3.B, 2026-11-07, not played)**: `TriggerOrigami._lockedWhileHatReady`
+(on by default, used only when the pedestal's origami is an `OrigamiPaperPlaneHat`): no cost canvas, prompt or check while
+`isPaperPlaneHat && augmentedJumpsLeft > 0`; on again at `OnPaperPlaneHatLost`.
+
 **Auto prompt (Diego, 2026-09-25)**: `TriggerOrigami._promptAutomatically` (off by default, so
 every existing pedestal is unchanged). When on, the origami opens by itself as soon as the pedestal
 becomes active and the screen has been free (no dialogue, cutscene, overlay, menu, casting) for

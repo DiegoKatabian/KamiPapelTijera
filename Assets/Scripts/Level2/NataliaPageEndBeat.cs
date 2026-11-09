@@ -13,8 +13,8 @@ using UnityEngine.AI;
 /// follows again as usual. She also rejoins the moment a page turn starts, so PageRideFollowers (which
 /// only boards followers) can never leave her behind if Kami turns the page from outside the radius.
 ///
-/// The teleport is hidden by the camera, not by a fade: it happens _warpAtBlendFraction of the way
-/// through the blend to her, when the camera is already mostly looking at the empty spot.
+/// The teleport is hidden by a short fade to black (Canvas/ScreenFade) during the camera's blend to her
+/// (2026-11-07: the camera alone still showed her vanish and pop in).
 ///
 /// Started by FindCluesTracker as a queued step, so it never overlaps a dialogue. Framing is the vcam
 /// (_shot) and its Follow target is _spot, which this script snaps onto the NavMesh before the shot goes
@@ -39,7 +39,20 @@ public class NataliaPageEndBeat : MonoBehaviour
     [SerializeField, Tooltip("Seconds she waves with the camera on her (after it has arrived).")]
     float _waveSeconds = 3f;
 
-    [SerializeField, Tooltip("How far through the camera's blend she appears at the spot (0 = at once, 1 = when the camera has arrived). The camera is mostly on the empty spot by then, so nobody sees her pop in.")]
+    [Header("Fade while she moves")]
+    [SerializeField, Tooltip("The full-screen black panel (Canvas/ScreenFade). Empty = the scene's ScreenFader is looked up; none at all = no fade, she moves at _warpAtBlendFraction.")]
+    ScreenFader _fader;
+
+    [SerializeField, Tooltip("Seconds to black, starting as the camera leaves Kami.")]
+    float _fadeOutSeconds = 0.4f;
+
+    [SerializeField, Tooltip("Seconds of black after she has moved.")]
+    float _blackHoldSeconds = 0.2f;
+
+    [SerializeField, Tooltip("Seconds from black back to the game, while the camera finishes arriving at her.")]
+    float _fadeInSeconds = 0.5f;
+
+    [SerializeField, Tooltip("Without a fader only: how far through the camera's blend she appears at the spot (0 = at once, 1 = when the camera has arrived).")]
     [Range(0f, 1f)]
     float _warpAtBlendFraction = 0.55f;
 
@@ -123,16 +136,27 @@ public class NataliaPageEndBeat : MonoBehaviour
         _natalia.StopFollowingPlayer();
         CutsceneCamera.Show(_shot);
         float blend = _shot != null ? CutsceneCamera.BlendSeconds : 0f;
+        float elapsed = 0f;
 
-        yield return new WaitForSeconds(blend * _warpAtBlendFraction);
-
-        _natalia.WarpTo(ground);
-        if (_natalia.Character != null)
+        ScreenFader fader = FindFader();
+        if (fader != null)
         {
-            _natalia.Character.FaceTowards(kami.transform.position);
+            //Diego, 2026-11-07: she vanished from Kami's side and popped in at the spot in plain view. The camera starts
+            //toward the spot, the screen goes black, she moves behind the black and it clears while the camera arrives
+            yield return fader.FadeOut(_fadeOutSeconds);
+            Warp(kami, ground);
+            yield return new WaitForSeconds(_blackHoldSeconds);
+            yield return fader.FadeIn(_fadeInSeconds);
+            elapsed = _fadeOutSeconds + _blackHoldSeconds + _fadeInSeconds;
+        }
+        else
+        {
+            yield return new WaitForSeconds(blend * _warpAtBlendFraction);
+            Warp(kami, ground);
+            elapsed = blend * _warpAtBlendFraction;
         }
 
-        yield return new WaitForSeconds(blend * (1f - _warpAtBlendFraction));
+        yield return new WaitForSeconds(Mathf.Max(0f, blend - elapsed));
 
         if (_natalia.Character != null)
         {
@@ -152,6 +176,28 @@ public class NataliaPageEndBeat : MonoBehaviour
         _waiting = true;
         SetKamiLocked(false);
         Debug.Log("[NataliaPageEndBeat] the beat is over: Kami is free, Natalia waits at the page's end");
+    }
+
+    void Warp(Player kami, Vector3 ground)
+    {
+        _natalia.WarpTo(ground);
+        if (_natalia.Character != null)
+        {
+            _natalia.Character.FaceTowards(kami.transform.position);
+        }
+    }
+
+    ScreenFader FindFader()
+    {
+        if (_fader == null)
+        {
+            _fader = FindObjectOfType<ScreenFader>();
+            if (_fader == null)
+            {
+                Debug.LogWarning($"[NataliaPageEndBeat] {gameObject.name}: no ScreenFader in the scene, Natalia moves without a fade");
+            }
+        }
+        return _fader;
     }
 
     //the NavMesh point for the spot; when there is none nearby, a point ahead of Kami toward the exit
@@ -242,6 +288,11 @@ public class NataliaPageEndBeat : MonoBehaviour
         _running = false;
         CutsceneCamera.Hide(_shot);
         SetKamiLocked(false);
+        //the beat may have died behind the black: never leave the screen dark
+        if (_fader != null && _fader.isActiveAndEnabled)
+        {
+            _fader.FadeIn(_fadeInSeconds);
+        }
 
         //she was already stopped and may be at the spot: she follows again rather than being stranded
         _waiting = true;

@@ -102,4 +102,7 @@ public static class AudioId
     public const string CarDoorOpen = "CarDoorOpen";
     public const string CarEngineRun = "CarEngineRun";
     public const string KamiMagicalChange = "KamiMagicalChange";
+    public const string BookCoverOpen = "BookCoverOpen";
+    public const string BookCoverLand = "BookCoverLand";
+    public const string NarratorHandMove = "NarratorHandMove";
 }

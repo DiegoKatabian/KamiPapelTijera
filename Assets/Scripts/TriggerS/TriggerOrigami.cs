@@ -33,6 +33,10 @@ public class TriggerOrigami : TriggerScript
     [Tooltip("For a code-driven pedestal nobody re-prompts (e.g. the page 3 letter): when the player cancels the fold it opens again by itself once the screen is free. Without this a cancelled code-driven origami can never be reopened. Needs 'Open Only By Code'.")]
     [SerializeField] bool _repromptAfterCancel = false;
 
+    [Header("Paper plane (spec 024 3.B)")]
+    [Tooltip("Only matters when this pedestal's origami gives the paper plane hat (OrigamiPaperPlaneHat): while Kami wears the hat with its jump ready the pedestal is off (no cost canvas, no prompt), and it comes back once the jump is spent or the hat is lost. Refolding would spend paper for the same one jump. Untick to let the plane be refolded anyway.")]
+    [SerializeField] bool _lockedWhileHatReady = true;
+
     [Header("Particle Parameters When Step On")]
     public Color blueParticleActiveColor;
     public float activeSpeed = 1.5f;
@@ -63,6 +67,9 @@ public class TriggerOrigami : TriggerScript
     //this pedestal set LevelManager.inCutscene so Kami stays still between a cancel and the
     //automatic re-prompt (spec 019 D): without it she could walk off the pedestal for that moment
     bool _holdingKami;
+    //Kami is inside the trigger (tracked for the paper plane lock: a locked pedestal skips the base enter, so
+    //triggerBool stays false while she stands on it)
+    bool _kamiInside;
     ParticleSystem ps;
     ParticleSystem.MainModule mainModule;
     ParticleSystem.VelocityOverLifetimeModule velocityModule;
@@ -86,6 +93,11 @@ public class TriggerOrigami : TriggerScript
 
         EventManager.Subscribe(Evento.OnPlayerDie, ForceTriggerExit);
         EventManager.Subscribe(Evento.OnOrigamiEnd, OnAnyOrigamiEnd);
+        if (GivesTheHat)
+        {
+            EventManager.Subscribe(Evento.OnOrigamiGivePaperPlaneHat, OnHatGiven);
+            EventManager.Subscribe(Evento.OnPaperPlaneHatLost, OnHatLost);
+        }
 
         //fallback por si nadie asigno el canvas en el inspector: lo buscamos desde el padre (PedestalParent)
         if (_canvasDisplay == null)
@@ -113,6 +125,74 @@ public class TriggerOrigami : TriggerScript
             EventManager.Unsubscribe(Evento.OnPlayerPressedE, Interact);
             EventManager.Unsubscribe(Evento.OnPlayerDie, ForceTriggerExit);
             EventManager.Unsubscribe(Evento.OnOrigamiEnd, OnAnyOrigamiEnd);
+            EventManager.Unsubscribe(Evento.OnOrigamiGivePaperPlaneHat, OnHatGiven);
+            EventManager.Unsubscribe(Evento.OnPaperPlaneHatLost, OnHatLost);
+        }
+    }
+
+    bool KamiOverlaps()
+    {
+        Player player = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+        Collider own = GetComponent<Collider>();
+        Collider kami = player != null ? player.GetComponent<CharacterController>() : null;
+        return own != null && kami != null && own.bounds.Intersects(kami.bounds);
+    }
+
+    static bool HatJumpReady()
+    {
+        Player player = LevelManager.Instance != null ? LevelManager.Instance.player : null;
+        return player != null && player.isPaperPlaneHat && player.augmentedJumpsLeft > 0;
+    }
+
+    //only the plane pedestals: decided by what the origami gives, so no pedestal instance needs wiring
+    bool GivesTheHat => _lockedWhileHatReady && origami is OrigamiPaperPlaneHat;
+
+    bool LockedByHat => GivesTheHat && HatJumpReady();
+
+    //the fold that gave the hat was made here, with Kami still standing on it: switch the pedestal off. One frame
+    //later, after OnOrigamiEnd, so the cost canvas' own "show again" on that event can't bring it back
+    void OnHatGiven(params object[] parameters)
+    {
+        if (_kamiInside && isActiveAndEnabled)
+        {
+            StartCoroutine(LockAfterThisFrame());
+        }
+    }
+
+    IEnumerator LockAfterThisFrame()
+    {
+        yield return null;
+        if (!_kamiInside || !LockedByHat)
+        {
+            yield break;
+        }
+        Debug.Log($"[TriggerOrigami] {gameObject.name}: the hat's jump is ready, the pedestal is off until it is spent");
+        if (_canvasDisplay != null)
+        {
+            _canvasDisplay.Hide();
+        }
+        if (currentCheck != null)
+        {
+            base.OnExitBehaviour();
+            Destroy(currentCheck.gameObject);
+            currentCheck = null;
+            ChangeBackToOriginalParticleParameters();
+        }
+    }
+
+    //the jump is spent (or the hat confiscated) while Kami is still standing here: the pedestal works again
+    void OnHatLost(params object[] parameters)
+    {
+        //a teleport (page turn, respawn) sends no exit to a locked pedestal (its trigger flag is off, so
+        //TriggerScript.ExitAll skips it): make sure she really is standing here before switching it back on
+        if (_kamiInside && !KamiOverlaps())
+        {
+            _kamiInside = false;
+        }
+        if (_kamiInside && isActiveAndEnabled)
+        {
+            Debug.Log($"[TriggerOrigami] {gameObject.name}: the hat is gone, the pedestal is on again");
+            OnEnterBehaviour(null);
         }
     }
 
@@ -125,6 +205,13 @@ public class TriggerOrigami : TriggerScript
     {
         if (_openOnlyByCode)
         {
+            return;
+        }
+
+        _kamiInside = true;
+        if (LockedByHat)
+        {
+            Debug.Log($"[TriggerOrigami] {gameObject.name}: Kami wears the hat with its jump ready, the pedestal stays off");
             return;
         }
 
@@ -176,6 +263,8 @@ public class TriggerOrigami : TriggerScript
         {
             return;
         }
+
+        _kamiInside = false;
 
         //el canvas se esconde SIEMPRE al salir, incluso si currentCheck es null:
         //cuando el player entro sin papel suficiente no hay check pero el canvas de costo esta visible igual
@@ -304,6 +393,12 @@ public class TriggerOrigami : TriggerScript
 
         if (origami.wasUsed)
         {
+            return;
+        }
+
+        if (LockedByHat)
+        {
+            Debug.Log($"[TriggerOrigami] {gameObject.name}: not prompting, the hat's jump is ready");
             return;
         }
 

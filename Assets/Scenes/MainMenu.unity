@@ -173,7 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: 7600ec780cd6bca4eb1928b7eac19172, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: bc26960fe194889488851f1af01d7979, type: 2}
   initialSkinName: FullSkins/Kami Libro 1
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
@@ -3696,7 +3696,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 579420082}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4bcca711161754842b85cf562d8bdd43, type: 3}
   m_Name: 

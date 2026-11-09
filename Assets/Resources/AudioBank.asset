@@ -1527,6 +1527,51 @@ MonoBehaviour:
     linearRolloff: 0
     priority: 128
     interruptSelf: 0
+  - id: BookCoverOpen
+    clips:
+    - {fileID: 8300000, guid: 6f69728f5cd8a3d4ea967d0a68d17518, type: 3}
+    volume: 0.5
+    pitch: 0.8
+    pitchVariation: 0.03
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
+    priority: 128
+    interruptSelf: 0
+  - id: BookCoverLand
+    clips:
+    - {fileID: 8300000, guid: 1489dda6cd1467d48b9de20e796f4885, type: 3}
+    volume: 0.3
+    pitch: 1.3
+    pitchVariation: 0.03
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
+    priority: 128
+    interruptSelf: 0
+  - id: NarratorHandMove
+    clips:
+    - {fileID: 8300000, guid: 47c99f14e2785064aa979999a1d1cd2c, type: 3}
+    volume: 0.25
+    pitch: 0.6
+    pitchVariation: 0.03
+    loop: 0
+    bus: 1
+    maxSimultaneous: 1
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 500
+    linearRolloff: 0
+    priority: 128
+    interruptSelf: 0
   musicGroup: {fileID: 9197432607514441226, guid: 1e1b55ab68c5e16499c7e1b105afabc6,
     type: 2}
   sfxGroup: {fileID: 5805384339254084397, guid: 1e1b55ab68c5e16499c7e1b105afabc6,

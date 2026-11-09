@@ -172,6 +172,10 @@ MonoBehaviour:
     m_Localized: "Dobrou errado! Tente de novo!"
     m_Metadata:
       m_Items: []
+  - m_Id: 244717600000000013
+    m_Localized: "Segure {INPUT:accion} para pular"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

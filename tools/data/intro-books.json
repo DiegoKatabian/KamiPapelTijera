@@ -1,0 +1,44 @@
+{
+ "Level1": {
+  "hinge": [
+   0.0,
+   1.4447,
+   0.0
+  ],
+  "spine_x": 0.0,
+  "top": 1.4447,
+  "bottom": -1.4448987776122522,
+  "x_outer": -70.06030882894993,
+  "x_outer_right": 70.06030882894993,
+  "z0": -27.772573441267014,
+  "z1": 27.772578444331884,
+  "v3_worst": 0.0,
+  "book_slots": [
+   "Assets/Materials/Libro/Libro_Base.mat",
+   "Assets/Materials/Libro/Hoja 2.mat",
+   "Assets/Materials/Libro/Hoja 1.mat"
+  ],
+  "cover_material": "Assets/Generated/IntroBooks/Cover_Level1.mat"
+ },
+ "Level2": {
+  "hinge": [
+   -0.43362,
+   1.0373,
+   0.0
+  ],
+  "spine_x": -0.43362,
+  "top": 1.0373,
+  "bottom": -1.0377060025348328,
+  "x_outer": -46.342882656705676,
+  "x_outer_right": 48.54288265670568,
+  "z0": -47.976970110773756,
+  "z1": 22.976970110773756,
+  "v3_worst": 0.0,
+  "book_slots": [
+   "Assets/3D/Libros/Diario Kami/Texturas/Diario Model Textures/Diario Moodel Texture.mat",
+   "Assets/3D/Libros/Diario Kami/Texturas/Newspaper Textures/Level2 Pages/Level2 Book Right.mat",
+   "Assets/3D/Libros/Diario Kami/Texturas/Newspaper Textures/Level2 Pages/Level2 Book Left.mat"
+  ],
+  "cover_material": "Assets/Generated/IntroBooks/Cover_Level2.mat"
+ }
+}
