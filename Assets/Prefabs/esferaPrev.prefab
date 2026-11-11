@@ -100,10 +100,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f750254d7febff54ba8305e9ca55d010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerBool: 0
   showTooltip: 1
   tooltipTextToShow: 
   postItColor: 0
+  _maxTooltipShows: 0
   _positionMarker: {fileID: 6630357738359830630}
   soyElIsNext: 0
 --- !u!65 &953207920642791250
@@ -126,6 +126,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3045144533296673915}
     m_Modifications:
+    - target: {fileID: 1710079149702614929, guid: 2bf573f1b12adb547afa24753fb51bc0,
+        type: 3}
+      propertyPath: m_SortMode
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1710079149702614929, guid: 2bf573f1b12adb547afa24753fb51bc0,
+        type: 3}
+      propertyPath: m_SortingFudge
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1710079151027630137, guid: 2bf573f1b12adb547afa24753fb51bc0,
+        type: 3}
+      propertyPath: m_SortMode
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1710079151027630137, guid: 2bf573f1b12adb547afa24753fb51bc0,
+        type: 3}
+      propertyPath: m_SortingFudge
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2003608808250500768, guid: 2bf573f1b12adb547afa24753fb51bc0,
         type: 3}
       propertyPath: m_RootOrder
@@ -185,6 +205,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Glitter Irregular
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286323552512320552, guid: 2bf573f1b12adb547afa24753fb51bc0,
+        type: 3}
+      propertyPath: m_SortMode
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286323552512320552, guid: 2bf573f1b12adb547afa24753fb51bc0,
+        type: 3}
+      propertyPath: m_SortingFudge
+      value: 40
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2bf573f1b12adb547afa24753fb51bc0, type: 3}
@@ -440,8 +470,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8600538381334900061, guid: 71454af686854b0478e71dddc012a683,
         type: 3}
+      propertyPath: m_SortMode
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8600538381334900061, guid: 71454af686854b0478e71dddc012a683,
+        type: 3}
       propertyPath: m_RenderMode
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8600538381334900061, guid: 71454af686854b0478e71dddc012a683,
+        type: 3}
+      propertyPath: m_SortingFudge
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8600538381334900061, guid: 71454af686854b0478e71dddc012a683,
         type: 3}
